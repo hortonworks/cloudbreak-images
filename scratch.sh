@@ -41,6 +41,17 @@ create_image() {
 
 }
 
+install_cluster() {
+	declare ambariHost="$1"
+	: ${ambariHost:? required}
+
+	docker run -it --rm \
+		--entrypoint=/tmp/install-cluster.sh \
+		-e AMBARI_HOST=$ambariHost \
+		-e BLUEPRINT=multi-node-hdfs-yarn \
+		sequenceiq/ambari:1.6.0 
+}
+
 main() {
   create_instance
   create_image
