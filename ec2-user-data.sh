@@ -3,75 +3,35 @@
 [[ "$TRACE" ]] && set -x
 
 : ${DOCKER_TAG:=consul}
-: ${IMAGES:=sequenceiq/ambari:consul progrium/consul }
+: ${CONSUL_IMAGE:=sequenceiq/consul:v0.4.1.ptr}
 
-install_utils() {
-  apt-get update && apt-get install -y unzip curl git python-pip dnsutils nmap
-  curl -o /usr/local/bin/jq http://stedolan.github.io/jq/download/linux64/jq && chmod +x /usr/local/bin/jq
-  pip install awscli
-}
-
-install_docker() {
-  curl -sSL https://get.docker.com/ | sh
-  sudo usermod -aG docker ubuntu
-}
-
-install_consul() {
-  curl -LO https://dl.bintray.com/mitchellh/consul/0.4.1_linux_amd64.zip \
-    && unzip 0.4.1_linux_amd64.zip \
-    && mv consul /usr/local/bin
-}
-
-get-meta() {
+get_meta() {
   curl -s 169.254.169.254/latest/meta-data/$1
 }
 
-fix-hostname-i() {
-  if grep -q $(get-meta local-ipv4) /etc/hosts ;then
+fix_hostname_i() {
+  if grep -q $(get_meta local-ipv4) /etc/hosts ;then
     echo OK
   else
-    echo $(get-meta local-ipv4) $(cat /etc/hostname) >> /etc/hosts
+    echo $(get_meta local-ipv4) $(cat /etc/hostname) >> /etc/hosts
   fi
 }
 
-get-region() {
-  local zone=$(get-meta placement/availability-zone)
+get_region() {
+  local zone=$(get_meta placement/availability-zone)
   echo ${zone:0:-1}
 }
 
-aws-cli-setup() {
-  export AWS_DEFAULT_REGION=$(get-region)
-  complete -C aws_completer aws
-
-  grep aws_completer $HOME/.bashrc || cat >> $HOME/.bashrc<<EOF
-export AWS_DEFAULT_REGION=$AWS_DEFAULT_REGION
-complete -C aws_completer aws
-EOF
-
-  aws ec2 describe-regions
+get_vpc() {
+  local mac=$(get_meta network/interfaces/macs/)
+  get_meta network/interfaces/macs/${mac}/vpc-id
 }
 
-pull_images() {
-  for i in ${IMAGES}; do
-    docker pull ${i}
-  done
-}
+get_vpc_peers() {
+  local vpc=$(get_vpc)
 
-build-ambari-image(){
-  rm -rf /tmp/docker-ambari \
-    && git clone https://github.com/sequenceiq/docker-ambari.git /tmp/docker-ambari \
-    && cd /tmp/docker-ambari/ambari-server \
-    && git checkout consul \
-    && docker build -t sequenceiq/ambari:$DOCKER_TAG .
-}
-
-get-vpc() {
-  local mac=$(get-meta network/interfaces/macs/)
-  get-meta network/interfaces/macs/${mac}/vpc-id
-}
-
-get-vpc-peers() {
-  local vpc=$(get-vpc)
+  : ${AWS_DEFAULT_REGION:=$(get_region)}
+  export AWS_DEFAULT_REGION
 
   aws ec2 describe-instances \
     --filters \
@@ -81,31 +41,31 @@ get-vpc-peers() {
     --out text
 }
 
-meta-order() {
+meta_order() {
   if [ ! -f /tmp/meta-order ]; then
-    get-vpc-peers | xargs -n 1 | sort | cat -n | sed 's/ *//;s/\t/ /' > /tmp/meta-order
+    get_vpc_peers | xargs -n 1 | sort | cat -n | sed 's/ *//;s/\t/ /' > /tmp/meta-order
   fi
   cat /tmp/meta-order
 }
 
-my-order() {
-  local myip=$(get-meta local-ipv4)
-  meta-order | grep ${myip} | cut -d" " -f 1
+my_order() {
+  local myip=$(get_meta local-ipv4)
+  meta_order | grep ${myip} | cut -d" " -f 1
 }
 
-consul-join-ip() {
-  meta-order | head -1 | cut -d" " -f 2
+consul_join_ip() {
+  meta_order | head -1 | cut -d" " -f 2
 }
 
-start-consul() {
+start_consul() {
 
-  CONSUL_OPTIONS="-advertise $(get-meta local-ipv4)"
+  CONSUL_OPTIONS="-advertise $(get_meta local-ipv4)"
 
-  if [ $(my-order) -gt 1 ]; then
-    CONSUL_OPTIONS="$CONSUL_OPTIONS -retry-join $(consul-join-ip)"
+  if [ $(my_order) -gt 1 ]; then
+    CONSUL_OPTIONS="$CONSUL_OPTIONS -retry-join $(consul_join_ip)"
   fi
 
-  if [ $(my-order) -le 3 ]; then
+  if [ $(my_order) -le 3 ]; then
     CONSUL_OPTIONS="$CONSUL_OPTIONS -server -bootstrap-expect 3"
   fi
 
@@ -113,21 +73,10 @@ start-consul() {
   docker run -d \
     --name consul \
     --net=host \
-    progrium/consul:hack $CONSUL_OPTIONS
+    $CONSUL_IMAGE $CONSUL_OPTIONS
 }
 
-build-consul-hack-image() {
-  cat >Dockerfile <<EOF
-FROM progrium/consul
-ADD https://github.com/sequenceiq/consul/releases/download/0.4.2.HACK/consul-0.4.2-linux /bin/consul
-RUN chmod +x /bin/consul
-EOF
-
-  mkdir config
-  docker build -t progrium/consul:hack .
-}
-
-consul-leader() {
+consul_leader() {
   local leader=$(curl -s 127.0.0.1:8500/v1/status/leader|jq . -r)
   echo ${leader%:*}
 }
@@ -136,12 +85,12 @@ con() {
   declare path="$1"
   shift
   local consul_ip=127.0.0.1
-  #CONSUL_IP=$(get-meta local-ipv4)
+  #CONSUL_IP=$(get_meta local-ipv4)
 
   curl ${consul_ip}:8500/v1/${path} "$@"
 }
 
-register-ambari() {
+register_ambari() {
   JSON=$(cat <<ENDOFJSON
   {
      "ID":"$(hostname -i):ambari:8080",
@@ -155,26 +104,26 @@ ENDOFJSON
   con agent/service/register -X PUT -d @- <<<"$JSON"
 }
 
-mbari-server() {
+start_ambari_server() {
   docker rm -f ambari-server &>/dev/null
-  if [[ "$(consul-leader)" ==  "$(get-meta local-ipv4)" ]]; then
+  if [[ "$(consul_leader)" ==  "$(get_meta local-ipv4)" ]]; then
     docker run -d \
      --name ambari-server \
      --net=host \
      sequenceiq/ambari:$DOCKER_TAG /start-server
 
-    register-ambari
+    register_ambari
   fi
 }
 
-start-ambari-agent() {
+start_ambari_agent() {
   docker run -d \
     --name ambari-agent \
     --net=host \
     sequenceiq/ambari:$DOCKER_TAG /start-agent
 }
 
-amb-shell-docker() {
+amb_shell_docker() {
   declare script=$1
   shift
   declare docker_args="$@"
@@ -186,12 +135,12 @@ amb-shell-docker() {
     sequenceiq/ambari:$DOCKER_TAG -c $script
 }
 
-amb-shell() {
-  amb-shell-docker /tmp/ambari-shell.sh -i
+amb_shell() {
+  amb_shell_docker /tmp/ambari-shell.sh -i
 }
 
-create-cluster() {
-  amb-shell-docker /tmp/install-cluster.sh -e DEBUG=1 -e BLUEPRINT=multi-node-hdfs-yarn
+create_cluster() {
+  amb_shell_docker /tmp/install-cluster.sh -e DEBUG=1 -e BLUEPRINT=multi-node-hdfs-yarn
 }
 
 main() {
@@ -199,22 +148,11 @@ main() {
     shift
     eval "$@"
   else
-    echo SETUP ...
-    #install_utils
-    #aws-cli-setup
-    #install_docker
-    #pull_images
-
-    #fix-hostname-i
-    #install_consul
-    # start-consul
-    # build-ambari-image
-    # sleep 10
-    #
-    # start-ambari-server
-    # sleep 5
-    #
-    # start-ambari-agent
+    fix_hostname_i
+    start_consul
+    start_ambari_server
+    sleep 5
+    start_ambari_agent
   fi
 }
 
