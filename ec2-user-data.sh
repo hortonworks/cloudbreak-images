@@ -27,8 +27,20 @@ get_vpc() {
   get_meta network/interfaces/macs/${mac}/vpc-id
 }
 
+get_cluster_name() {
+  : ${AWS_DEFAULT_REGION:=$(get_region)}
+  export AWS_DEFAULT_REGION
+
+  aws ec2 describe-tags \
+  --filters \
+    Name=resource-id,Values=$(get_meta instance-id) \
+    Name=key,Values=cluster \
+      | jq .Tags[0].Value -r
+}
+
 get_vpc_peers() {
   local vpc=$(get_vpc)
+  local cluster=$(get_cluster_name)
 
   : ${AWS_DEFAULT_REGION:=$(get_region)}
   export AWS_DEFAULT_REGION
@@ -37,15 +49,13 @@ get_vpc_peers() {
     --filters \
       Name=instance-state-name,Values=running \
       Name=vpc-id,Values=$vpc \
+      Name=tag:cluster,Values=$cluster \
     --query Reservations[].Instances[].PrivateIpAddress \
     --out text
 }
 
 meta_order() {
-  if [ ! -f /tmp/meta-order ]; then
-    get_vpc_peers | xargs -n 1 | sort | cat -n | sed 's/ *//;s/\t/ /' > /tmp/meta-order
-  fi
-  cat /tmp/meta-order
+  get_vpc_peers | xargs -n 1 | sort | cat -n | sed 's/ *//;s/\t/ /'
 }
 
 my_order() {
