@@ -88,6 +88,10 @@ start_consul() {
 
 consul_leader() {
   local leader=$(curl -s 127.0.0.1:8500/v1/status/leader|jq . -r)
+  while [ -z "$leader" ]; do
+    sleep 1
+    leader=$(curl -s 127.0.0.1:8500/v1/status/leader|jq . -r)
+  done
   echo ${leader%:*}
 }
 
@@ -161,7 +165,6 @@ main() {
     fix_hostname_i
     start_consul
     start_ambari_server
-    sleep 5
     start_ambari_agent
   fi
 }
