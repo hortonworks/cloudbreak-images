@@ -75,9 +75,23 @@ install_cluster() {
 		sequenceiq/ambari:1.6.0 
 }
 
-main() {
-  create_instance
-  create_image
+create_for_region() {
+  latest_ubuntu_trusty $1
+  #create_instance
+  #create_image
 }
 
+main() {
+  if [ $# -gt 0 ]; then
+    create_for_region $1
+  else
+    aws ec2 describe-regions \
+    --query Regions[].RegionName \
+    --out=text \
+    | xargs -t -n 1 -P 20 bash -c "$BASH_SOURCE \$@" --
+  fi
+}
+
+
+[[ "$0" == "$BASH_SOURCE" ]] && main "$@"
 alias r=". $BASH_SOURCE"
