@@ -2,6 +2,8 @@
 
 : ${DEBUG:=1}
 
+VERSION=0.9.0
+
 debug() {
   [[ "$DEBUG" ]] && echo "-----> $@" 1>&2
 }
@@ -34,7 +36,7 @@ create_instance() {
 	--out text
   )
   
-  echo instance created: $INSTANCE_ID
+  debug "[$reg] instance created: $INSTANCE_ID"
 
   aws ec2 create-tags \
 	$region_options \
@@ -57,7 +59,7 @@ create_image() {
 	--out text
 )
 
-  echo ami created: $AMI
+  debug "[$reg] ami created: $AMI"
 
   aws ec2 create-tags \
 	$region_options \
@@ -66,6 +68,7 @@ create_image() {
 	  Key=name,Value=cloudbreak \
 	  Key=virtualization-type,Value=hvm \
 	  Key=owner,Value=sequenceiq \
+	  Key=versionmValue=$VERSION \
 	  Key=consul,Value=v0.4.1.ptr
 
 }
