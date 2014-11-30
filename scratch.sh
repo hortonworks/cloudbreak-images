@@ -1,5 +1,11 @@
 #!/bin/bash
 
+: ${DEBUG:=1}
+
+debug() {
+  [[ "$DEBUG" ]] && echo "-----> $@" 1>&2
+}
+
 latest_ubuntu_trusty() {
   declare reg=$1
   [[ "$reg" ]] && region_options="--region=$reg"
