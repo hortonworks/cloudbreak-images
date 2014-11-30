@@ -1,9 +1,23 @@
 #!/bin/bash
 
+latest_ubuntu_trusty() {
+  declare reg=$1
+  [[ "$reg" ]] && region_options="--region=$reg"
+  aws ec2 describe-images \
+    $region_options \
+    --filters \
+      "Name=architecture,Values=x86_64" \
+      "Name=virtualization-type,Values=hvm" \
+      "Name=owner-id,Values=099720109477" \
+    | jq ".Images[]|[.Name,.ImageId]" -c \
+    | grep ubuntu/images/hvm/ubuntu-trusty-14.04 \
+    | sort | tail -1 | jq .[1] -r
+}
+
 create_instance() {
 
   INSTANCE_ID=$( aws ec2 run-instances \
-	--image-id ami-f4b11183 \
+	--image-id $(latest_ubuntu_trusty) \
 	--key-name sequence-eu \
 	--user-data=file://./user-data-script.sh \
 	--instance-type m3.medium \
