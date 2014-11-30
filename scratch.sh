@@ -15,8 +15,11 @@ latest_ubuntu_trusty() {
 }
 
 create_instance() {
+  declare reg=$1
+  [[ "$reg" ]] && region_options="--region=$reg"
 
   INSTANCE_ID=$( aws ec2 run-instances \
+	$region_options \
 	--image-id $(latest_ubuntu_trusty) \
 	--key-name sequence-eu \
 	--user-data=file://./user-data-script.sh \
@@ -28,6 +31,7 @@ create_instance() {
   echo instance created: $INSTANCE_ID
 
   aws ec2 create-tags \
+	$region_options \
 	--resources $INSTANCE_ID \
 	--tags \
 	  Key=Name,Value=cloudbreak-image-template \
@@ -36,7 +40,11 @@ create_instance() {
 }
 
 create_image() {
+  declare reg=$1
+  [[ "$reg" ]] && region_options="--region=$reg"
+
   AMI=$( aws ec2 create-image \
+    	$region_options \
 	--instance-id $INSTANCE_ID \
 	--name cloudbreak \
 	--query ImageId \
@@ -46,6 +54,7 @@ create_image() {
   echo ami created: $AMI
 
   aws ec2 create-tags \
+	$region_options \
 	--resources $AMI \
 	--tags \
 	  Key=name,Value=cloudbreak \
