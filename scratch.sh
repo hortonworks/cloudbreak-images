@@ -22,6 +22,29 @@ latest_ubuntu_trusty() {
     | sort | tail -1 | jq .[1] -r
 }
 
+get_instance_ip() {
+  declare reg=$1
+  [[ "$reg" ]] && region_options="--region=$reg"
+
+  aws ec2 describe-instances \
+    $region_options \
+    --filter Name=tag:Name,Values=cloudbreak-image-template \
+    --query Reservations[0].Instances[0].PublicIpAddress \
+    --out text
+}
+
+get_instance_state() {
+  declare reg=$1
+  [[ "$reg" ]] && region_options="--region=$reg"
+
+  aws ec2 describe-instances \
+    $region_options \
+    --filter Name=tag:Name,Values=cloudbreak-image-template \
+    --query Reservations[0].Instances[0].State.Name \
+    --out text
+}
+
+
 create_instance() {
   declare reg=$1
   [[ "$reg" ]] && region_options="--region=$reg"
@@ -82,6 +105,29 @@ install_cluster() {
 		-e AMBARI_HOST=$ambariHost \
 		-e BLUEPRINT=multi-node-hdfs-yarn \
 		sequenceiq/ambari:1.6.0 
+}
+
+wait_for_running() {
+  declare reg=$1
+  [[ "$reg" ]] && region_options="--region=$reg"
+  
+  debug "[$reg] wait for instance reaching running state ..."
+  while [[ $(get_instance_state) != running ]]; do
+    echo -n .
+    sleep 1
+  done
+}
+
+wait_for_user_data_script() {
+  declare reg=$1
+  [[ "$reg" ]] && region_options="--region=$reg"
+
+  local ip=$(get_instance_ip $reg)
+  debug "[$reg] wait for $ip to finish user-data script ..."
+  while ssh -o LogLevel=quiet -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no ubuntu@$ip test ! -f /tmp/ready; do 
+    echo -n .
+    sleep 1
+  done
 }
 
 create_for_region() {
