@@ -34,6 +34,7 @@ main() {
     install_docker
     pull_images
     install_consul
+    touch /tmp/ready
 }
 
 [[ "$0" == "$BASH_SOURCE" ]] && main "$@"
