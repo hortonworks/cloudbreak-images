@@ -131,14 +131,15 @@ wait_for_user_data_script() {
 }
 
 create_for_region() {
-  latest_ubuntu_trusty $1
-  #create_instance
-  #create_image
+  create_instance "$@"
+  wait_for_running "$@"
+  wait_for_user_data_script "$@"
+  create_image "$@"
 }
 
 main() {
   if [ $# -gt 0 ]; then
-    create_for_region $1
+    create_for_region "$@"
   else
     aws ec2 describe-regions \
     --query Regions[].RegionName \
