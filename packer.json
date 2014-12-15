@@ -3,11 +3,9 @@
     "aws_access_key": "",
     "aws_secret_key": ""
   },
-  "builders": [{
-    "name": "aws-eu-central-1",
+  "builders":[{
+    "name": "eu-central-1",
     "type": "amazon-ebs",
-    "access_key": "{{user `aws_access_key`}}",
-    "secret_key": "{{user `aws_secret_key`}}",
     "region": "eu-central-1",
     "source_ami": "ami-b01524ad",
     "instance_type": "m3.medium",
@@ -15,17 +13,77 @@
     "ami_name": "packer-cloudbreak {{timestamp}}"
   },
   {
-    "name": "aws-northeast-1",
+    "name": "sa-east-1",
     "type": "amazon-ebs",
-    "access_key": "{{user `aws_access_key`}}",
-    "secret_key": "{{user `aws_secret_key`}}",
+    "region": "sa-east-1",
+    "source_ami": "ami-cb70c1d6",
+    "instance_type": "m3.medium",
+    "ssh_username": "ubuntu",
+    "ami_name": "packer-cloudbreak {{timestamp}}"
+  },
+  {
+    "name": "ap-northeast-1",
+    "type": "amazon-ebs",
     "region": "ap-northeast-1",
     "source_ami": "ami-4ceaed4d",
     "instance_type": "m3.medium",
     "ssh_username": "ubuntu",
     "ami_name": "packer-cloudbreak {{timestamp}}"
-  }
-  ],
+  },
+  {
+    "name": "eu-west-1",
+    "type": "amazon-ebs",
+    "region": "eu-west-1",
+    "source_ami": "ami-863686f1",
+    "instance_type": "m3.medium",
+    "ssh_username": "ubuntu",
+    "ami_name": "packer-cloudbreak {{timestamp}}"
+  },
+  {
+    "name": "us-east-1",
+    "type": "amazon-ebs",
+    "region": "us-east-1",
+    "source_ami": "ami-76e27e1e",
+    "instance_type": "m3.medium",
+    "ssh_username": "ubuntu",
+    "ami_name": "packer-cloudbreak {{timestamp}}"
+  },
+  {
+    "name": "us-west-1",
+    "type": "amazon-ebs",
+    "region": "us-west-1",
+    "source_ami": "ami-d5180890",
+    "instance_type": "m3.medium",
+    "ssh_username": "ubuntu",
+    "ami_name": "packer-cloudbreak {{timestamp}}"
+  },
+  {
+    "name": "us-west-2",
+    "type": "amazon-ebs",
+    "region": "us-west-2",
+    "source_ami": "ami-838dd9b3",
+    "instance_type": "m3.medium",
+    "ssh_username": "ubuntu",
+    "ami_name": "packer-cloudbreak {{timestamp}}"
+  },
+  {
+    "name": "ap-southeast-2",
+    "type": "amazon-ebs",
+    "region": "ap-southeast-2",
+    "source_ami": "ami-950b62af",
+    "instance_type": "m3.medium",
+    "ssh_username": "ubuntu",
+    "ami_name": "packer-cloudbreak {{timestamp}}"
+  },
+  {
+    "name": "ap-southeast-1",
+    "type": "amazon-ebs",
+    "region": "ap-southeast-1",
+    "source_ami": "ami-f75875a5",
+    "instance_type": "m3.medium",
+    "ssh_username": "ubuntu",
+    "ami_name": "packer-cloudbreak {{timestamp}}"
+  }], 
   "provisioners": [{
     "type": "shell",
     "script": "./user-data-script.sh"
