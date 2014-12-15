@@ -1,0 +1,33 @@
+{
+  "variables": {
+    "aws_access_key": "",
+    "aws_secret_key": ""
+  },
+  "builders": [{
+    "name": "aws-eu-central-1",
+    "type": "amazon-ebs",
+    "access_key": "{{user `aws_access_key`}}",
+    "secret_key": "{{user `aws_secret_key`}}",
+    "region": "eu-central-1",
+    "source_ami": "ami-b01524ad",
+    "instance_type": "m3.medium",
+    "ssh_username": "ubuntu",
+    "ami_name": "packer-cloudbreak {{timestamp}}"
+  },
+  {
+    "name": "aws-northeast-1",
+    "type": "amazon-ebs",
+    "access_key": "{{user `aws_access_key`}}",
+    "secret_key": "{{user `aws_secret_key`}}",
+    "region": "ap-northeast-1",
+    "source_ami": "ami-4ceaed4d",
+    "instance_type": "m3.medium",
+    "ssh_username": "ubuntu",
+    "ami_name": "packer-cloudbreak {{timestamp}}"
+  }
+  ],
+  "provisioners": [{
+    "type": "shell",
+    "script": "./user-data-script.sh"
+  }]
+}
