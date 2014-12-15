@@ -87,5 +87,19 @@
   "provisioners": [{
     "type": "shell",
     "script": "./user-data-script.sh"
-  }]
+  }],
+  "push": {
+    "name": "lalyos/cloudbreak",
+    "include": ["user-data-script.sh"]
+  },
+  "post-processors": [
+      {
+        "type": "atlas",
+        "artifact": "lalyos/cloudbreak-artifact",
+        "artifact_type": "aws.ami",
+        "metadata": {
+          "created_at": "{{timestamp}}"
+        }
+      }
+    ]
 }
