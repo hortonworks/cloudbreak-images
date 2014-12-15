@@ -2,7 +2,7 @@
 
 [[ "$TRACE" ]] && set -x
 
-: ${IMAGES:=sequenceiq/ambari:consul sequenceiq/consul:v0.4.1.ptr}
+: ${IMAGES:=sequenceiq/ambari:1.6.0-consul sequenceiq/consul:v0.4.1.ptr}
 
 install_utils() {
   apt-get update && apt-get install -y unzip curl git python-pip dnsutils nmap
