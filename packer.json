@@ -1,7 +1,8 @@
 {
   "variables": {
     "aws_access_key": "",
-    "aws_secret_key": ""
+    "aws_secret_key": "",
+    "version": "0.9"
   },
   "builders":[{
     "name": "eu-central-1",
@@ -12,6 +13,10 @@
     "source_ami": "ami-b01524ad",
     "instance_type": "m3.medium",
     "ssh_username": "ubuntu",
+    "tags": {
+      "builder": "packer",
+      "version": "{{user `version`}}"
+    },
     "ami_name": "packer-cloudbreak {{timestamp}}"
   },
   {
@@ -23,6 +28,10 @@
     "source_ami": "ami-cb70c1d6",
     "instance_type": "m3.medium",
     "ssh_username": "ubuntu",
+    "tags": {
+      "builder": "packer",
+      "version": "{{user `version`}}"
+    },
     "ami_name": "packer-cloudbreak {{timestamp}}"
   },
   {
@@ -34,6 +43,10 @@
     "source_ami": "ami-4ceaed4d",
     "instance_type": "m3.medium",
     "ssh_username": "ubuntu",
+    "tags": {
+      "builder": "packer",
+      "version": "{{user `version`}}"
+    },
     "ami_name": "packer-cloudbreak {{timestamp}}"
   },
   {
@@ -45,6 +58,10 @@
     "source_ami": "ami-863686f1",
     "instance_type": "m3.medium",
     "ssh_username": "ubuntu",
+    "tags": {
+      "builder": "packer",
+      "version": "{{user `version`}}"
+    },
     "ami_name": "packer-cloudbreak {{timestamp}}"
   },
   {
@@ -56,6 +73,10 @@
     "source_ami": "ami-76e27e1e",
     "instance_type": "m3.medium",
     "ssh_username": "ubuntu",
+    "tags": {
+      "builder": "packer",
+      "version": "{{user `version`}}"
+    },
     "ami_name": "packer-cloudbreak {{timestamp}}"
   },
   {
@@ -67,6 +88,10 @@
     "source_ami": "ami-d5180890",
     "instance_type": "m3.medium",
     "ssh_username": "ubuntu",
+    "tags": {
+      "builder": "packer",
+      "version": "{{user `version`}}"
+    },
     "ami_name": "packer-cloudbreak {{timestamp}}"
   },
   {
@@ -78,6 +103,10 @@
     "source_ami": "ami-838dd9b3",
     "instance_type": "m3.medium",
     "ssh_username": "ubuntu",
+    "tags": {
+      "builder": "packer",
+      "version": "{{user `version`}}"
+    },
     "ami_name": "packer-cloudbreak {{timestamp}}"
   },
   {
@@ -89,6 +118,10 @@
     "source_ami": "ami-950b62af",
     "instance_type": "m3.medium",
     "ssh_username": "ubuntu",
+    "tags": {
+      "builder": "packer",
+      "version": "{{user `version`}}"
+    },
     "ami_name": "packer-cloudbreak {{timestamp}}"
   },
   {
@@ -100,6 +133,10 @@
     "source_ami": "ami-f75875a5",
     "instance_type": "m3.medium",
     "ssh_username": "ubuntu",
+    "tags": {
+      "builder": "packer",
+      "version": "{{user `version`}}"
+    },
     "ami_name": "packer-cloudbreak {{timestamp}}"
   }], 
   "provisioners": [{
