@@ -144,13 +144,13 @@
     "script": "./user-data-script.sh"
   }],
   "push": {
-    "name": "lalyos/cloudbreak",
+    "name": "sequenceiq/cloudbreak",
     "include": ["user-data-script.sh"]
   },
   "post-processors": [
       {
         "type": "atlas",
-        "artifact": "lalyos/cloudbreak-artifact",
+        "artifact": "sequenceiq/cloudbreak-artifact",
         "artifact_type": "aws.ami",
         "metadata": {
           "created_at": "{{timestamp}}"
