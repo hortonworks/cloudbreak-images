@@ -2,7 +2,7 @@
 
 [[ "$TRACE" ]] && set -x
 
-: ${IMAGES:=sequenceiq/ambari:1.6.0-consul sequenceiq/consul:v0.4.1.ptr}
+: ${IMAGES:=sequenceiq/ambari:1.7.0-consul sequenceiq/consul:v0.4.1.ptr}
 
 install_utils() {
   apt-get update && apt-get install -y unzip curl git python-pip dnsutils nmap
@@ -28,12 +28,23 @@ pull_images() {
   done
 }
 
+install_scripts() {
+  curl -o /usr/local/register-ambari.sh https://gist.githubusercontent.com/doktoric/bbc20ec450573697c348/raw/register-ambari && chmod +x /usr/local/register-ambari.sh
+  curl -o /usr/local/public_host_script.sh https://gist.githubusercontent.com/doktoric/41a28da9e974029d95d2/raw/ec2-host && chmod +x /usr/local/public_host_script.sh
+  curl -o /usr/local/disk_mount.sh https://gist.githubusercontent.com/doktoric/0277e537cd97b0d9762f/raw/ec2-disk && chmod +x /usr/local/disk_mount.sh
+  cp /usr/local/register-ambari.sh /etc/init.d/register-ambari
+  chmod +x /etc/init.d/register-ambari
+  chown root:root /etc/init.d/register-ambari
+  update-rc.d -f register-ambari defaults
+  update-rc.d -f register-ambari enable
+}
 
 main() {
     install_utils
     install_docker
     pull_images
     install_consul
+    install_scripts
     touch /tmp/ready
 }
 
