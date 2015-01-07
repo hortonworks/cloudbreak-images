@@ -141,7 +141,8 @@
   }], 
   "provisioners": [{
     "type": "shell",
-    "script": "./user-data-script.sh"
+    "script": "./user-data-script.sh",
+    "execute_command": "chmod +x {{ .Path }}; {{ .Vars }} sudo -E bash '{{ .Path }}'"
   }],
   "push": {
     "name": "sequenceiq/cloudbreak",
