@@ -1,18 +1,19 @@
 {
   "variables": {
-    "os_endpoint": "",
+    "os_auth_url": "",
     "os_image_name": "",
     "os_username": "",
-    "os_password": ""
+    "os_password": "",
+    "os_tenant_name": ""
   },
   "builders": [
     {
       "type": "openstack",
       "username": "{{user `os_username`}}",
       "password": "{{user `os_password`}}",
-      "project": "demo",
+      "project": "{{user `os_tenant_name`}}",
       "ssh_username": "ubuntu",
-      "provider": "{{user `os_endpoint`}}",
+      "provider": "{{user `os_auth_url`}}",
       "image_name": "{{user `os_image_name`}}",
       "source_image": "0af46146-35e8-4f26-b86c-3680c3266e5f",
       "flavor": "2",
