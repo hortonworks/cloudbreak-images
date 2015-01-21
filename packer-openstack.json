@@ -1,0 +1,32 @@
+{
+  "variables": {
+    "os_endpoint": "",
+    "os_image_name": "",
+    "os_username": "",
+    "os_password": ""
+  },
+  "builders": [
+    {
+      "type": "openstack",
+      "username": "{{user `os_username`}}",
+      "password": "{{user `os_password`}}",
+      "project": "demo",
+      "ssh_username": "ubuntu",
+      "provider": "{{user `os_endpoint`}}",
+      "image_name": "{{user `os_image_name`}}",
+      "source_image": "0af46146-35e8-4f26-b86c-3680c3266e5f",
+      "flavor": "2",
+      "use_floating_ip": true,
+      "networks": [
+        "f6158aae-7360-4b71-a310-83b249eb9e3f"
+      ]
+    }
+  ],
+  "provisioners": [
+    {
+      "type": "shell",
+      "script": "./user-data-script-openstack.sh",
+      "execute_command": "chmod +x {{ .Path }}; {{ .Vars }} sudo -E bash '{{ .Path }}'"
+    }
+  ]
+}
