@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # let the script fail to cause the image build unsuccessfull
-# set -e
+set -eo pipefail
 
 [[ "$TRACE" ]] && set -x
 
