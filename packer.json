@@ -2,7 +2,9 @@
   "variables": {
     "aws_access_key": "",
     "aws_secret_key": "",
-    "version": "0.9"
+    "version": "0.9",
+    "PROVIDER": "ec2",
+    "GITHUB_TOKEN": ""
   },
   "builders":[{
     "name": "eu-central-1",
@@ -17,7 +19,7 @@
       "builder": "packer",
       "version": "{{user `version`}}"
     },
-    "ami_name": "packer-cloudbreak {{timestamp}}"
+    "ami_name": "packer-cloudbreak-{{timestamp}}"
   },
   {
     "name": "sa-east-1",
@@ -32,7 +34,7 @@
       "builder": "packer",
       "version": "{{user `version`}}"
     },
-    "ami_name": "packer-cloudbreak {{timestamp}}"
+    "ami_name": "packer-cloudbreak-{{timestamp}}"
   },
   {
     "name": "ap-northeast-1",
@@ -47,7 +49,7 @@
       "builder": "packer",
       "version": "{{user `version`}}"
     },
-    "ami_name": "packer-cloudbreak {{timestamp}}"
+    "ami_name": "packer-cloudbreak-{{timestamp}}"
   },
   {
     "name": "eu-west-1",
@@ -62,7 +64,7 @@
       "builder": "packer",
       "version": "{{user `version`}}"
     },
-    "ami_name": "packer-cloudbreak {{timestamp}}"
+    "ami_name": "packer-cloudbreak-{{timestamp}}"
   },
   {
     "name": "us-east-1",
@@ -77,7 +79,7 @@
       "builder": "packer",
       "version": "{{user `version`}}"
     },
-    "ami_name": "packer-cloudbreak {{timestamp}}"
+    "ami_name": "packer-cloudbreak-{{timestamp}}"
   },
   {
     "name": "us-west-1",
@@ -92,7 +94,7 @@
       "builder": "packer",
       "version": "{{user `version`}}"
     },
-    "ami_name": "packer-cloudbreak {{timestamp}}"
+    "ami_name": "packer-cloudbreak-{{timestamp}}"
   },
   {
     "name": "us-west-2",
@@ -107,7 +109,7 @@
       "builder": "packer",
       "version": "{{user `version`}}"
     },
-    "ami_name": "packer-cloudbreak {{timestamp}}"
+    "ami_name": "packer-cloudbreak-{{timestamp}}"
   },
   {
     "name": "ap-southeast-2",
@@ -122,7 +124,7 @@
       "builder": "packer",
       "version": "{{user `version`}}"
     },
-    "ami_name": "packer-cloudbreak {{timestamp}}"
+    "ami_name": "packer-cloudbreak-{{timestamp}}"
   },
   {
     "name": "ap-southeast-1",
@@ -137,8 +139,8 @@
       "builder": "packer",
       "version": "{{user `version`}}"
     },
-    "ami_name": "packer-cloudbreak {{timestamp}}"
-  }], 
+    "ami_name": "packer-cloudbreak-{{timestamp}}"
+  }],
   "provisioners": [{
     "type": "shell",
     "script": "./user-data-script.sh",
