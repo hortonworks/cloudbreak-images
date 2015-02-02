@@ -39,12 +39,17 @@ install_scripts() {
   update-rc.d -f register-ambari enable
 }
 
+fix_fstab() {
+	sed -i "/dev\/xvdb/ d" /etc/fstab
+}
+
 main() {
     install_utils
     install_docker
     pull_images
     install_consul
     install_scripts
+    fix_fstab
     touch /tmp/ready
 }
 
