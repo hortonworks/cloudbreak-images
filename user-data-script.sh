@@ -60,7 +60,7 @@ install_scripts() {
   
   github_raw_content ${target}/register-ambari.sh scripts/register-ambari.sh
   github_raw_content ${target}/public_host_script.sh scripts/public_host_script_${provider}.sh
-  github_raw_content ${target}/disk_mount.sh scripts/disk_mount_${provider}.sh?
+  github_raw_content ${target}/disk_mount.sh scripts/disk_mount_${provider}.sh
   
   chmod +x ${target}/*.sh
   ls -l $target
