@@ -127,18 +127,18 @@
   }],
   "provisioners": [{
     "type": "file",
-    "source": "./scripts/register-ambari.sh",
-    "destination": "/usr/local/"
+    "source": "scripts/register-ambari.sh",
+    "destination": "/tmp/register-ambari.sh"
   },
   {
     "type": "file",
-    "source": "./scripts/public_host_script_ec2.sh",
-    "destination": "/usr/local/"
+    "source": "scripts/public_host_script_ec2.sh",
+    "destination": "/tmp/public_host_script.sh"
   },
   {
     "type": "file",
-    "source": "./scripts/disk_mount_ec2.sh",
-    "destination": "/usr/local/"
+    "source": "scripts/disk_mount_ec2.sh",
+    "destination": "/tmp/disk_mount.sh"
   },
   {
     "type": "shell",

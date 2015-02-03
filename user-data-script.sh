@@ -44,6 +44,7 @@ install_scripts() {
   debug provider=$provider
   
   # script are copied by packer's file provisioner section
+  cp /tmp/*.sh /usr/local/
   
   chmod +x ${target}/*.sh
   ls -l $target
@@ -85,11 +86,11 @@ check_params() {
 
 main() {
     check_params
+    install_scripts
     install_utils
     install_docker
     pull_images
     install_consul
-    install_scripts
     fix_fstab
     touch /tmp/ready
 }
