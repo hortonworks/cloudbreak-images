@@ -1,7 +1,6 @@
 {
   "variables": {
-    "version": "0.9",
-    "GITHUB_TOKEN": ""
+    "version": "0.9"
   },
   "builders":[{
     "name": "europe-west1-b",
@@ -16,9 +15,24 @@
     ]
   }],
   "provisioners": [{
+    "type": "file",
+    "source": "scripts/register-ambari.sh",
+    "destination": "/tmp/register-ambari.sh"
+  },
+  {
+    "type": "file",
+    "source": "scripts/public_host_script_gce.sh",
+    "destination": "/tmp/public_host_script.sh"
+  },
+  {
+    "type": "file",
+    "source": "scripts/disk_mount_gce.sh",
+    "destination": "/tmp/disk_mount.sh"
+  },
+  {
+
     "type": "shell",
     "script": "./user-data-script.sh",
-    "environment_vars": ["GITHUB_TOKEN={{user `GITHUB_TOKEN`}}"],
     "execute_command": "chmod +x {{ .Path }}; {{ .Vars }} sudo -E bash '{{ .Path }}'"
   }],
   "push": {
