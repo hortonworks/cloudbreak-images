@@ -36,21 +36,6 @@ pull_images() {
   done
 }
 
-github_raw_content() {
-
-    local output=${1:? required as 1. parameter}
-    local path=${2:? reuired as 2. parmeter}
-
-    local repo=sequenceiq/cloudbreak-images
-
-    debug "download raw $repo/$path => $output"
-    curl \
-        -o ${output} \
-        -H "Accept: application/vnd.github.VERSION.raw" \
-        -H "Authorization: Bearer $GITHUB_TOKEN" \
-        https://api.github.com/repos/${repo}/contents/${path}
-}
-
 install_scripts() {
   local target=${1:-/usr/local}
   local provider=$(get_provider_from_packer)
@@ -58,9 +43,7 @@ install_scripts() {
   debug target=$target
   debug provider=$provider
   
-  github_raw_content ${target}/register-ambari.sh scripts/register-ambari.sh
-  github_raw_content ${target}/public_host_script.sh scripts/public_host_script_${provider}.sh
-  github_raw_content ${target}/disk_mount.sh scripts/disk_mount_${provider}.sh
+  # script are copied by packer's file provisioner section
   
   chmod +x ${target}/*.sh
   ls -l $target
@@ -97,7 +80,6 @@ get_provider_from_packer() {
 }
 
 check_params() {
-    : ${GITHUB_TOKEN:? required}
     : ${PACKER_BUILDER_TYPE:? required amazon-ebs/googlecompute/openstack }
 }
 

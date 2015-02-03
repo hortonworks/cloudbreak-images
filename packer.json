@@ -3,8 +3,7 @@
     "aws_access_key": "",
     "aws_secret_key": "",
     "version": "0.9",
-    "PROVIDER": "ec2",
-    "GITHUB_TOKEN": ""
+    "PROVIDER": "ec2"
   },
   "builders":[{
     "name": "sa-east-1",
@@ -127,14 +126,28 @@
     "ami_name": "packer-cloudbreak-{{ isotime \"2006-01-02\" }}"
   }],
   "provisioners": [{
+    "type": "file",
+    "source": "./scripts/register-ambari.sh",
+    "destination": "/usr/local/"
+  },
+  {
+    "type": "file",
+    "source": "./scripts/public_host_script_ec2.sh",
+    "destination": "/usr/local/"
+  },
+  {
+    "type": "file",
+    "source": "./scripts/disk_mount_ec2.sh",
+    "destination": "/usr/local/"
+  },
+  {
     "type": "shell",
     "script": "./user-data-script.sh",
-    "environment_vars": ["GITHUB_TOKEN={{user `GITHUB_TOKEN`}}"],
     "execute_command": "chmod +x {{ .Path }}; {{ .Vars }} sudo -E bash '{{ .Path }}'"
   }],
   "push": {
     "name": "sequenceiq/cloudbreak",
-    "include": ["user-data-script.sh"]
+    "include": ["user-data-script.sh", "scrips/*"]
   },
   "post-processors": [
       {
