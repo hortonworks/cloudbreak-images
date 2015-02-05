@@ -1,0 +1,33 @@
+{
+	"variables":
+	{
+		"sn" : "",
+		"psPath" : ""
+	},
+
+	"builders":
+	[
+		{
+			"type"				: "azure",
+			"publish_settings_path" 	: "{{user `psPath`}}",
+			"subscription_name"		: "{{user `sn`}}",
+			"storage_account" 		: "102589fae040d8westeurope",
+			"storage_account_container" 	: "images",
+			"os_type"			: "Linux",
+			"os_image_label"		: "Ubuntu Server 14.04 LTS",
+			"location"			: "West Europe",
+			"instance_size"			: "Large",
+			"user_image_label"		: "packer-cloudbreak-{{ isotime \"2006-01-02\" }}"
+		}
+	],
+  "provisioners": [{
+    "type": "file",
+    "source": "scripts/",
+    "destination": "/tmp"
+  },
+  {
+    "type": "shell",
+    "script": "./user-data-script.sh",
+    "execute_command": "chmod +x {{ .Path }}; {{ .Vars }} sudo -E bash '{{ .Path }}'"
+  }]
+}

@@ -77,6 +77,11 @@ get_provider_from_packer() {
         return
     fi
 
+    if [[ $PACKER_BUILDER_TYPE == "azure" ]]; then
+        echo azure
+        return
+    fi
+    
     echo UNKNOWN_PROVIDER
 }
 
