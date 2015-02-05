@@ -3,7 +3,6 @@
     "aws_access_key": "",
     "aws_secret_key": "",
     "version": "0.9",
-    "PROVIDER": "ec2"
   },
   "builders":[{
     "name": "sa-east-1",
