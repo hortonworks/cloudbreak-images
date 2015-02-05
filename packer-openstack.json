@@ -1,7 +1,7 @@
 {
   "variables": {
     "os_auth_url": "",
-    "os_image_name": "",
+    "os_image_name": "packer-cloudbreak-{{ isotime \"2006-01-02\" }}",
     "os_username": "",
     "os_password": "",
     "os_tenant_name": ""
