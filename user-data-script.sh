@@ -13,10 +13,8 @@ debug() {
 }
 
 install_utils() {
-  apt-get update && apt-get install -y unzip curl git python-dev build-essential python-pip dnsutils nmap
+  apt-get update && apt-get install -y unzip curl git
   curl -o /usr/local/bin/jq http://stedolan.github.io/jq/download/linux64/jq && chmod +x /usr/local/bin/jq
-  pip install awscli
-  curl -Lsk https://github.com/progrium/plugn/releases/download/v0.1.0/plugn_0.1.0_linux_x86_64.tgz|tar -xzC /usr/local/bin/
 }
 
 install_docker() {
@@ -47,7 +45,7 @@ install_scripts() {
   cp /tmp/*.sh /usr/local/
   
   chmod +x ${target}/*.sh
-  ls -l $target
+  ls -l $target/*.sh
   
   cp ${target}/register-ambari.sh /etc/init.d/register-ambari
   chown root:root /etc/init.d/register-ambari
