@@ -23,11 +23,15 @@
       ]
     }
   ],
-  "provisioners": [
-    {
-      "type": "shell",
-      "script": "./user-data-script-openstack.sh",
-      "execute_command": "chmod +x {{ .Path }}; {{ .Vars }} sudo -E bash '{{ .Path }}'"
-    }
-  ]
+  "provisioners": [{
+    "type": "file",
+    "source": "scripts/",
+    "destination": "/tmp"
+  },
+  {
+
+    "type": "shell",
+    "script": "./user-data-script.sh",
+    "execute_command": "chmod +x {{ .Path }}; {{ .Vars }} sudo -E bash '{{ .Path }}'"
+  }]
 }
