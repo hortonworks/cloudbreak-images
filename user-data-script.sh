@@ -42,8 +42,9 @@ install_scripts() {
   debug provider=$provider
   
   # script are copied by packer's file provisioner section
-  cp /tmp/*.sh /usr/local/
-  
+  cp /tmp/disk_mount_$provider.sh /usr/local/disk_mount.sh
+  cp /tmp/public_host_script_$provider.sh /usr/local/public_host_script.sh
+
   chmod +x ${target}/*.sh
   ls -l $target/*.sh
   
