@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # let the script fail to cause the image build unsuccessfull
-set -eo pipefail
+# set -eo pipefail
 
 [[ "$TRACE" ]] && set -x
 
@@ -29,6 +29,7 @@ install_consul() {
 }
 
 pull_images() {
+  set -e
   for i in ${IMAGES}; do
     docker pull ${i}
   done
