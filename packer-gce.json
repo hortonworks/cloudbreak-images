@@ -28,16 +28,5 @@
   "push": {
     "name": "sequenceiq/cbreak-gugli",
     "include": ["user-data-script.sh","siq-haas.json"]
-  },
-  "post-processors": [
-      {
-        "type": "atlas",
-        "artifact": "sequenceiq/cbreak-gugli-artifact",
-        "artifact_type": "aws.ami",
-        "metadata": {
-          "created_at": "{{timestamp}}"
-        }
-      }
-    ]
-
+  }
 }
