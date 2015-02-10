@@ -13,13 +13,12 @@ debug() {
 }
 
 install_utils() {
-  apt-get update && apt-get install -y curl
+  yum install unzip curl git
   curl -o /usr/local/bin/jq http://stedolan.github.io/jq/download/linux64/jq && chmod +x /usr/local/bin/jq
 }
 
 install_docker() {
   curl -sSL https://get.docker.com/ | sh
-  sudo usermod -aG docker ubuntu
 }
 
 pull_images() {
