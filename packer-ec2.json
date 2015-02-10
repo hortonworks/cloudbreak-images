@@ -6,14 +6,14 @@
     "version": "0.9",
     "os_user": "",
     "instance_type": "m3.medium",
-    "ami-sa-east-1"="ami-cb70c1d6",
-    "ami-ap-northeast-1"="ami-4ceaed4d",
-    "ami-eu-west-1"="ami-863686f1",
-    "ami-us-east-1"="ami-76e27e1e",
-    "ami-us-west-1"="ami-d5180890",
-    "ami-us-west-2"="ami-838dd9b3",
-    "ami-ap-southeast-2"="ami-950b62af",
-    "ami-ap-southeast-1"="ami-f75875a5"
+    "ami-sa-east-1": "ami-7d02a260",
+    "ami-ap-northeast-1": "ami-4ceaed4d",
+    "ami-eu-west-1": "ami-42718735",
+    "ami-us-east-1": "ami-76e27e1e",
+    "ami-us-west-1": "ami-d5180890",
+    "ami-us-west-2": "ami-838dd9b3",
+    "ami-ap-southeast-2": "ami-950b62af",
+    "ami-ap-southeast-1": "ami-f75875a5"
   },
   "builders":[{
     "name": "sa-east-1",
@@ -21,7 +21,7 @@
     "region": "sa-east-1",
     "access_key": "{{user `aws_access_key`}}",
     "secret_key": "{{user `aws_secret_key`}}",
-    "source_ami": "{{user `ami-sa-east-1`}}`",
+    "source_ami": "{{user `ami-sa-east-1`}}",
     "instance_type": "{{ user `instance_type` }}",
     "ssh_username": "{{ user `os_user` }}",
     "tags": {
@@ -37,7 +37,7 @@
     "region": "ap-northeast-1",
     "access_key": "{{user `aws_access_key`}}",
     "secret_key": "{{user `aws_secret_key`}}",
-    "source_ami": "{{user `ami-ap-northeast-1`}}`",
+    "source_ami": "{{user `ami-ap-northeast-1`}}",
     "instance_type": "{{ user `instance_type` }}",
     "ssh_username": "{{ user `os_user` }}",
     "tags": {
@@ -53,7 +53,7 @@
     "region": "eu-west-1",
     "access_key": "{{user `aws_access_key`}}",
     "secret_key": "{{user `aws_secret_key`}}",
-    "source_ami": "{{user `ami-eu-west-1`}}`",
+    "source_ami": "{{user `ami-eu-west-1`}}",
     "instance_type": "{{ user `instance_type` }}",
     "ssh_username": "{{ user `os_user` }}",
     "tags": {
@@ -69,7 +69,7 @@
     "region": "us-east-1",
     "access_key": "{{user `aws_access_key`}}",
     "secret_key": "{{user `aws_secret_key`}}",
-    "source_ami": "{{user `ami-us-east-1`}}`",
+    "source_ami": "{{user `ami-us-east-1`}}",
     "instance_type": "{{ user `instance_type` }}",
     "ssh_username": "{{ user `os_user` }}",
     "tags": {
@@ -85,7 +85,7 @@
     "region": "us-west-1",
     "access_key": "{{user `aws_access_key`}}",
     "secret_key": "{{user `aws_secret_key`}}",
-    "source_ami": "{{user `ami-us-west-1`}}`",
+    "source_ami": "{{user `ami-us-west-1`}}",
     "instance_type": "{{ user `instance_type` }}",
     "ssh_username": "{{ user `os_user` }}",
     "tags": {
@@ -101,7 +101,7 @@
     "region": "us-west-2",
     "access_key": "{{user `aws_access_key`}}",
     "secret_key": "{{user `aws_secret_key`}}",
-    "source_ami": "{{user `ami-us-west-2`}}`",
+    "source_ami": "{{user `ami-us-west-2`}}",
     "instance_type": "{{ user `instance_type` }}",
     "ssh_username": "{{ user `os_user` }}",
     "tags": {
@@ -117,7 +117,7 @@
     "region": "ap-southeast-2",
     "access_key": "{{user `aws_access_key`}}",
     "secret_key": "{{user `aws_secret_key`}}",
-    "source_ami": "{{user `ami-ap-southeast-2`}}`",
+    "source_ami": "{{user `ami-ap-southeast-2`}}",
     "instance_type": "{{ user `instance_type` }}",
     "ssh_username": "{{ user `os_user` }}",
     "tags": {
@@ -133,7 +133,7 @@
     "region": "ap-southeast-1",
     "access_key": "{{user `aws_access_key`}}",
     "secret_key": "{{user `aws_secret_key`}}",
-    "source_ami": "{{user `ami-ap-southeast-1`}}`",
+    "source_ami": "{{user `ami-ap-southeast-1`}}",
     "instance_type": "{{ user `instance_type` }}",
     "ssh_username": "{{ user `os_user` }}",
     "tags": {
