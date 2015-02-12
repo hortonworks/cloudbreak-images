@@ -13,19 +13,13 @@ debug() {
 }
 
 install_utils() {
-  apt-get update && apt-get install -y unzip curl git
+  apt-get update && apt-get install -y curl
   curl -o /usr/local/bin/jq http://stedolan.github.io/jq/download/linux64/jq && chmod +x /usr/local/bin/jq
 }
 
 install_docker() {
   curl -sSL https://get.docker.com/ | sh
   sudo usermod -aG docker ubuntu
-}
-
-install_consul() {
-  curl -LO https://dl.bintray.com/mitchellh/consul/0.4.1_linux_amd64.zip \
-    && unzip 0.4.1_linux_amd64.zip \
-    && mv consul /usr/local/bin
 }
 
 pull_images() {
@@ -41,7 +35,7 @@ install_scripts() {
 
   debug target=$target
   debug provider=$provider
-  
+
   # script are copied by packer's file provisioner section
   cp /tmp/register-ambari.sh ${target}
   cp /tmp/disk_mount_$provider.sh ${target}/disk_mount.sh
@@ -49,7 +43,7 @@ install_scripts() {
 
   chmod +x ${target}/*.sh
   ls -l $target/*.sh
-  
+
   cp ${target}/register-ambari.sh /etc/init.d/register-ambari
   chown root:root /etc/init.d/register-ambari
   update-rc.d -f register-ambari defaults
@@ -62,8 +56,8 @@ fix_fstab() {
 
 get_provider_from_packer() {
     : ${PACKER_BUILDER_TYPE:? required amazon-ebs/googlecompute/openstack}
-    
-    if [[ $PACKER_BUILDER_TYPE =~ amazon ]] ; then 
+
+    if [[ $PACKER_BUILDER_TYPE =~ amazon ]] ; then
         echo ec2
         return
     fi
@@ -82,7 +76,7 @@ get_provider_from_packer() {
         echo azure
         return
     fi
-    
+
     echo UNKNOWN_PROVIDER
 }
 
@@ -96,7 +90,6 @@ main() {
     install_utils
     install_docker
     pull_images
-    install_consul
     fix_fstab
     touch /tmp/ready
     sync

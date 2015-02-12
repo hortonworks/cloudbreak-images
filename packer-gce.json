@@ -1,15 +1,17 @@
 {
   "variables": {
-    "version": "0.9"
+    "namesuffix": "{{env `IMAGE_NAME_SUFFIX`}}",
+    "version": "0.9",
+    "account_file": "{{env `GCE_ACCOUNT_FILE`}}"
   },
   "builders":[{
     "name": "europe-west1-b",
     "type": "googlecompute",
-    "account_file": "siq-haas.json",
+    "account_file": "{{user `account_file`}}",
     "source_image": "ubuntu-1404-trusty-v20150127",
     "zone": "europe-west1-b",
     "project_id": "siq-haas",
-    "image_name": "packer-cloudbreak-{{ isotime \"2006-01-02\" }}",
+    "image_name": "packer-cloudbreak-{{ isotime \"2006-01-02\" }}{{user `namesuffix`}}",
     "tags": [
 	"packer"
     ]
@@ -20,13 +22,12 @@
     "destination": "/tmp"
   },
   {
-
     "type": "shell",
     "script": "./user-data-script.sh",
     "execute_command": "chmod +x {{ .Path }}; {{ .Vars }} sudo -E bash '{{ .Path }}'"
   }],
   "push": {
     "name": "sequenceiq/cbreak-gugli",
-    "include": ["user-data-script.sh","siq-haas.json"]
+    "include": ["user-data-script.sh","{{env `GCE_ACCOUNT_FILE`}}"]
   }
 }
