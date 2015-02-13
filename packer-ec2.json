@@ -145,15 +145,5 @@
   "push": {
     "name": "sequenceiq/cloudbreak",
     "include": ["user-data-script.sh", "scrips/*"]
-  },
-  "post-processors": [
-      {
-        "type": "atlas",
-        "artifact": "sequenceiq/cloudbreak-artifact",
-        "artifact_type": "aws.ami",
-        "metadata": {
-          "created_at": "{{ isotime \"2006-01-02\" }}"
-        }
-      }
-    ]
+  }
 }
