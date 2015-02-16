@@ -6,14 +6,14 @@
     "version": "0.9",
     "os_user": "",
     "instance_type": "m3.medium",
-    "ami-sa-east-1": "ami-7d02a260",
-    "ami-ap-northeast-1": "ami-4ceaed4d",
-    "ami-eu-west-1": "ami-42718735",
-    "ami-us-east-1": "ami-76e27e1e",
-    "ami-us-west-1": "ami-d5180890",
-    "ami-us-west-2": "ami-838dd9b3",
-    "ami-ap-southeast-2": "ami-950b62af",
-    "ami-ap-southeast-1": "ami-f75875a5"
+    "ami-sa-east-1": "ami-4df74950",
+    "ami-ap-northeast-1": "ami-99fc1a99",
+    "ami-eu-west-1": "ami-1da02a6a",
+    "ami-us-east-1": "ami-aaa7edc2",
+    "ami-us-west-1": "ami-1a1a005f",
+    "ami-us-west-2": "ami-1d1a3e2d",
+    "ami-ap-southeast-2": "ami-f1ef98cb",
+    "ami-ap-southeast-1": "ami-9c9aafce"
   },
   "builders":[{
     "name": "sa-east-1",

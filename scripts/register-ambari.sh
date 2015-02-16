@@ -1,7 +1,10 @@
 #!/bin/bash
-set -x
-exec 1>>/tmp/register1.log
-exec 2>>/tmp/register2.log
+#
+# register-ambari    Registers Ambari server with Consul
+#
+# chkconfig: 2345 99 01
+# description: Registers Ambari server with Consul
+
 ### BEGIN INIT INFO
 # Provides:          register-ambari
 # Required-Start:    $remote_fs $syslog
@@ -11,6 +14,7 @@ exec 2>>/tmp/register2.log
 # Short-Description: Start daemon at boot time
 # Description:       Enable service provided by daemon.
 ### END INIT INFO
+
 docker_running() {
     if docker info &> /dev/null ; then
         echo UP;
@@ -54,13 +58,43 @@ is_ambari_server() {
         echo AMBARI_AGENT;
     fi;
 }
-: ${DOCKER_MAX_RETRIES:=60}
-docker_retries=0
-while [[ "$(docker_running)" == "DOWN" ]] && [ $docker_retries -ne $DOCKER_MAX_RETRIES ];
-do
-    sleep 8
-    ((docker_retries++))
-done
-if [[ "$(is_ambari_server)" == "AMBARI_SERVER" ]] ; then
-    register_ambari
-fi;
+
+start() {
+    set -x
+    exec 1>>/tmp/register1.log
+    exec 2>>/tmp/register2.log
+    DOCKER_MAX_RETRIES=60
+    docker_retries=0
+    while [[ "$(docker_running)" == "DOWN" ]] && [ $docker_retries -ne $DOCKER_MAX_RETRIES ];
+    do
+        sleep 8
+        ((docker_retries++))
+    done
+    if [[ "$(is_ambari_server)" == "AMBARI_SERVER" ]] ; then
+        register_ambari
+    fi;
+}
+
+stop() {
+    echo "finished"
+}
+
+case "$1" in
+  start)
+        start
+        ;;
+  stop)
+        stop
+        ;;
+  status)
+        echo "finished"
+        ;;
+  restart|reload|condrestart)
+        stop
+        start
+        ;;
+  *)
+        echo $"Usage: $0 {start|stop|restart|reload|status}"
+        exit 1
+esac
+exit 0

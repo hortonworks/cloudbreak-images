@@ -1,4 +1,3 @@
-#!/bin/bash
 
 # let the script fail to cause the image build unsuccessfull
 # set -eo pipefail
@@ -13,12 +12,18 @@ debug() {
 }
 
 install_utils() {
-  yum install unzip curl git
-  curl -o /usr/local/bin/jq http://stedolan.github.io/jq/download/linux64/jq && chmod +x /usr/local/bin/jq
+  yum -y install unzip curl git wget
+  curl -o /usr/bin/jq http://stedolan.github.io/jq/download/linux64/jq && chmod +x /usr/bin/jq
 }
 
 install_docker() {
-  curl -sSL https://get.docker.com/ | sh
+  wget http://dl.fedoraproject.org/pub/epel/6/x86_64/epel-release-6-8.noarch.rpm
+  rpm -Uvh epel-release-6*.rpm
+  sudo yum-config-manager --enable epel
+  yum install -y device-mapper
+  yum install -y docker-io
+  service docker start
+  chkconfig docker on
 }
 
 pull_images() {
@@ -45,8 +50,7 @@ install_scripts() {
 
   cp ${target}/register-ambari.sh /etc/init.d/register-ambari
   chown root:root /etc/init.d/register-ambari
-  update-rc.d -f register-ambari defaults
-  update-rc.d -f register-ambari enable
+  chkconfig register-ambari on
 }
 
 fix_fstab() {
