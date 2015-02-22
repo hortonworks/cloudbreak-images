@@ -99,6 +99,7 @@ main() {
     install_consul
     fix_fstab
     touch /tmp/ready
+    sync
 }
 
 [[ "$0" == "$BASH_SOURCE" ]] && main "$@"
