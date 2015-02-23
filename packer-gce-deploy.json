@@ -1,0 +1,23 @@
+{
+  "variables": {
+    "version": "0.9",
+    "account_file": "{{env `GCE_ACCOUNT_FILE`}}"
+  },
+  "builders":[{
+    "name": "europe-west1-b",
+    "type": "googlecompute",
+    "account_file": "{{user `account_file`}}",
+    "source_image": "ubuntu-1404-trusty-v20150127",
+    "zone": "europe-west1-b",
+    "project_id": "siq-haas",
+    "image_name": "packer-cb-deploy-{{ isotime \"2006-01-02\" }}",
+    "tags": [
+	"packer"
+    ]
+  }],
+  "provisioners": [{
+    "type": "shell",
+    "script": "./provision-cb-deploy.sh",
+    "execute_command": "chmod +x {{ .Path }}; {{ .Vars }} sudo -E bash '{{ .Path }}'"
+  }]
+}
