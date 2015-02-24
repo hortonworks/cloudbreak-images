@@ -25,9 +25,9 @@ pull_images() {
   docker pull gliderlabs/alpine:3.1
   docker pull postgres:9.4.0
   docker pull sequenceiq/uaa:1.8.1-v1
-  docker pull sequenceiq/sultans:latest
-  docker pull sequenceiq/uluwatu:latest
-  docker pull sequenceiq/periscope:latest
+  docker pull sequenceiq/sultans:0.1.61
+  docker pull sequenceiq/uluwatu:0.1.400
+  docker pull sequenceiq/periscope:0.1.31
   docker pull sequenceiq/cloudbreak:0.3.65
   docker pull sequenceiq/cb-shell:0.2.38
 }
