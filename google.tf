@@ -10,6 +10,10 @@ variable ssh_key_file {
     description = "SSH key file to be used when provisioning"
 }
 
+variable packer_image_name {
+    description = "The name of the image which will be made public"
+}
+
 variable gce_zone {
     description = "GCE zone to start the cbreak deployment"
     default = "us-central1-a"
@@ -27,29 +31,29 @@ provider "google" {
     region = "us-central1"
 }
 
-resource "google_compute_disk" "tmp-disk2" {
-    name = "tmp-disk2"
+resource "google_compute_disk" "image-builder-disk" {
+    name = "image-builder-disk-${var.packer_image_name}"
     type = "pd-ssd"
     zone = "${var.gce_zone}"
     size = "20"
     #image = "debian7-wheezy"
 }
 
-resource "google_compute_instance" "image-builder1" {
-    name = "image-builder"
+resource "google_compute_instance" "image-builder" {
+    name = "image-builder-${var.packer_image_name}"
     machine_type = "${var.ins_type}"
     zone = "${var.gce_zone}"
 
     depends_on = [
-        "google_compute_disk.tmp-disk2"
+        "google_compute_disk.image-builder-disk"
     ]
 
     disk {
-        image = "packer-cloudbreak-2015-02-03"
+        image = "${var.packer_image_name}"
     }
 
     disk {
-        disk = "tmp-disk2"
+        disk = "${google_compute_disk.image-builder-disk.name}"
     }
 
     network {
@@ -73,5 +77,5 @@ resource "google_compute_instance" "image-builder1" {
 }
 
 output "instance" {
-    value = "${google_compute_instance.image-builder1.name}"
+    value = "${google_compute_instance.image-builder.name}"
 }

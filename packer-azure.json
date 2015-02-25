@@ -1,8 +1,9 @@
 {
 	"variables":
 	{
-		"sn" : "",
-		"psPath" : ""
+		"namesuffix" : "{{env `IMAGE_NAME_SUFFIX`}}",
+		"sn" : "{{env `AZURE_SUBSCRIPTION_NAME`}}",
+		"psPath" : "{{env `AZURE_PUBLISH_SETTINGS`}}"
 	},
 
 	"builders":
@@ -17,7 +18,7 @@
 			"os_image_label"		: "Ubuntu Server 14.04 LTS",
 			"location"			: "West Europe",
 			"instance_size"			: "Large",
-			"user_image_label"		: "packer-cloudbreak-{{ isotime \"2006-01-02\" }}"
+			"user_image_label"		: "packer-cloudbreak-{{ isotime \"2006-01-02\" }}{{user `namesuffix`}}"
 		}
 	],
   "provisioners": [{
