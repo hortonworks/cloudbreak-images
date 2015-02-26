@@ -10,6 +10,10 @@ variable ssh_key_file {
     description = "SSH key file to be used when provisioning"
 }
 
+variable ssh_user {
+    description = "Username for the SSH key"
+}
+
 variable packer_image_name {
     description = "The name of the image which will be made public"
 }
@@ -63,7 +67,7 @@ resource "google_compute_instance" "image-builder" {
     provisioner "remote-exec" {
 
         connection {
-            user = "ubuntu"
+            user = "${var.ssh_user}"
             key_file = "${var.ssh_key_file}"
         }
 

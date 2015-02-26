@@ -8,9 +8,10 @@
     "name": "europe-west1-b",
     "type": "googlecompute",
     "account_file": "{{user `account_file`}}",
-    "source_image": "ubuntu-1404-trusty-v20150127",
+    "source_image": "centos-6-v20141021",
     "zone": "europe-west1-b",
     "project_id": "siq-haas",
+    "ssh_username": "centos",
     "image_name": "packer-cloudbreak-{{ isotime \"2006-01-02\" }}{{user `namesuffix`}}",
     "tags": [
 	"packer"
