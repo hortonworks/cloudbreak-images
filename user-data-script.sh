@@ -55,9 +55,9 @@ install_scripts() {
 
 fix_hostname() {
   # needed for AWS base image that sets centos6 as hostname
-  sed -i "/HOSTNAME/d" /etc/sysconfig/network
+  sudo sed -i "/HOSTNAME/d" /etc/sysconfig/network
   sudo sh -c ' echo "HOSTNAME=localhost.localdomain" >> /etc/sysconfig/network'
-  sed -i "/centos6/d" /etc/hosts
+  sudo sed -i "/centos6/d" /etc/hosts
 }
 
 fix_fstab() {
