@@ -15,7 +15,7 @@
 			"storage_account" 		: "102589fae040d8westeurope",
 			"storage_account_container" 	: "images",
 			"os_type"			: "Linux",
-			"os_image_label"		: "Ubuntu Server 14.04 LTS",
+			"os_image_label"		: "OpenLogic 6.5",
 			"location"			: "West Europe",
 			"instance_size"			: "Large",
 			"user_image_label"		: "packer-cloudbreak-{{ isotime \"2006-01-02\" }}{{user `namesuffix`}}"
