@@ -12,7 +12,7 @@ debug() {
 }
 
 install_utils() {
-  yum -y install unzip curl git wget
+  yum -y install unzip curl git wget cloud-init
   curl -o /usr/bin/jq http://stedolan.github.io/jq/download/linux64/jq && chmod +x /usr/bin/jq
 }
 
