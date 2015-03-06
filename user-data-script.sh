@@ -75,6 +75,14 @@ fix_hostname() {
   sudo sed -i "/centos6/d" /etc/hosts
 }
 
+fix_iptables() {
+  local provider=$(get_provider_from_packer)
+  
+  if [ "openstack" == $provider ]; then
+    chkconfig iptables off
+  fi
+}
+
 fix_fstab() {
 	sed -i "/dev\/xvdb/ d" /etc/fstab
 }
@@ -117,6 +125,7 @@ main() {
     install_docker
     pull_images
     fix_hostname
+    fix_iptables
     fix_fstab
     touch /tmp/ready
     sync
