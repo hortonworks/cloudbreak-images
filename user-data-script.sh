@@ -22,6 +22,9 @@ install_utils() {
 
   if [ "azure" == $provider ]; then
     yum install -y cloud-init
+  fi
+
+  if [ "azure" == $provider ] || [ "openstack" == $provider ]; then
     sed -i "/^# Required-Start:/ s/$/ docker/" /etc/init.d/cloud-init-local
   fi
 

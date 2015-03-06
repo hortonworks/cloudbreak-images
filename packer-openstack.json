@@ -1,7 +1,7 @@
 {
   "variables": {
     "os_auth_url": "",
-    "os_image_name": "packer-cloudbreak-{{ isotime \"2006-01-02\" }}",
+    "os_image_name": "packer-cloudbreak-centos-{{ isotime \"2006-01-02\" }}",
     "os_username": "",
     "os_password": "",
     "os_tenant_name": ""
@@ -12,14 +12,14 @@
       "username": "{{user `os_username`}}",
       "password": "{{user `os_password`}}",
       "project": "{{user `os_tenant_name`}}",
-      "ssh_username": "ubuntu",
+      "ssh_username": "centos",
       "provider": "{{user `os_auth_url`}}",
       "image_name": "{{user `os_image_name`}}",
-      "source_image": "0af46146-35e8-4f26-b86c-3680c3266e5f",
+      "source_image": "221849cd-cd1a-4c57-ae0e-5fa993642e88",
       "flavor": "2",
       "use_floating_ip": true,
       "networks": [
-        "f6158aae-7360-4b71-a310-83b249eb9e3f"
+        "14be4c61-286e-4909-b625-e2eebc72a6d3"
       ]
     }
   ],
