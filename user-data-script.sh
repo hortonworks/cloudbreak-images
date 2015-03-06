@@ -16,17 +16,16 @@ remove_utils() {
 }
 
 install_utils() {
-  yum -y install unzip curl git wget cloud-init
-  curl -o /usr/bin/jq http://stedolan.github.io/jq/download/linux64/jq && chmod +x /usr/bin/jq
-}
-
-fix_cloud_init() {
   local provider=$(get_provider_from_packer)
 
+  yum -y install unzip curl git wget
+
   if [ "azure" == $provider ]; then
+    yum install -y cloud-init
     sed -i "/^# Required-Start:/ s/$/ docker/" /etc/init.d/cloud-init-local
   fi
 
+  curl -o /usr/bin/jq http://stedolan.github.io/jq/download/linux64/jq && chmod +x /usr/bin/jq
 }
 
 install_docker() {
@@ -112,7 +111,6 @@ main() {
     install_scripts
     remove_utils
     install_utils
-    fix_cloud_init
     install_docker
     pull_images
     fix_hostname
