@@ -68,13 +68,6 @@ install_scripts() {
   chkconfig register-ambari on
 }
 
-fix_hostname() {
-  # needed for AWS base image that sets centos6 as hostname
-  sudo sed -i "/HOSTNAME/d" /etc/sysconfig/network
-  sudo sh -c ' echo "HOSTNAME=localhost.localdomain" >> /etc/sysconfig/network'
-  sudo sed -i "/centos6/d" /etc/hosts
-}
-
 fix_iptables() {
   local provider=$(get_provider_from_packer)
   
@@ -124,7 +117,6 @@ main() {
     install_utils
     install_docker
     pull_images
-    fix_hostname
     fix_iptables
     fix_fstab
     touch /tmp/ready
