@@ -4,7 +4,7 @@
 
 [[ "$TRACE" ]] && set -x
 
-: ${IMAGES:=sequenceiq/ambari:1.7.0-consul sequenceiq/consul:v0.4.1.ptr}
+: ${IMAGES:=sequenceiq/ambari:1.7.0-consul sequenceiq/consul:v0.4.1.ptr postgres:9.4.1}
 : ${DEBUG:=1}
 
 debug() {
@@ -70,7 +70,7 @@ install_scripts() {
 
 fix_iptables() {
   local provider=$(get_provider_from_packer)
-  
+
   if [ "openstack" == $provider ]; then
     chkconfig iptables off
   fi
