@@ -20,16 +20,16 @@ create_dirs() {
 }
 
 pull_images() {
-  docker pull sequenceiq/consul:v0.5.0
+    docker pull sequenceiq/consul:v0.5.0-v3
   docker pull gliderlabs/registrator:v5
   docker pull gliderlabs/alpine:3.1
   docker pull postgres:9.4.0
   docker pull sequenceiq/uaa:1.8.1-v1
   docker pull sequenceiq/sultans:0.1.61
-  docker pull sequenceiq/uluwatu:0.1.400
-  docker pull sequenceiq/periscope:0.1.31
-  docker pull sequenceiq/cloudbreak:0.3.65
-  docker pull sequenceiq/cb-shell:0.2.38
+  docker pull sequenceiq/uluwatu-bin:0.1.415
+  docker pull sequenceiq/periscope:0.1.36
+  docker pull sequenceiq/cloudbreak:0.3.92
+  docker pull sequenceiq/cb-shell:0.2.47
 }
 
 main() {
