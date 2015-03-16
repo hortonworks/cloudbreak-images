@@ -20,7 +20,7 @@ create_dirs() {
 }
 
 pull_images() {
-    docker pull sequenceiq/consul:v0.5.0-v3
+  docker pull sequenceiq/consul:v0.5.0-v3
   docker pull gliderlabs/registrator:v5
   docker pull gliderlabs/alpine:3.1
   docker pull postgres:9.4.0
