@@ -20,11 +20,11 @@ install_utils() {
 
   yum -y install unzip curl git wget
 
-  if [ "azure" == $provider ]; then
+  if [ "azure" == $provider ] || [ "ec2" == $provider ]; then
     yum install -y cloud-init
   fi
 
-  if [ "azure" == $provider ] || [ "openstack" == $provider ]; then
+  if [ "azure" == $provider ] || [ "openstack" == $provider ] || [ "ec2" == $provider ]; then
     sed -i "/^# Required-Start:/ s/$/ docker/" /etc/init.d/cloud-init-local
   fi
 
@@ -76,6 +76,16 @@ fix_iptables() {
   fi
 }
 
+fix_hostname() {
+  local provider=$(get_provider_from_packer)
+
+  if [ "ec2" == $provider ]; then
+    sed -i "/HOSTNAME/d" /etc/sysconfig/network
+    sed -i "/NOZEROCONF/d" /etc/sysconfig/network
+    sh -c ' echo "HOSTNAME=localhost.localdomain" >> /etc/sysconfig/network'
+  fi
+}
+
 fix_fstab() {
 	sed -i "/dev\/xvdb/ d" /etc/fstab
 }
@@ -118,6 +128,7 @@ main() {
     install_docker
     pull_images
     fix_iptables
+    fix_hostname
     fix_fstab
     touch /tmp/ready
     sync
