@@ -83,6 +83,7 @@ fix_hostname() {
     sed -i "/HOSTNAME/d" /etc/sysconfig/network
     sed -i "/NOZEROCONF/d" /etc/sysconfig/network
     sh -c ' echo "HOSTNAME=localhost.localdomain" >> /etc/sysconfig/network'
+    sed -i '/syslog_fix_perms: ~/a preserve_hostname: true' /etc/cloud/cloud.cfg
   fi
 }
 
