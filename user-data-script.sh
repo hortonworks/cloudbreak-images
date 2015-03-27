@@ -18,7 +18,7 @@ remove_utils() {
 install_utils() {
   local provider=$(get_provider_from_packer)
 
-  yum -y install unzip curl git wget
+  yum -y install unzip curl git wget bind-utils
 
   if [ "azure" == $provider ] || [ "ec2" == $provider ]; then
     yum install -y cloud-init
@@ -79,7 +79,7 @@ fix_iptables() {
 fix_hostname() {
   local provider=$(get_provider_from_packer)
 
-  if [ "ec2" == $provider ]; then
+  if [ "ec2" == $provider ] || [ "openstack" == $provider ]; then
     sed -i "/HOSTNAME/d" /etc/sysconfig/network
     sed -i "/NOZEROCONF/d" /etc/sysconfig/network
     sh -c ' echo "HOSTNAME=localhost.localdomain" >> /etc/sysconfig/network'

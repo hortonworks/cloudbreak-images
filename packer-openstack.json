@@ -1,7 +1,7 @@
 {
   "variables": {
     "os_auth_url": "",
-    "os_image_name": "packer-cloudbreak-centos-{{ isotime \"2006-01-02\" }}",
+    "os_image_name": "cloudbreak-centos-{{ isotime \"2006-01-02\" }}",
     "os_username": "",
     "os_password": "",
     "os_tenant_name": ""
@@ -15,11 +15,11 @@
       "ssh_username": "centos",
       "provider": "{{user `os_auth_url`}}",
       "image_name": "{{user `os_image_name`}}",
-      "source_image": "221849cd-cd1a-4c57-ae0e-5fa993642e88",
-      "flavor": "2",
-      "use_floating_ip": true,
+      "source_image": "62e6bdfe-3331-4109-a438-126ae2585b5b",
+      "flavor": "3",
+      "use_floating_ip": false,
       "networks": [
-        "14be4c61-286e-4909-b625-e2eebc72a6d3"
+        "c38c7050-a486-4cc7-90fe-4f451c322465"
       ]
     }
   ],
@@ -29,7 +29,6 @@
     "destination": "/tmp"
   },
   {
-
     "type": "shell",
     "script": "./user-data-script.sh",
     "execute_command": "chmod +x {{ .Path }}; {{ .Vars }} sudo -E bash '{{ .Path }}'"
