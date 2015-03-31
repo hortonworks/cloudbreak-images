@@ -85,6 +85,9 @@ fix_hostname() {
     sh -c ' echo "HOSTNAME=localhost.localdomain" >> /etc/sysconfig/network'
     sed -i '/syslog_fix_perms: ~/a preserve_hostname: true' /etc/cloud/cloud.cfg
   fi
+  if [ "azure" == $provider ]; then
+    sed -i '/syslog_fix_perms: ~/a preserve_hostname: true' /etc/cloud/cloud.cfg
+  fi
 }
 
 fix_fstab() {
