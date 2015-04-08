@@ -11,6 +11,16 @@ debug() {
     [[ "$DEBUG" ]] && echo "-----> $*" 1>&2
 }
 
+permissive_iptables() {
+  iptables --flush INPUT
+  iptables --flush FORWARD
+  iptables-save
+}
+
+enable_ipforward() {
+  sed -i 's/net.ipv4.ip_forward = 0/net.ipv4.ip_forward = 1/g' /etc/sysctl.conf
+}
+
 remove_utils() {
   yum remove -y dnsmasq
 }
@@ -18,11 +28,7 @@ remove_utils() {
 install_utils() {
   local provider=$(get_provider_from_packer)
 
-  yum -y install unzip curl git wget bind-utils
-
-  if [ "azure" == $provider ] || [ "ec2" == $provider ]; then
-    yum install -y cloud-init
-  fi
+  yum -y install unzip curl git wget bind-utils cloud-init
 
   if [ "azure" == $provider ] || [ "openstack" == $provider ] || [ "ec2" == $provider ]; then
     sed -i "/^# Required-Start:/ s/$/ docker/" /etc/init.d/cloud-init-local
@@ -66,14 +72,6 @@ install_scripts() {
   cp ${target}/register-ambari.sh /etc/init.d/register-ambari
   chown root:root /etc/init.d/register-ambari
   chkconfig register-ambari on
-}
-
-fix_iptables() {
-  local provider=$(get_provider_from_packer)
-
-  if [ "openstack" == $provider ]; then
-    chkconfig iptables off
-  fi
 }
 
 fix_hostname() {
@@ -126,12 +124,13 @@ check_params() {
 
 main() {
     check_params
+    permissive_iptables
+    enable_ipforward
     install_scripts
     remove_utils
     install_utils
     install_docker
     pull_images
-    fix_iptables
     fix_hostname
     fix_fstab
     touch /tmp/ready
