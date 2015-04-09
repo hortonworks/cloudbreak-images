@@ -28,9 +28,10 @@ remove_utils() {
 install_utils() {
   local provider=$(get_provider_from_packer)
 
-  yum -y install unzip curl git wget bind-utils cloud-init
+  yum -y install unzip curl git wget bind-utils
 
   if [ "azure" == $provider ] || [ "openstack" == $provider ] || [ "ec2" == $provider ]; then
+    yum install cloud-init
     sed -i "/^# Required-Start:/ s/$/ docker/" /etc/init.d/cloud-init-local
   fi
 
