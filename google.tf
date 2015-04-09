@@ -18,6 +18,10 @@ variable packer_image_name {
     description = "The name of the image which will be made public"
 }
 
+variable gcc_identify {
+    description = "Name identifier of the resources"
+}
+
 variable gce_zone {
     description = "GCE zone to start the cbreak deployment"
     default = "us-central1-a"
@@ -36,7 +40,7 @@ provider "google" {
 }
 
 resource "google_compute_disk" "image-builder-disk" {
-    name = "image-builder-disk-${var.packer_image_name}"
+    name = "image-builder-disk-${var.gcc_identify}"
     type = "pd-ssd"
     zone = "${var.gce_zone}"
     size = "20"
@@ -44,7 +48,7 @@ resource "google_compute_disk" "image-builder-disk" {
 }
 
 resource "google_compute_instance" "image-builder" {
-    name = "image-builder-${var.packer_image_name}"
+    name = "image-builder-${var.gcc_identify}"
     machine_type = "${var.ins_type}"
     zone = "${var.gce_zone}"
 
