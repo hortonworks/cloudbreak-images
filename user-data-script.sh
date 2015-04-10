@@ -12,9 +12,11 @@ debug() {
 }
 
 permissive_iptables() {
-  iptables --flush INPUT
-  iptables --flush FORWARD
-  iptables-save
+  if [ "openstack" == $provider ]; then
+    iptables --flush INPUT
+    iptables --flush FORWARD
+    service iptables save
+  fi
 }
 
 enable_ipforward() {
