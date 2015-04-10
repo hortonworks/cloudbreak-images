@@ -43,7 +43,7 @@ resource "google_compute_disk" "image-builder-disk" {
     name = "image-builder-disk-${var.gcc_identify}"
     type = "pd-ssd"
     zone = "${var.gce_zone}"
-    size = "20"
+    size = "30"
     #image = "debian7-wheezy"
 }
 
