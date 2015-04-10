@@ -12,6 +12,8 @@ debug() {
 }
 
 permissive_iptables() {
+  local provider=$(get_provider_from_packer)
+
   if [ "openstack" == $provider ]; then
     iptables --flush INPUT
     iptables --flush FORWARD
