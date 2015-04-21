@@ -4,7 +4,7 @@
 
 [[ "$TRACE" ]] && set -x
 
-: ${IMAGES:=sequenceiq/ambari:1.7.0-consul sequenceiq/consul:v0.4.1.ptr postgres:9.4.1 sequenceiq/docker-consul-watch-plugn:1.7.0-consul}
+: ${IMAGES:=sequenceiq/ambari:2.0.0-consul sequenceiq/consul:v0.4.1.ptr postgres:9.4.1 sequenceiq/docker-consul-watch-plugn:1.7.0-consul}
 : ${DEBUG:=1}
 
 debug() {
