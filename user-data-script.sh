@@ -51,6 +51,8 @@ install_docker() {
   sudo yum-config-manager --enable epel
   yum install -y device-mapper
   yum install -y docker-io
+  sed -i 's/^other_args=.*/other_args="--storage-opt dm.basesize=30G"/' /etc/sysconfig/docker
+  rm -rf /var/lib/docker
   service docker start
   chkconfig docker on
 }
