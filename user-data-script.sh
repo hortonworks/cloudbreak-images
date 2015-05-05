@@ -4,7 +4,7 @@
 
 [[ "$TRACE" ]] && set -x
 
-: ${IMAGES:=sequenceiq/ambari:2.0.0-consul sequenceiq/consul:v0.4.1.ptr postgres:9.4.1 sequenceiq/docker-consul-watch-plugn:2.0.0-consul swarm:0.2.0 sequenceiq/munchausen:0.2}
+: ${IMAGES:=sequenceiq/ambari:2.0.0-consul sequenceiq/consul:v0.4.1.ptr postgres:9.4.1 sequenceiq/docker-consul-watch-plugn:2.0.0-consul swarm:0.2.0 sequenceiq/munchausen:0.2 gliderlabs/alpine:3.1}
 : ${DEBUG:=1}
 
 debug() {
