@@ -38,10 +38,6 @@ install_utils() {
     yum install -y cloud-init
   fi
 
-  if [ "azure" == $provider ] || [ "openstack" == $provider ] || [ "ec2" == $provider ]; then
-    sed -i "/^# Required-Start:/ s/$/ docker/" /etc/init.d/cloud-init-local
-  fi
-
   curl -o /usr/bin/jq http://stedolan.github.io/jq/download/linux64/jq && chmod +x /usr/bin/jq
 }
 
