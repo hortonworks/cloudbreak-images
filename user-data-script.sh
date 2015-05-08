@@ -32,7 +32,7 @@ remove_utils() {
 install_utils() {
   local provider=$(get_provider_from_packer)
 
-  yum -y install unzip curl git wget bind-utils
+  yum -y install unzip curl git wget bind-utils ntp
 
   if [ "azure" == $provider ] || [ "ec2" == $provider ]; then
     yum install -y cloud-init
@@ -48,7 +48,7 @@ install_utils() {
 install_docker() {
   wget http://dl.fedoraproject.org/pub/epel/6/x86_64/epel-release-6-8.noarch.rpm
   rpm -Uvh epel-release-6*.rpm
-  sudo yum-config-manager --enable epel
+  yum-config-manager --enable epel
   yum install -y device-mapper
   yum install -y docker-io
   sed -i 's/^other_args=.*/other_args="--storage-opt dm.basesize=30G"/' /etc/sysconfig/docker
