@@ -47,6 +47,8 @@ install_docker() {
   yum-config-manager --enable epel
   yum install -y device-mapper
   yum install -y docker-io
+  service docker stop
+  wget https://get.docker.com/builds/Linux/x86_64/docker-1.6.2 -O /usr/bin/docker
   sed -i 's/^other_args=.*/other_args="--storage-opt dm.basesize=30G"/' /etc/sysconfig/docker
   rm -rf /var/lib/docker
   service docker start
