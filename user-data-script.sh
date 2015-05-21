@@ -102,9 +102,9 @@ fix_fstab() {
 
 disable_thp() {
     local scriptname=/etc/profile.d/thp-disable.sh
-    cat <<EOF >$scriptname
+    cat << "EOF" >$scriptname
     # only root can issue these commands
-    if [ "\$(id -u)" == "0" ]; then
+    if [ "$(id -u)" == "0" ]; then
        if test -f /sys/kernel/mm/transparent_hugepage/enabled; then
          echo never > /sys/kernel/mm/transparent_hugepage/enabled
       fi
