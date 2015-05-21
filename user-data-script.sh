@@ -100,6 +100,24 @@ fix_fstab() {
     sed -i "/dev\/xvdb/ d" /etc/fstab
 }
 
+disable_thp() {
+    local scriptname=/etc/profile.d/thp-disable.sh
+    cat <<EOF >$scriptname
+    # only root can issue these commands
+    if [ "\$(id -u)" == "0" ]; then
+       if test -f /sys/kernel/mm/transparent_hugepage/enabled; then
+         echo never > /sys/kernel/mm/transparent_hugepage/enabled
+      fi
+      if test -f /sys/kernel/mm/transparent_hugepage/defrag; then
+         echo never > /sys/kernel/mm/transparent_hugepage/defrag
+      fi
+    fi
+EOF
+
+    # apply to a current session too
+    source $scriptname
+}
+
 get_provider_from_packer() {
     : ${PACKER_BUILDER_TYPE:? required amazon-ebs/googlecompute/openstack}
 
@@ -141,6 +159,7 @@ main() {
     pull_images
     fix_hostname
     fix_fstab
+    disable_thp
     touch /tmp/ready
     sync
 }
