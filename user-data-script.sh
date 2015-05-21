@@ -97,7 +97,7 @@ fix_hostname() {
 }
 
 fix_fstab() {
-	sed -i "/dev\/xvdb/ d" /etc/fstab
+    sed -i "/dev\/xvdb/ d" /etc/fstab
 }
 
 get_provider_from_packer() {
