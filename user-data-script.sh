@@ -102,15 +102,28 @@ fix_fstab() {
 
 disable_thp() {
     local scriptname=/etc/profile.d/thp-disable.sh
-    cat << "EOF" >$scriptname
+    cat > $scriptname << "EOF"
     # only root can issue these commands
     if [ "$(id -u)" == "0" ]; then
-       if test -f /sys/kernel/mm/transparent_hugepage/enabled; then
-         echo never > /sys/kernel/mm/transparent_hugepage/enabled
+      # remount /sys for writing in case it's read-only
+      # we will revert to read-only if it were the original case
+      sysRO="false"
+      if grep sysfs /proc/mounts | grep -q 'ro,'; then
+        sysRO="true"
+        mount -o rw,remount /sys
+      fi
+
+      if test -f /sys/kernel/mm/transparent_hugepage/enabled; then
+        echo never > /sys/kernel/mm/transparent_hugepage/enabled
       fi
       if test -f /sys/kernel/mm/transparent_hugepage/defrag; then
-         echo never > /sys/kernel/mm/transparent_hugepage/defrag
+        echo never > /sys/kernel/mm/transparent_hugepage/defrag
       fi
+
+      if [ $sysRO == "true" ]; then
+        mount -o ro,remount /sys
+      fi
+
     fi
 EOF
 
