@@ -97,7 +97,38 @@ fix_hostname() {
 }
 
 fix_fstab() {
-	sed -i "/dev\/xvdb/ d" /etc/fstab
+    sed -i "/dev\/xvdb/ d" /etc/fstab
+}
+
+disable_thp() {
+    local scriptname=/etc/profile.d/thp-disable.sh
+    cat > $scriptname << "EOF"
+    # only root can issue these commands
+    if [ "$(id -u)" == "0" ]; then
+      # remount /sys for writing in case it's read-only
+      # we will revert to read-only if it were the original case
+      sysRO="false"
+      if grep sysfs /proc/mounts | grep -q 'ro,'; then
+        sysRO="true"
+        mount -o rw,remount /sys
+      fi
+
+      if test -f /sys/kernel/mm/transparent_hugepage/enabled; then
+        echo never > /sys/kernel/mm/transparent_hugepage/enabled
+      fi
+      if test -f /sys/kernel/mm/transparent_hugepage/defrag; then
+        echo never > /sys/kernel/mm/transparent_hugepage/defrag
+      fi
+
+      if [ $sysRO == "true" ]; then
+        mount -o ro,remount /sys
+      fi
+
+    fi
+EOF
+
+    # apply to a current session too
+    source $scriptname
 }
 
 get_provider_from_packer() {
@@ -141,6 +172,7 @@ main() {
     pull_images
     fix_hostname
     fix_fstab
+    disable_thp
     touch /tmp/ready
     sync
 }
