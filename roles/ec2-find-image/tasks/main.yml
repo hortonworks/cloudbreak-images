@@ -1,7 +1,0 @@
-
-- name: search for base image
-  ec2_ami_search: distro=ubuntu release=trusty region={{ region }} store=ebs virt=paravirtual
-  register: ubuntu_image 
-
-- name: starts the EC2 image
-  raw: echo starting image {{ ubuntu_image.ami }}

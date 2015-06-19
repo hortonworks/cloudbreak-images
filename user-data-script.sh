@@ -71,7 +71,6 @@ install_scripts() {
 
   # script are copied by packer's file provisioner section
   cp /tmp/register-ambari.sh ${target}
-  cp /tmp/disk_mount_$provider.sh ${target}/disk_mount.sh
   cp /tmp/public_host_script_$provider.sh ${target}/public_host_script.sh
 
   chmod +x ${target}/*.sh

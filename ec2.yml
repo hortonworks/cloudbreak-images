@@ -1,5 +1,0 @@
-- name: Creates image for all region
-  hosts: localhost
-  gather_facts: False
-  roles:
-    - { role: ec2-find-image, region: eu-west-1 } 
