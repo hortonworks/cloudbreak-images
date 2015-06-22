@@ -13,7 +13,10 @@ debug() {
 
 permissive_iptables() {
   local provider=$(get_provider_from_packer)
+  # need  iptables-services othervise the iptables save wil fail
+  yum -y install iptables-services net-tools
 
+  # check whether it can be applied on other cloud platforms
   if [ "openstack" == $provider ]; then
     iptables --flush INPUT
     iptables --flush FORWARD
@@ -21,18 +24,18 @@ permissive_iptables() {
   fi
 }
 
-enable_ipforward() {
-  sed -i 's/net.ipv4.ip_forward = 0/net.ipv4.ip_forward = 1/g' /etc/sysctl.conf
+permissive_selinux() {
+  sed -i 's/SELINUX=enforcing/SELINUX=permissive/g' /etc/selinux/config
 }
 
-remove_utils() {
-  yum remove -y dnsmasq
+enable_ipforward() {
+  sed -i 's/net.ipv4.ip_forward = 0/net.ipv4.ip_forward = 1/g' /etc/sysctl.conf
 }
 
 install_utils() {
   local provider=$(get_provider_from_packer)
 
-  yum -y install unzip curl git wget bind-utils ntp
+  yum -y install unzip curl git wget bind-utils ntp cloud-utils-growpart
 
   if [ "azure" == $provider ] || [ "ec2" == $provider ]; then
     yum install -y cloud-init
@@ -42,17 +45,12 @@ install_utils() {
 }
 
 install_docker() {
-  wget http://dl.fedoraproject.org/pub/epel/6/x86_64/epel-release-6-8.noarch.rpm
-  rpm -Uvh epel-release-6*.rpm
-  yum-config-manager --enable epel
-  yum install -y device-mapper
-  yum install -y docker-io
-  service docker stop
-  wget https://get.docker.com/builds/Linux/x86_64/docker-1.6.2 -O /usr/bin/docker
-  sed -i 's/^other_args=.*/other_args="--storage-opt dm.basesize=30G"/' /etc/sysconfig/docker
-  rm -rf /var/lib/docker
-  service docker start
-  chkconfig docker on
+  curl -O -sSL https://get.docker.com/rpm/1.7.0/centos-7/RPMS/x86_64/docker-engine-1.7.0-1.el7.centos.x86_64.rpm
+  yum -y localinstall --nogpgcheck docker-engine-1.7.0-1.el7.centos.x86_64.rpm
+  sed -i '/^ExecStart/s/$/ -H tcp:\/\/0.0.0.0:2376 --selinux-enabled/' /usr/lib/systemd/system/docker.service
+  systemctl daemon-reload
+  service docker restart
+  systemctl enable docker.service
 }
 
 pull_images() {
@@ -81,53 +79,20 @@ install_scripts() {
   chkconfig register-ambari on
 }
 
-fix_hostname() {
+reset_hostname() {
   local provider=$(get_provider_from_packer)
 
-  if [ "ec2" == $provider ] || [ "openstack" == $provider ]; then
-    sed -i "/HOSTNAME/d" /etc/sysconfig/network
-    sed -i "/NOZEROCONF/d" /etc/sysconfig/network
-    sh -c ' echo "HOSTNAME=localhost.localdomain" >> /etc/sysconfig/network'
+  #/etc/sysconfig/network is not used by CentOS 7 anymore
+  if [ "ec2" == $provider ] || [ "openstack" == $provider ] || [ "azure" == $provider ]; then
     sed -i '/syslog_fix_perms: ~/a preserve_hostname: true' /etc/cloud/cloud.cfg
   fi
-  if [ "azure" == $provider ]; then
-    sed -i '/syslog_fix_perms: ~/a preserve_hostname: true' /etc/cloud/cloud.cfg
-  fi
+
+  echo "Avoid pre-assigned hostname"
+  rm -f /etc/hostname
 }
 
 fix_fstab() {
     sed -i "/dev\/xvdb/ d" /etc/fstab
-}
-
-disable_thp() {
-    local scriptname=/etc/profile.d/thp-disable.sh
-    cat > $scriptname << "EOF"
-    # only root can issue these commands
-    if [ "$(id -u)" == "0" ]; then
-      # remount /sys for writing in case it's read-only
-      # we will revert to read-only if it were the original case
-      sysRO="false"
-      if grep sysfs /proc/mounts | grep -q 'ro,'; then
-        sysRO="true"
-        mount -o rw,remount /sys
-      fi
-
-      if test -f /sys/kernel/mm/transparent_hugepage/enabled; then
-        echo never > /sys/kernel/mm/transparent_hugepage/enabled
-      fi
-      if test -f /sys/kernel/mm/transparent_hugepage/defrag; then
-        echo never > /sys/kernel/mm/transparent_hugepage/defrag
-      fi
-
-      if [ $sysRO == "true" ]; then
-        mount -o ro,remount /sys
-      fi
-
-    fi
-EOF
-
-    # apply to a current session too
-    source $scriptname
 }
 
 get_provider_from_packer() {
@@ -162,16 +127,15 @@ check_params() {
 
 main() {
     check_params
+    permissive_selinux
     permissive_iptables
     enable_ipforward
     install_scripts
-    remove_utils
     install_utils
     install_docker
     pull_images
-    fix_hostname
+    reset_hostname
     fix_fstab
-    disable_thp
     touch /tmp/ready
     sync
 }

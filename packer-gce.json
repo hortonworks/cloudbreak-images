@@ -5,11 +5,11 @@
     "account_file": "{{env `GCE_ACCOUNT_FILE`}}"
   },
   "builders":[{
-    "disk_size": "30",
+    "disk_size": "10",
     "name": "us-central1-b",
     "type": "googlecompute",
     "account_file": "{{user `account_file`}}",
-    "source_image": "centos-6-v20150226-rootfs30",
+    "source_image": "centos-7-v20150603",
     "zone": "us-central1-b",
     "project_id": "siq-haas",
     "ssh_username": "centos",

@@ -1,7 +1,7 @@
 {
   "variables": {
     "os_auth_url": "",
-    "os_image_name": "cb-centos66-amb200-{{ isotime \"2006-01-02\" }}",
+    "os_image_name": "cb-centos71-amb200-{{ isotime \"2006-01-02\" }}",
     "os_username": "",
     "os_password": "",
     "os_tenant_name": ""
@@ -15,7 +15,7 @@
       "ssh_username": "centos",
       "provider": "{{user `os_auth_url`}}",
       "image_name": "{{user `os_image_name`}}",
-      "source_image": "260d901e-932c-4f9b-af14-a3d656c69a11",
+      "source_image": "a9476eb0-58c6-4d56-9e79-513b93d86a64",
       "flavor": "3",
       "use_floating_ip": false,
       "networks": [
