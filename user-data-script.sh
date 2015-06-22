@@ -4,7 +4,7 @@
 
 [[ "$TRACE" ]] && set -x
 
-: ${IMAGES:=sequenceiq/ambari:2.0.0-consul sequenceiq/ambari-warmup:2.0.0-consul sequenceiq/consul:v0.5.0-v4 postgres:9.4.1 sequenceiq/docker-consul-watch-plugn:2.0.0-consul swarm:0.2.0 sequenceiq/munchausen:0.3 gliderlabs/alpine:3.1 sequenceiq/registrator:v5.2 sequenceiq/cb-gateway-nginx:0.2 sequenceiq/baywatch:v0.5.1 sequenceiq/baywatch-client:v0.5.0 ehazlett/cert-tool:0.0.3}
+: ${IMAGES:=sequenceiq/ambari:2.0.0-consul sequenceiq/ambari-warmup:2.0.0-consul sequenceiq/consul:v0.5.0-v4 postgres:9.4.1 sequenceiq/docker-consul-watch-plugn:2.0.0-consul swarm:0.2.0 sequenceiq/munchausen:0.3 gliderlabs/alpine:3.1 sequenceiq/registrator:v5.2 sequenceiq/cb-gateway-nginx:0.2 sequenceiq/baywatch:v0.5.1 sequenceiq/baywatch-client:v0.5.1 ehazlett/cert-tool:0.0.3}
 : ${DEBUG:=1}
 
 debug() {
