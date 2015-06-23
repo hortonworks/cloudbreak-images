@@ -47,11 +47,29 @@ install_utils() {
 install_docker() {
   curl -O -sSL https://get.docker.com/rpm/1.7.0/centos-7/RPMS/x86_64/docker-engine-1.7.0-1.el7.centos.x86_64.rpm
   yum -y localinstall --nogpgcheck docker-engine-1.7.0-1.el7.centos.x86_64.rpm
-  sed -i '/^ExecStart/s/$/ -H tcp:\/\/0.0.0.0:2376 --selinux-enabled/' /usr/lib/systemd/system/docker.service
+  yum install -y device-mapper-event-libs device-mapper-event device-mapper-event-devel
   systemctl daemon-reload
-  service docker restart
+  systemctl start docker.service
+
+  systemctl stop docker.service
+  sed -i '/^ExecStart/s/$/ -H tcp:\/\/0.0.0.0:2376 --selinux-enabled --storage-driver=devicemapper --storage-opt=dm.basesize=30G/' /usr/lib/systemd/system/docker.service
+  rm -rf /var/lib/docker
+  systemctl start docker.service
+
+  wait_for_docker
+
   systemctl enable docker.service
+  chkconfig docker on
 }
+
+wait_for_docker() {
+  while ! docker ps ; do
+    systemctl start docker.service
+    service docker restart
+    sleep 20
+  done
+}
+
 
 pull_images() {
   set -e
