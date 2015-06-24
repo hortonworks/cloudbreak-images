@@ -4,16 +4,16 @@
     "aws_secret_key": "",
     "namesuffix": "{{env `IMAGE_NAME_SUFFIX`}}",
     "version": "0.9",
-    "os_user": "",
+    "os_user": "centos",
     "instance_type": "m3.medium",
-    "ami-sa-east-1": "ami-7f56ef62",
-    "ami-ap-northeast-1": "ami-0d9b720d",
-    "ami-eu-west-1": "ami-ede0739a",
-    "ami-us-east-1": "ami-0e80db66",
-    "ami-us-west-1": "ami-777f9b33",
-    "ami-us-west-2": "ami-3b1a390b",
-    "ami-ap-southeast-2": "ami-11b0c12b",
-    "ami-ap-southeast-1": "ami-36556364"
+    "ami-sa-east-1": "ami-bf9520a2",
+    "ami-eu-west-1": "ami-e4ff5c93",
+    "ami-us-east-1": "ami-96a818fe",
+    "ami-us-west-1": "ami-6bcfc42e",
+    "ami-us-west-2": "ami-c7d092f7",
+    "ami-ap-northeast-1": "ami-89634988",
+    "ami-ap-southeast-1": "ami-aea582fc",
+    "ami-ap-southeast-2": "ami-bd523087"
   },
   "builders":[
   {
@@ -24,13 +24,25 @@
     "secret_key": "{{user `aws_secret_key`}}",
     "source_ami": "{{user `ami-sa-east-1`}}",
     "instance_type": "{{ user `instance_type` }}",
-    "ssh_username": "{{ user `os_user` }}",
+    "ssh_username": "centos",
+    "ami_block_device_mappings": [{
+                 "device_name": "/dev/sda1",
+                 "volume_type": "gp2",
+                 "delete_on_termination": true,
+                 "volume_size": 12
+            }],
+    "launch_block_device_mappings": [{
+                "device_name": "/dev/sda1",
+                "volume_type": "gp2",
+                "delete_on_termination": true,
+                "volume_size": 12
+            }],
     "tags": {
       "builder": "packer",
       "version": "{{user `version`}}"
     },
-    "ami_groups" :"all",
-    "ami_name": "packer-cloudbreak-{{ isotime \"2006-01-02\" }}{{user `namesuffix`}}"
+    "ami_groups" :[],
+    "ami_name": "cb-centos71-amb200-{{ isotime \"2006-01-02\" }}{{user `namesuffix`}}"
   },
   {
     "name": "ap-northeast-1",
@@ -40,13 +52,25 @@
     "secret_key": "{{user `aws_secret_key`}}",
     "source_ami": "{{user `ami-ap-northeast-1`}}",
     "instance_type": "{{ user `instance_type` }}",
-    "ssh_username": "{{ user `os_user` }}",
+    "ssh_username": "centos",
+    "ami_block_device_mappings": [{
+                 "device_name": "/dev/sda1",
+                 "volume_type": "gp2",
+                 "delete_on_termination": true,
+                 "volume_size": 12
+            }],
+    "launch_block_device_mappings": [{
+                "device_name": "/dev/sda1",
+                "volume_type": "gp2",
+                "delete_on_termination": true,
+                "volume_size": 12
+            }],
     "tags": {
       "builder": "packer",
       "version": "{{user `version`}}"
     },
-    "ami_groups" :"all",
-    "ami_name": "packer-cloudbreak-{{ isotime \"2006-01-02\" }}{{user `namesuffix`}}"
+    "ami_groups" :[],
+    "ami_name": "cb-centos71-amb200-{{ isotime \"2006-01-02\" }}{{user `namesuffix`}}"
   },
   {
     "name": "eu-west-1",
@@ -56,13 +80,25 @@
     "secret_key": "{{user `aws_secret_key`}}",
     "source_ami": "{{user `ami-eu-west-1`}}",
     "instance_type": "{{ user `instance_type` }}",
-    "ssh_username": "{{ user `os_user` }}",
+    "ssh_username": "centos",
+    "ami_block_device_mappings": [{
+                 "device_name": "/dev/sda1",
+                 "volume_type": "gp2",
+                 "delete_on_termination": true,
+                 "volume_size": 12
+            }],
+    "launch_block_device_mappings": [{
+                "device_name": "/dev/sda1",
+                "volume_type": "gp2",
+                "delete_on_termination": true,
+                "volume_size": 12
+            }],
     "tags": {
       "builder": "packer",
       "version": "{{user `version`}}"
     },
-    "ami_groups" :"all",
-    "ami_name": "packer-cloudbreak-{{ isotime \"2006-01-02\" }}{{user `namesuffix`}}"
+    "ami_groups" :[],
+    "ami_name": "cb-centos71-amb200-{{ isotime \"2006-01-02\" }}{{user `namesuffix`}}"
   },
   {
     "name": "us-east-1",
@@ -72,13 +108,25 @@
     "secret_key": "{{user `aws_secret_key`}}",
     "source_ami": "{{user `ami-us-east-1`}}",
     "instance_type": "{{ user `instance_type` }}",
-    "ssh_username": "{{ user `os_user` }}",
+    "ssh_username": "centos",
+    "ami_block_device_mappings": [{
+                 "device_name": "/dev/sda1",
+                 "volume_type": "gp2",
+                 "delete_on_termination": true,
+                 "volume_size": 12
+            }],
+    "launch_block_device_mappings": [{
+                "device_name": "/dev/sda1",
+                "volume_type": "gp2",
+                "delete_on_termination": true,
+                "volume_size": 12
+            }],
     "tags": {
       "builder": "packer",
       "version": "{{user `version`}}"
     },
-    "ami_groups" :"all",
-    "ami_name": "packer-cloudbreak-{{ isotime \"2006-01-02\" }}{{user `namesuffix`}}"
+    "ami_groups" :[],
+    "ami_name": "cb-centos71-amb200-{{ isotime \"2006-01-02\" }}{{user `namesuffix`}}"
   },
   {
     "name": "us-west-1",
@@ -88,13 +136,25 @@
     "secret_key": "{{user `aws_secret_key`}}",
     "source_ami": "{{user `ami-us-west-1`}}",
     "instance_type": "{{ user `instance_type` }}",
-    "ssh_username": "{{ user `os_user` }}",
+    "ssh_username": "centos",
+    "ami_block_device_mappings": [{
+                 "device_name": "/dev/sda1",
+                 "volume_type": "gp2",
+                 "delete_on_termination": true,
+                 "volume_size": 12
+            }],
+    "launch_block_device_mappings": [{
+                "device_name": "/dev/sda1",
+                "volume_type": "gp2",
+                "delete_on_termination": true,
+                "volume_size": 12
+            }],
     "tags": {
       "builder": "packer",
       "version": "{{user `version`}}"
     },
-    "ami_groups" :"all",
-    "ami_name": "packer-cloudbreak-{{ isotime \"2006-01-02\" }}{{user `namesuffix`}}"
+    "ami_groups" :[],
+    "ami_name": "cb-centos71-amb200-{{ isotime \"2006-01-02\" }}{{user `namesuffix`}}"
   },
   {
     "name": "us-west-2",
@@ -104,13 +164,25 @@
     "secret_key": "{{user `aws_secret_key`}}",
     "source_ami": "{{user `ami-us-west-2`}}",
     "instance_type": "{{ user `instance_type` }}",
-    "ssh_username": "{{ user `os_user` }}",
+    "ssh_username": "centos",
+    "ami_block_device_mappings": [{
+                 "device_name": "/dev/sda1",
+                 "volume_type": "gp2",
+                 "delete_on_termination": true,
+                 "volume_size": 12
+            }],
+    "launch_block_device_mappings": [{
+                "device_name": "/dev/sda1",
+                "volume_type": "gp2",
+                "delete_on_termination": true,
+                "volume_size": 12
+            }],
     "tags": {
       "builder": "packer",
       "version": "{{user `version`}}"
     },
-    "ami_groups" :"all",
-    "ami_name": "packer-cloudbreak-{{ isotime \"2006-01-02\" }}{{user `namesuffix`}}"
+    "ami_groups" :[],
+    "ami_name": "cb-centos71-amb200-{{ isotime \"2006-01-02\" }}{{user `namesuffix`}}"
   },
   {
     "name": "ap-southeast-2",
@@ -120,13 +192,25 @@
     "secret_key": "{{user `aws_secret_key`}}",
     "source_ami": "{{user `ami-ap-southeast-2`}}",
     "instance_type": "{{ user `instance_type` }}",
-    "ssh_username": "{{ user `os_user` }}",
+    "ssh_username": "centos",
+    "ami_block_device_mappings": [{
+                 "device_name": "/dev/sda1",
+                 "volume_type": "gp2",
+                 "delete_on_termination": true,
+                 "volume_size": 12
+            }],
+    "launch_block_device_mappings": [{
+                "device_name": "/dev/sda1",
+                "volume_type": "gp2",
+                "delete_on_termination": true,
+                "volume_size": 12
+            }],
     "tags": {
       "builder": "packer",
       "version": "{{user `version`}}"
     },
-    "ami_groups" :"all",
-    "ami_name": "packer-cloudbreak-{{ isotime \"2006-01-02\" }}{{user `namesuffix`}}"
+    "ami_groups" :[],
+    "ami_name": "cb-centos71-amb200-{{ isotime \"2006-01-02\" }}{{user `namesuffix`}}"
   },
   {
     "name": "ap-southeast-1",
@@ -136,13 +220,25 @@
     "secret_key": "{{user `aws_secret_key`}}",
     "source_ami": "{{user `ami-ap-southeast-1`}}",
     "instance_type": "{{ user `instance_type` }}",
-    "ssh_username": "{{ user `os_user` }}",
+    "ssh_username": "centos",
+    "ami_block_device_mappings": [{
+                 "device_name": "/dev/sda1",
+                 "volume_type": "gp2",
+                 "delete_on_termination": true,
+                 "volume_size": 12
+            }],
+    "launch_block_device_mappings": [{
+                "device_name": "/dev/sda1",
+                "volume_type": "gp2",
+                "delete_on_termination": true,
+                "volume_size": 12
+            }],
     "tags": {
       "builder": "packer",
       "version": "{{user `version`}}"
     },
-    "ami_groups" :"all",
-    "ami_name": "packer-cloudbreak-{{ isotime \"2006-01-02\" }}{{user `namesuffix`}}"
+    "ami_groups" :[],
+    "ami_name": "cb-centos71-amb200-{{ isotime \"2006-01-02\" }}{{user `namesuffix`}}"
   }],
   "provisioners": [{
     "type": "file",

@@ -13,15 +13,12 @@ debug() {
 
 permissive_iptables() {
   local provider=$(get_provider_from_packer)
-  # need  iptables-services othervise the iptables save wil fail
+  # need to install iptables-services, othervise the 'iptables save' command will not be available
   yum -y install iptables-services net-tools
 
-  # check whether it can be applied on other cloud platforms
-  if [ "openstack" == $provider ]; then
-    iptables --flush INPUT
-    iptables --flush FORWARD
-    service iptables save
-  fi
+  iptables --flush INPUT
+  iptables --flush FORWARD
+  service iptables save
 }
 
 permissive_selinux() {
@@ -47,29 +44,16 @@ install_utils() {
 install_docker() {
   curl -O -sSL https://get.docker.com/rpm/1.7.0/centos-7/RPMS/x86_64/docker-engine-1.7.0-1.el7.centos.x86_64.rpm
   yum -y localinstall --nogpgcheck docker-engine-1.7.0-1.el7.centos.x86_64.rpm
+  # need to check whether we really need these (GCP / OpenStack we don't)
   yum install -y device-mapper-event-libs device-mapper-event device-mapper-event-devel
-  systemctl daemon-reload
-  systemctl start docker.service
-
-  systemctl stop docker.service
+  service docker start
+  service docker stop
   sed -i '/^ExecStart/s/$/ -H tcp:\/\/0.0.0.0:2376 --selinux-enabled --storage-driver=devicemapper --storage-opt=dm.basesize=30G/' /usr/lib/systemd/system/docker.service
   rm -rf /var/lib/docker
-  systemctl start docker.service
-
-  wait_for_docker
-
+  systemctl daemon-reload
+  service docker start
   systemctl enable docker.service
-  chkconfig docker on
 }
-
-wait_for_docker() {
-  while ! docker ps ; do
-    systemctl start docker.service
-    service docker restart
-    sleep 20
-  done
-}
-
 
 pull_images() {
   set -e
@@ -86,31 +70,44 @@ install_scripts() {
   debug provider=$provider
 
   # script are copied by packer's file provisioner section
-  cp /tmp/register-ambari.sh ${target}
   cp /tmp/public_host_script_$provider.sh ${target}/public_host_script.sh
 
   chmod +x ${target}/*.sh
   ls -l $target/*.sh
 
-  cp ${target}/register-ambari.sh /etc/init.d/register-ambari
-  chown root:root /etc/init.d/register-ambari
-  chkconfig register-ambari on
 }
 
 reset_hostname() {
-  local provider=$(get_provider_from_packer)
-
-  #/etc/sysconfig/network is not used by CentOS 7 anymore
-  if [ "ec2" == $provider ] || [ "openstack" == $provider ] || [ "azure" == $provider ]; then
-    sed -i '/syslog_fix_perms: ~/a preserve_hostname: true' /etc/cloud/cloud.cfg
-  fi
-
   echo "Avoid pre-assigned hostname"
-  rm -f /etc/hostname
+  rm -vf /etc/hostname
 }
 
-fix_fstab() {
-    sed -i "/dev\/xvdb/ d" /etc/fstab
+configure_cloud_init() {
+  if [ -f /etc/cloud/cloud.cfg ]; then
+    #/etc/sysconfig/network is not used by CentOS 7 anymore
+    cp /etc/cloud/cloud.cfg /etc/cloud/cloud.cfg.bak
+    sed -i '/syslog_fix_perms: ~/a preserve_hostname: true' /etc/cloud/cloud.cfg
+    diff /etc/cloud/cloud.cfg /etc/cloud/cloud.cfg.bak
+  fi
+  rm -vf /etc/docker/key.json
+}
+
+reset_docker() {
+  systemctl stop docker.service
+  echo "Deleting key.json in order to avoid swarm conflicts"
+  rm -vf /etc/docker/key.json
+}
+
+reset_fstab() {
+  echo "Removing ephemeral /dev/xvdb from fstab"
+  cat /etc/fstab
+  sed -i "/dev\/xvdb/ d" /etc/fstab
+}
+
+cleanup() {
+  reset_hostname
+  reset_docker
+  reset_fstab
 }
 
 get_provider_from_packer() {
@@ -148,12 +145,12 @@ main() {
     permissive_selinux
     permissive_iptables
     enable_ipforward
-    install_scripts
     install_utils
+    install_scripts
     install_docker
+    configure_cloud_init
     pull_images
-    reset_hostname
-    fix_fstab
+    cleanup
     touch /tmp/ready
     sync
 }
