@@ -11,6 +11,13 @@ debug() {
     [[ "$DEBUG" ]] && echo "-----> $*" 1>&2
 }
 
+extend_rootfs() {
+  # Usable on GCP, does not harm anywhere else
+  root_fs_device=$(mount | grep ' / ' | cut -d' ' -f 1 | sed s/1//g)
+  growpart $root_fs_device 1
+  xfs_growfs /
+}
+
 permissive_iptables() {
   local provider=$(get_provider_from_packer)
   # need to install iptables-services, othervise the 'iptables save' command will not be available
@@ -151,6 +158,7 @@ check_params() {
 main() {
     check_params
     modify_waagent
+    extend_rootfs
     permissive_selinux
     permissive_iptables
     enable_ipforward
