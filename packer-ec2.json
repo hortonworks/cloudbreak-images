@@ -29,13 +29,13 @@
                  "device_name": "/dev/sda1",
                  "volume_type": "gp2",
                  "delete_on_termination": true,
-                 "volume_size": 12
+                 "volume_size": 15
             }],
     "launch_block_device_mappings": [{
                 "device_name": "/dev/sda1",
                 "volume_type": "gp2",
                 "delete_on_termination": true,
-                "volume_size": 12
+                "volume_size": 15
             }],
     "tags": {
       "builder": "packer",
@@ -57,13 +57,13 @@
                  "device_name": "/dev/sda1",
                  "volume_type": "gp2",
                  "delete_on_termination": true,
-                 "volume_size": 12
+                 "volume_size": 15
             }],
     "launch_block_device_mappings": [{
                 "device_name": "/dev/sda1",
                 "volume_type": "gp2",
                 "delete_on_termination": true,
-                "volume_size": 12
+                "volume_size": 15
             }],
     "tags": {
       "builder": "packer",
@@ -85,13 +85,13 @@
                  "device_name": "/dev/sda1",
                  "volume_type": "gp2",
                  "delete_on_termination": true,
-                 "volume_size": 12
+                 "volume_size": 15
             }],
     "launch_block_device_mappings": [{
                 "device_name": "/dev/sda1",
                 "volume_type": "gp2",
                 "delete_on_termination": true,
-                "volume_size": 12
+                "volume_size": 15
             }],
     "tags": {
       "builder": "packer",
@@ -113,13 +113,13 @@
                  "device_name": "/dev/sda1",
                  "volume_type": "gp2",
                  "delete_on_termination": true,
-                 "volume_size": 12
+                 "volume_size": 15
             }],
     "launch_block_device_mappings": [{
                 "device_name": "/dev/sda1",
                 "volume_type": "gp2",
                 "delete_on_termination": true,
-                "volume_size": 12
+                "volume_size": 15
             }],
     "tags": {
       "builder": "packer",
@@ -141,13 +141,13 @@
                  "device_name": "/dev/sda1",
                  "volume_type": "gp2",
                  "delete_on_termination": true,
-                 "volume_size": 12
+                 "volume_size": 15
             }],
     "launch_block_device_mappings": [{
                 "device_name": "/dev/sda1",
                 "volume_type": "gp2",
                 "delete_on_termination": true,
-                "volume_size": 12
+                "volume_size": 15
             }],
     "tags": {
       "builder": "packer",
@@ -169,13 +169,13 @@
                  "device_name": "/dev/sda1",
                  "volume_type": "gp2",
                  "delete_on_termination": true,
-                 "volume_size": 12
+                 "volume_size": 15
             }],
     "launch_block_device_mappings": [{
                 "device_name": "/dev/sda1",
                 "volume_type": "gp2",
                 "delete_on_termination": true,
-                "volume_size": 12
+                "volume_size": 15
             }],
     "tags": {
       "builder": "packer",
@@ -197,13 +197,13 @@
                  "device_name": "/dev/sda1",
                  "volume_type": "gp2",
                  "delete_on_termination": true,
-                 "volume_size": 12
+                 "volume_size": 15
             }],
     "launch_block_device_mappings": [{
                 "device_name": "/dev/sda1",
                 "volume_type": "gp2",
                 "delete_on_termination": true,
-                "volume_size": 12
+                "volume_size": 15
             }],
     "tags": {
       "builder": "packer",
@@ -225,13 +225,13 @@
                  "device_name": "/dev/sda1",
                  "volume_type": "gp2",
                  "delete_on_termination": true,
-                 "volume_size": 12
+                 "volume_size": 15
             }],
     "launch_block_device_mappings": [{
                 "device_name": "/dev/sda1",
                 "volume_type": "gp2",
                 "delete_on_termination": true,
-                "volume_size": 12
+                "volume_size": 15
             }],
     "tags": {
       "builder": "packer",
