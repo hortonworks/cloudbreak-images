@@ -4,16 +4,16 @@
     "aws_secret_key": "",
     "namesuffix": "{{env `IMAGE_NAME_SUFFIX`}}",
     "version": "0.9",
-    "os_user": "centos",
+    "os_user": "ec2-user",
     "instance_type": "m3.medium",
-    "ami-sa-east-1": "ami-bf9520a2",
-    "ami-eu-west-1": "ami-e4ff5c93",
-    "ami-us-east-1": "ami-96a818fe",
-    "ami-us-west-1": "ami-6bcfc42e",
-    "ami-us-west-2": "ami-c7d092f7",
-    "ami-ap-northeast-1": "ami-89634988",
-    "ami-ap-southeast-1": "ami-aea582fc",
-    "ami-ap-southeast-2": "ami-bd523087"
+    "ami-sa-east-1": "ami-09e25b14",
+    "ami-eu-west-1": "ami-25158352",
+    "ami-us-east-1": "ami-12663b7a",
+    "ami-us-west-1": "ami-a540a5e1",
+    "ami-us-west-2": "ami-4dbf9e7d",
+    "ami-ap-northeast-1": "ami-b1b458b1",
+    "ami-ap-southeast-1": "ami-dc1c2b8e",
+    "ami-ap-southeast-2": "ami-d3daace9"
   },
   "builders":[
   {
@@ -24,7 +24,7 @@
     "secret_key": "{{user `aws_secret_key`}}",
     "source_ami": "{{user `ami-sa-east-1`}}",
     "instance_type": "{{ user `instance_type` }}",
-    "ssh_username": "centos",
+    "ssh_username": "ec2-user",
     "ami_block_device_mappings": [{
                  "device_name": "/dev/sda1",
                  "volume_type": "gp2",
@@ -41,7 +41,7 @@
       "builder": "packer",
       "version": "{{user `version`}}"
     },
-    "ami_groups" :[],
+    "ami_groups" :"all",
     "ami_name": "cb-centos71-amb210-{{ isotime \"2006-01-02\" }}{{user `namesuffix`}}"
   },
   {
@@ -52,7 +52,7 @@
     "secret_key": "{{user `aws_secret_key`}}",
     "source_ami": "{{user `ami-ap-northeast-1`}}",
     "instance_type": "{{ user `instance_type` }}",
-    "ssh_username": "centos",
+    "ssh_username": "ec2-user",
     "ami_block_device_mappings": [{
                  "device_name": "/dev/sda1",
                  "volume_type": "gp2",
@@ -69,7 +69,7 @@
       "builder": "packer",
       "version": "{{user `version`}}"
     },
-    "ami_groups" :[],
+    "ami_groups" :"all",
     "ami_name": "cb-centos71-amb210-{{ isotime \"2006-01-02\" }}{{user `namesuffix`}}"
   },
   {
@@ -80,7 +80,7 @@
     "secret_key": "{{user `aws_secret_key`}}",
     "source_ami": "{{user `ami-eu-west-1`}}",
     "instance_type": "{{ user `instance_type` }}",
-    "ssh_username": "centos",
+    "ssh_username": "ec2-user",
     "ami_block_device_mappings": [{
                  "device_name": "/dev/sda1",
                  "volume_type": "gp2",
@@ -97,7 +97,7 @@
       "builder": "packer",
       "version": "{{user `version`}}"
     },
-    "ami_groups" :[],
+    "ami_groups" :"all",
     "ami_name": "cb-centos71-amb210-{{ isotime \"2006-01-02\" }}{{user `namesuffix`}}"
   },
   {
@@ -108,7 +108,7 @@
     "secret_key": "{{user `aws_secret_key`}}",
     "source_ami": "{{user `ami-us-east-1`}}",
     "instance_type": "{{ user `instance_type` }}",
-    "ssh_username": "centos",
+    "ssh_username": "ec2-user",
     "ami_block_device_mappings": [{
                  "device_name": "/dev/sda1",
                  "volume_type": "gp2",
@@ -125,7 +125,7 @@
       "builder": "packer",
       "version": "{{user `version`}}"
     },
-    "ami_groups" :[],
+    "ami_groups" :"all",
     "ami_name": "cb-centos71-amb210-{{ isotime \"2006-01-02\" }}{{user `namesuffix`}}"
   },
   {
@@ -136,7 +136,7 @@
     "secret_key": "{{user `aws_secret_key`}}",
     "source_ami": "{{user `ami-us-west-1`}}",
     "instance_type": "{{ user `instance_type` }}",
-    "ssh_username": "centos",
+    "ssh_username": "ec2-user",
     "ami_block_device_mappings": [{
                  "device_name": "/dev/sda1",
                  "volume_type": "gp2",
@@ -153,7 +153,7 @@
       "builder": "packer",
       "version": "{{user `version`}}"
     },
-    "ami_groups" :[],
+    "ami_groups" :"all",
     "ami_name": "cb-centos71-amb210-{{ isotime \"2006-01-02\" }}{{user `namesuffix`}}"
   },
   {
@@ -164,7 +164,7 @@
     "secret_key": "{{user `aws_secret_key`}}",
     "source_ami": "{{user `ami-us-west-2`}}",
     "instance_type": "{{ user `instance_type` }}",
-    "ssh_username": "centos",
+    "ssh_username": "ec2-user",
     "ami_block_device_mappings": [{
                  "device_name": "/dev/sda1",
                  "volume_type": "gp2",
@@ -181,7 +181,7 @@
       "builder": "packer",
       "version": "{{user `version`}}"
     },
-    "ami_groups" :[],
+    "ami_groups" :"all",
     "ami_name": "cb-centos71-amb210-{{ isotime \"2006-01-02\" }}{{user `namesuffix`}}"
   },
   {
@@ -192,7 +192,7 @@
     "secret_key": "{{user `aws_secret_key`}}",
     "source_ami": "{{user `ami-ap-southeast-2`}}",
     "instance_type": "{{ user `instance_type` }}",
-    "ssh_username": "centos",
+    "ssh_username": "ec2-user",
     "ami_block_device_mappings": [{
                  "device_name": "/dev/sda1",
                  "volume_type": "gp2",
@@ -209,7 +209,7 @@
       "builder": "packer",
       "version": "{{user `version`}}"
     },
-    "ami_groups" :[],
+    "ami_groups" :"all",
     "ami_name": "cb-centos71-amb210-{{ isotime \"2006-01-02\" }}{{user `namesuffix`}}"
   },
   {
@@ -220,7 +220,7 @@
     "secret_key": "{{user `aws_secret_key`}}",
     "source_ami": "{{user `ami-ap-southeast-1`}}",
     "instance_type": "{{ user `instance_type` }}",
-    "ssh_username": "centos",
+    "ssh_username": "ec2-user",
     "ami_block_device_mappings": [{
                  "device_name": "/dev/sda1",
                  "volume_type": "gp2",
@@ -237,7 +237,7 @@
       "builder": "packer",
       "version": "{{user `version`}}"
     },
-    "ami_groups" :[],
+    "ami_groups" :"all",
     "ami_name": "cb-centos71-amb210-{{ isotime \"2006-01-02\" }}{{user `namesuffix`}}"
   }],
   "provisioners": [{
