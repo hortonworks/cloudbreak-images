@@ -14,7 +14,7 @@
     "project_id": "siq-haas",
     "ssh_username": "centos",
     "machine_type": "n1-standard-2",
-    "image_name": "cb-centos71-amb200-{{ isotime \"2006-01-02\" }}{{user `namesuffix`}}",
+    "image_name": "cb-centos71-amb210-{{ isotime \"2006-01-02\" }}{{user `namesuffix`}}",
     "tags": [
 	"packer"
     ]
