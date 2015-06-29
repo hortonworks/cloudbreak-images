@@ -21,6 +21,14 @@ permissive_iptables() {
   service iptables save
 }
 
+modify_waagent() {
+  if [ -f /etc/waagent.conf ]; then
+    cp /etc/waagent.conf /etc/waagent.conf.bak
+    sed -i 's/Provisioning.SshHostKeyPairType.*/Provisioning.SshHostKeyPairType=ecdsa/' /etc/waagent.conf
+    diff /etc/waagent.conf /etc/waagent.conf.bak
+  fi
+}
+
 permissive_selinux() {
   sed -i 's/SELINUX=enforcing/SELINUX=permissive/g' /etc/selinux/config
 }
@@ -142,6 +150,7 @@ check_params() {
 
 main() {
     check_params
+    modify_waagent
     permissive_selinux
     permissive_iptables
     enable_ipforward
