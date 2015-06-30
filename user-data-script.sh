@@ -106,11 +106,10 @@ configure_cloud_init() {
     sed -i '/syslog_fix_perms: ~/a preserve_hostname: true' /etc/cloud/cloud.cfg
     diff /etc/cloud/cloud.cfg /etc/cloud/cloud.cfg.bak
   fi
-  rm -vf /etc/docker/key.json
 }
 
 reset_docker() {
-  systemctl stop docker.service
+  service docker stop
   echo "Deleting key.json in order to avoid swarm conflicts"
   rm -vf /etc/docker/key.json
 }
