@@ -12,6 +12,8 @@ debug() {
 }
 
 extend_rootfs() {
+  yum -y install cloud-utils-growpart
+
   # Usable on GCP, does not harm anywhere else
   root_fs_device=$(mount | grep ' / ' | cut -d' ' -f 1 | sed s/1//g)
   growpart $root_fs_device 1
@@ -47,7 +49,7 @@ enable_ipforward() {
 install_utils() {
   local provider=$(get_provider_from_packer)
 
-  yum -y install unzip curl git wget bind-utils ntp cloud-utils-growpart
+  yum -y install unzip curl git wget bind-utils ntp
 
   if [ "azure" == $provider ] || [ "ec2" == $provider ]; then
     yum install -y cloud-init

@@ -2,10 +2,11 @@
   "variables": {
     "namesuffix": "{{env `IMAGE_NAME_SUFFIX`}}",
     "version": "0.9",
-    "account_file": "{{env `GCE_ACCOUNT_FILE`}}"
+    "account_file": "{{env `GCE_ACCOUNT_FILE`}}",
+    "image_name": "cb-centos71-amb210-{{ isotime \"2006-01-02\" }}{{env `IMAGE_NAME_SUFFIX`}}"
   },
   "builders":[{
-    "disk_size": "15",
+    "disk_size": "40",
     "name": "us-central1-b",
     "type": "googlecompute",
     "account_file": "{{user `account_file`}}",
@@ -14,7 +15,7 @@
     "project_id": "siq-haas",
     "ssh_username": "centos",
     "machine_type": "n1-standard-2",
-    "image_name": "cb-centos71-amb210-{{ isotime \"2006-01-02\" }}{{user `namesuffix`}}",
+    "image_name": "{{user `image_name`}}",
     "tags": [
 	"packer"
     ]
@@ -28,9 +29,14 @@
     "type": "shell",
     "script": "./user-data-script.sh",
     "execute_command": "chmod +x {{ .Path }}; {{ .Vars }} sudo -E bash '{{ .Path }}'"
+  },
+  {
+    "type": "shell",
+    "script": "./create_gc_image.sh",
+    "execute_command": "chmod +x {{ .Path }}; {{ .Vars }} PACKER_IMAGE_NAME={{user `image_name`}} sudo -E bash '{{ .Path }}'"
   }],
   "push": {
     "name": "sequenceiq/cbreak-gugli",
-    "include": ["user-data-script.sh","{{env `GCE_ACCOUNT_FILE`}}"]
+    "include": ["user-data-script.sh","create_gc_image.sh","{{user `account_file`}}"]
   }
 }
