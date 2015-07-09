@@ -32,11 +32,12 @@
   },
   {
     "type": "shell",
-    "script": "./create_gc_image.sh",
+    "script": "./optimization-script-for-hdp.sh",
+    "execute_command": "chmod +x {{ .Path }}; {{ .Vars }} sudo -E bash '{{ .Path }}'"
+  },
+  {
+    "type": "shell",
+    "script": "./create-gc-image.sh",
     "execute_command": "chmod +x {{ .Path }}; {{ .Vars }} PACKER_IMAGE_NAME={{user `image_name`}} sudo -E bash '{{ .Path }}'"
-  }],
-  "push": {
-    "name": "sequenceiq/cbreak-gugli",
-    "include": ["user-data-script.sh","create_gc_image.sh","{{user `account_file`}}"]
-  }
+  }]
 }

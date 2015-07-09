@@ -249,9 +249,10 @@
     "type": "shell",
     "script": "./user-data-script.sh",
     "execute_command": "chmod +x {{ .Path }}; {{ .Vars }} sudo -E bash '{{ .Path }}'"
-  }],
-  "push": {
-    "name": "sequenceiq/cloudbreak",
-    "include": ["user-data-script.sh", "scrips/*"]
-  }
+  },
+  {
+    "type": "shell",
+    "script": "./optimization-script-for-hdp.sh",
+    "execute_command": "chmod +x {{ .Path }}; {{ .Vars }} sudo -E bash '{{ .Path }}'"
+  }]
 }
