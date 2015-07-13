@@ -126,6 +126,7 @@ cleanup() {
   reset_hostname
   reset_docker
   reset_fstab
+  yum clean all
 }
 
 get_provider_from_packer() {
@@ -171,7 +172,6 @@ main() {
     configure_cloud_init
     pull_images
     cleanup
-    touch /tmp/ready
     sync
 }
 

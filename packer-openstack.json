@@ -32,5 +32,10 @@
     "type": "shell",
     "script": "./user-data-script.sh",
     "execute_command": "chmod +x {{ .Path }}; {{ .Vars }} sudo -E bash '{{ .Path }}'"
+  },
+  {
+    "type": "shell",
+    "script": "./optimization-script-for-hdp.sh",
+    "execute_command": "chmod +x {{ .Path }}; {{ .Vars }} sudo -E bash '{{ .Path }}'"
   }]
 }
