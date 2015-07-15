@@ -5,5 +5,5 @@ sudo gcimagebundle -d /dev/sda -o /tmp/imagebundle --fssize=16106127360 --log_fi
 curl -O https://storage.googleapis.com/pub/gsutil.tar.gz
 tar xfz gsutil.tar.gz -C $HOME
 export PATH=${PATH}:$HOME/gsutil
-gsutil cp /tmp/imagebundle/*.image.tar.gz gs://sequenceiqimage/"$PACKER_IMAGE_NAME".tar.gz
+gsutil cp -a public-read /tmp/imagebundle/*.image.tar.gz gs://sequenceiqimage/"$PACKER_IMAGE_NAME".tar.gz
 rm -rf /tmp/imagebundle
