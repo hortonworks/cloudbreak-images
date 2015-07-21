@@ -65,7 +65,8 @@ install_docker() {
   yum install -y device-mapper-event-libs device-mapper-event device-mapper-event-devel
   service docker start
   service docker stop
-  sed -i '/^ExecStart/s/$/ -H tcp:\/\/0.0.0.0:2376 --selinux-enabled --storage-driver=devicemapper --storage-opt=dm.basesize=30G/' /usr/lib/systemd/system/docker.service
+  #sed -i '/^ExecStart/s/$/ -H tcp:\/\/0.0.0.0:2376 --selinux-enabled --storage-driver=devicemapper --storage-opt=dm.basesize=30G/' /usr/lib/systemd/system/docker.service
+  cp -v /tmp/docker.service /usr/lib/systemd/system
   rm -rf /var/lib/docker
   systemctl daemon-reload
   service docker start
