@@ -1,0 +1,16 @@
+[Unit]
+Description=Docker Application Container Engine
+Documentation=https://docs.docker.com
+After=network.target docker.socket cloud-init.service
+Requires=docker.socket
+Wants=cloud-init.service
+
+[Service]
+ExecStart=/usr/bin/docker -d -H fd:// -H tcp://0.0.0.0:2376 --selinux-enabled --storage-driver=devicemapper --storage-opt=dm.basesize=30G
+MountFlags=slave
+LimitNOFILE=200000
+LimitNPROC=16384
+LimitCORE=infinity
+
+[Install]
+WantedBy=multi-user.target
