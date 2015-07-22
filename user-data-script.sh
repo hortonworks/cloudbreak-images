@@ -109,6 +109,15 @@ configure_cloud_init() {
   fi
 }
 
+configure_console() {
+  export GRUB_CONFIG='/etc/default/grub'
+  if [ -f "$GRUB_CONFIG" ] && grep "GRUB_CMDLINE_LINUX" "$GRUB_CONFIG" | grep -q "console=tty0"; then
+    # we want ttyS0 as the default console output, the default RedHat AMI on AWS sets tty0 as well
+    sed -i -e '/GRUB_CMDLINE_LINUX/ s/ console=tty0//g' "$GRUB_CONFIG"
+    grub2-mkconfig -o /boot/grub2/grub.cfg
+  fi
+}
+
 reset_docker() {
   service docker stop
   echo "Deleting key.json in order to avoid swarm conflicts"
@@ -169,6 +178,7 @@ main() {
     install_scripts
     install_docker
     configure_cloud_init
+    configure_console
     pull_images
     cleanup
     sync
