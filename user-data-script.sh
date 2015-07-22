@@ -109,6 +109,13 @@ configure_cloud_init() {
   fi
 }
 
+configure_journald() {
+  if [ -f /etc/systemd/journald.conf ]; then
+    # forwarding the journal to console will show more information in the cloud console outputs (the cloud-init output is shown on EC2)
+    cp /tmp/journald.conf /etc/systemd/journald.conf
+  fi
+}
+
 reset_docker() {
   service docker stop
   echo "Deleting key.json in order to avoid swarm conflicts"
@@ -169,6 +176,7 @@ main() {
     install_scripts
     install_docker
     configure_cloud_init
+    configure_journald
     pull_images
     cleanup
     sync
