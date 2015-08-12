@@ -15,11 +15,11 @@
       "ssh_username": "centos",
       "provider": "{{user `os_auth_url`}}",
       "image_name": "{{user `os_image_name`}}",
-      "source_image": "a9476eb0-58c6-4d56-9e79-513b93d86a64",
+      "source_image": "c1632189-f509-4dba-ac1a-b08b07920b6d",
       "flavor": "3",
       "use_floating_ip": false,
       "networks": [
-        "d6a01b5a-62a5-4151-88f0-718b575b680b"
+        "3b4bd5d2-9108-471b-92c3-2187de621b49"
       ]
     }
   ],
