@@ -25,7 +25,7 @@
   ],
   "provisioners": [{
     "type": "file",
-    "source": "scripts/",
+    "source": "shared/",
     "destination": "/tmp"
   },
   {
