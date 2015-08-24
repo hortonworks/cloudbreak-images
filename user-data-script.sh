@@ -59,19 +59,11 @@ install_utils() {
 }
 
 install_docker() {
-  local provider=$(get_provider_from_packer)
-
   cp -v /tmp/docker/docker.repo /etc/yum.repos.d/
   yum install -y docker-engine
 
   cp -v /usr/lib/systemd/system/docker.service /usr/lib/systemd/system/docker.service.bak
-  if [ "azure" == $provider ]; then
-    cp -v /tmp/docker/docker.service.overlayfs /usr/lib/systemd/system
-  else
-    service docker start
-    service docker stop
-    cp -v /tmp/docker/docker.service /usr/lib/systemd/system
-  fi
+  cp -v /tmp/docker/docker.service /usr/lib/systemd/system
 
   rm -rf /var/lib/docker
   systemctl daemon-reload
