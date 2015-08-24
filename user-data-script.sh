@@ -21,7 +21,6 @@ extend_rootfs() {
 }
 
 permissive_iptables() {
-  local provider=$(get_provider_from_packer)
   # need to install iptables-services, othervise the 'iptables save' command will not be available
   yum -y install iptables-services net-tools
 
@@ -38,8 +37,9 @@ modify_waagent() {
   fi
 }
 
-permissive_selinux() {
-  sed -i 's/SELINUX=enforcing/SELINUX=permissive/g' /etc/selinux/config
+disable_selinux() {
+  setenforce 0
+  sed -i 's/SELINUX=enforcing/SELINUX=disabled/g' /etc/selinux/config
 }
 
 enable_ipforward() {
@@ -59,14 +59,20 @@ install_utils() {
 }
 
 install_docker() {
-  curl -O -sSL https://get.docker.com/rpm/1.7.0/centos-7/RPMS/x86_64/docker-engine-1.7.0-1.el7.centos.x86_64.rpm
-  yum -y localinstall --nogpgcheck docker-engine-1.7.0-1.el7.centos.x86_64.rpm
-  # need to check whether we really need these (GCP / OpenStack we don't)
-  yum install -y device-mapper-event-libs device-mapper-event device-mapper-event-devel
-  service docker start
-  service docker stop
-  #sed -i '/^ExecStart/s/$/ -H tcp:\/\/0.0.0.0:2376 --selinux-enabled --storage-driver=devicemapper --storage-opt=dm.basesize=30G/' /usr/lib/systemd/system/docker.service
-  cp -v /tmp/docker.service /usr/lib/systemd/system
+  local provider=$(get_provider_from_packer)
+
+  cp -v /tmp/docker/docker.repo /etc/yum.repos.d/
+  yum install -y docker-engine
+
+  cp -v /usr/lib/systemd/system/docker.service /usr/lib/systemd/system/docker.service.bak
+  if [ "azure" == $provider ]; then
+    cp -v /tmp/docker/docker.service.overlayfs /usr/lib/systemd/system
+  else
+    service docker start
+    service docker stop
+    cp -v /tmp/docker/docker.service /usr/lib/systemd/system
+  fi
+
   rm -rf /var/lib/docker
   systemctl daemon-reload
   service docker start
@@ -88,7 +94,7 @@ install_scripts() {
   debug provider=$provider
 
   # script are copied by packer's file provisioner section
-  cp /tmp/public_host_script_$provider.sh ${target}/public_host_script.sh
+  cp -v /tmp/scripts/public_host_script_$provider.sh ${target}/public_host_script.sh
 
   chmod +x ${target}/*.sh
   ls -l $target/*.sh
@@ -171,7 +177,7 @@ main() {
     check_params
     modify_waagent
     extend_rootfs
-    permissive_selinux
+    disable_selinux
     permissive_iptables
     enable_ipforward
     install_utils
