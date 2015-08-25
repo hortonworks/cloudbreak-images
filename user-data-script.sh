@@ -66,12 +66,14 @@ install_docker() {
 
   cp -v /usr/lib/systemd/system/docker.service /usr/lib/systemd/system/docker.service.bak
   if [ "azure" == $provider ]; then
-    cp -v /tmp/docker/docker.service.overlayfs /usr/lib/systemd/system
+    cp -v /tmp/docker/docker.service.overlayfs /usr/lib/systemd/system/docker.service
   else
     service docker start
     service docker stop
     cp -v /tmp/docker/docker.service /usr/lib/systemd/system
   fi
+
+  diff /usr/lib/systemd/system/docker.service.bak /usr/lib/systemd/system/docker.service
 
   rm -rf /var/lib/docker
   systemctl daemon-reload
