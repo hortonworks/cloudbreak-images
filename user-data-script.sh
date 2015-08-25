@@ -65,6 +65,8 @@ install_docker() {
   cp -v /usr/lib/systemd/system/docker.service /usr/lib/systemd/system/docker.service.bak
   cp -v /tmp/docker/docker.service /usr/lib/systemd/system
 
+  diff /usr/lib/systemd/system/docker.service.bak /usr/lib/systemd/system/docker.service
+
   rm -rf /var/lib/docker
   systemctl daemon-reload
   service docker start
