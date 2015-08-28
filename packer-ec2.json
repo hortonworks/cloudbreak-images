@@ -8,6 +8,7 @@
     "instance_type": "m3.medium",
     "ami-sa-east-1": "ami-09e25b14",
     "ami-eu-west-1": "ami-25158352",
+    "ami-eu-central-1": "ami-dafdcfc7",
     "ami-us-east-1": "ami-12663b7a",
     "ami-us-west-1": "ami-a540a5e1",
     "ami-us-west-2": "ami-4dbf9e7d",
