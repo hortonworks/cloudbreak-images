@@ -102,6 +102,34 @@
     "ami_name": "cb-centos71-amb210-{{ isotime \"2006-01-02\" }}{{user `namesuffix`}}"
   },
   {
+    "name": "eu-central-1",
+    "type": "amazon-ebs",
+    "region": "eu-central-1",
+    "access_key": "{{user `aws_access_key`}}",
+    "secret_key": "{{user `aws_secret_key`}}",
+    "source_ami": "{{user `ami-eu-central-1`}}",
+    "instance_type": "{{ user `instance_type` }}",
+    "ssh_username": "ec2-user",
+    "ami_block_device_mappings": [{
+                 "device_name": "/dev/sda1",
+                 "volume_type": "gp2",
+                 "delete_on_termination": true,
+                 "volume_size": 15
+            }],
+    "launch_block_device_mappings": [{
+                "device_name": "/dev/sda1",
+                "volume_type": "gp2",
+                "delete_on_termination": true,
+                "volume_size": 15
+            }],
+    "tags": {
+      "builder": "packer",
+      "version": "{{user `version`}}"
+    },
+    "ami_groups" :"all",
+    "ami_name": "cb-centos71-amb210-{{ isotime \"2006-01-02\" }}{{user `namesuffix`}}"
+  },
+  {
     "name": "us-east-1",
     "type": "amazon-ebs",
     "region": "us-east-1",
