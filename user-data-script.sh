@@ -121,8 +121,8 @@ configure_console() {
 download_storage_jars() {
   # /data/jars directory is used because it is shared with the ambari-docker container on cloudbreak vms
   mkdir -p /data/jars
-  curl -o "/data/jars/dash-azure-storage-2.2.0.jar" "https://www.dash-update.net/client/Latest/StorageSDK2.0/dash-azure-storage-2.2.0.jar"
-  curl -o "/data/jars/gcs-connector-latest-hadoop2.jar" "https://storage.googleapis.com/hadoop-lib/gcs/gcs-connector-latest-hadoop2.jar"
+  curl -o "/data/jars/dash-azure-storage-2.2.0.jar" "https://s3-eu-west-1.amazonaws.com/cloudbreak/storage-lib/dash-azure-storage-2.2.0.jar"
+  curl -o "/data/jars/gcs-connector-latest-hadoop2.jar" "https://s3-eu-west-1.amazonaws.com/cloudbreak/storage-lib/gcs-connector-latest-hadoop2.jar"
 }
 
 reset_docker() {
