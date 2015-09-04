@@ -121,7 +121,7 @@ configure_console() {
 copy_hadoop_lib() {
   # /data/jars directory is used because it is shared with the ambari-docker container on cloudbreak vms
   mkdir -p /data/jars
-  cp -vR "/tmp/hadoop-lib/" "/data/jars"
+  cp -v /tmp/hadoop-lib/* /data/jars
 }
 
 reset_docker() {
