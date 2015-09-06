@@ -61,11 +61,10 @@ install_utils() {
 install_docker() {
   cp -v /tmp/docker/docker.repo /etc/yum.repos.d/
   yum install -y docker-engine
-
+  yum install -y device-mapper-event-libs device-mapper-event device-mapper-event-devel
+  
   cp -v /usr/lib/systemd/system/docker.service /usr/lib/systemd/system/docker.service.bak
   cp -v /tmp/docker/docker.service /usr/lib/systemd/system
-
-  diff /usr/lib/systemd/system/docker.service.bak /usr/lib/systemd/system/docker.service
 
   rm -rf /var/lib/docker
   systemctl daemon-reload
