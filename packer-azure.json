@@ -18,7 +18,7 @@
 			"os_image_label"		: "OpenLogic 7.1",
 			"location"			: "West Europe",
 			"instance_size"			: "Large",
-			"user_image_label"		: "cb-centos71-amb210-{{ isotime \"2006-01-02\" }}{{user `namesuffix`}}"
+			"user_image_label"		: "cb-centos71-amb211-{{ isotime \"2006-01-02\" }}{{user `namesuffix`}}"
 		}
 	],
   "provisioners": [{
