@@ -3,7 +3,7 @@
     "namesuffix": "{{env `IMAGE_NAME_SUFFIX`}}",
     "version": "0.9",
     "account_file": "{{env `GCE_ACCOUNT_FILE`}}",
-    "image_name": "cb-centos71-amb211-{{ isotime \"2006-01-02\" }}{{env `IMAGE_NAME_SUFFIX`}}"
+    "image_name": "cb-centos71-amb210-{{ isotime \"2006-01-02\" }}{{env `IMAGE_NAME_SUFFIX`}}"
   },
   "builders":[{
     "disk_size": "40",

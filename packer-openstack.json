@@ -1,7 +1,7 @@
 {
   "variables": {
     "os_auth_url": "",
-    "os_image_name": "cb-centos71-amb211-{{ isotime \"2006-01-02\" }}",
+    "os_image_name": "cb-centos71-amb210-{{ isotime \"2006-01-02\" }}",
     "os_username": "",
     "os_password": "",
     "os_tenant_name": ""
