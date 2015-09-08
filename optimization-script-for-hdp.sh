@@ -22,7 +22,7 @@ disable_ipv6() {
 
 disable_thp() {
   mkdir -p /etc/tuned/custom
-  mv /tmp/disable_thp_defrag.sh /etc/tuned/custom
+  mv /tmp/scripts/disable_thp_defrag.sh /etc/tuned/custom
   cat << EOF > /etc/tuned/custom/tuned.conf
 [main]
 include=virtual-guest
