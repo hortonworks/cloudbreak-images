@@ -4,7 +4,7 @@
 
 [[ "$TRACE" ]] && set -x
 
-: ${IMAGES:=sequenceiq/ambari:2.1.1-v1 sequenceiq/ambari-warmup:2.1.1-v1 sequenceiq/consul:v0.5.0-v5 postgres:9.4.1 sequenceiq/docker-consul-watch-plugn:2.0.0-consul swarm:0.4.0 sequenceiq/munchausen:0.5.5 gliderlabs/alpine:3.1 sequenceiq/registrator:v5.2 sequenceiq/cb-gateway-nginx:0.2 sequenceiq/baywatch:v0.5.3 sequenceiq/baywatch-client:v1.0.0 sequenceiq/logrotate:v0.5.1 sequenceiq/kerberos:2.1.0-consul ehazlett/cert-tool:0.0.3}
+: ${IMAGES:=sequenceiq/ambari:2.1.1-v1 sequenceiq/ambari-warmup:2.1.1-v1 sequenceiq/consul:v0.5.0-v5 postgres:9.4.1 sequenceiq/docker-consul-watch-plugn:2.0.1-consul swarm:0.4.0 sequenceiq/munchausen:0.5.5 gliderlabs/alpine:3.1 sequenceiq/registrator:v5.2 sequenceiq/cb-gateway-nginx:0.2 sequenceiq/baywatch:v0.5.3 sequenceiq/baywatch-client:v1.0.0 sequenceiq/logrotate:v0.5.1 sequenceiq/kerberos:2.1.0-consul ehazlett/cert-tool:0.0.3}
 : ${DEBUG:=1}
 
 debug() {
@@ -62,7 +62,7 @@ install_docker() {
   cp -v /tmp/docker/docker.repo /etc/yum.repos.d/
   yum install -y docker-engine
   yum install -y device-mapper-event-libs device-mapper-event device-mapper-event-devel
-  
+
   cp -v /usr/lib/systemd/system/docker.service /usr/lib/systemd/system/docker.service.bak
   cp -v /tmp/docker/docker.service /usr/lib/systemd/system
 
