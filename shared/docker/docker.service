@@ -1,6 +1,7 @@
 [Unit]
 Description=Docker Application Container Engine
 Documentation=https://docs.docker.com
+Before=sshd.service
 After=network.target docker.socket cloud-final.service
 Requires=docker.socket
 Wants=cloud-final.service
@@ -14,3 +15,4 @@ LimitCORE=infinity
 
 [Install]
 WantedBy=multi-user.target
+RequiredBy=sshd.service
