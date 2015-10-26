@@ -11,6 +11,12 @@ debug() {
     [[ "$DEBUG" ]] && echo "-----> $*" 1>&2
 }
 
+update_kernel() {
+  yum install -y kernel-3.10.0-229.14.1.el7
+  yum install -y kernel-tools-3.10.0-229.14.1.el7
+  yum install -y systemd-208-20.el7_1.6
+}
+
 extend_rootfs() {
   yum -y install cloud-utils-growpart
 
@@ -60,8 +66,7 @@ install_utils() {
 
 install_docker() {
   cp -v /tmp/docker/docker.repo /etc/yum.repos.d/
-  yum install -y docker-engine
-  yum install -y device-mapper-event-libs device-mapper-event device-mapper-event-devel
+  yum install -y docker-engine-1.8.3
 
   cp -v /usr/lib/systemd/system/docker.service /usr/lib/systemd/system/docker.service.bak
   cp -v /tmp/docker/docker.service /usr/lib/systemd/system
@@ -174,6 +179,7 @@ check_params() {
 
 main() {
     check_params
+    update_kernel
     modify_waagent
     extend_rootfs
     disable_selinux
