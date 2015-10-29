@@ -11,6 +11,13 @@ debug() {
     [[ "$DEBUG" ]] && echo "-----> $*" 1>&2
 }
 
+update_centos_base_yum_repo() {
+  # Use the same CentOS Base yum repo on CentOS images
+  if grep "CentOS\|Derived from Red Hat" /etc/redhat-release > /dev/null; then
+    cp -v /tmp/yum/CentOS-Base.repo /etc/yum.repos.d/
+  fi
+}
+
 update_kernel() {
   yum install -y kernel-3.10.0-229.14.1.el7
   yum install -y kernel-tools-3.10.0-229.14.1.el7
@@ -179,6 +186,7 @@ check_params() {
 
 main() {
     check_params
+    update_centos_base_yum_repo
     update_kernel
     modify_waagent
     extend_rootfs
