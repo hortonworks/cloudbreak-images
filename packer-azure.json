@@ -36,4 +36,9 @@
     "script": "./optimization-script-for-hdp.sh",
     "execute_command": "chmod +x {{ .Path }}; {{ .Vars }} sudo -E bash '{{ .Path }}'"
   }]
+    ,"post-processors": [{
+      "type":"generator",
+      "template":"azure.tmpl",
+      "output":"azure.yml"
+  }]
 }
