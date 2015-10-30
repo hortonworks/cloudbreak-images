@@ -1,0 +1,8 @@
+versions:
+    docker-version: {{ .Config.PackerUserVars.yum_version_docker }}
+    kernel-version: {{ .Config.PackerUserVars.yum_version_kernel }}
+    systemd-version: {{ .Config.PackerUserVars.yum_version_systemd }}
+{{ if .Meta }}
+aws:{{ range $reg, $ami := .Meta}}
+  {{$reg}}: {{$ami}}{{end}}
+{{end}}
