@@ -3,6 +3,7 @@
     "namesuffix": "{{env `IMAGE_NAME_SUFFIX`}}",
     "version": "0.9",
     "account_file": "{{env `GCE_ACCOUNT_FILE`}}",
+    "atlas_token": "{{ env `ATLAS_TOKEN`}}",
     "image_name": "cb-centos71-amb212-{{ isotime \"2006-01-02\" }}{{env `IMAGE_NAME_SUFFIX`}}"
   },
   "builders":[{
@@ -40,10 +41,22 @@
     "script": "./create-gc-image.sh",
     "execute_command": "chmod +x {{ .Path }}; {{ .Vars }} PACKER_IMAGE_NAME={{user `image_name`}} sudo -E bash '{{ .Path }}'"
   }]
-  ,"post-processors": [{
+  ,"post-processors": [
+      [
+          {
       "type":"generator",
       "template":"gce.tmpl",
       "output":"gce.yml"
-  
-}]
+          }
+          ,{
+            "type": "atlas",
+            "token": "{{user `atlas_token`}}",
+            "artifact": "sequenceiq/cloudbreak",
+            "artifact_type": "openstack.image",
+            "metadata": {
+              "created_at": "{{timestamp}}"
+            }
+          }
+      ]
+    ]
 }
