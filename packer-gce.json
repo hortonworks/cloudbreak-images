@@ -15,6 +15,7 @@
     "zone": "us-central1-b",
     "project_id": "siq-haas",
     "ssh_username": "centos",
+    "ssh_pty": "true",
     "machine_type": "n1-standard-2",
     "image_name": "{{user `image_name`}}",
     "tags": [
