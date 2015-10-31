@@ -1,7 +1,8 @@
 {
 	"variables":
 	{
-		"namesuffix" : "{{env `IMAGE_NAME_SUFFIX`}}",
+	    "mock": "{{ env `MOCK` }}",
+        "namesuffix" : "{{env `IMAGE_NAME_SUFFIX`}}",
 		"sn" : "{{env `AZURE_SUBSCRIPTION_NAME`}}",
 		"psPath" : "{{env `AZURE_PUBLISH_SETTINGS`}}"
 	},

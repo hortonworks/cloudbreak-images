@@ -1,5 +1,6 @@
 {
   "variables": {
+    "mock": "{{ env `MOCK` }}",
     "atlas_token": "{{ env `ATLAS_TOKEN`}}",
 
     "yum_version_kernel":" 3.10.0-229.14.1.el7",
