@@ -54,7 +54,7 @@
             "type": "atlas",
             "token": "{{user `atlas_token`}}",
             "artifact": "sequenceiq/cloudbreak",
-            "artifact_type": "openstack.image",
+            "artifact_type": "googlecompute.image",
             "metadata": {
               "created_at": "{{timestamp}}"
             }
