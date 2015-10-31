@@ -1,10 +1,18 @@
 {
   "variables": {
-    "os_auth_url": "",
-    "os_image_name": "cb-centos71-amb212-{{ isotime \"2006-01-02\" }}",
-    "os_username": "",
-    "os_password": "",
-    "os_tenant_name": ""
+    "atlas_token": "{{ env `ATLAS_TOKEN`}}",
+
+    "yum_version_kernel":" 3.10.0-229.14.1.el7",
+    "yum_version_systemd":"208-20.el7_1.6",
+    "yum_version_docker":"1.8.3",
+    "os_user": "centos",
+
+
+    "os_auth_url": "{{ env `OS_AUTH_URL` }}",
+    "os_image_name": "cb-centos71-amb212-{{ isotime \"2006-01-02\" }}-atlas",
+    "os_username": "{{ env `OS_USERNAME` }}",
+    "os_password": "{{ env `OS_PASSWORD` }}",
+    "os_tenant_name": "{{ env `OS_TENANT_NAME` }}"
   },
   "builders": [
     {
@@ -31,6 +39,13 @@
   {
     "type": "shell",
     "script": "./user-data-script.sh",
+    "environment_vars": [
+        "OS_USER={{ user `os_user` }}",
+        "YUM_VERSION_DOCKER={{ user `yum_version_docker` }}",
+        "YUM_VERSION_KERNEL={{ user `yum_version_kernel` }}",
+        "YUM_VERSION_SYSTEMD={{ user `yum_version_systemd` }}",
+        "TRACE=1"
+    ],
     "execute_command": "chmod +x {{ .Path }}; {{ .Vars }} sudo -E bash '{{ .Path }}'"
   },
   {
@@ -38,4 +53,16 @@
     "script": "./optimization-script-for-hdp.sh",
     "execute_command": "chmod +x {{ .Path }}; {{ .Vars }} sudo -E bash '{{ .Path }}'"
   }]
+
+  ,"post-processors": [
+      {
+        "type": "atlas",
+        "token": "{{user `atlas_token`}}",
+        "artifact": "sequenceiq/openstack",
+        "artifact_type": "openstack.image",
+        "metadata": {
+          "created_at": "{{timestamp}}"
+        }
+      }
+    ]
 }
