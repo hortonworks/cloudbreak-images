@@ -1,0 +1,104 @@
+{
+  "variables": {
+    "mock": "{{ env `MOCK` }}",
+    "aws_access_key": "{{ env `AWS_ACCESS_KEY` }}",
+    "aws_secret_key": "{{ env `AWS_SECRET_ACCESS_KEY` }}",
+
+    "namesuffix": "{{env `IMAGE_NAME_SUFFIX` }}",
+    "os_user": "ec2-user",
+
+    "yum_version_kernel":" 3.10.0-229.14.1.el7",
+    "yum_version_systemd":"208-20.el7_1.6",
+    "yum_version_docker":"1.8.3",
+
+    "instance_type": "m3.medium",
+
+    "ami-sa-east-1": "ami-09e25b14",
+    "ami-eu-west-1": "ami-25158352",
+    "ami-eu-central-1": "ami-dafdcfc7",
+    "ami-us-east-1": "ami-12663b7a",
+    "ami-us-west-1": "ami-a540a5e1",
+    "ami-us-west-2": "ami-4dbf9e7d",
+    "ami-ap-northeast-1": "ami-b1b458b1",
+    "ami-ap-southeast-1": "ami-dc1c2b8e",
+    "ami-ap-southeast-2": "ami-d3daace9"
+  },
+  "builders":[
+  {
+    "name": "{{ user `aws_region` }}",
+    "type": "amazon-ebs",
+    "region": "eu-west-1",
+    "ami_regions": ["ap-southeast-1","ap-southeast-2","eu-central-1","ap-northeast-1","us-east-1","sa-east-1","us-west-1","us-west-2"],
+    "ssh_pty" : true,
+    "access_key": "{{user `aws_access_key`}}",
+    "secret_key": "{{user `aws_secret_key`}}",
+    "source_ami": "{{user `ami-eu-west-1`}}",
+    "instance_type": "{{ user `instance_type` }}",
+    "ssh_username": "{{ user `os_user` }}",
+    "ami_block_device_mappings": [{
+                 "device_name": "/dev/sda1",
+                 "volume_type": "gp2",
+                 "delete_on_termination": true,
+                 "volume_size": 15
+            }],
+    "launch_block_device_mappings": [{
+                "device_name": "/dev/sda1",
+                "volume_type": "gp2",
+                "delete_on_termination": true,
+                "volume_size": 15
+            }],
+    "tags": {
+      "builder": "packer",
+      "docker-version": "{{user `yum_version_docker`}}",
+      "kernel-version": "{{user `yum_version_kernel`}}",
+      "systemd-version": "{{user `yum_version_systemd`}}",
+      "created":"{{ isotime \"2006-01-02-1504\" }}"
+    },
+    "ami_groups" :"all",
+    "ami_name": "docker-{{ user `yum_version_docker` }}-centos71{{ user `namesuffix` }}"
+  }],
+  "provisioners": [{
+    "type": "file",
+    "source": "shared/",
+    "destination": "/tmp"
+  },
+  {
+    "type": "shell",
+    "script": "./user-data-script.sh",
+    "environment_vars": [
+        "OS_USER={{ user `os_user` }}",
+        "YUM_VERSION_DOCKER={{ user `yum_version_docker` }}",
+        "YUM_VERSION_KERNEL={{ user `yum_version_kernel` }}",
+        "YUM_VERSION_SYSTEMD={{ user `yum_version_systemd` }}",
+        "TRACE=1"
+    ],
+    "execute_command": "chmod +x {{ .Path }}; {{ .Vars }} sudo -E bash '{{ .Path }}'"
+  }]
+  ,"post-processors": [
+    [
+      {
+        "type": "generator",
+        "template": "aws.tmpl",
+        "output": "aws.yml"
+      },
+      {
+        "type": "atlas",
+        "token": "{{user `atlas_token`}}",
+        "artifact": "sequenceiq/cloudbreak",
+        "artifact_type": "aws.image",
+        "metadata": {
+          "created_at": "{{timestamp}}"
+        }
+      }
+    ],
+    {
+      "type": "atlas",
+      "token": "{{user `atlas_token`}}",
+      "artifact": "sequenceiq/cloudbreak",
+      "artifact_type": "amazon.image",
+      "metadata": {
+        "created_at": "{{timestamp}}"
+      }
+    }
+  ]
+}
