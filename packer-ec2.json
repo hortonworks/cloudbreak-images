@@ -1,5 +1,6 @@
 {
   "variables": {
+    "mock": "{{ env `MOCK` }}",
     "aws_access_key": "",
     "aws_secret_key": "",
     "namesuffix": "{{env `IMAGE_NAME_SUFFIX`}}",
