@@ -29,8 +29,8 @@ extend_rootfs() {
 
   # Usable on GCP, does not harm anywhere else
   root_fs_device=$(mount | grep ' / ' | cut -d' ' -f 1 | sed s/1//g)
-  growpart $root_fs_device 1
-  xfs_growfs /
+  growpart $root_fs_device 1 || true
+  xfs_growfs / || true
 }
 
 permissive_iptables() {
@@ -46,7 +46,7 @@ modify_waagent() {
   if [ -f /etc/waagent.conf ]; then
     cp /etc/waagent.conf /etc/waagent.conf.bak
     sed -i 's/Provisioning.SshHostKeyPairType.*/Provisioning.SshHostKeyPairType=ecdsa/' /etc/waagent.conf
-    diff /etc/waagent.conf /etc/waagent.conf.bak
+    diff /etc/waagent.conf /etc/waagent.conf.bak || true
   fi
 }
 
@@ -116,7 +116,7 @@ configure_cloud_init() {
     #/etc/sysconfig/network is not used by CentOS 7 anymore
     cp /etc/cloud/cloud.cfg /etc/cloud/cloud.cfg.bak
     sed -i '/syslog_fix_perms: ~/a preserve_hostname: true' /etc/cloud/cloud.cfg
-    diff /etc/cloud/cloud.cfg /etc/cloud/cloud.cfg.bak
+    diff /etc/cloud/cloud.cfg /etc/cloud/cloud.cfg.bak || true
   fi
 }
 
