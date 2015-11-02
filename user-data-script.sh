@@ -19,9 +19,10 @@ update_centos_base_yum_repo() {
 }
 
 update_kernel() {
-  yum install -y kernel-3.10.0-229.14.1.el7
-  yum install -y kernel-tools-3.10.0-229.14.1.el7
-  yum install -y systemd-208-20.el7_1.6
+  yum install -y \
+    kernel-$YUM_VERSION_KERNEL \
+    kernel-$YUM_VERSION_KERNEL \
+    systemd-$YUM_VERSION_SYSTEMD
 }
 
 extend_rootfs() {
@@ -73,7 +74,7 @@ install_utils() {
 
 install_docker() {
   cp -v /tmp/docker/docker.repo /etc/yum.repos.d/
-  yum install -y docker-engine-1.8.3
+  yum install -y docker-engine-$YUM_VERSION_DOCKER
 
   cp -v /usr/lib/systemd/system/docker.service /usr/lib/systemd/system/docker.service.bak
   cp -v /tmp/docker/docker.service /usr/lib/systemd/system
