@@ -7,10 +7,6 @@
     "namesuffix": "{{env `IMAGE_NAME_SUFFIX` }}",
     "os_user": "ec2-user",
 
-    "yum_version_kernel":" 3.10.0-229.14.1.el7",
-    "yum_version_systemd":"208-20.el7_1.6",
-    "yum_version_docker":"1.8.3",
-
     "instance_type": "m3.medium",
 
     "ami-sa-east-1": "ami-09e25b14",

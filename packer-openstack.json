@@ -3,11 +3,7 @@
     "mock": "{{ env `MOCK` }}",
     "atlas_token": "{{ env `ATLAS_TOKEN`}}",
 
-    "yum_version_kernel":" 3.10.0-229.14.1.el7",
-    "yum_version_systemd":"208-20.el7_1.6",
-    "yum_version_docker":"1.8.3",
     "os_user": "centos",
-
 
     "os_auth_url": "{{ env `OS_AUTH_URL` }}",
     "os_image_name": "cb-centos71-amb212-{{ isotime \"2006-01-02\" }}-atlas",

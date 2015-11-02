@@ -2,7 +2,6 @@
   "variables": {
     "mock": "{{ env `MOCK` }}",
     "namesuffix": "{{env `IMAGE_NAME_SUFFIX`}}",
-    "version": "0.9",
     "account_file": "{{env `GCE_ACCOUNT_FILE`}}",
     "atlas_token": "{{ env `ATLAS_TOKEN`}}",
     "image_name": "cb-centos71-amb212-{{ isotime \"2006-01-02\" }}{{env `IMAGE_NAME_SUFFIX`}}"
@@ -31,6 +30,14 @@
   {
     "type": "shell",
     "script": "./user-data-script.sh",
+    "environment_vars": [
+        "OS_USER={{ user `os_user` }}",
+        "YUM_VERSION_DOCKER={{ user `yum_version_docker` }}",
+        "YUM_VERSION_KERNEL={{ user `yum_version_kernel` }}",
+        "YUM_VERSION_SYSTEMD={{ user `yum_version_systemd` }}",
+        "TRACE=1"
+    ],
+ 
     "execute_command": "chmod +x {{ .Path }}; {{ .Vars }} sudo -E bash '{{ .Path }}'"
   },
   {

@@ -30,6 +30,13 @@
   {
     "type": "shell",
     "script": "./user-data-script.sh",
+    "environment_vars": [
+        "OS_USER={{ user `os_user` }}",
+        "YUM_VERSION_DOCKER={{ user `yum_version_docker` }}",
+        "YUM_VERSION_KERNEL={{ user `yum_version_kernel` }}",
+        "YUM_VERSION_SYSTEMD={{ user `yum_version_systemd` }}",
+        "TRACE=1"
+    ],
     "execute_command": "chmod +x {{ .Path }}; {{ .Vars }} sudo -E bash '{{ .Path }}'"
   },
   {

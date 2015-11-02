@@ -1,12 +1,14 @@
 {
   "variables": {
     "mock": "{{ env `MOCK` }}",
-    "aws_access_key": "",
-    "aws_secret_key": "",
-    "namesuffix": "{{env `IMAGE_NAME_SUFFIX`}}",
-    "version": "0.9",
+    "aws_access_key": "{{ env `AWS_ACCESS_KEY` }}",
+    "aws_secret_key": "{{ env `AWS_SECRET_ACCESS_KEY` }}",
+
+    "namesuffix": "{{env `IMAGE_NAME_SUFFIX` }}",
     "os_user": "ec2-user",
+
     "instance_type": "m3.medium",
+
     "ami-sa-east-1": "ami-09e25b14",
     "ami-eu-west-1": "ami-25158352",
     "ami-eu-central-1": "ami-dafdcfc7",
@@ -56,6 +58,13 @@
   {
     "type": "shell",
     "script": "./user-data-script.sh",
+        "environment_vars": [
+        "OS_USER={{ user `os_user` }}",
+        "YUM_VERSION_DOCKER={{ user `yum_version_docker` }}",
+        "YUM_VERSION_KERNEL={{ user `yum_version_kernel` }}",
+        "YUM_VERSION_SYSTEMD={{ user `yum_version_systemd` }}",
+        "TRACE=1"
+    ],
     "execute_command": "chmod +x {{ .Path }}; {{ .Vars }} sudo -E bash '{{ .Path }}'"
   },
   {

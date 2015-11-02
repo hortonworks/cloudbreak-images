@@ -1,0 +1,5 @@
+{
+  "yum_version_docker": "1.8.3",
+  "yum_version_kernel": "3.10.0-229.14.1.el7",
+  "yum_version_systemd": "208-20.el71.6"
+}
