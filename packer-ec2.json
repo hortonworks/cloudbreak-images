@@ -72,4 +72,32 @@
     "script": "./optimization-script-for-hdp.sh",
     "execute_command": "chmod +x {{ .Path }}; {{ .Vars }} sudo -E bash '{{ .Path }}'"
   }]
+  ,"post-processors": [
+    [
+      {
+        "type": "generator",
+        "template": "aws.tmpl",
+        "output": "aws.yml"
+      },
+      {
+        "type": "atlas",
+        "token": "{{user `atlas_token`}}",
+        "artifact": "sequenceiq/cloudbreak",
+        "artifact_type": "aws.image",
+        "metadata": {
+          "created_at": "{{timestamp}}"
+        }
+      }
+    ],
+    {
+      "type": "atlas",
+      "token": "{{user `atlas_token`}}",
+      "artifact": "sequenceiq/cloudbreak",
+      "artifact_type": "amazon.image",
+      "metadata": {
+        "created_at": "{{timestamp}}"
+      }
+    }
+  ]
+
 }
