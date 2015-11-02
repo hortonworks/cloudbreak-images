@@ -2,4 +2,4 @@ gce:
   builder: {{ .Artifact.BuilderId }}
   id: {{ .Artifact.Id }}
   source_image: sequenceiqimage/{{ .Artifact.Id }}.tar.gz
-  import_script: gcloud compute images create {{ .Artifact.Id }} gs://sequenceiqimage/{{ .Artifact.Id }}.tar.gz
+  import_script: gcloud compute images create {{ .Artifact.Id }} --source-uri gs://sequenceiqimage/{{ .Artifact.Id }}.tar.gz
