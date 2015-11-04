@@ -53,7 +53,28 @@
   }]
 
   ,"post-processors": [
+      [
       {
+        "type":"generator",
+        "template":"openstack.tmpl",
+        "output":"openstack.yml"
+      }
+      ,{
+        "type": "atlas",
+        "token": "{{user `atlas_token`}}",
+        "artifact": "sequenceiq/{{ user `atlas_artifact` }}",
+        "artifact_type": "openstack.yml",
+        "metadata": {
+          "created_at": "{{timestamp}}"
+        }
+      }
+      ],
+      [
+       {
+        "type": "artifice",
+        "files": ["./{{ user `os_image_name` }}.img"]
+      }
+      ,{
         "type": "atlas",
         "token": "{{user `atlas_token`}}",
         "artifact": "sequenceiq/{{ user `atlas_artifact` }}",
@@ -62,5 +83,6 @@
           "created_at": "{{timestamp}}"
         }
       }
+      ]
     ]
 }
