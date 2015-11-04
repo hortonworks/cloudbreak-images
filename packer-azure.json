@@ -36,6 +36,7 @@
         "YUM_VERSION_DOCKER={{ user `yum_version_docker` }}",
         "YUM_VERSION_KERNEL={{ user `yum_version_kernel` }}",
         "YUM_VERSION_SYSTEMD={{ user `yum_version_systemd` }}",
+        "IMAGES={{ user `cb_docker_container_ambari_warmup` }} {{ user `cb_docker_container_ambari` }} {{ user `cb_docker_container_docker_consul_watch_plugn` }} {{ user `cb_docker_container_registrator` }} {{ user `cb_docker_container_baywatch_server` }} {{ user `cb_docker_container_baywatch_client` }} {{ user `cb_docker_container_logrotate` }} {{ user `cb_docker_container_kerberos` }} {{ user `cb_docker_container_ambari_db` }} {{ user `cb_docker_container_munchausen` }} {{ user `cb_docker_container_consul` }} {{ user `cb_docker_container_gateway` }} {{ user `cb_docker_container_alpine` }} {{ user `cb_docker_container_swarm` }} {{ user `cb_docker_container_cert_tool` }} {{ user `cb_docker_container_list_others` }}",
         "TRACE=1"
     ],
     "execute_command": "chmod +x {{ .Path }}; {{ .Vars }} sudo -E bash '{{ .Path }}'"

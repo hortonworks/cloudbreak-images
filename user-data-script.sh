@@ -1,10 +1,9 @@
 
 # let the script fail to cause the image build unsuccessfull
-# set -eo pipefail
+#set -eo pipefail
 
 [[ "$TRACE" ]] && set -x
 
-: ${IMAGES:=sequenceiq/ambari:2.1.2-v4 sequenceiq/consul:v0.5.0-v5 postgres:9.4.1 sequenceiq/docker-consul-watch-plugn:1.0 swarm:0.4.0 sequenceiq/munchausen:0.5.5 gliderlabs/alpine:3.1 sequenceiq/registrator:v5.2 sequenceiq/cb-gateway-nginx:0.3 sequenceiq/baywatch:v0.5.3 sequenceiq/baywatch-client:v1.0.0 sequenceiq/logrotate:v0.5.1 sequenceiq/kerberos:2.1.0-consul ehazlett/cert-tool:0.0.3}
 : ${DEBUG:=1}
 
 debug() {
@@ -67,7 +66,7 @@ install_utils() {
 
   if [ "azure" == $provider ] || [ "ec2" == $provider ]; then
     yum install -y cloud-init
-  fi
+fi
 
   curl -o /usr/bin/jq http://stedolan.github.io/jq/download/linux64/jq && chmod +x /usr/bin/jq
 }
