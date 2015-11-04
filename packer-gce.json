@@ -4,6 +4,7 @@
     "namesuffix": "{{env `IMAGE_NAME_SUFFIX`}}",
     "account_file": "{{env `GCE_ACCOUNT_FILE`}}",
     "atlas_token": "{{ env `ATLAS_TOKEN`}}",
+    "atlas_artifact": "cloudbreak",
     "image_name": "cb-centos71-amb212-{{ isotime \"2006-01-02\" }}{{env `IMAGE_NAME_SUFFIX`}}"
   },
   "builders":[{
@@ -60,7 +61,7 @@
           ,{
             "type": "atlas",
             "token": "{{user `atlas_token`}}",
-            "artifact": "sequenceiq/cloudbreak",
+            "artifact": "sequenceiq/{{ user `atlas_artifact` }}",
             "artifact_type": "googlecompute.image",
             "metadata": {
               "created_at": "{{timestamp}}"

@@ -4,6 +4,7 @@
     "aws_access_key": "{{ env `AWS_ACCESS_KEY` }}",
     "aws_secret_key": "{{ env `AWS_SECRET_ACCESS_KEY` }}",
 
+    "atlas_artifact": "cloudbreak",
     "namesuffix": "{{env `IMAGE_NAME_SUFFIX` }}",
     "os_user": "ec2-user",
 
@@ -80,7 +81,7 @@
       {
         "type": "atlas",
         "token": "{{user `atlas_token`}}",
-        "artifact": "sequenceiq/cloudbreak",
+        "artifact": "sequenceiq/{{ user `atlas_artifact` }}",
         "artifact_type": "aws.image",
         "metadata": {
           "created_at": "{{timestamp}}"
@@ -90,7 +91,7 @@
     {
       "type": "atlas",
       "token": "{{user `atlas_token`}}",
-      "artifact": "sequenceiq/cloudbreak",
+      "artifact": "sequenceiq/{{ user `atlas_artifact` }}",
       "artifact_type": "amazon.image",
       "metadata": {
         "created_at": "{{timestamp}}"

@@ -2,6 +2,7 @@
 	"variables":
 	{
 	    "mock": "{{ env `MOCK` }}",
+        "atlas_artifact": "cloudbreak",
         "namesuffix" : "{{env `IMAGE_NAME_SUFFIX`}}",
 		"sn" : "{{env `AZURE_SUBSCRIPTION_NAME`}}",
 		"psPath" : "{{env `AZURE_PUBLISH_SETTINGS`}}"
@@ -53,7 +54,7 @@
         ,{
           "type": "atlas",
           "token": "{{user `atlas_token`}}",
-          "artifact": "sequenceiq/cloudbreak",
+          "artifact": "sequenceiq/{{ user `atlas_artifact` }}",
           "artifact_type": "azure.image",
           "metadata": {
             "created_at": "{{timestamp}}"

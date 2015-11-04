@@ -2,6 +2,7 @@
   "variables": {
     "mock": "{{ env `MOCK` }}",
     "atlas_token": "{{ env `ATLAS_TOKEN`}}",
+    "atlas_artifact": "cloudbreak",
 
     "os_user": "centos",
 
@@ -55,7 +56,7 @@
       {
         "type": "atlas",
         "token": "{{user `atlas_token`}}",
-        "artifact": "sequenceiq/openstack",
+        "artifact": "sequenceiq/{{ user `atlas_artifact` }}",
         "artifact_type": "openstack.image",
         "metadata": {
           "created_at": "{{timestamp}}"
