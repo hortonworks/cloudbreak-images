@@ -14,6 +14,7 @@ packer_in_container() {
   [[ "$TRACE" ]] && set -x
   docker run -i --rm \
     -e MOCK=$MOCK \
+    -e PACKER_LOG=$PACKER_LOG \
     -e AWS_ACCESS_KEY_ID=$AWS_ACCESS_KEY_ID \
     -e AWS_SECRET_ACCESS_KEY=$AWS_SECRET_ACCESS_KEY \
     -e AZURE_PUBLISH_SETTINGS=$AZURE_PUBLISH_SETTINGS \
