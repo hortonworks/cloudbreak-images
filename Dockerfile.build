@@ -1,0 +1,10 @@
+FROM gliderlabs/alpine:3.2
+
+RUN apk-install \
+  curl \
+  jq \
+  make \
+  bash
+RUN curl -L https://github.com/lalyos/yaml2json/releases/download/vmaster/yaml2json__Linux_x86_64.tgz | tar -xz -C /usr/local/bin
+
+ENTRYPOINT bash
