@@ -1,3 +1,20 @@
+docker_images:
+  cb_docker_container_ambari_warmup: {{ .Config.PackerUserVars.cb_docker_container_ambari_warmup }}
+  cb_docker_container_ambari: {{ .Config.PackerUserVars.cb_docker_container_ambari }}
+  cb_docker_container_docker_consul_watch_plugn: {{ .Config.PackerUserVars.cb_docker_container_docker_consul_watch_plugn }}
+  cb_docker_container_registrator: {{ .Config.PackerUserVars.cb_docker_container_registrator }}
+  cb_docker_container_baywatch_server: {{ .Config.PackerUserVars.cb_docker_container_baywatch_server }}
+  cb_docker_container_baywatch_client: {{ .Config.PackerUserVars.cb_docker_container_baywatch_client }}
+  cb_docker_container_logrotate: {{ .Config.PackerUserVars.cb_docker_container_logrotate }}
+  cb_docker_container_kerberos: {{ .Config.PackerUserVars.cb_docker_container_kerberos }}
+  cb_docker_container_ambari_db: {{ .Config.PackerUserVars.cb_docker_container_ambari_db }}
+  cb_docker_container_munchausen: {{ .Config.PackerUserVars.cb_docker_container_munchausen }}
+  cb_docker_container_consul: {{ .Config.PackerUserVars.cb_docker_container_consul }}
+  cb_docker_container_gateway: {{ .Config.PackerUserVars.cb_docker_container_gateway }}
+  cb_docker_container_alpine: {{ .Config.PackerUserVars.cb_docker_container_alpine }}
+  cb_docker_container_swarm: {{ .Config.PackerUserVars.cb_docker_container_swarm }}
+  cb_docker_container_cert_tool: {{ .Config.PackerUserVars.cb_docker_container_cert_tool }}
+  cb_docker_container_list_others: {{ .Config.PackerUserVars.cb_docker_container_list_others }}
 gce:
   builder: {{ .Artifact.BuilderId }}
   id: {{ .Artifact.Id }}
