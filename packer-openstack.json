@@ -72,7 +72,7 @@
       [
        {
         "type": "artifice",
-        "files": ["./{{ user `os_image_name` }}.img"]
+        "files": ["{{ user `os_image_name` }}.img"]
       }
       ,{
         "type": "atlas",
