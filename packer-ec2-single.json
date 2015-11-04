@@ -22,7 +22,7 @@
   },
   "builders":[
   {
-    "name": "{{ user `aws_region` }}",
+    "name": "eu-west-1",
     "type": "amazon-ebs",
     "region": "eu-west-1",
     "ami_regions": ["ap-southeast-1","ap-southeast-2","eu-central-1","ap-northeast-1","us-east-1","sa-east-1","us-west-1","us-west-2"],
