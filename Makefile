@@ -21,7 +21,10 @@ build-azure: generate-vars
 build-openstack: generate-vars
 	TRACE=1 ./scripts/packer.sh build $(PACKER_OPTS) packer-openstack.json
 
-generate-vars:
+generate-vars: docker-build
+	docker run -v $(PWD):/work -w /work --entrypoint=bash images:build -c 'make generate-vars-local'
+
+generate-vars-local:
 	cat vars-versions.yml | yaml2json | jq . > vars-versions.json
 	cat vars-docker-images.yml | yaml2json | jq . > vars-docker-images.json
 	
