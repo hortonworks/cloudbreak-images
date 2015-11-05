@@ -27,6 +27,8 @@ packer_in_container() {
     -e OS_USERNAME=$OS_USERNAME \
     -e IMAGE_NAME_SUFFIX=$IMAGE_NAME_SUFFIX \
     -e ATLAS_TOKEN=$ATLAS_TOKEN \
+    -v /var/run/docker.sock:/var/run/docker.sock \
+    -v /usr/local/bin/docker:/usr/local/bin/docker \
     -v $PWD:/data \
     -w /data \
     $dockerOpts \
