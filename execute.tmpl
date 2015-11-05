@@ -10,5 +10,5 @@ docker run \
     -e OS_TENANT_NAME=$OS_TENANT_NAME \
     -e OS_USERNAME=$OS_USERNAME \
     sequenceiq/glance-cli:0.19.0 \
-    image-download --file {{ .Artifact.Id }}.img {{ .Artifact.Id }}
+    image-download --file {{ .Config.PackerUserVars.os_image_name }}.img {{ .Artifact.Id }}
 EOF
