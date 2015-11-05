@@ -63,7 +63,7 @@
             "type": "atlas",
             "token": "{{user `atlas_token`}}",
             "artifact": "sequenceiq/{{ user `atlas_artifact` }}",
-            "artifact_type": "googlecompute.image",
+            "artifact_type": "googlecompute.yml",
             "metadata": {
               "created_at": "{{timestamp}}"
             }

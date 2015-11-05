@@ -85,7 +85,7 @@
         "type": "atlas",
         "token": "{{user `atlas_token`}}",
         "artifact": "sequenceiq/{{ user `atlas_artifact` }}",
-        "artifact_type": "aws.image",
+        "artifact_type": "amazon.yml",
         "metadata": {
           "created_at": "{{timestamp}}"
         }
