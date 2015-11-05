@@ -28,7 +28,7 @@ packer_in_container() {
     -e IMAGE_NAME_SUFFIX=$IMAGE_NAME_SUFFIX \
     -e ATLAS_TOKEN=$ATLAS_TOKEN \
     -v /var/run/docker.sock:/var/run/docker.sock \
-    -v /usr/local/bin/docker:/usr/local/bin/docker \
+    -v $(which docker):/usr/local/bin/docker \
     -v $PWD:/data \
     -w /data \
     $dockerOpts \
