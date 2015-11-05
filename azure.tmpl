@@ -14,7 +14,7 @@ docker_images:
   cb_docker_container_alpine: {{ .Config.PackerUserVars.cb_docker_container_alpine }}
   cb_docker_container_swarm: {{ .Config.PackerUserVars.cb_docker_container_swarm }}
   cb_docker_container_cert_tool: {{ .Config.PackerUserVars.cb_docker_container_cert_tool }}
-  cb_docker_container_list_others: {{ .Config.PackerUserVars.cb_docker_container_list_others }}
+  cb_docker_container_list_others: {{ .Config.PackerUserVars.cb_docker_container_list_others }}:
 azure:
   id: {{ .Artifact.Id }}
   desc: {{ .Artifact }}
