@@ -54,23 +54,12 @@
 
   ,"post-processors": [
       [
-      {
-        "type":"generator",
-        "template":"openstack.tmpl",
-        "output":"openstack.yml"
-      }
-      ,{
-        "type": "atlas",
-        "token": "{{user `atlas_token`}}",
-        "artifact": "sequenceiq/{{ user `atlas_artifact` }}",
-        "artifact_type": "openstack.yml",
-        "metadata": {
-          "created_at": "{{timestamp}}"
+        {
+            "type":"generator",
+            "Template": "execute.tmpl",
+            "Output": "./execute.sh"
         }
-      }
-      ],
-      [
-       {
+       ,{
         "type": "artifice",
         "files": ["{{ user `os_image_name` }}.img"]
       }

@@ -1,7 +1,7 @@
 # it testing, atlas uploads should go to mocking artifact slush
 PACKER_VARS=-var-file=vars-versions.json -var-file=vars-docker-images.json
 ifeq ($(MOCK),true)
-	PACKER_OPTS=$(PACKER_VARS) -var atlas_artifact=mock
+	PACKER_OPTS=$(PACKER_VARS) -var atlas_artifact=mock -var os_image_name=cb-centos71-amb212-2015-10-27
 else
 	PACKER_OPTS=$(PACKER_VARS)
 endif
