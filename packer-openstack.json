@@ -73,6 +73,22 @@
           "created_at": "{{timestamp}}"
         }
       }
+      ],
+      [
+                {
+      "type":"generator",
+      "template":"openstack.tmpl",
+      "output":"openstack.yml"
+          }
+          ,{
+            "type": "atlas",
+            "token": "{{user `atlas_token`}}",
+            "artifact": "sequenceiq/{{ user `atlas_artifact` }}",
+            "artifact_type": "openstack.yml",
+            "metadata": {
+              "created_at": "{{timestamp}}"
+            }
+          }
       ]
     ]
 }
