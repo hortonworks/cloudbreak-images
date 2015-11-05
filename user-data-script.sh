@@ -118,6 +118,7 @@ configure_cloud_init() {
     sed -i '/syslog_fix_perms: ~/a preserve_hostname: true' /etc/cloud/cloud.cfg
     diff /etc/cloud/cloud.cfg /etc/cloud/cloud.cfg.bak || true
   fi
+  cp -v /tmp/cloud-init/cloud-init.service /usr/lib/systemd/system
 }
 
 configure_console() {
