@@ -12,6 +12,7 @@
 	[
 		{
 			"type"				: "azure",
+            "ssh_pty": "true",
 			"publish_settings_path" 	: "{{user `psPath`}}",
 			"subscription_name"		: "{{user `sn`}}",
 			"storage_account" 		: "102589fae040d8westeurope",
