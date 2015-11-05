@@ -4,3 +4,5 @@ gce.yml
 openstack.yml
 vars-versions.json
 vars-docker-images.json
+*.img
+execute.sh
