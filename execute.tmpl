@@ -1,8 +1,7 @@
 #!/bin/sh
 
-echo "===> glance cli will download {{ .Artifact.Id }} as: {{ .Config.PackerUserVars.os_image_name }}.img"
+echo "===> glance cli will download {{ .Config.PackerUserVars.os_image_name }}.img"
 
-cat <<EOF
 docker run \
     -v $PWD:/work \
     -w /work \
@@ -12,7 +11,6 @@ docker run \
     -e OS_TENANT_NAME=$OS_TENANT_NAME \
     -e OS_USERNAME=$OS_USERNAME \
     sequenceiq/glance-cli:0.19.0 \
-    image-download --file {{ .Config.PackerUserVars.os_image_name }}.img {{ .Artifact.Id }}
-EOF
+    image-download --file {{ .Config.PackerUserVars.os_image_name }}.img {{ .Config.PackerUserVars.os_image_name }}
 
-ls -lrth *.img
+ls -lrth *.img || true
