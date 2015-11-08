@@ -51,10 +51,16 @@
     "ami_groups" :"all",
     "ami_name": "cb-centos71-amb212-{{ isotime \"2006-01-02\" }}{{user `namesuffix`}}"
   }],
-  "provisioners": [{
+  "provisioners": [
+  {
     "type": "file",
     "source": "shared/",
     "destination": "/tmp"
+  },
+  {
+    "type": "file",
+    "source": "shared-bin/",
+    "destination": "/tmp/bin"
   },
   {
     "type": "shell",
@@ -68,6 +74,14 @@
         "TRACE=1"
     ],
     "execute_command": "chmod +x {{ .Path }}; {{ .Vars }} sudo -E bash '{{ .Path }}'"
+  },
+  {
+    "type": "shell",
+    "script": "./shared-bin/ssh-aliases",
+    "environment_vars": [
+      "TRACE_=1"
+    ],
+    "execute_command": "chmod +x {{ .Path }}; {{ .Vars }} sudo -E bash -c '{{ .Path }} setup'"
   },
   {
     "type": "shell",
