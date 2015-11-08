@@ -1,0 +1,125 @@
+#!/bin/bash
+
+debug() {
+  [[ "$DEBUG" ]] && echo "---> $*" 1>&2
+}
+
+create_motd() {
+  debug "create_motd()"
+  cat > /etc/motd <<"EOF"
+cat /etc/motd
+                    ##        .
+              ## ## ##       ==
+           ## ## ## ##      ===
+       /""""""""""""""""\___/ ===
+  ~~~ {~~ ~~~~ ~~~ ~~~~ ~~ ~ /  ===- ~~~
+       \______ o          __/
+         \    \        __/
+          \____\______/
+
+=================================================
+You are now logged in to the docker host ...
+Getting started with docker:
+
+  docker ps                : Listing running containers
+  docker logs -f <ID>      : Star tail -f on container stdout/stderr
+  docker exec -it <ID> sh  : Entering the container (instead of ssh)
+
+Helper commands:
+
+  h                        : prints this message
+EOF
+  helper_desc >> /etc/motd
+  echo >> /etc/motd
+}
+
+create_motd_login() {
+  debug "create_motd_login"
+  cat > /etc/motd-login <<EOF
+Please login with one of the following username rather than the user "root":
+
+  "ambari" : Enter the ambari container
+  "ambari-log" : Watch the ambari logs
+  "$OS_USER" : Reach the host running the ambari container
+
+EOF
+}
+
+script_desc() {
+  declare desc="Inspect a function's description"
+  desc=""
+  eval "$(grep desc <${1:? script path is required} | head -1)"; echo $desc
+}
+
+helper_desc() {
+  for script in $HELPER_DIR/helper-*; do
+      name=${script#*helper-}
+      printf "  %-24s : %s\n" "$name" "$(script_desc $script)"
+  done
+}
+
+link_helpers() {
+  debug "link_helpers()"
+  for script in $HELPER_DIR/helper-*; do
+      name=${script#*helper-}
+      [ -e $HELPER_DIR/$name ] || ln -s $script $HELPER_DIR/$name
+  done
+}
+
+fix_root_ssh() {
+  debug "fix_root_ssh()"
+  sed -i 's#command=".*" ssh-rsa#command="cat /etc/motd-login;sleep 5" ssh-rsa#' /root/.ssh/authorized_keys
+}
+
+get_def_key() {
+  tail -1 /home/${OS_USER}/.ssh/authorized_keys
+}
+
+move_scripts() {
+  debug "move_scripts()"
+  declare desc="Moves helper scripts from temp dir to final dest"
+
+  #chmod +x ${SCRIPTS_DIR}/*
+  mv -f ${SCRIPTS_DIR}/* ${HELPER_DIR}
+}
+
+create_ssh_aliases() {
+  debug "create_ssh_aliases()"
+  for script in $HELPER_DIR/helper-*; do
+    name=${script#*helper-}
+    grep -q ambari-log /etc/passwd && userdel -rf $name
+    sshcommand create $name $script
+    get_def_key | sshcommand acl-add $name default
+  done
+}
+
+main() {
+  : ${DEBUG:=1}
+  : ${OS_USER:=ec2-user}
+  : ${SCRIPTS_DIR:=/tmp/bin}
+  : ${HELPER_DIR:=/usr/bin}
+
+  [[ "$TRACE" ]] && set -x
+
+  case "$1" in
+      setup)
+        move_scripts
+        create_motd
+        create_motd_login
+        fix_root_ssh
+        link_helpers
+        ;;
+      create)
+        create_ssh_aliases
+        ;;
+      *)
+        cat <<EOF
+Usage:
+    setup:   copies helper scripts, create links, motd file
+    create:  creates ssh alias users for each helper script
+EOF
+        ;;
+    esac
+}
+
+[[ "$0" == "$BASH_SOURCE" ]] && main "$@"

@@ -1,0 +1,19 @@
+#!/bin/bash
+ambari-enter() {
+  declare desc="Watches the ambari logs"
+
+cat 1>&2 <<EOF
+---> You will follow the ambari logs ...
+---> [COMMAND] docker exec -it $(docker ps |grep ambari|cut -d" " -f 1)  less +F /var/log/ambari-agent/ambari-agent.log
+---> to exit: <CTRL>-c q 
+
+EOF
+  sleep 1
+  docker exec -it $(docker ps |grep ambari|cut -d" " -f 1)  less +F /var/log/ambari-agent/ambari-agent.log
+}
+
+main() {
+    ambari-enter
+}
+
+[[ "$0" == "$BASH_SOURCE" ]] && main "$@"
