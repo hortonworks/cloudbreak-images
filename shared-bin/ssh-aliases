@@ -104,10 +104,10 @@ main() {
   case "$1" in
       setup)
         move_scripts
+        link_helpers
         create_motd
         create_motd_login
         fix_root_ssh
-        link_helpers
         ;;
       create)
         create_ssh_aliases
