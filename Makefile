@@ -28,9 +28,6 @@ generate-vars-local:
 	cat vars-versions.yml | yaml2json | jq . > vars-versions.json
 	cat vars-docker-images.yml | yaml2json | jq . > vars-docker-images.json
 	
-generate-images-var:
-	sed -n 's/\(cb_[^:]*\):.*/{{ user `\1` }}/p' vars-docker-images.yml | xargs
-
 docker-build:
 	docker build -t images:build - < Dockerfile.build
 

@@ -70,7 +70,12 @@
         "artifact": "sequenceiq/{{ user `atlas_artifact` }}",
         "artifact_type": "openstack.image",
         "metadata": {
-          "created_at": "{{timestamp}}"
+            "created_at": "{{timestamp}}",
+            "created" :"{{ isotime \"2006-01-02 15:04:05 -0700\" }}",
+            "yum_version_systemd": "{{ user `yum_version_systemd` }}",
+            "yum_version_docker": "{{ user `yum_version_docker` }}",
+            "yum_version_kernel": "{{ user `yum_version_kernel` }}",
+            "all_docker_images":"{{ user `cb_docker_container_ambari_warmup` }},{{ user `cb_docker_container_ambari` }},{{ user `cb_docker_container_docker_consul_watch_plugn` }},{{ user `cb_docker_container_registrator` }},{{ user `cb_docker_container_baywatch_server` }},{{ user `cb_docker_container_baywatch_client` }},{{ user `cb_docker_container_logrotate` }},{{ user `cb_docker_container_kerberos` }},{{ user `cb_docker_container_ambari_db` }},{{ user `cb_docker_container_munchausen` }},{{ user `cb_docker_container_consul` }},{{ user `cb_docker_container_gateway` }},{{ user `cb_docker_container_alpine` }},{{ user `cb_docker_container_swarm` }},{{ user `cb_docker_container_cert_tool` }},{{ user `cb_docker_container_list_others` }}"
         }
       }
       ],
@@ -86,7 +91,8 @@
             "artifact": "sequenceiq/{{ user `atlas_artifact` }}",
             "artifact_type": "openstack.yml",
             "metadata": {
-              "created_at": "{{timestamp}}"
+                "created_at": "{{timestamp}}",
+                "created" :"{{ isotime \"2006-01-02 15:04:05 -0700\" }}"
             }
           }
       ]
