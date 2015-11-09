@@ -79,7 +79,7 @@
     "type": "shell",
     "script": "./shared-bin/ssh-aliases",
     "environment_vars": [
-      "TRACE_=1"
+      "TRACE=1"
     ],
     "execute_command": "chmod +x {{ .Path }}; {{ .Vars }} sudo -E bash -c '{{ .Path }} setup'"
   },
