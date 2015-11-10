@@ -6,3 +6,5 @@ vars-versions.json
 vars-docker-images.json
 *.img
 execute.sh
+*.image.json
+*.bak
