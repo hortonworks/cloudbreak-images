@@ -1,4 +1,5 @@
 #!/bin/sh
+[[ "$TRACE" ]] && set -x
 
 _glance() {
   docker run \
@@ -13,13 +14,17 @@ _glance() {
   "$@"
 }
 
-echo "===> list all images with glance: "
-_glance image-list
+main() {
+    echo "===> list all images with glance: "
+    _glance image-list
 
-echo "===> show detail about actual: "
-_glance image-show {{ .Config.PackerUserVars.os_image_name }}
+    echo "===> show detail about actual: "
+    _glance image-show {{ .Config.PackerUserVars.os_image_name }}
 
-echo "===> glance cli will download {{ .Config.PackerUserVars.os_image_name }}.img"
-_glance image-download --file {{ .Config.PackerUserVars.os_image_name }}.img {{ .Config.PackerUserVars.os_image_name }}
+    echo "===> glance cli will download {{ .Config.PackerUserVars.os_image_name }}.img"
+    _glance image-download --file {{ .Config.PackerUserVars.os_image_name }}.img {{ .Artifact.Id }}
 
-ls -lrth *.img || true
+    ls -lrth *.img || true
+}
+
+[[ "$0" == "$BASH_SOURCE" ]] && main "$@"
