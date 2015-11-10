@@ -2,6 +2,8 @@
 [[ "$TRACE" ]] && set -x
 
 : ${RUN_GLANCE_IN_DOCKER:=false}
+: ${MAX_TRIES:=10}
+: ${SLEEP:=10}
 
 _glance() {
 
@@ -21,13 +23,23 @@ _glance() {
   fi
 }
 
+wait_for_image() {
+  declare imageid=${1:? image id or name required}
+
+  echo "---> WAIT for image readyness: $imageid ..."
+  for i in $(seq 1 $MAX_TRIES); do
+    if _glance image-show $imageid &>/dev/null; then
+        echo "---> READY: $imageid "
+        return
+    fi
+    echo "---> sleep $SLEEP ..."
+    sleep $SLEEP
+  done
+  echo "---> [ERROR] image: $imageid couldnt be find after $MAX_TRIES retry "
+}
+
 main() {
-    echo "===> list all images with glance: "
-    _glance image-list
-
-    echo "===> show detail about actual: "
-    _glance image-show {{ .Config.PackerUserVars.os_image_name }}
-
+    wait_for_image {{ .Artifact.Id }}
     echo "===> glance cli will download {{ .Config.PackerUserVars.os_image_name }}.img"
     _glance image-download --file {{ .Config.PackerUserVars.os_image_name }}.img {{ .Artifact.Id }}
 
