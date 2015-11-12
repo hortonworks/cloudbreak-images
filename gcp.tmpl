@@ -16,8 +16,8 @@ docker_images:
   cb_docker_container_swarm: {{ .Config.PackerUserVars.cb_docker_container_swarm }}
   cb_docker_container_cert_tool: {{ .Config.PackerUserVars.cb_docker_container_cert_tool }}
   cb_docker_container_list_others: {{ .Config.PackerUserVars.cb_docker_container_list_others }}
-gce:
+gcp:
+  image: sequenceiqimage/{{ .Artifact.Id }}.tar.gz
   builder: {{ .Artifact.BuilderId }}
   id: {{ .Artifact.Id }}
-  source_image: sequenceiqimage/{{ .Artifact.Id }}.tar.gz
   import_script: gcloud compute images create {{ .Artifact.Id }} --source-uri gs://sequenceiqimage/{{ .Artifact.Id }}.tar.gz
