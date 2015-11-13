@@ -28,11 +28,10 @@ packer_in_container() {
     -e IMAGE_NAME_SUFFIX=$IMAGE_NAME_SUFFIX \
     -e ATLAS_TOKEN=$ATLAS_TOKEN \
     -v /var/run/docker.sock:/var/run/docker.sock \
-    -v $(which docker):/usr/local/bin/docker \
     -v $PWD:/data \
     -w /data \
     $dockerOpts \
-    sequenceiq/packer:0.8.7-mock "$@"
+    sequenceiq/packer:0.8.7-v1 "$@"
     set +x
 }
 
