@@ -93,21 +93,6 @@ pull_images() {
   done
 }
 
-install_scripts() {
-  local target=${1:-/usr/local}
-  local provider=$(get_provider_from_packer)
-
-  debug target=$target
-  debug provider=$provider
-
-  # script are copied by packer's file provisioner section
-  cp -v /tmp/scripts/public_host_script_$provider.sh ${target}/public_host_script.sh
-
-  chmod +x ${target}/*.sh
-  ls -l $target/*.sh
-
-}
-
 reset_hostname() {
   echo "Avoid pre-assigned hostname"
   rm -vf /etc/hostname
@@ -197,7 +182,6 @@ main() {
     permissive_iptables
     enable_ipforward
     install_utils
-    install_scripts
     install_docker
     configure_cloud_init
     configure_console
