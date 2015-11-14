@@ -32,7 +32,6 @@ packer_in_container() {
     -w /data \
     $dockerOpts \
     sequenceiq/packer:0.8.7-v1 "$@"
-    set +x
 }
 
 main() {
