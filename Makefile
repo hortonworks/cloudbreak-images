@@ -12,8 +12,8 @@ endif
 build-aws: generate-vars
 	TRACE=1 ./scripts/packer.sh build $(PACKER_OPTS) packer-ec2.json
 
-build-gce: generate-vars
-	TRACE=1 ./scripts/packer.sh build $(PACKER_OPTS) packer-gce.json
+build-gcp: generate-vars
+	TRACE=1 ./scripts/packer.sh build $(PACKER_OPTS) packer-gcp.json
 
 build-azure: generate-vars
 	TRACE=1 ./scripts/packer.sh build $(PACKER_OPTS) packer-azure.json

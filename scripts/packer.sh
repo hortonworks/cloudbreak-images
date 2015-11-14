@@ -3,8 +3,8 @@
 packer_in_container() {
   local dockerOpts=""
 
-  if [[ "$GCE_ACCOUNT_FILE" ]]; then
-    dockerOpts="$dockerOpts -v $GCE_ACCOUNT_FILE:$GCE_ACCOUNT_FILE"
+  if [[ "$GCP_ACCOUNT_FILE" ]]; then
+    dockerOpts="$dockerOpts -v $GCP_ACCOUNT_FILE:$GCP_ACCOUNT_FILE"
   fi
 
   if [[ "$AZURE_PUBLISH_SETTINGS" ]]; then
@@ -19,7 +19,7 @@ packer_in_container() {
     -e AWS_SECRET_ACCESS_KEY=$AWS_SECRET_ACCESS_KEY \
     -e AZURE_PUBLISH_SETTINGS=$AZURE_PUBLISH_SETTINGS \
     -e AZURE_SUBSCRIPTION_NAME=$AZURE_SUBSCRIPTION_NAME \
-    -e GCE_ACCOUNT_FILE=$GCE_ACCOUNT_FILE \
+    -e GCP_ACCOUNT_FILE=$GCP_ACCOUNT_FILE \
     -e OS_IMAGE_NAME=$OS_IMAGE_NAME \
     -e OS_AUTH_URL=$OS_AUTH_URL \
     -e OS_PASSWORD=$OS_PASSWORD \
