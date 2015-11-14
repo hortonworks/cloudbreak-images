@@ -82,6 +82,8 @@ install_docker() {
   systemctl daemon-reload
   service docker start
   systemctl enable docker.service
+
+  usermod -a -G docker $OS_USER
 }
 
 pull_images() {
