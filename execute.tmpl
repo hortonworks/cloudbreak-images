@@ -25,6 +25,8 @@ _glance() {
 
 wait_for_image() {
   declare imageid=${1:? image id or name required}
+  echo "---> testing glance cli, listing images:"
+  _glance image-list
 
   echo "---> WAIT for image readyness: $imageid ..."
   for i in $(seq 1 $MAX_TRIES); do
