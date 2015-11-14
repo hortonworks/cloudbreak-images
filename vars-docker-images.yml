@@ -1,5 +1,5 @@
-cb_docker_container_ambari_warmup: sequenceiq/ambari:2.1.2-v4
-cb_docker_container_ambari: sequenceiq/ambari:2.1.2-v4
+cb_docker_container_ambari_warmup: sequenceiq/ambari:2.1.2-v8
+cb_docker_container_ambari: sequenceiq/ambari:2.1.2-v8
 cb_docker_container_docker_consul_watch_plugn: sequenceiq/docker-consul-watch-plugn:1.0
 cb_docker_container_registrator: sequenceiq/registrator:v5.2
 cb_docker_container_baywatch_server: sequenceiq/baywatch:v0.5.3
