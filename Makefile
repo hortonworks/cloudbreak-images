@@ -1,5 +1,13 @@
 # it testing, atlas uploads should go to mocking artifact slush
-PACKER_VARS=-var-file=vars-versions.json -var-file=vars-docker-images.json
+PACKER_VARS=
+
+# this identifies images across cloud providers
+CLOUDBREAK_IMAGE_VERSION=1.1.0-v2
+PACKER_VARS=-var-file=vars-versions.json -var-file=vars-docker-images.json -var cloudbreak_image_version=$(CLOUDBREAK_IMAGE_VERSION)
+ifdef DOCKER_VERSION
+	PACKER_VARS+=-var yum_version_docker=$(DOCKER_VERSION)
+endif
+
 ifeq ($(MOCK),true)
 	PACKER_OPTS=$(PACKER_VARS) -var atlas_artifact=mock -var os_image_name=cb-centos71-amb212-2015-10-27
 else

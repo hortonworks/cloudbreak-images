@@ -96,6 +96,7 @@
         "artifact": "sequenceiq/{{ user `atlas_artifact` }}",
         "artifact_type": "amazon.yml",
         "metadata": {
+          "cloudbreak_image_version": "{{ user `cloudbreak_image_version` }}",
           "created_at": "{{timestamp}}",
           "created" :"{{ isotime \"2006-01-02 15:04:05 -0700\" }}"
         }
@@ -109,6 +110,7 @@
       "metadata": {
         "created_at": "{{timestamp}}",
         "created" :"{{ isotime \"2006-01-02 15:04:05 -0700\" }}",
+        "cloudbreak_image_version": "{{ user `cloudbreak_image_version` }}",
         "yum_version_systemd": "{{ user `yum_version_systemd` }}",
         "yum_version_docker": "{{ user `yum_version_docker` }}",
         "yum_version_kernel": "{{ user `yum_version_kernel` }}",
