@@ -21,6 +21,20 @@ docker_images:
   cb_docker_container_swarm: {{ .Config.PackerUserVars.cb_docker_container_swarm }}
   cb_docker_container_cert_tool: {{ .Config.PackerUserVars.cb_docker_container_cert_tool }}
   cb_docker_container_list_others: {{ .Config.PackerUserVars.cb_docker_container_list_others }}:
-azure:
+azure_rm:
   id: {{ .Artifact.Id }}
   desc: {{ .Artifact }}
+  EAST_ASIA: https://sequenceiqeastasia.blob.core.windows.net/images/{{ .Artifact.Id }}.vhd
+  EAST_US: https://sequenceiqeastus.blob.core.windows.net/images/{{ .Artifact.Id }}.vhd
+  CENTRAL_US: https://sequenceiqcentralus.blob.core.windows.net/images/{{ .Artifact.Id }}.vhd
+  NORTH_EUROPE: https://sequenceiqnortheurope.blob.core.windows.net/images/{{ .Artifact.Id }}.vhd
+  SOUTH_CENTRAL_US: https://sequenceiqsouthcentralus.blob.core.windows.net/images/{{ .Artifact.Id }}.vhd
+  NORTH_CENTRAL_US: https://sequenceiqnorthcentralus.blob.core.windows.net/images/{{ .Artifact.Id }}.vhd
+  EAST_US_2: https://sequenceiqeastus2.blob.core.windows.net/images/{{ .Artifact.Id }}.vhd
+  JAPAN_EAST: https://sequenceiqjapaneast.blob.core.windows.net/images/{{ .Artifact.Id }}.vhd
+  JAPAN_WEST: https://sequenceiqjapanwest.blob.core.windows.net/images/{{ .Artifact.Id }}.vhd
+  SOUTHEAST_ASIA: https://sequenceiqsoutheastasia.blob.core.windows.net/images/{{ .Artifact.Id }}.vhd
+  WEST_US: https://sequenceiqwestus.blob.core.windows.net/images/{{ .Artifact.Id }}.vhd
+  WEST_EUROPE: https://sequenceiqwesteurope.blob.core.windows.net/images/{{ .Artifact.Id }}.vhd
+  BRAZIL_SOUTH: https://sequenceiqbrazilsouth.blob.core.windows.net/images/{{ .Artifact.Id }}.vhd
+  
