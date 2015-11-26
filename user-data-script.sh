@@ -1,3 +1,4 @@
+#!/bin/bash
 
 # let the script fail to cause the image build unsuccessfull
 #set -eo pipefail
