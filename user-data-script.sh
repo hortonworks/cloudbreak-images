@@ -85,13 +85,6 @@ install_docker() {
   usermod -a -G docker $OS_USER
 }
 
-pull_images() {
-  set -e
-  for i in ${IMAGES}; do
-    docker pull ${i}
-  done
-}
-
 reset_hostname() {
   echo "Avoid pre-assigned hostname"
   rm -vf /etc/hostname
@@ -177,7 +170,6 @@ main() {
     install_docker
     configure_cloud_init
     configure_console
-    pull_images
     cleanup
     sync
 }
