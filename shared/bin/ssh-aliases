@@ -38,9 +38,8 @@ create_motd_login() {
   cat > /etc/motd-login <<EOF
 Please login with one of the following username rather than the user "root":
 
-  "ambari" : Enter the ambari container
-  "ambari-log" : Watch the ambari logs
-  "$OS_USER" : Reach the host running the ambari container
+$(printf '  %-24s : %s\n' $OS_USER  'Reach the host running the ambari container')
+$(helper_desc)
 
 EOF
 }
@@ -107,10 +106,10 @@ main() {
         link_helpers
         create_motd
         create_motd_login
-        fix_root_ssh
         ;;
       create)
         create_ssh_aliases
+        fix_root_ssh
         ;;
       *)
         cat <<EOF
