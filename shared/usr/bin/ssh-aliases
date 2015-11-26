@@ -74,14 +74,6 @@ get_def_key() {
   tail -1 /home/${OS_USER}/.ssh/authorized_keys
 }
 
-move_scripts() {
-  debug "move_scripts()"
-  declare desc="Moves helper scripts from temp dir to final dest"
-
-  #chmod +x ${SCRIPTS_DIR}/*
-  mv -f ${SCRIPTS_DIR}/* ${HELPER_DIR}
-}
-
 create_ssh_aliases() {
   debug "create_ssh_aliases()"
   for script in $HELPER_DIR/helper-*; do
@@ -95,14 +87,12 @@ create_ssh_aliases() {
 main() {
   : ${DEBUG:=1}
   : ${OS_USER:=ec2-user}
-  : ${SCRIPTS_DIR:=/tmp/bin}
   : ${HELPER_DIR:=/usr/bin}
 
   [[ "$TRACE" ]] && set -x
 
   case "$1" in
       setup)
-        move_scripts
         link_helpers
         create_motd
         create_motd_login

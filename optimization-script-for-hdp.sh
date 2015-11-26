@@ -6,11 +6,6 @@ debug() {
     [[ "$DEBUG" ]] && echo "-----> $*" 1>&2
 }
 
-set_resourcelimits_for_docker() {
-  sed -i 's/LimitNOFILE=.*/LimitNOFILE=200000/' /usr/lib/systemd/system/docker.service
-  sed -i 's/LimitNPROC=.*/LimitNPROC=16384/' /usr/lib/systemd/system/docker.service
-}
-
 disable_ipv6() {
   echo 'net.ipv6.conf.default.disable_ipv6 = 1' >> /etc/sysctl.conf
   echo 'net.ipv6.conf.all.disable_ipv6 = 1' >> /etc/sysctl.conf
@@ -18,22 +13,6 @@ disable_ipv6() {
   echo 'IPV6INIT="no"' >> /etc/sysconfig/network-scripts/ifcfg-eth0
   systemctl disable ip6tables.service
   sed -i 's/#AddressFamily any/AddressFamily inet/' /etc/ssh/sshd_config
-}
-
-disable_thp() {
-  mkdir -p /etc/tuned/custom
-  mv /tmp/scripts/disable_thp_defrag.sh /etc/tuned/custom
-  cat << EOF > /etc/tuned/custom/tuned.conf
-[main]
-include=virtual-guest
-
-[vm]
-transparent_hugepages=never
-
-[script]
-script=disable_thp_defrag.sh
-EOF
-  tuned-adm profile custom
 }
 
 disable_swap() {
@@ -46,9 +25,8 @@ set_dirty_ratio () {
 }
 
 main() {
-  set_resourcelimits_for_docker
   disable_ipv6
-  disable_thp
+  tuned-adm profile custom
   disable_swap
   set_dirty_ratio
   sync

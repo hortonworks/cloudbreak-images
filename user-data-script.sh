@@ -12,8 +12,8 @@ debug() {
 
 update_centos_base_yum_repo() {
   # Use the same CentOS Base yum repo on CentOS images
-  if grep "CentOS\|Derived from Red Hat" /etc/redhat-release > /dev/null; then
-    cp -v /tmp/yum/CentOS-Base.repo /etc/yum.repos.d/
+  if ! grep/ "CentOS\|Derived from Red Hat" /etc/redhat-release &> /dev/null; then
+    rm -f /etc/yum.repos.d/CentOS-Base.repo
   fi
 }
 
@@ -72,11 +72,9 @@ fi
 }
 
 install_docker() {
-  cp -v /tmp/docker/docker.repo /etc/yum.repos.d/
   yum install -y docker-engine-$YUM_VERSION_DOCKER
 
   cp -v /usr/lib/systemd/system/docker.service /usr/lib/systemd/system/docker.service.bak
-  cp -v /tmp/docker/docker.service /usr/lib/systemd/system
 
   rm -rf /var/lib/docker
   systemctl daemon-reload
@@ -105,7 +103,6 @@ configure_cloud_init() {
     sed -i '/syslog_fix_perms: ~/a preserve_hostname: true' /etc/cloud/cloud.cfg
     diff /etc/cloud/cloud.cfg /etc/cloud/cloud.cfg.bak || true
   fi
-  cp -v /tmp/cloud-init/cloud-init.service /usr/lib/systemd/system
 }
 
 configure_console() {
