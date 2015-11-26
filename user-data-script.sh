@@ -117,12 +117,6 @@ configure_console() {
   fi
 }
 
-copy_hadoop_lib() {
-  # /data/jars directory is used because it is shared with the ambari-docker container on cloudbreak vms
-  mkdir -p /data/jars
-  cp -v /tmp/hadoop-lib/* /data/jars
-}
-
 reset_docker() {
   service docker stop
   echo "Deleting key.json in order to avoid swarm conflicts"
@@ -186,7 +180,6 @@ main() {
     configure_cloud_init
     configure_console
     pull_images
-    copy_hadoop_lib
     cleanup
     sync
 }
