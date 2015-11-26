@@ -80,7 +80,7 @@
   },
   {
     "type": "shell",
-    "script": "./shared/bin/ssh-aliases",
+    "script": "./shared/usr/bin/ssh-aliases",
     "environment_vars": [
       "TRACE=1"
     ],
