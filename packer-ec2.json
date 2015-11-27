@@ -22,7 +22,7 @@
   },
   "builders":[
   {
-    "name": "eu-west-1",
+    "name": "amazon",
     "type": "amazon-ebs",
     "region": "eu-west-1",
     "ami_regions": ["ap-southeast-1","ap-southeast-2","eu-central-1","ap-northeast-1","us-east-1","sa-east-1","us-west-1","us-west-2"],
@@ -84,14 +84,13 @@
     [
       {
         "type": "generator",
-        "template": "aws.tmpl",
-        "output": "aws.yml"
+        "template": "{{ build_name }}.tmpl",
+        "output": "{{ build_name }}.yml"
       },
       {
         "type": "atlas",
-        "token": "{{user `atlas_token`}}",
         "artifact": "sequenceiq/{{ user `atlas_artifact` }}",
-        "artifact_type": "amazon.yml",
+        "artifact_type": "{{ build_name }}.yml",
         "metadata": {
           "cloudbreak_image_version": "{{ user `cloudbreak_image_version` }}",
           "created_at": "{{timestamp}}",
@@ -101,9 +100,8 @@
     ],
     {
       "type": "atlas",
-      "token": "{{user `atlas_token`}}",
       "artifact": "sequenceiq/{{ user `atlas_artifact` }}",
-      "artifact_type": "amazon.image",
+      "artifact_type": "{{ build_name }}.image",
       "metadata": {
         "created_at": "{{timestamp}}",
         "created" :"{{ isotime \"2006-01-02 15:04:05 -0700\" }}",
