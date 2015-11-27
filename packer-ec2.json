@@ -54,8 +54,12 @@
   "provisioners": [
   {
     "type": "file",
-    "source": "shared/",
-    "destination": "/"
+    "source": "shared",
+    "destination": "/tmp"
+  },
+  {
+      "type": "shell",
+      "inline": ["sudo rsync -a /tmp/shared/ /"]
   },
   {
     "type": "shell",
