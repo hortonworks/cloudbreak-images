@@ -74,11 +74,10 @@ fi
 install_docker() {
   yum install -y docker-engine-$YUM_VERSION_DOCKER
 
-  cp -v /usr/lib/systemd/system/docker.service /usr/lib/systemd/system/docker.service.bak
-
   rm -rf /var/lib/docker
   systemctl daemon-reload
-  service docker start
+  systemctl start docker.socket || :
+  systemctl start docker.service
   systemctl enable docker.service
 
   usermod -a -G docker $OS_USER
