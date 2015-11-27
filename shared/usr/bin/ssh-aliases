@@ -92,21 +92,21 @@ main() {
   [[ "$TRACE" ]] && set -x
 
   case "$1" in
-      setup)
-        link_helpers
-        create_motd
-        create_motd_login
-        ;;
       create)
         create_ssh_aliases
         fix_root_ssh
         ;;
-      *)
+      -h)
         cat <<EOF
 Usage:
     setup:   copies helper scripts, create links, motd file
     create:  creates ssh alias users for each helper script
 EOF
+        ;;
+      *)
+        link_helpers
+        create_motd
+        create_motd_login
         ;;
     esac
 }

@@ -88,7 +88,7 @@
     "environment_vars": [
       "TRACE=1"
     ],
-    "execute_command": "chmod +x {{ .Path }}; {{ .Vars }} sudo -E bash -c '{{ .Path }} setup'"
+    "execute_command": "chmod +x {{ .Path }}; {{ .Vars }} sudo -E bash -c '{{ .Path }}'"
   },
   {
     "type": "shell",
