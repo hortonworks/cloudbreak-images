@@ -91,8 +91,7 @@ reset_hostname() {
 configure_cloud_init() {
   if [ -f /etc/cloud/cloud.cfg ]; then
     #/etc/sysconfig/network is not used by CentOS 7 anymore
-    cp /etc/cloud/cloud.cfg /etc/cloud/cloud.cfg.bak
-    sed -i '/syslog_fix_perms: ~/a preserve_hostname: true' /etc/cloud/cloud.cfg
+    sed -i.bak '/syslog_fix_perms: ~/a preserve_hostname: true' /etc/cloud/cloud.cfg
     diff /etc/cloud/cloud.cfg /etc/cloud/cloud.cfg.bak || :
   fi
 }
