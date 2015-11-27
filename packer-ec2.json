@@ -55,7 +55,7 @@
   {
     "type": "file",
     "source": "shared/",
-    "destination": "/tmp"
+    "destination": "/"
   },
   {
     "type": "shell",
