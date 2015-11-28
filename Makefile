@@ -21,7 +21,7 @@ build-amazon: generate-vars
 	TRACE=1 ./scripts/packer.sh build -only=amazon $(PACKER_OPTS) packer.json
 
 build-googlecompute: generate-vars
-	TRACE=1 ./scripts/packer.sh build -only=googlecompute $(PACKER_OPTS) packer.json
+	TRACE=1 ./scripts/packer.sh build -only=googlecompute $(PACKER_OPTS) -var os_user=centos packer.json
 
 build-azure: generate-vars
 	TRACE=1 ./scripts/packer.sh build $(PACKER_OPTS) packer-azure.json
