@@ -12,7 +12,7 @@ debug() {
 
 update_centos_base_yum_repo() {
   # Use the same CentOS Base yum repo on CentOS images
-  if ! grep/ "CentOS\|Derived from Red Hat" /etc/redhat-release &> /dev/null; then
+  if ! grep "CentOS\|Derived from Red Hat" /etc/redhat-release &> /dev/null; then
     rm -f /etc/yum.repos.d/CentOS-Base.repo
   fi
 }
