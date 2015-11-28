@@ -17,11 +17,11 @@ endif
 #deps:
 	# go get github.com/bronze1man/yaml2json
 
-build-aws: generate-vars
-	TRACE=1 ./scripts/packer.sh build $(PACKER_OPTS) packer-ec2.json
+build-amazon: generate-vars
+	TRACE=1 ./scripts/packer.sh build -only=amazon $(PACKER_OPTS) packer.json
 
-build-gcp: generate-vars
-	TRACE=1 ./scripts/packer.sh build $(PACKER_OPTS) packer-gcp.json
+build-googlecompute: generate-vars
+	TRACE=1 ./scripts/packer.sh build -only=googlecompute $(PACKER_OPTS) packer.json
 
 build-azure: generate-vars
 	TRACE=1 ./scripts/packer.sh build $(PACKER_OPTS) packer-azure.json
