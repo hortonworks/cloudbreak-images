@@ -8,6 +8,7 @@
 
     "atlas_artifact": "cloudbreak",
     "namesuffix": "{{env `IMAGE_NAME_SUFFIX` }}",
+    "image_name": "cb-centos71-amb212-{{ isotime \"2006-01-02\" }}{{user `namesuffix`}}",
     "os_user": "ec2-user",
 
     "instance_type": "m3.medium",
@@ -51,7 +52,7 @@
       "version": "{{user `version`}}"
     },
     "ami_groups" :"all",
-    "ami_name": "cb-centos71-amb212-{{ isotime \"2006-01-02\" }}{{user `namesuffix`}}"
+    "ami_name": "{{ user `image_name`}}"
   },
   {
     "disk_size": "40",
