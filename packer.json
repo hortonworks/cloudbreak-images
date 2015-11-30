@@ -5,10 +5,13 @@
     "aws_access_key": "{{ env `AWS_ACCESS_KEY` }}",
     "aws_secret_key": "{{ env `AWS_SECRET_ACCESS_KEY` }}",
     "gcp_account_file": "{{env `GCP_ACCOUNT_FILE`}}",
+    "os_auth_url": "{{ env `OS_AUTH_URL` }}",
+    "os_username": "{{ env `OS_USERNAME` }}",
+    "os_password": "{{ env `OS_PASSWORD` }}",
+    "os_tenant_name": "{{ env `OS_TENANT_NAME` }}",
 
     "atlas_artifact": "cloudbreak",
-    "namesuffix": "{{env `IMAGE_NAME_SUFFIX` }}",
-    "image_name": "cb-centos71-amb212-{{ isotime \"2006-01-02\" }}{{user `namesuffix`}}",
+    "image_name": "cb-centos71-amb212-{{ isotime \"2006-01-02\" }}{{env `IMAGE_NAME_SUFFIX` }}",
     "os_user": "ec2-user",
 
     "instance_type": "m3.medium",
@@ -69,7 +72,22 @@
     "tags": [
 	"packer"
     ]
-  }
+  },
+    {
+      "type": "openstack",
+      "username": "{{user `os_username`}}",
+      "password": "{{user `os_password`}}",
+      "tenant_name": "{{user `os_tenant_name`}}",
+      "ssh_username": "centos",
+      "ssh_pty": "true",
+      "image_name": "{{user `os_image_name`}}",
+      "source_image": "c1632189-f509-4dba-ac1a-b08b07920b6d",
+      "flavor": "3",
+      "use_floating_ip": false,
+      "networks": [
+        "6414de5e-6085-4469-b8e9-aa293a65c828"
+      ]
+    }
   ],
   "provisioners": [
   {
