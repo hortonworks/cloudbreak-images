@@ -80,7 +80,7 @@
       "tenant_name": "{{user `os_tenant_name`}}",
       "ssh_username": "centos",
       "ssh_pty": "true",
-      "image_name": "{{user `os_image_name`}}",
+      "image_name": "{{user `image_name`}}",
       "source_image": "c1632189-f509-4dba-ac1a-b08b07920b6d",
       "flavor": "3",
       "use_floating_ip": false,
