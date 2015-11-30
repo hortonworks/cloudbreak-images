@@ -15,7 +15,7 @@
             "ssh_pty": "true",
 			"publish_settings_path" 	: "{{user `psPath`}}",
 			"subscription_name"		: "{{user `sn`}}",
-			"storage_account" 		: "102589fae040d8westeurope",
+			"storage_account" 		: "02589fae040d8westeurope2",
 			"storage_account_container" 	: "images",
 			"os_type"			: "Linux",
 			"os_image_label"		: "OpenLogic 7.1",
