@@ -27,7 +27,7 @@ build-azure: generate-vars
 	TRACE=1 ./scripts/packer.sh build $(PACKER_OPTS) packer-azure.json
 
 build-openstack: generate-vars
-	TRACE=1 ./scripts/packer.sh build -only=openstack $(PACKER_OPTS) -var os_user=centos packer.json
+	TRACE=1 ./scripts/packer.sh build $(PACKER_OPTS) packer-openstack.json
 
 generate-vars: docker-build
 	docker run -v $(PWD):/work -w /work --entrypoint=bash images:build -c 'make generate-vars-local'
