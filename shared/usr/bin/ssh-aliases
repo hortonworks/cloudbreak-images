@@ -86,7 +86,7 @@ create_ssh_aliases() {
 
 main() {
   : ${DEBUG:=1}
-  : ${OS_USER:=ec2-user}
+  : ${OS_USER:? required}
   : ${HELPER_DIR:=/usr/bin}
 
   [[ "$TRACE" ]] && set -x
