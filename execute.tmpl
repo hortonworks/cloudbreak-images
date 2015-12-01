@@ -9,6 +9,7 @@ _glance() {
 
   if [[ "$RUN_GLANCE_IN_DOCKER" == "true" ]]; then
       docker run \
+        -u ${ORIG_USER:-$USER} \
         -v $PWD:/work \
         -w /work \
         -e OS_IMAGE_NAME=$OS_IMAGE_NAME \

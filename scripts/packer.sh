@@ -13,6 +13,7 @@ packer_in_container() {
   
   [[ "$TRACE" ]] && set -x
   docker run -i --rm \
+    -e ORIG_USER=$USER \
     -e MOCK=$MOCK \
     -e CHECKPOINT_DISABLE=1 \
     -e PACKER_LOG=$PACKER_LOG \
