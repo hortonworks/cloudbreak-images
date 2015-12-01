@@ -21,4 +21,5 @@ images:
   swarm: {{ .Config.PackerUserVars.cb_docker_container_swarm }}
   cert_tool: {{ .Config.PackerUserVars.cb_docker_container_cert_tool }}
 openstack:
-  default: {{ .Artifact.Id }}
+  id: {{ .Artifact.Id }}
+  name: {{ .Config.PackerUserVars.os_image_name }}
