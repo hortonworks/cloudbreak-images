@@ -12,7 +12,6 @@
 
     "atlas_artifact": "cloudbreak",
     "image_name": "cb-centos71-amb212-{{ isotime \"2006-01-02\" }}{{env `IMAGE_NAME_SUFFIX` }}",
-    "os_user": "ec2-user",
 
     "instance_type": "m3.medium",
 
@@ -37,7 +36,7 @@
     "secret_key": "{{user `aws_secret_key`}}",
     "source_ami": "{{user `ami-eu-west-1`}}",
     "instance_type": "{{ user `instance_type` }}",
-    "ssh_username": "ec2-user",
+    "ssh_username": "{{ user `os_user` }}",
     "ami_block_device_mappings": [{
                  "device_name": "/dev/sda1",
                  "volume_type": "gp2",
@@ -144,6 +143,7 @@
         "created_at": "{{timestamp}}",
         "created" :"{{ isotime \"2006-01-02 15:04:05 -0700\" }}",
         "cloudbreak_image_version": "{{ user `cloudbreak_image_version` }}",
+        "os_user": "{{user `os_user` }}",
         "yum_version_systemd": "{{ user `yum_version_systemd` }}",
         "yum_version_docker": "{{ user `yum_version_docker` }}",
         "yum_version_kernel": "{{ user `yum_version_kernel` }}",
