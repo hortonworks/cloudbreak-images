@@ -76,8 +76,7 @@ install_docker() {
 
   rm -rf /var/lib/docker
   systemctl daemon-reload
-  systemctl start docker.socket || :
-  systemctl start docker.service
+  service docker start
   systemctl enable docker.service
 
   usermod -a -G docker $OS_USER
