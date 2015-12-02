@@ -1,6 +1,6 @@
-aws.yml
+amazon.yml
 azure.yml
-gce.yml
+googlecompute.yml
 openstack.yml
 vars-versions.json
 vars-docker-images.json
