@@ -18,16 +18,16 @@ endif
 	# go get github.com/bronze1man/yaml2json
 
 build-amazon: generate-vars
-	TRACE=1 ./scripts/packer.sh build -only=amazon $(PACKER_OPTS) -var os_user=ec2-user packer.json
+	TRACE=1 ./scripts/packer.sh build -only=amazon $(PACKER_OPTS) packer.json
 
 build-googlecompute: generate-vars
-	TRACE=1 ./scripts/packer.sh build -only=googlecompute $(PACKER_OPTS) -var os_user=centos packer.json
+	TRACE=1 ./scripts/packer.sh build -only=googlecompute $(PACKER_OPTS) packer.json
 
 build-azure: generate-vars
 	TRACE=1 ./scripts/packer.sh build $(PACKER_OPTS) packer-azure.json
 
 build-openstack: generate-vars
-	TRACE=1 ./scripts/packer.sh build $(PACKER_OPTS)  -var os_user=centos packer-openstack.json
+	TRACE=1 ./scripts/packer.sh build $(PACKER_OPTS) packer-openstack.json
 
 generate-vars: docker-build
 	docker run -v $(PWD):/work -w /work --entrypoint=bash images:build -c 'make generate-vars-local'

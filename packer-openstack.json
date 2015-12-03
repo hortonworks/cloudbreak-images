@@ -4,6 +4,8 @@
     "atlas_token": "{{ env `ATLAS_TOKEN`}}",
     "atlas_artifact": "cloudbreak",
 
+    "os_user": "cloudbreak",
+
     "os_auth_url": "{{ env `OS_AUTH_URL` }}",
     "os_image_name": "cb-centos71-amb212-{{ isotime \"2006-01-02\" }}{{env `IMAGE_NAME_SUFFIX`}}",
     "os_username": "{{ env `OS_USERNAME` }}",
