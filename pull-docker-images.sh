@@ -1,7 +1,7 @@
 #!/bin/bash
 
-set -eo pipefail
 [[ "$TRACE" ]] && set -x || :
+set -eo pipefail
 
 debug() {
   [[ "$DEBUG" ]] && echo "-----> $*" 1>&2
@@ -35,4 +35,4 @@ main() {
   reset_docker
 }
 
-[[ "$0" == "$BASH_SOURCE" ]] && main "$@" || :
+[[ "$0" == "$BASH_SOURCE" ]] && main "$@"
