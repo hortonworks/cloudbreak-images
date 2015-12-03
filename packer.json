@@ -10,6 +10,7 @@
     "os_password": "{{ env `OS_PASSWORD` }}",
     "os_tenant_name": "{{ env `OS_TENANT_NAME` }}",
 
+    "os_user": "cloudbreak",
     "atlas_artifact": "cloudbreak",
     "image_name": "cb-centos71-amb212-{{ isotime \"2006-01-02\" }}{{env `IMAGE_NAME_SUFFIX` }}",
 

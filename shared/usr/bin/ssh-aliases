@@ -78,7 +78,7 @@ create_ssh_aliases() {
   debug "create_ssh_aliases()"
   for script in $HELPER_DIR/helper-*; do
     name=${script#*helper-}
-    grep -q ambari-log /etc/passwd && userdel -rf $name
+    grep -q $user /etc/passwd && userdel -rf $name
     sshcommand create $name $script
     get_def_key | sshcommand acl-add $name default
   done
