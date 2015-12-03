@@ -18,8 +18,7 @@ docker_pull_images() {
 }
 
 start_docker() {
-  systemctl start docker.socket || :
-  systemctl start docker.service
+  service docker start
 }
 
 reset_docker() {
