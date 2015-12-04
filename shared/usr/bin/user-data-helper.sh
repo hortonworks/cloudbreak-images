@@ -1,5 +1,7 @@
 #!/bin/bash
 
+set -x
+
 : ${CLOUD_PLATFORM:? required}
 : ${START_LABEL:? required}
 : ${PLATFORM_DISK_PREFIX:? required}
@@ -93,6 +95,7 @@ reload_sysconf() {
 }
 
 main() {
+  set
   reload_sysconf
   if [[ "$1" == "::" ]]; then
     shift
