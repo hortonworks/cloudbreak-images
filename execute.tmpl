@@ -44,7 +44,7 @@ wait_for_image() {
 main() {
     wait_for_image {{ .Artifact.Id }}
     echo "===> glance cli will download {{ .Config.PackerUserVars.os_image_name }}.img"
-    _glance image-update --is-public True {{ .Artifact.Id }}
+    _glance image-update --visibility public {{ .Artifact.Id }}
     _glance image-download --file {{ .Config.PackerUserVars.os_image_name }}.img {{ .Artifact.Id }}
 
     ls -lrth *.img || true
