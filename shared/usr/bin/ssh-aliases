@@ -70,23 +70,20 @@ fix_root_ssh() {
   sed -i 's#command=".*" ssh-rsa#command="cat /etc/motd-login;sleep 5" ssh-rsa#' /root/.ssh/authorized_keys
 }
 
-get_def_key() {
-  tail -1 /home/${OS_USER}/.ssh/authorized_keys
-}
-
 create_ssh_aliases() {
   debug "create_ssh_aliases()"
   for script in $HELPER_DIR/helper-*; do
     name=${script#*helper-}
     grep -q $user /etc/passwd && userdel -rf $name
     sshcommand create $name $script
-    get_def_key | sshcommand acl-add $name default
+    echo "$PUBLIC_SSH_KEY" | sshcommand acl-add $name default
   done
 }
 
 main() {
   : ${DEBUG:=1}
-  : ${OS_USER:? required}
+  : ${PUBLIC_SSH_KEY: required}
+  : ${OS_USER:=cloudbreak}
   : ${HELPER_DIR:=/usr/bin}
 
   [[ "$TRACE" ]] && set -x
