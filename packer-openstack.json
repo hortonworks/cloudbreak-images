@@ -44,7 +44,6 @@
         "scripts": [
             "./user-data-script.sh",
             "./pull-docker-images.sh",
-            "./shared/usr/bin/ssh-aliases",
             "./optimization-script-for-hdp.sh"
         ],
         "environment_vars": [

@@ -89,10 +89,6 @@ main() {
   [[ "$TRACE" ]] && set -x
 
   case "$1" in
-      create)
-        create_ssh_aliases
-        fix_root_ssh
-        ;;
       -h)
         cat <<EOF
 Usage:
@@ -101,6 +97,8 @@ Usage:
 EOF
         ;;
       *)
+        create_ssh_aliases
+        fix_root_ssh
         link_helpers
         create_motd
         create_motd_login
