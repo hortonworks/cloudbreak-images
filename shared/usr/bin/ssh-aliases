@@ -1,5 +1,7 @@
 #!/bin/bash
 
+[[ "$TRACE" ]] && set -x
+
 debug() {
   [[ "$DEBUG" ]] && echo "---> $*" 1>&2
 }
@@ -81,15 +83,18 @@ create_ssh_aliases() {
 }
 
 create_default_user() {
+  debug "create_default_user()"
 
   if id -u $OS_USER >/dev/null 2>&1; then
     debug "User '$OS_USER' already exists"
   else
+    debug "create user: $OS_USER"
     adduser $OS_USER
     usermod -G docker $OS_USER
   fi
 
   USERHOME=$(sh -c "echo ~$OS_USER")
+  debug "USERHOME=$USERHOME"
   mkdir -p $USERHOME/.ssh
   touch $USERHOME/.ssh/authorized_keys
   echo "$PUBLIC_SSH_KEY" >> $USERHOME/.ssh/authorized_keys
@@ -99,6 +104,9 @@ create_default_user() {
 
   debug "check permissions"
   find $USERHOME/.ssh -ls
+
+  debug "authorized_keys for $OS_USER"
+  cat $USERHOME/.ssh/authorized_keys
   
 }
 
