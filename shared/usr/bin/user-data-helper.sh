@@ -1,6 +1,7 @@
 #!/bin/bash
 
 set -x
+set
 
 : ${CLOUD_PLATFORM:? required}
 : ${START_LABEL:? required}
@@ -95,7 +96,6 @@ reload_sysconf() {
 }
 
 main() {
-  set
   reload_sysconf
   if [[ "$1" == "::" ]]; then
     shift
