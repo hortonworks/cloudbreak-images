@@ -115,7 +115,7 @@
   {
       "type": "shell",
       "inline": [
-          "yum install -y rsync",
+          "sudo yum install -y rsync",
           "sudo rsync -a /tmp/shared/ /"
       ]
   },
