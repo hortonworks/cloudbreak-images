@@ -27,6 +27,7 @@ reinstall_docker() {
   rm -rf /var/lib/docker/ /var/run/docker.sock
   yum remove -y docker-engine-${docker_version}
   yum install -y docker-engine-${docker_version}
+  systemctl enable docker.service
 }
 
 start_docker() {
