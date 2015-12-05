@@ -80,6 +80,28 @@ create_ssh_aliases() {
   done
 }
 
+create_default_user() {
+
+  if id -u $OS_USER >/dev/null 2>&1; then
+    debug "User '$OS_USER' already exists"
+  else
+    adduser $OS_USER
+    usermod -G docker $OS_USER
+  fi
+
+  USERHOME=$(sh -c "echo ~$OS_USER")
+  mkdir -p $USERHOME/.ssh
+  touch $USERHOME/.ssh/authorized_keys
+  echo "$PUBLIC_SSH_KEY" > $USERHOME/.ssh/authorized_keys
+  chown -R $OS_USER $USERHOME
+  chmod 700 $USERHOME/.ssh
+  chmod 600 $USERHOME/.ssh/authorized_keys
+
+  debug "check permissions"
+  find $USERHOME/.ssh -ls
+  
+}
+
 main() {
   : ${DEBUG:=1}
   : ${PUBLIC_SSH_KEY: required}
@@ -97,6 +119,7 @@ Usage:
 EOF
         ;;
       *)
+        create_default_user
         create_ssh_aliases
         fix_root_ssh
         link_helpers
