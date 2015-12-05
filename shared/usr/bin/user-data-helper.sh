@@ -10,11 +10,12 @@ set
 : ${TMP_SSH_KEY:? required}
 : ${PUBLIC_SSH_KEY:? required}
 : ${RELOCATE_DOCKER:? required}
+: ${SSH_USER:? required}
 
 setup_tmp_ssh() {
-  echo "#tmpssh_start" >> /home/${sshUser}/.ssh/authorized_keys
-  echo "$TMP_SSH_KEY" >> /home/${sshUser}/.ssh/authorized_keys
-  echo "#tmpssh_end" >> /home/${sshUser}/.ssh/authorized_keys
+  echo "#tmpssh_start" >> /home/${SSH_USER}/.ssh/authorized_keys
+  echo "$TMP_SSH_KEY" >> /home/${SSH_USER}/.ssh/authorized_keys
+  echo "#tmpssh_end" >> /home/${SSH_USER}/.ssh/authorized_keys
 }
 
 get_ip() {
