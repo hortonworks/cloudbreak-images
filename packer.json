@@ -9,6 +9,8 @@
     "os_username": "{{ env `OS_USERNAME` }}",
     "os_password": "{{ env `OS_PASSWORD` }}",
     "os_tenant_name": "{{ env `OS_TENANT_NAME` }}",
+	"sn" : "{{env `AZURE_SUBSCRIPTION_NAME`}}",
+	"psPath" : "{{env `AZURE_PUBLISH_SETTINGS`}}",
 
     "os_user": "cloudbreak",
     "atlas_artifact": "cloudbreak",
@@ -88,6 +90,21 @@
         "6414de5e-6085-4469-b8e9-aa293a65c828"
       ]
     }
+    ,{
+        "name": "azure",
+        "type": "azure",
+        "ssh_pty": "true",
+        "publish_settings_path" : "{{user `psPath`}}",
+        "subscription_name": "{{user `sn`}}",
+        "storage_account": "02589fae040d8westeurope2",
+        "storage_account_container" : "images",
+        "os_type": "Linux",
+        "os_image_label": "OpenLogic 7.1",
+        "location": "West Europe",
+        "instance_size": "Large",
+        "user_image_label": "{{user `image_name`}}"
+    }
+
   ],
   "provisioners": [
   {
