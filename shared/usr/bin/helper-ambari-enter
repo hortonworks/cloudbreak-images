@@ -2,13 +2,14 @@
 ambari-enter() {
   declare desc="Enters the ambari container"
 
+  local id=$(docker ps | grep ambari | grep /start- | cut -d' ' -f 1)
   cat 1>&2 <<EOF
 ---> You are entering the ambari container:
----> [COMMAND] docker exec -it $(docker ps |grep ambari|cut -d' ' -f 1) bash
+---> [COMMAND] docker exec -it $id bash
 
 EOF
 
-  docker exec -it $(docker ps |grep ambari|cut -d' ' -f 1) bash
+  docker exec -it $id bash
 }
 
 main() {

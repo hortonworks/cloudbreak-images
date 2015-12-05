@@ -2,14 +2,16 @@
 ambari-enter() {
   declare desc="Watches the ambari logs"
 
+  local id=$(docker ps | grep ambari | grep /start- | cut -d' ' -f 1)
+  
 cat 1>&2 <<EOF
 ---> You will follow the ambari logs ...
----> [COMMAND] docker exec -it $(docker ps |grep ambari|cut -d" " -f 1)  less +F /var/log/ambari-agent/ambari-agent.log
+---> [COMMAND] docker exec -it $id  less +F /var/log/ambari-agent/ambari-agent.log
 ---> to exit: <CTRL>-c q 
 
 EOF
   sleep 1
-  docker exec -it $(docker ps |grep ambari|cut -d" " -f 1)  less +F /var/log/ambari-agent/ambari-agent.log
+  docker exec -it $id less +F /var/log/ambari-agent/ambari-agent.log
 }
 
 main() {
