@@ -114,7 +114,10 @@
   },
   {
       "type": "shell",
-      "inline": ["sudo rsync -a /tmp/shared/ /"]
+      "inline": [
+          "yum install -y rsync",
+          "sudo rsync -a /tmp/shared/ /"
+      ]
   },
   {
     "type": "shell",

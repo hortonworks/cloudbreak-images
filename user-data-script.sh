@@ -62,7 +62,7 @@ enable_ipforward() {
 install_utils() {
   local provider=$(get_provider_from_packer)
 
-  yum -y install unzip curl git wget bind-utils ntp tmux bash-completion rsync
+  yum -y install unzip curl git wget bind-utils ntp tmux bash-completion
 
   if [ "azure" == $provider ] || [ "ec2" == $provider ]; then
     yum install -y cloud-init
