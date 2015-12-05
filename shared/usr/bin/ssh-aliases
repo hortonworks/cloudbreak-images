@@ -92,7 +92,7 @@ create_default_user() {
   USERHOME=$(sh -c "echo ~$OS_USER")
   mkdir -p $USERHOME/.ssh
   touch $USERHOME/.ssh/authorized_keys
-  echo "$PUBLIC_SSH_KEY" > $USERHOME/.ssh/authorized_keys
+  echo "$PUBLIC_SSH_KEY" >> $USERHOME/.ssh/authorized_keys
   chown -R $OS_USER $USERHOME
   chmod 700 $USERHOME/.ssh
   chmod 600 $USERHOME/.ssh/authorized_keys
