@@ -33,7 +33,7 @@ packer_in_container() {
     -v $PWD:/$PWD \
     -w $PWD \
     $dockerOpts \
-    sequenceiq/packer:v0.8.7-v3 "$@"
+    sequenceiq/packer:v0.8.7-v4 "$@"
 }
 
 main() {
