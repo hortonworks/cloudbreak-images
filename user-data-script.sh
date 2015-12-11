@@ -46,6 +46,8 @@ modify_waagent() {
   if [ -f /etc/waagent.conf ]; then
     cp /etc/waagent.conf /etc/waagent.conf.bak
     sed -i 's/Provisioning.SshHostKeyPairType.*/Provisioning.SshHostKeyPairType=ecdsa/' /etc/waagent.conf
+    sed -i 's/Provisioning.DecodeCustomData.*/Provisioning.DecodeCustomData=y/' /etc/waagent.conf
+    sed -i 's/Provisioning.ExecuteCustomData.*/Provisioning.ExecuteCustomData=y/' /etc/waagent.conf
     diff /etc/waagent.conf /etc/waagent.conf.bak || :
   fi
 }
@@ -64,7 +66,7 @@ install_utils() {
 
   yum -y install unzip curl git wget bind-utils ntp tmux bash-completion
 
-  if [ "azure" == $provider ] || [ "ec2" == $provider ]; then
+  if [ "ec2" == $provider ]; then
     yum install -y cloud-init
 fi
 
