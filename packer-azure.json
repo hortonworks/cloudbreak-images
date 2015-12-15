@@ -24,14 +24,26 @@
 			"user_image_label"		: "cb-centos71-amb212-{{ isotime \"2006-01-02\" }}{{user `namesuffix`}}"
 		}
 	],
-  "provisioners": [{
+    "provisioners": [
+  {
     "type": "file",
-		"source": "shared/",
+    "source": "shared",
     "destination": "/tmp"
   },
   {
+      "type": "shell",
+      "inline": [
+          "sudo yum install -y rsync",
+          "sudo rsync -a /tmp/shared/ /"
+      ]
+  },
+  {
     "type": "shell",
-    "script": "./user-data-script.sh",
+    "scripts": [
+        "./user-data-script.sh",
+        "./pull-docker-images.sh",
+        "./optimization-script-for-hdp.sh"
+    ],
     "environment_vars": [
         "OS_USER={{ user `os_user` }}",
         "YUM_VERSION_DOCKER={{ user `yum_version_docker` }}",
@@ -41,12 +53,8 @@
         "TRACE=1"
     ],
     "execute_command": "chmod +x {{ .Path }}; {{ .Vars }} sudo -E bash '{{ .Path }}'"
-  },
-  {
-    "type": "shell",
-    "script": "./optimization-script-for-hdp.sh",
-    "execute_command": "chmod +x {{ .Path }}; {{ .Vars }} sudo -E bash '{{ .Path }}'"
-  }]
+  }
+  ]
     ,"post-processors": [
     [
         {
