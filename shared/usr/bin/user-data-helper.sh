@@ -39,11 +39,9 @@ extend_rootfs() {
 
 relocate_docker() {
   if [[ $CLOUD_PLATFORM == AZURE* ]] && [ -n "$(mount | grep ' /mnt/resource ')" ]; then
-      service docker stop
       touch /var/docker-relocate
       mv /var/lib/docker /mnt/resource/docker
       ln -s /mnt/resource/docker /var/lib/docker
-      service docker start
   fi
 }
 
