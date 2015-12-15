@@ -18,6 +18,7 @@ update_centos_base_yum_repo() {
 }
 
 update_kernel() {
+  yum update -y
   yum install -y \
     kernel-$YUM_VERSION_KERNEL \
     kernel-tools-$YUM_VERSION_KERNEL \
