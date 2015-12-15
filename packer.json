@@ -14,7 +14,8 @@
 
     "os_user": "cloudbreak",
     "atlas_artifact": "cloudbreak",
-    "image_name": "cb-centos71-amb212-{{ isotime \"2006-01-02\" }}{{env `IMAGE_NAME_SUFFIX` }}",
+    "centos_version": "72",
+    "image_name": "cb-centos{{ user `centos_version` }}-amb212-{{ isotime \"2006-01-02\" }}{{env `IMAGE_NAME_SUFFIX` }}",
 
     "instance_type": "m3.medium",
 
@@ -164,6 +165,7 @@
         "created" :"{{ isotime \"2006-01-02 15:04:05 -0700\" }}",
         "cloudbreak_image_version": "{{ user `cloudbreak_image_version` }}",
         "os_user": "{{user `os_user` }}",
+        "centos_version": {{ user `centos_version` }},
         "yum_version_systemd": "{{ user `yum_version_systemd` }}",
         "yum_version_docker": "{{ user `yum_version_docker` }}",
         "yum_version_kernel": "{{ user `yum_version_kernel` }}",
