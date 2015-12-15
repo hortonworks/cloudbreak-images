@@ -33,8 +33,8 @@ fix_hostname() {
 extend_rootfs() {
   # Usable on GCP, does not harm anywhere else
   root_fs_device=$(mount | grep ' / ' | cut -d' ' -f 1 | sed s/1//g)
-  growpart $root_fs_device 1
-  xfs_growfs /
+  growpart $root_fs_device 1 || :
+  xfs_growfs / || :
 }
 
 relocate_docker() {
