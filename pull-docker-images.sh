@@ -12,7 +12,7 @@ init() {
 }
 
 docker_pull_images() {
-  time (echo ${IMAGES:? required} | xargs -n1 -P 20  docker pull)
+  time (echo ${IMAGES:? required} | xargs -n 1 | sort -u | xargs -n1 -P 20  docker pull)
 }
 
 reinstall_docker() {
