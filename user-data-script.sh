@@ -18,9 +18,11 @@ update_centos_base_yum_repo() {
 }
 
 update_kernel() {
- if [[ $PACKER_BUILDER_TYPE == "azure" ]]; then
-     mv /etc/yum.repos.d/CentOS-Base.repo.rpmnew /tmp/shared/etc/yum.repos.d/
- fi
+  if [[ $PACKER_BUILDER_TYPE == "azure" ]]; then
+      mv /etc/yum.repos.d/CentOS-Base.repo.rpmnew /tmp/shared/etc/yum.repos.d/
+  fi
+  
+  yum clean all
   yum update -y
   yum install -y \
     kernel-$YUM_VERSION_KERNEL \
