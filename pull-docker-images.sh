@@ -50,7 +50,7 @@ reset_docker() {
 
 main() {
   init
-  reinstall_docker
+  #reinstall_docker
   start_docker
   docker_pull_images "$@"
   reset_docker

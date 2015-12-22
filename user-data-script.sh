@@ -157,15 +157,15 @@ check_params() {
 
 main() {
     check_params
-    update_centos_base_yum_repo
-    update_kernel
-    modify_waagent
+    #update_centos_base_yum_repo
+    #update_kernel
+    #modify_waagent
     extend_rootfs
-    disable_selinux
+    #disable_selinux
     permissive_iptables
     enable_ipforward
-    install_utils
-    install_docker
+    #install_utils
+    #install_docker
     configure_cloud_init
     configure_console
     cleanup
