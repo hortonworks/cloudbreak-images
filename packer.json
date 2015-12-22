@@ -100,7 +100,6 @@
         "storage_account_container" : "images",
         "os_type": "Linux",
         "remote_source_image_link":"https://02589fae040d8westeurope2.blob.core.windows.net/images/cb-centos71-amb212-2015-12-11_2015-12-11_16-24-os-2015-12-11.vhd",
-        "resize_os_vhd_gb": 10,
         "location": "West Europe",
         "instance_size": "Large",
         "user_image_label": "{{user `image_name`}}"
