@@ -99,7 +99,7 @@
         "storage_account": "02589fae040d8westeurope2",
         "storage_account_container" : "images",
         "os_type": "Linux",
-        "os_image_label": "OpenLogic 7.1",
+        "remote_source_image_link":"https://02589fae040d8westeurope2.blob.core.windows.net/images/cb-centos72-amb212-2015-12-16_2015-12-16_11-22-os-2015-12-16.vhd",
         "location": "West Europe",
         "instance_size": "Large",
         "user_image_label": "{{user `image_name`}}"
