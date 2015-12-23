@@ -1,0 +1,5 @@
+#!/bin/bash
+while [ -z "$(mount | grep ' /mnt/resource ')" ]; do
+  echo "Waiting for /mnt/resource"
+  sleep 5
+done
