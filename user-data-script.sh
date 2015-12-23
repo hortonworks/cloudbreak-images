@@ -53,6 +53,8 @@ modify_waagent() {
     sed -i 's/Provisioning.DecodeCustomData.*/Provisioning.DecodeCustomData=y/' /etc/waagent.conf
     sed -i 's/Provisioning.ExecuteCustomData.*/Provisioning.ExecuteCustomData=y/' /etc/waagent.conf
     diff /etc/waagent.conf /etc/waagent.conf.bak || :
+
+    sed -i '/ExecStart=/ i ExecStartPre=/usr/bin/docker-helper' /etc/systemd/system/docker.service
   fi
 }
 
