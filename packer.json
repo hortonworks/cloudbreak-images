@@ -16,7 +16,6 @@
     "docker_images": "gliderlabs/alpine:3.1 alpine:latest sequenceiq/mybatis-migrations:1.0.0 sequenceiq/cb-shell:0.5.38",
     "cbd_install_dir": "/bin",
     "cbd_version": "1.1.0-rc3",
-    "cbd_branch": "",
     "os_user": "cloudbreak",
     "atlas_artifact": "cbd",
     "image_name": "cloudbreak-deployer-1.1.0-rc3-{{ isotime \"2006-01-02\" }}{{env `IMAGE_NAME_SUFFIX`}}",
@@ -136,7 +135,6 @@
     ],
     "environment_vars": [
         "CBD_VERSION={{ user `cbd_version` }}",
-        "CBD_BRANCH={{ user `cbd_branch` }}",
         "CBD_INSTALL_DIR={{ user `cbd_install_dir` }}",
         "OS_USER={{ user `os_user` }}",
         "YUM_VERSION_DOCKER={{ user `yum_version_docker` }}",
@@ -164,7 +162,6 @@
             "created_at": "{{timestamp}}",
             "created" :"{{ isotime \"2006-01-02 15:04:05 -0700\" }}",
             "cbd_version": "{{ user `cbd_version` }}",
-            "cbd_branch": "{{ user `cbd_branch` }}",
             "os_user": "{{user `os_user` }}",
             "image_name": "{{ user `image_name` }}",
             "yum_version_docker": "{{ user `yum_version_docker` }}"
@@ -179,7 +176,6 @@
         "created_at": "{{timestamp}}",
         "created" :"{{ isotime \"2006-01-02 15:04:05 -0700\" }}",
         "cbd_version": "{{ user `cbd_version` }}",
-        "cbd_branch": "{{ user `cbd_branch` }}",
         "os_user": "{{user `os_user` }}",
         "image_name": "{{ user `image_name` }}",
         "yum_version_docker": "{{ user `yum_version_docker` }}"
