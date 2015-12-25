@@ -1,18 +1,86 @@
 {
   "variables": {
     "mock": "{{ env `MOCK` }}",
-    "atlas_token": "{{ env `ATLAS_TOKEN`}}",
-    "atlas_artifact": "cloudbreak",
-
-    "os_user": "cloudbreak",
-
+    
+    "aws_access_key": "{{ env `AWS_ACCESS_KEY` }}",
+    "aws_secret_key": "{{ env `AWS_SECRET_ACCESS_KEY` }}",
+    "gcp_account_file": "{{env `GCP_ACCOUNT_FILE`}}",
     "os_auth_url": "{{ env `OS_AUTH_URL` }}",
-    "os_image_name": "cb-centos72-amb212-{{ isotime \"2006-01-02\" }}{{env `IMAGE_NAME_SUFFIX`}}",
     "os_username": "{{ env `OS_USERNAME` }}",
     "os_password": "{{ env `OS_PASSWORD` }}",
-    "os_tenant_name": "{{ env `OS_TENANT_NAME` }}"
+    "os_tenant_name": "{{ env `OS_TENANT_NAME` }}",
+	"sn" : "{{env `AZURE_SUBSCRIPTION_NAME`}}",
+	"psPath" : "{{env `AZURE_PUBLISH_SETTINGS`}}",
+
+
+    "docker_images": "gliderlabs/alpine:3.1 alpine:latest sequenceiq/mybatis-migrations:1.0.0 sequenceiq/cb-shell:0.5.38",
+    "cbd_install_dir": "/bin",
+    "cbd_version": "1.1.0-rc3",
+    "os_user": "cloudbreak",
+    "atlas_artifact": "cbd",
+    "image_name": "cloudbreak-deployer-110-rc3-{{ isotime \"2006-01-02\" }}{{env `IMAGE_NAME_SUFFIX`}}",
+
+
+    "instance_type": "m3.medium",
+
+    "ami-sa-east-1": "ami-09e25b14",
+    "ami-eu-west-1": "ami-25158352",
+    "ami-eu-central-1": "ami-dafdcfc7",
+    "ami-us-east-1": "ami-12663b7a",
+    "ami-us-west-1": "ami-a540a5e1",
+    "ami-us-west-2": "ami-4dbf9e7d",
+    "ami-ap-northeast-1": "ami-b1b458b1",
+    "ami-ap-southeast-1": "ami-dc1c2b8e",
+    "ami-ap-southeast-2": "ami-d3daace9"
   },
-  "builders": [
+  "builders":[
+  {
+    "name": "amazon",
+    "type": "amazon-ebs",
+    "region": "eu-west-1",
+    "ami_regions": ["ap-southeast-1","ap-southeast-2","eu-central-1","ap-northeast-1","us-east-1","sa-east-1","us-west-1","us-west-2"],
+    "ssh_pty" : true,
+    "access_key": "{{user `aws_access_key`}}",
+    "secret_key": "{{user `aws_secret_key`}}",
+    "source_ami": "{{user `ami-eu-west-1`}}",
+    "instance_type": "{{ user `instance_type` }}",
+    "ssh_username": "ec2-user",
+    "ami_block_device_mappings": [{
+                 "device_name": "/dev/sda1",
+                 "volume_type": "gp2",
+                 "delete_on_termination": true,
+                 "volume_size": 15
+            }],
+    "launch_block_device_mappings": [{
+                "device_name": "/dev/sda1",
+                "volume_type": "gp2",
+                "delete_on_termination": true,
+                "volume_size": 15
+            }],
+    "tags": {
+      "builder": "packer",
+      "cbd_version": "{{user `cbd_version`}}",
+      "docker_version": "{{ user `yum_version_docker`}}"
+    },
+    "ami_groups" :"all",
+    "ami_name": "{{ user `image_name`}}"
+  },
+  {
+    "disk_size": "40",
+    "name": "googlecompute",
+    "type": "googlecompute",
+    "account_file": "{{user `gcp_account_file`}}",
+    "source_image": "centos-7-v20150603",
+    "zone": "us-central1-b",
+    "project_id": "siq-haas",
+    "ssh_username": "centos",
+    "ssh_pty": "true",
+    "machine_type": "n1-standard-2",
+    "image_name": "{{user `image_name`}}",
+    "tags": [
+	"packer"
+    ]
+  },
     {
       "type": "openstack",
       "username": "{{user `os_username`}}",
@@ -20,7 +88,7 @@
       "tenant_name": "{{user `os_tenant_name`}}",
       "ssh_username": "centos",
       "ssh_pty": "true",
-      "image_name": "{{user `os_image_name`}}",
+      "image_name": "{{user `image_name`}}",
       "source_image": "c1632189-f509-4dba-ac1a-b08b07920b6d",
       "flavor": "3",
       "use_floating_ip": false,
@@ -28,80 +96,102 @@
         "6414de5e-6085-4469-b8e9-aa293a65c828"
       ]
     }
+    ,{
+        "name": "azure",
+        "type": "azure",
+        "ssh_pty": "true",
+        "publish_settings_path" : "{{user `psPath`}}",
+        "subscription_name": "{{user `sn`}}",
+        "storage_account": "02589fae040d8westeurope2",
+        "storage_account_container" : "images",
+        "os_type": "Linux",
+        "os_image_label": "OpenLogic 7.1",
+        "location": "West Europe",
+        "instance_size": "Large",
+        "user_image_label": "{{user `image_name`}}"
+    }
+
   ],
   "provisioners": [
-      {
-        "type": "file",
-        "source": "shared",
-        "destination": "/tmp"
-      },
-      {
-          "type": "shell",
-          "inline": ["sudo rsync -a /tmp/shared/ /"]
-      },
-      {
-        "type": "shell",
-        "scripts": [
-            "./user-data-script.sh",
-            "./pull-docker-images.sh",
-            "./optimization-script-for-hdp.sh"
-        ],
-        "environment_vars": [
-            "OS_USER={{ user `os_user` }}",
-            "YUM_VERSION_DOCKER={{ user `yum_version_docker` }}",
-            "YUM_VERSION_KERNEL={{ user `yum_version_kernel` }}",
-            "YUM_VERSION_SYSTEMD={{ user `yum_version_systemd` }}",
-            "IMAGES={{ user `cb_docker_container_ambari_warmup` }} {{ user `cb_docker_container_ambari` }} {{ user `cb_docker_container_docker_consul_watch_plugn` }} {{ user `cb_docker_container_registrator` }} {{ user `cb_docker_container_baywatch_server` }} {{ user `cb_docker_container_baywatch_client` }} {{ user `cb_docker_container_logrotate` }} {{ user `cb_docker_container_kerberos` }} {{ user `cb_docker_container_ambari_db` }} {{ user `cb_docker_container_munchausen` }} {{ user `cb_docker_container_consul` }} {{ user `cb_docker_container_gateway` }} {{ user `cb_docker_container_alpine` }} {{ user `cb_docker_container_swarm` }} {{ user `cb_docker_container_cert_tool` }} {{ user `cb_docker_container_list_others` }}",
-            "TRACE=1"
-        ],
-        "execute_command": "chmod +x {{ .Path }}; {{ .Vars }} sudo -E bash '{{ .Path }}'"
-      }
+  {
+    "type": "file",
+    "source": "shared",
+    "destination": "/tmp"
+  },
+  {
+      "type": "shell",
+      "inline": [
+          "sudo yum install -y rsync",
+          "sudo rsync -a /tmp/shared/ /"
+      ]
+  },
+  {
+    "type": "shell",
+    "scripts": [
+        "./user-data-script.sh",
+        "./pull-docker-images.sh",
+        "./cbd-init.sh",
+        "./create-gc-image.sh"
+    ],
+    "environment_vars": [
+        "CBD_VERSION={{ user `cbd_version` }}",
+        "CBD_INSTALL_DIR={{ user `cbd_install_dir` }}",
+        "OS_USER={{ user `os_user` }}",
+        "YUM_VERSION_DOCKER={{ user `yum_version_docker` }}",
+        "YUM_VERSION_KERNEL={{ user `yum_version_kernel` }}",
+        "YUM_VERSION_SYSTEMD={{ user `yum_version_systemd` }}",
+        "PACKER_IMAGE_NAME={{user `image_name`}}",
+        "IMAGES={{ user `docker_images` }}",
+        "TRACE=1"
+    ],
+    "execute_command": "chmod +x {{ .Path }}; {{ .Vars }} sudo -E bash '{{ .Path }}'"
+  }
   ]
-
   ,"post-processors": [
-      [
+    [
+      {
+        "type": "generator",
+        "template": "{{ build_name }}.tmpl",
+        "output": "{{ build_name }}.yml"
+      },
+      {
+        "type": "atlas",
+        "artifact": "sequenceiq/{{ user `atlas_artifact` }}",
+        "artifact_type": "{{ build_name }}.yml",
+        "metadata": {
+            "created_at": "{{timestamp}}",
+            "created" :"{{ isotime \"2006-01-02 15:04:05 -0700\" }}",
+            "cbd_version": "{{ user `cbd_version` }}",
+            "os_user": "{{user `os_user` }}",
+            "image_name": "{{ user `image_name` }}",
+            "yum_version_docker": "{{ user `yum_version_docker` }}"
+        }
+      }
+    ],
+    [
         {
             "type":"generator",
             "Template": "execute.tmpl",
             "Output": "./execute.sh"
         }
-       ,{
-        "type": "artifice",
-        "files": ["{{ user `os_image_name` }}.img"]
-      }
-      ,{
-        "type": "atlas",
-        "token": "{{user `atlas_token`}}",
-        "artifact": "sequenceiq/{{ user `atlas_artifact` }}",
-        "artifact_type": "openstack.image",
-        "metadata": {
+        ,{
+            "type": "artifice",
+            "files": ["{{ user `os_image_name` }}.img"]
+        },
+        {
+          "type": "atlas",
+          "artifact": "sequenceiq/{{ user `atlas_artifact` }}",
+          "artifact_type": "{{ build_name }}.image",
+          "metadata": {
             "created_at": "{{timestamp}}",
             "created" :"{{ isotime \"2006-01-02 15:04:05 -0700\" }}",
-            "cloudbreak_image_version": "{{ user `cloudbreak_image_version` }}",
-            "yum_version_systemd": "{{ user `yum_version_systemd` }}",
-            "yum_version_docker": "{{ user `yum_version_docker` }}",
-            "yum_version_kernel": "{{ user `yum_version_kernel` }}",
-            "all_docker_images":"{{ user `cb_docker_container_ambari_warmup` }},{{ user `cb_docker_container_ambari` }},{{ user `cb_docker_container_docker_consul_watch_plugn` }},{{ user `cb_docker_container_registrator` }},{{ user `cb_docker_container_baywatch_server` }},{{ user `cb_docker_container_baywatch_client` }},{{ user `cb_docker_container_logrotate` }},{{ user `cb_docker_container_kerberos` }},{{ user `cb_docker_container_ambari_db` }},{{ user `cb_docker_container_munchausen` }},{{ user `cb_docker_container_consul` }},{{ user `cb_docker_container_gateway` }},{{ user `cb_docker_container_alpine` }},{{ user `cb_docker_container_swarm` }},{{ user `cb_docker_container_cert_tool` }},{{ user `cb_docker_container_list_others` }}"
+            "cbd_version": "{{ user `cbd_version` }}",
+            "os_user": "{{user `os_user` }}",
+            "image_name": "{{ user `image_name` }}",
+            "yum_version_docker": "{{ user `yum_version_docker` }}"
+          }
         }
-      }
-      ],
-      [
-                {
-      "type":"generator",
-      "template":"openstack.tmpl",
-      "output":"openstack.yml"
-          }
-          ,{
-            "type": "atlas",
-            "token": "{{user `atlas_token`}}",
-            "artifact": "sequenceiq/{{ user `atlas_artifact` }}",
-            "artifact_type": "openstack.yml",
-            "metadata": {
-                "cloudbreak_image_version": "{{ user `cloudbreak_image_version` }}",
-                "created_at": "{{timestamp}}",
-                "created" :"{{ isotime \"2006-01-02 15:04:05 -0700\" }}"
-            }
-          }
-      ]
     ]
+  ]
+
 }
