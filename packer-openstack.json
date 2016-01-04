@@ -23,7 +23,8 @@
       "image_name": "{{user `os_image_name`}}",
       "source_image": "c1632189-f509-4dba-ac1a-b08b07920b6d",
       "flavor": "3",
-      "use_floating_ip": false,
+      "use_floating_ip": true,
+      "floating_ip_pool": "8a1ca549-30cb-4fd5-9d32-84a42433558b",
       "networks": [
         "6414de5e-6085-4469-b8e9-aa293a65c828"
       ]
