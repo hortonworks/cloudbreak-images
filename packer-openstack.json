@@ -44,7 +44,8 @@
       "image_name": "{{user `image_name`}}",
       "source_image": "bf4e34f6-e39f-4402-9233-7f0e9bbb7d48",
       "flavor": "m1.medium",
-      "use_floating_ip": false,
+      "use_floating_ip": true,
+      "floating_ip_pool": "8a1ca549-30cb-4fd5-9d32-84a42433558b",
       "networks": [
         "6414de5e-6085-4469-b8e9-aa293a65c828"
       ]
