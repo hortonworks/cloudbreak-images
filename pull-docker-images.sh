@@ -1,7 +1,12 @@
 #!/bin/bash
 
-[[ "$TRACE" ]] && set -x || :
 set -eo pipefail
+if [[ "$TRACE" ]]; then
+    : ${START_TIME:=$(date +%s)}
+    export START_TIME
+    export PS4='+ [TRACE $BASH_SOURCE:$LINENO][ellapsed: $(( $(date +%s) -  $START_TIME ))] '
+    set -x
+fi
 
 debug() {
   [[ "$DEBUG" ]] && echo "-----> $*" 1>&2
