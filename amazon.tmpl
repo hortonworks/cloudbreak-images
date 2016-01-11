@@ -4,7 +4,7 @@ versions:
   systemd: {{ .Config.PackerUserVars.yum_version_systemd }}
   cloudbreak_image: {{ .Config.PackerUserVars.cloudbreak_image_version }}
 images:
-  all: "{{ .Config.PackerUserVars.cb_docker_container_ambari_warmup }},{{ .Config.PackerUserVars.cb_docker_container_ambari }},{{ .Config.PackerUserVars.cb_docker_container_docker_consul_watch_plugn }},{{ .Config.PackerUserVars.cb_docker_container_registrator }},{{ .Config.PackerUserVars.cb_docker_container_logrotate }},{{ .Config.PackerUserVars.cb_docker_container_kerberos }},{{ .Config.PackerUserVars.cb_docker_container_ambari_db }},{{ .Config.PackerUserVars.cb_docker_container_munchausen }},{{ .Config.PackerUserVars.cb_docker_container_consul }},{{ .Config.PackerUserVars.cb_docker_container_gateway }},{{ .Config.PackerUserVars.cb_docker_container_alpine }},{{ .Config.PackerUserVars.cb_docker_container_swarm }},{{ .Config.PackerUserVars.cb_docker_container_cert_tool }},{{ .Config.PackerUserVars.cb_docker_container_list_others }}"
+  all: "{{ .Config.PackerUserVars.cb_docker_container_ambari_warmup }},{{ .Config.PackerUserVars.cb_docker_container_ambari }},{{ .Config.PackerUserVars.cb_docker_container_docker_consul_watch_plugn }},{{ .Config.PackerUserVars.cb_docker_container_registrator }},{{ .Config.PackerUserVars.cb_docker_container_logrotate }},{{ .Config.PackerUserVars.cb_docker_container_kerberos }},{{ .Config.PackerUserVars.cb_docker_container_ambari_db }},{{ .Config.PackerUserVars.cb_docker_container_munchausen }},{{ .Config.PackerUserVars.cb_docker_container_consul }},{{ .Config.PackerUserVars.cb_docker_container_gateway }},{{ .Config.PackerUserVars.cb_docker_container_alpine }},{{ .Config.PackerUserVars.cb_docker_container_swarm }},{{ .Config.PackerUserVars.cb_docker_container_cert_tool }},{{ .Config.PackerUserVars.cb_docker_container_haveged }},{{ .Config.PackerUserVars.cb_docker_container_list_others }}"
   ambari_warmup: {{ .Config.PackerUserVars.cb_docker_container_ambari_warmup }}
   ambari: {{ .Config.PackerUserVars.cb_docker_container_ambari }}
   docker_consul_watch_plugn: {{ .Config.PackerUserVars.cb_docker_container_docker_consul_watch_plugn }}
@@ -18,6 +18,7 @@ images:
   alpine: {{ .Config.PackerUserVars.cb_docker_container_alpine }}
   swarm: {{ .Config.PackerUserVars.cb_docker_container_swarm }}
   cert_tool: {{ .Config.PackerUserVars.cb_docker_container_cert_tool }}
+  haveged: {{ .Config.PackerUserVars.cb_docker_container_haveged }}
 
 {{ if .Meta }}
 aws:{{ range $reg, $ami := .Meta}}
