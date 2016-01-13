@@ -12,7 +12,7 @@ packer_in_container() {
   fi
   
   [[ "$TRACE" ]] && set -x
-  docker run -i --rm \
+  ${DRY_RUN:+echo ===} docker run -i --rm \
     -e ORIG_USER=$USER \
     -e MOCK=$MOCK \
     -e CHECKPOINT_DISABLE=1 \
