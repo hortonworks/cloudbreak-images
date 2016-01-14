@@ -177,7 +177,6 @@ main() {
     configure_console
     cleanup
     sync
-    sleep 5
 }
 
 [[ "$0" == "$BASH_SOURCE" ]] && main "$@"
