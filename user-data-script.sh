@@ -15,12 +15,14 @@ update_centos_base_yum_repo() {
   if ! grep "CentOS\|Derived from Red Hat" /etc/redhat-release &> /dev/null; then
     rm -f /etc/yum.repos.d/CentOS-Base.repo
   fi
+  yum clean all
 }
 
 update_kernel() {
  if [[ $PACKER_BUILDER_TYPE == "azure" ]]; then
      mv /etc/yum.repos.d/CentOS-Base.repo.rpmnew /tmp/shared/etc/yum.repos.d/
  fi
+  yum clean all
   yum install -y \
     kernel-$YUM_VERSION_KERNEL \
     kernel-tools-$YUM_VERSION_KERNEL \
