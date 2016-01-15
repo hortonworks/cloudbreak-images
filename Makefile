@@ -9,7 +9,7 @@ ifdef DOCKER_VERSION
 endif
 
 ifeq ($(MOCK),true)
-	PACKER_OPTS=$(PACKER_VARS) -var atlas_artifact=mock -var os_image_name=cb-centos71-amb212-2015-10-27
+	PACKER_OPTS=$(PACKER_VARS) -var atlas_artifact=mock -var os_image_name=cb-centos71-amb221-2015-10-27
 else
 	PACKER_OPTS=$(PACKER_VARS)
 endif
