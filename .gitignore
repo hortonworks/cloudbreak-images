@@ -8,3 +8,7 @@ vars-docker-images.json
 execute.sh
 *.image.json
 *.bak
+build.sh
+.idea/
+*.iml
+*.pem
