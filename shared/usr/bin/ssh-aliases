@@ -10,14 +10,14 @@ create_motd() {
   debug "create_motd()"
   cat > /etc/motd <<"EOF"
 cat /etc/motd
-                    ##        .
-              ## ## ##       ==
-           ## ## ## ##      ===
-       /""""""""""""""""\___/ ===
-  ~~~ {~~ ~~~~ ~~~ ~~~~ ~~ ~ /  ===- ~~~
-       \______ o          __/
-         \    \        __/
-          \____\______/
+                    .-.._
+              __  /`     '.
+           .-'  `/   (   a \
+          /      (    \,_   \
+         /|       '---` |\ =|
+        ` \    /__.-/  /  | |
+           |  / / \ \  \   \_\
+           |__|_|  |_|__\
 
 =================================================
 You are now logged in to the docker host ...
@@ -107,7 +107,7 @@ create_default_user() {
 
   debug "authorized_keys for $OS_USER"
   cat $USERHOME/.ssh/authorized_keys
-  
+
 }
 
 main() {
