@@ -15,10 +15,10 @@
 
     "docker_images": "gliderlabs/alpine:3.1 alpine:latest sequenceiq/mybatis-migrations:1.0.0 sequenceiq/cb-shell:0.5.38",
     "cbd_install_dir": "/bin",
-    "cbd_version": "1.1.0-rc3",
+    "cbd_version": "1.1.0",
     "os_user": "cloudbreak",
     "atlas_artifact": "cbd",
-    "image_name": "cloudbreak-deployer-110-rc3-{{ isotime \"2006-01-02\" }}{{env `IMAGE_NAME_SUFFIX`}}",
+    "image_name": "cloudbreak-deployer-110-{{ isotime \"2006-01-02\" }}{{env `IMAGE_NAME_SUFFIX`}}",
 
 
     "instance_type": "m3.medium",
@@ -34,53 +34,6 @@
     "ami-ap-southeast-2": "ami-d3daace9"
   },
   "builders":[
-  {
-    "name": "amazon",
-    "type": "amazon-ebs",
-    "region": "eu-west-1",
-    "ami_regions": ["ap-southeast-1","ap-southeast-2","eu-central-1","ap-northeast-1","us-east-1","sa-east-1","us-west-1","us-west-2"],
-    "ssh_pty" : true,
-    "access_key": "{{user `aws_access_key`}}",
-    "secret_key": "{{user `aws_secret_key`}}",
-    "source_ami": "{{user `ami-eu-west-1`}}",
-    "instance_type": "{{ user `instance_type` }}",
-    "ssh_username": "ec2-user",
-    "ami_block_device_mappings": [{
-                 "device_name": "/dev/sda1",
-                 "volume_type": "gp2",
-                 "delete_on_termination": true,
-                 "volume_size": 15
-            }],
-    "launch_block_device_mappings": [{
-                "device_name": "/dev/sda1",
-                "volume_type": "gp2",
-                "delete_on_termination": true,
-                "volume_size": 15
-            }],
-    "tags": {
-      "builder": "packer",
-      "cbd_version": "{{user `cbd_version`}}",
-      "docker_version": "{{ user `yum_version_docker`}}"
-    },
-    "ami_groups" :"all",
-    "ami_name": "{{ user `image_name`}}"
-  },
-  {
-    "disk_size": "40",
-    "name": "googlecompute",
-    "type": "googlecompute",
-    "account_file": "{{user `gcp_account_file`}}",
-    "source_image": "centos-7-v20150603",
-    "zone": "us-central1-b",
-    "project_id": "siq-haas",
-    "ssh_username": "centos",
-    "ssh_pty": "true",
-    "machine_type": "n1-standard-2",
-    "image_name": "{{user `image_name`}}",
-    "tags": [
-	"packer"
-    ]
-  },
     {
       "type": "openstack",
       "username": "{{user `os_username`}}",
@@ -96,21 +49,6 @@
         "6414de5e-6085-4469-b8e9-aa293a65c828"
       ]
     }
-    ,{
-        "name": "azure",
-        "type": "azure",
-        "ssh_pty": "true",
-        "publish_settings_path" : "{{user `psPath`}}",
-        "subscription_name": "{{user `sn`}}",
-        "storage_account": "02589fae040d8westeurope2",
-        "storage_account_container" : "images",
-        "os_type": "Linux",
-        "os_image_label": "OpenLogic 7.1",
-        "location": "West Europe",
-        "instance_size": "Large",
-        "user_image_label": "{{user `image_name`}}"
-    }
-
   ],
   "provisioners": [
   {
@@ -130,8 +68,7 @@
     "scripts": [
         "./user-data-script.sh",
         "./pull-docker-images.sh",
-        "./cbd-init.sh",
-        "./create-gc-image.sh"
+        "./cbd-init.sh"
     ],
     "environment_vars": [
         "CBD_VERSION={{ user `cbd_version` }}",
