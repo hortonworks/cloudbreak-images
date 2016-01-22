@@ -42,7 +42,7 @@
       "ssh_username": "centos",
       "ssh_pty": "true",
       "image_name": "{{user `image_name`}}",
-      "source_image": "c1632189-f509-4dba-ac1a-b08b07920b6d",
+      "source_image": "bf4e34f6-e39f-4402-9233-7f0e9bbb7d48",
       "flavor": "3",
       "use_floating_ip": false,
       "networks": [
