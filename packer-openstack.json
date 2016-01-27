@@ -55,6 +55,33 @@
         ],
         "execute_command": "chmod +x {{ .Path }}; {{ .Vars }} sudo -E bash '{{ .Path }}'"
       }
-  ]
+  ],
 
+  "post-processors": [
+      [
+        {
+            "type":"generator",
+            "Template": "execute.tmpl",
+            "Output": "./execute.sh"
+        }
+       ,{
+        "type": "artifice",
+        "files": ["{{ user `os_image_name` }}.img"]
+      }
+      ,{
+        "type": "atlas",
+        "token": "{{user `atlas_token`}}",
+        "artifact": "sequenceiq/{{ user `atlas_artifact` }}",
+        "artifact_type": "openstack.image",
+        "metadata": {
+            "created_at": "{{timestamp}}",
+            "created" :"{{ isotime \"2006-01-02 15:04:05 -0700\" }}",
+            "source_image": "CentOS-7-x86_64-GenericCloud-1511",
+            "yum_version_systemd": "{{ user `yum_version_systemd` }}",
+            "yum_version_docker": "{{ user `yum_version_docker` }}",
+            "yum_version_kernel": "{{ user `yum_version_kernel` }}"
+        }
+      }
+      ]
+    ]
 }
