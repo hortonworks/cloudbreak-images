@@ -8,8 +8,8 @@ Wants=cloud-final.service waagent.service
 [Service]
 ExecStart=/usr/bin/docker daemon -H fd:// -H tcp://0.0.0.0:2376 --selinux-enabled=false --storage-driver=devicemapper --storage-opt=dm.basesize=30G
 MountFlags=slave
-LimitNOFILE=200000
-LimitNPROC=16384
+LimitNOFILE=1048576
+LimitNPROC=1048576
 LimitCORE=infinity
 
 [Install]
