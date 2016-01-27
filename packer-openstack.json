@@ -7,7 +7,7 @@
     "os_user": "cloudbreak",
 
     "os_auth_url": "{{ env `OS_AUTH_URL` }}",
-    "os_image_name": "docker183-centos71-{{ isotime \"2006-01-02\" }}{{env `IMAGE_NAME_SUFFIX`}}",
+    "os_image_name": "docker-centos-{{ isotime \"2006-01-02\" }}{{env `IMAGE_NAME_SUFFIX`}}",
     "os_username": "{{ env `OS_USERNAME` }}",
     "os_password": "{{ env `OS_PASSWORD` }}",
     "os_tenant_name": "{{ env `OS_TENANT_NAME` }}"
@@ -21,7 +21,7 @@
       "ssh_username": "centos",
       "ssh_pty": "true",
       "image_name": "{{user `os_image_name`}}",
-      "source_image": "c1632189-f509-4dba-ac1a-b08b07920b6d",
+      "source_image": "ac3d6c6f-b139-4d1f-a86f-5b0821271984",
       "flavor": "m1.medium",
       "use_floating_ip": true,
       "floating_ip_pool": "8a1ca549-30cb-4fd5-9d32-84a42433558b",
