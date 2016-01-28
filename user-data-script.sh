@@ -57,6 +57,7 @@ install_docker() {
   systemctl enable docker.service
 
   getent passwd $OS_USER || adduser $OS_USER
+  usermod -a -G docker centos
   usermod -a -G docker $OS_USER
 }
 
