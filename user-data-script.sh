@@ -28,18 +28,6 @@ permissive_iptables() {
   service iptables save
 }
 
-modify_waagent() {
-  if [ -f /etc/waagent.conf ]; then
-    cp /etc/waagent.conf /etc/waagent.conf.bak
-    sed -i 's/Provisioning.SshHostKeyPairType.*/Provisioning.SshHostKeyPairType=ecdsa/' /etc/waagent.conf
-    sed -i 's/Provisioning.DecodeCustomData.*/Provisioning.DecodeCustomData=y/' /etc/waagent.conf
-    sed -i 's/Provisioning.ExecuteCustomData.*/Provisioning.ExecuteCustomData=y/' /etc/waagent.conf
-    diff /etc/waagent.conf /etc/waagent.conf.bak || :
-
-    sed -i '/ExecStart=/ i ExecStartPre=/usr/bin/docker-helper' /etc/systemd/system/docker.service
-  fi
-}
-
 disable_selinux() {
   setenforce 0
   sed -i 's/SELINUX=enforcing/SELINUX=disabled/g' /etc/selinux/config
@@ -138,7 +126,6 @@ check_params() {
 main() {
     check_params
     update_centos
-    modify_waagent
     disable_selinux
     permissive_iptables
     enable_ipforward
