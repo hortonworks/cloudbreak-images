@@ -37,37 +37,6 @@ extend_rootfs() {
   xfs_growfs / || :
 }
 
-relocate_docker() {
-  if [[ $CLOUD_PLATFORM == AZURE* ]] && [ -n "$(mount | grep ' /mnt/resource ')" ] && [ ! -f /var/docker-relocate ]; then
-      touch /var/docker-relocate
-      systemctl stop docker
-      time mv /var/lib/docker /mnt/resource/docker
-      ln -s /mnt/resource/docker /var/lib/docker
-      systemctl start docker
-  fi
-}
-
-format_disks() {
-  mkdir /hadoopfs
-  for (( i=1; i<=24; i++ )); do
-    LABEL=$(printf "\x$(printf %x $((START_LABEL+i)))")
-    DEVICE=/dev/${PLATFORM_DISK_PREFIX}${LABEL}
-    if [ -e $DEVICE ]; then
-      MOUNTPOINT=$(grep $DEVICE /etc/fstab | tr -s ' \t' ' ' | cut -d' ' -f 2)
-      if [ -n "$MOUNTPOINT" ]; then
-        umount "$MOUNTPOINT"
-        sed -i "\|^$DEVICE|d" /etc/fstab
-      fi
-      mkfs -E lazy_itable_init=1 -O uninit_bg -F -t ext4 $DEVICE
-      mkdir /hadoopfs/fs${i}
-      echo $DEVICE /hadoopfs/fs${i} ext4  defaults,noatime 0 2 >> /etc/fstab
-      mount /hadoopfs/fs${i}
-      chmod 777 /hadoopfs/fs${i}
-    fi
-  done
-  cd /hadoopfs/fs1 && mkdir logs logs/ambari-server logs/ambari-agent logs/consul-watch logs/kerberos
-}
-
 release_udev_cookie() {
 cat>/tmp/cookie.sh<<"EOF"
 : ${LOGFILE:=/var/log/cookie.log}
@@ -92,6 +61,38 @@ echo "Cookie script finished at $(date)" >> $LOGFILE
 EOF
 chmod +x /tmp/cookie.sh
 nohup /tmp/cookie.sh &
+}
+
+relocate_docker() {
+  if [[ $CLOUD_PLATFORM == AZURE* ]] && [ -n "$(mount | grep ' /mnt/resource ')" ] && [ ! -f /var/docker-relocate ]; then
+      touch /var/docker-relocate
+      systemctl stop docker
+      time mv /var/lib/docker /mnt/resource/docker
+      ln -s /mnt/resource/docker /var/lib/docker
+      systemctl start docker
+      release_udev_cookie
+  fi
+}
+
+format_disks() {
+  mkdir /hadoopfs
+  for (( i=1; i<=24; i++ )); do
+    LABEL=$(printf "\x$(printf %x $((START_LABEL+i)))")
+    DEVICE=/dev/${PLATFORM_DISK_PREFIX}${LABEL}
+    if [ -e $DEVICE ]; then
+      MOUNTPOINT=$(grep $DEVICE /etc/fstab | tr -s ' \t' ' ' | cut -d' ' -f 2)
+      if [ -n "$MOUNTPOINT" ]; then
+        umount "$MOUNTPOINT"
+        sed -i "\|^$DEVICE|d" /etc/fstab
+      fi
+      mkfs -E lazy_itable_init=1 -O uninit_bg -F -t ext4 $DEVICE
+      mkdir /hadoopfs/fs${i}
+      echo $DEVICE /hadoopfs/fs${i} ext4  defaults,noatime 0 2 >> /etc/fstab
+      mount /hadoopfs/fs${i}
+      chmod 777 /hadoopfs/fs${i}
+    fi
+  done
+  cd /hadoopfs/fs1 && mkdir logs logs/ambari-server logs/ambari-agent logs/consul-watch logs/kerberos
 }
 
 reload_sysconf() {

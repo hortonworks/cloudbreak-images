@@ -84,6 +84,13 @@ fi
 install_docker() {
   yum install -y docker-engine-$YUM_VERSION_DOCKER
 
+  local provider=$(get_provider_from_packer)
+
+  #still use devicemapper on azure
+  if [ "azure" == $provider ]; then
+    sed -i 's/overlay/devicemapper --storage-opt=dm.basesize=30G/' /etc/systemd/system/docker.service
+  fi
+
   systemctl daemon-reload
   service docker start
   systemctl enable docker.service
