@@ -3,7 +3,7 @@ Description=Docker Application Container Engine
 Documentation=https://docs.docker.com
 After=network.target docker.socket cloud-final.service waagent.service
 Requires=docker.socket
-Wants=cloud-final.service waagent.service
+# Wants=cloud-final.service waagent.service
 
 [Service]
 ExecStart=/usr/bin/docker daemon -H fd:// -H tcp://0.0.0.0:2376 --selinux-enabled=false --storage-driver=overlay
