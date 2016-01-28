@@ -19,15 +19,6 @@ update_centos() {
   yum update -y
 }
 
-extend_rootfs() {
-  yum -y install cloud-utils-growpart
-
-  # Usable on GCP, does not harm anywhere else
-  root_fs_device=$(mount | grep ' / ' | cut -d' ' -f 1 | sed s/1//g)
-  growpart $root_fs_device 1 || :
-  xfs_growfs / || :
-}
-
 permissive_iptables() {
   # need to install iptables-services, othervise the 'iptables save' command will not be available
   yum -y install iptables-services net-tools
@@ -84,14 +75,6 @@ install_docker() {
 reset_hostname() {
   echo "Avoid pre-assigned hostname"
   rm -vf /etc/hostname
-}
-
-configure_cloud_init() {
-  if [ -f /etc/cloud/cloud.cfg ]; then
-    #/etc/sysconfig/network is not used by CentOS 7 anymore
-    sed -i.bak '/syslog_fix_perms: ~/a preserve_hostname: true' /etc/cloud/cloud.cfg
-    diff /etc/cloud/cloud.cfg /etc/cloud/cloud.cfg.bak || :
-  fi
 }
 
 configure_console() {
@@ -156,13 +139,11 @@ main() {
     check_params
     update_centos
     modify_waagent
-    extend_rootfs
     disable_selinux
     permissive_iptables
     enable_ipforward
     install_utils
     install_docker
-    configure_cloud_init
     configure_console
     cleanup
     sync
