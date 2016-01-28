@@ -105,12 +105,12 @@ main() {
     shift
     eval "$@"
   elif [ ! -f "/var/cb-init-executed" ]; then
-    [[ "$IS_GATEWAY" == "true" ]] && setup_tmp_ssh
-    [[ "$RELOCATE_DOCKER" == "true" ]] &&  relocate_docker
     extend_rootfs
     format_disks
     fix_hostname
     # release_udev_cookie
+    [[ "$IS_GATEWAY" == "true" ]] && setup_tmp_ssh
+    [[ "$RELOCATE_DOCKER" == "true" ]] &&  relocate_docker
     echo $(date +%Y-%m-%d:%H:%M:%S) >> /var/cb-init-executed
   fi
   [ -e /usr/bin/ssh-aliases ] && /usr/bin/ssh-aliases create

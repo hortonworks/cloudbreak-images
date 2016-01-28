@@ -1,7 +1,7 @@
 {
   "variables": {
     "mock": "{{ env `MOCK` }}",
-    
+
     "aws_access_key": "{{ env `AWS_ACCESS_KEY` }}",
     "aws_secret_key": "{{ env `AWS_SECRET_ACCESS_KEY` }}",
     "gcp_account_file": "{{env `GCP_ACCOUNT_FILE`}}",
@@ -64,7 +64,7 @@
     "name": "googlecompute",
     "type": "googlecompute",
     "account_file": "{{user `gcp_account_file`}}",
-    "source_image": "centos-7-v20150603",
+    "source_image": "centos-7-v20160126",
     "zone": "us-central1-b",
     "project_id": "siq-haas",
     "ssh_username": "centos",
