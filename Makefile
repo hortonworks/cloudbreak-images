@@ -2,7 +2,7 @@
 PACKER_VARS=
 
 # this identifies images across cloud providers
-CLOUDBREAK_IMAGE_VERSION=1.2.0-v2
+CLOUDBREAK_IMAGE_VERSION=1.2.0-v4
 PACKER_VARS=-var-file=vars-versions.json -var-file=vars-docker-images.json -var cloudbreak_image_version=$(CLOUDBREAK_IMAGE_VERSION)
 ifdef DOCKER_VERSION
 	PACKER_VARS+=-var yum_version_docker=$(DOCKER_VERSION)
@@ -35,7 +35,7 @@ generate-vars: docker-build
 generate-vars-local:
 	cat vars-versions.yml | yaml2json | jq . > vars-versions.json
 	cat vars-docker-images.yml | yaml2json | jq . > vars-docker-images.json
-	
+
 docker-build:
 	docker build -t images:build - < Dockerfile.build
 
@@ -48,5 +48,3 @@ build-in-docker:
 		-v /var/run/docker.sock:/var/run/docker.sock \
 		-v /usr/local/bin/docker:/usr/local/bin/docker \
 		images:build make build-aws
-
-
