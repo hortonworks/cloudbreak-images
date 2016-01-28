@@ -76,6 +76,7 @@
         "metadata": {
             "created_at": "{{timestamp}}",
             "created" :"{{ isotime \"2006-01-02 15:04:05 -0700\" }}",
+            "image_name": "{{ user `os_image_name` }}",
             "source_image": "CentOS-7-x86_64-GenericCloud-1511",
             "yum_version_systemd": "{{ user `yum_version_systemd` }}",
             "yum_version_docker": "{{ user `yum_version_docker` }}",
