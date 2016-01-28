@@ -109,7 +109,7 @@ main() {
     extend_rootfs
     format_disks
     fix_hostname
-    release_udev_cookie
+    # release_udev_cookie
     echo $(date +%Y-%m-%d:%H:%M:%S) >> /var/cb-init-executed
   fi
   [ -e /usr/bin/ssh-aliases ] && /usr/bin/ssh-aliases create
