@@ -42,7 +42,7 @@ install_utils() {
 
   yum -y install unzip curl git wget bind-utils ntp tmux bash-completion
 
-  if [ "ec2" == $provider ]; then
+  if [[ $PACKER_BUILDER_TYPE =~ amazon ]] ; then
     yum install -y cloud-init
 fi
 
@@ -93,31 +93,6 @@ cleanup() {
   yum clean all
 }
 
-get_provider_from_packer() {
-    : ${PACKER_BUILDER_TYPE:? required amazon-ebs/googlecompute/openstack}
-
-    if [[ $PACKER_BUILDER_TYPE =~ amazon ]] ; then
-        echo ec2
-        return
-    fi
-
-    if [[ $PACKER_BUILDER_TYPE == "googlecompute" ]]; then
-        echo gcp
-        return
-    fi
-
-    if [[ $PACKER_BUILDER_TYPE == "openstack" ]]; then
-        echo openstack
-        return
-    fi
-
-    if [[ $PACKER_BUILDER_TYPE == "azure" ]]; then
-        echo azure
-        return
-    fi
-
-    echo UNKNOWN_PROVIDER
-}
 
 check_params() {
     : ${PACKER_BUILDER_TYPE:? required amazon-ebs/googlecompute/openstack }
