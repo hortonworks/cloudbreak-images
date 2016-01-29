@@ -78,6 +78,7 @@ main() {
   modify_waagent
   start_docker
   docker_pull_images "$@"
+  systemctl enable docker.service
   reset_docker
 }
 
