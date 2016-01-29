@@ -22,19 +22,6 @@ docker_pull_images() {
   done
 }
 
-reinstall_docker() {
-  debug 'reinstall docker as a workaround for failing "docker service start" ... '
-
-  local docker_version=$(docker version -f '{{.Client.Version}}' 2>/dev/null)
-  debug "docker version: $docker_version"
-    
-  service docker stop || :
-  rm -rf /var/lib/docker/ /var/run/docker.sock
-  yum remove -y docker-engine-${docker_version}
-  yum install -y docker-engine-${docker_version}
-  systemctl enable docker.service
-}
-
 start_docker() {
   debug "starting docker daemon"
   service docker start
@@ -89,7 +76,6 @@ main() {
   extend_rootfs
   configure_cloud_init
   modify_waagent
-  reinstall_docker
   start_docker
   docker_pull_images "$@"
   reset_docker
