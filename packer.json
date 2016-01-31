@@ -144,7 +144,6 @@
       "metadata": {
         "created_at": "{{timestamp}}",
         "created" :"{{ isotime \"2006-01-02 15:04:05 -0700\" }}",
-        "cloudbreak_image_version": "{{ user `cloudbreak_image_version` }}",
         "os_user": "{{user `os_user` }}",
         "image_name": "{{ user `image_name` }}",
         "yum_version_systemd": "{{ user `yum_version_systemd` }}"
