@@ -14,7 +14,7 @@
 
     "os_user": "cloudbreak",
     "atlas_artifact": "cloudbreak",
-    "image_name": "cb-centos72-amb221-{{ isotime \"2006-01-02\" }}{{env `IMAGE_NAME_SUFFIX` }}",
+    "image_name": "cloudbreak-{{ isotime \"2006-01-02\" }}{{env `IMAGE_NAME_SUFFIX` }}",
 
     "instance_type": "m3.medium",
 
