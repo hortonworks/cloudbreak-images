@@ -125,6 +125,7 @@
         "./user-data-script.sh",
         "./pull-docker-images.sh",
         "./optimization-script-for-hdp.sh",
+        "./cleanup.sh",
         "./create-gc-image.sh"
     ],
     "environment_vars": [

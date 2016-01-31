@@ -44,7 +44,8 @@
         "type": "shell",
         "scripts": [
             "./pull-docker-images.sh",
-            "./optimization-script-for-hdp.sh"
+            "./optimization-script-for-hdp.sh",
+            "./cleanup.sh"
         ],
         "environment_vars": [
             "OS_USER={{ user `os_user` }}",
