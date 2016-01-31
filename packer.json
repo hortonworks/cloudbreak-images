@@ -122,7 +122,6 @@
   {
     "type": "shell",
     "scripts": [
-        "./user-data-script.sh",
         "./pull-docker-images.sh",
         "./optimization-script-for-hdp.sh",
         "./cleanup.sh",
