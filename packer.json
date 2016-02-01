@@ -13,7 +13,7 @@
 	"psPath" : "{{env `AZURE_PUBLISH_SETTINGS`}}",
 
     "os_user": "cloudbreak",
-    "atlas_artifact": "cloudbreak",
+    "atlas_artifact": "docker",
     "image_name": "docker-centos-{{ isotime \"2006-01-02\" }}{{env `IMAGE_NAME_SUFFIX`}}",
 
     "instance_type": "m3.medium",
