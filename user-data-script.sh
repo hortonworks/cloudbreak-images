@@ -38,8 +38,6 @@ enable_ipforward() {
 }
 
 install_utils() {
-  local provider=$(get_provider_from_packer)
-
   yum -y install unzip curl git wget bind-utils ntp tmux bash-completion
 
   if [[ $PACKER_BUILDER_TYPE =~ amazon ]] ; then
@@ -57,7 +55,7 @@ install_docker() {
   systemctl enable docker.service
 
   getent passwd $OS_USER || adduser $OS_USER
-  usermod -a -G docker centos
+  usermod -a -G docker centos || :
   usermod -a -G docker $OS_USER
 }
 
