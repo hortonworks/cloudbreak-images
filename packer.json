@@ -64,7 +64,7 @@
     "name": "googlecompute",
     "type": "googlecompute",
     "account_file": "{{user `gcp_account_file`}}",
-    "source_image": "centos-7-v20160126",
+    "source_image": "docker-centos-2016-01-31",
     "zone": "us-central1-b",
     "project_id": "siq-haas",
     "ssh_username": "centos",
