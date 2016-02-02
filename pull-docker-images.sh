@@ -38,12 +38,13 @@ reset_docker() {
 }
 
 extend_rootfs() {
-  yum -y install cloud-utils-growpart
+  if [[ $PACKER_BUILDER_TYPE == "googlecompute" ]]; then
+      yum -y install cloud-utils-growpart
 
-  # Usable on GCP, does not harm anywhere else
-  root_fs_device=$(mount | grep ' / ' | cut -d' ' -f 1 | sed s/1//g)
-  growpart $root_fs_device 1 || :
-  xfs_growfs / || :
+      root_fs_device=$(mount | grep ' / ' | cut -d' ' -f 1 | sed s/1//g)
+      growpart $root_fs_device 1 || :
+      xfs_growfs / || :
+  fi
 }
 
 configure_cloud_init() {
