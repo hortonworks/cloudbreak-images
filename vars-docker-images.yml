@@ -1,5 +1,5 @@
 cb_docker_container_ambari_base: hortonworks/ambari-base:7.2.1511-v1
-cb_docker_container_docker_consul_watch_plugn: sequenceiq/docker-consul-watch-plugn:1.1
+cb_docker_container_docker_consul_watch_plugn: sequenceiq/docker-consul-watch-plugn:1.2
 cb_docker_container_registrator: sequenceiq/registrator:v5.2
 cb_docker_container_logrotate: sequenceiq/logrotate:v0.5.1
 cb_docker_container_kerberos: sequenceiq/kerberos:1.1
