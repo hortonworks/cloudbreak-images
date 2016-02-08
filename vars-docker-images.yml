@@ -11,4 +11,5 @@ cb_docker_container_alpine: gliderlabs/alpine:3.1
 cb_docker_container_swarm: swarm:0.4.0
 cb_docker_container_cert_tool: ehazlett/cert-tool:0.0.3
 cb_docker_container_haveged: "sequenceiq/haveged:1.0"
+cb_docker_container_ldap: "sequenceiq/docker-ldap:1.0"
 cb_docker_container_list_others: ""
