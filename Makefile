@@ -24,7 +24,7 @@ build-googlecompute: generate-vars
 	TRACE=1 ./scripts/packer.sh build -only=googlecompute $(PACKER_OPTS) packer.json
 
 build-azure: generate-vars
-	TRACE=1 ./scripts/packer.sh build -only=azure $(PACKER_OPTS) packer.json
+	TRACE=1 ./scripts/packer.sh build -only=azure-arm $(PACKER_OPTS) packer.json
 
 build-openstack: generate-vars
 	TRACE=1 ./scripts/packer.sh build $(PACKER_OPTS) packer-openstack.json
