@@ -22,6 +22,12 @@ packer_in_container() {
     -e AWS_SECRET_ACCESS_KEY=$AWS_SECRET_ACCESS_KEY \
     -e AZURE_PUBLISH_SETTINGS=$AZURE_PUBLISH_SETTINGS \
     -e AZURE_SUBSCRIPTION_NAME=$AZURE_SUBSCRIPTION_NAME \
+    -e ARM_CLIENT_ID=$ARM_CLIENT_ID \
+    -e ARM_CLIENT_SECRET=$ARM_CLIENT_SECRET \
+    -e ARM_GROUP_NAME=$ARM_GROUP_NAME \
+    -e ARM_STORAGE_ACCOUNT=$ARM_STORAGE_ACCOUNT \
+    -e ARM_SUBSCRIPTION_ID=$ARM_SUBSCRIPTION_ID \
+    -e ARM_TENANT_ID=$ARM_TENANT_ID \
     -e GCP_ACCOUNT_FILE=$GCP_ACCOUNT_FILE \
     -e OS_IMAGE_NAME=$OS_IMAGE_NAME \
     -e OS_AUTH_URL=$OS_AUTH_URL \
@@ -34,7 +40,7 @@ packer_in_container() {
     -v $PWD:/$PWD \
     -w $PWD \
     $dockerOpts \
-    sequenceiq/packer:v0.8.7-v9 "$@"
+    sequenceiq/packer:v0.8.7-v10 "$@"
 }
 
 main() {
