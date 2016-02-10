@@ -52,7 +52,7 @@
             "YUM_VERSION_DOCKER={{ user `yum_version_docker` }}",
             "YUM_VERSION_KERNEL={{ user `yum_version_kernel` }}",
             "YUM_VERSION_SYSTEMD={{ user `yum_version_systemd` }}",
-            "IMAGES={{ user `cb_docker_container_ambari_base` }} {{ user `cb_docker_container_docker_consul_watch_plugn` }} {{ user `cb_docker_container_registrator` }} {{ user `cb_docker_container_logrotate` }} {{ user `cb_docker_container_kerberos` }} {{ user `cb_docker_container_ambari_db` }} {{ user `cb_docker_container_munchausen` }} {{ user `cb_docker_container_consul` }} {{ user `cb_docker_container_gateway` }} {{ user `cb_docker_container_alpine` }} {{ user `cb_docker_container_swarm` }} {{ user `cb_docker_container_cert_tool` }} {{ user `cb_docker_container_haveged` }} {{ user `cb_docker_container_list_others` }}",
+            "IMAGES={{ user `cb_docker_container_ambari_base` }} {{ user `cb_docker_container_docker_consul_watch_plugn` }} {{ user `cb_docker_container_registrator` }} {{ user `cb_docker_container_logrotate` }} {{ user `cb_docker_container_kerberos` }} {{ user `cb_docker_container_ambari_db` }} {{ user `cb_docker_container_munchausen` }} {{ user `cb_docker_container_consul` }} {{ user `cb_docker_container_gateway` }} {{ user `cb_docker_container_alpine` }} {{ user `cb_docker_container_swarm` }} {{ user `cb_docker_container_cert_tool` }} {{ user `cb_docker_container_haveged` }} {{ user `cb_docker_container_ldap` }} {{ user `cb_docker_container_list_others` }}",
             "TRACE=1"
         ],
         "execute_command": "chmod +x {{ .Path }}; {{ .Vars }} sudo -E bash '{{ .Path }}'"
@@ -80,7 +80,7 @@
             "created" :"{{ isotime \"2006-01-02 15:04:05 -0700\" }}",
             "cloudbreak_image_version": "{{ user `cloudbreak_image_version` }}",
             "image_name": "{{ user `os_image_name` }}",
-            "all_docker_images":"{{ .Config.PackerUserVars.cb_docker_container_ambari_base }},{{ user `cb_docker_container_docker_consul_watch_plugn` }},{{ user `cb_docker_container_registrator` }},{{ user `cb_docker_container_logrotate` }},{{ user `cb_docker_container_kerberos` }},{{ user `cb_docker_container_ambari_db` }},{{ user `cb_docker_container_munchausen` }},{{ user `cb_docker_container_consul` }},{{ user `cb_docker_container_gateway` }},{{ user `cb_docker_container_alpine` }},{{ user `cb_docker_container_swarm` }},{{ user `cb_docker_container_cert_tool` }},{{ user `cb_docker_container_haveged` }},{{ user `cb_docker_container_list_others` }}"
+            "all_docker_images":"{{ .Config.PackerUserVars.cb_docker_container_ambari_base }},{{ user `cb_docker_container_docker_consul_watch_plugn` }},{{ user `cb_docker_container_registrator` }},{{ user `cb_docker_container_logrotate` }},{{ user `cb_docker_container_kerberos` }},{{ user `cb_docker_container_ambari_db` }},{{ user `cb_docker_container_munchausen` }},{{ user `cb_docker_container_consul` }},{{ user `cb_docker_container_gateway` }},{{ user `cb_docker_container_alpine` }},{{ user `cb_docker_container_swarm` }},{{ user `cb_docker_container_cert_tool` }},{{ user `cb_docker_container_haveged` }},{{ user `cb_docker_container_ldap` }},{{ user `cb_docker_container_list_others` }}"
         }
       }
       ],
