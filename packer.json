@@ -153,23 +153,6 @@
   }
   ]
   ,"post-processors": [
-    [
-      {
-        "type": "generator",
-        "template": "{{ build_name }}.tmpl",
-        "output": "{{ build_name }}.yml"
-      },
-      {
-        "type": "atlas",
-        "artifact": "sequenceiq/{{ user `atlas_artifact` }}",
-        "artifact_type": "{{ build_name }}.yml",
-        "metadata": {
-          "cloudbreak_image_version": "{{ user `cloudbreak_image_version` }}",
-          "created_at": "{{timestamp}}",
-          "created" :"{{ isotime \"2006-01-02 15:04:05 -0700\" }}"
-        }
-      }
-    ],
     {
       "type": "atlas",
       "artifact": "sequenceiq/{{ user `atlas_artifact` }}",

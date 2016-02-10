@@ -83,24 +83,6 @@
             "all_docker_images":"{{ .Config.PackerUserVars.cb_docker_container_ambari_base }},{{ user `cb_docker_container_docker_consul_watch_plugn` }},{{ user `cb_docker_container_registrator` }},{{ user `cb_docker_container_logrotate` }},{{ user `cb_docker_container_kerberos` }},{{ user `cb_docker_container_ambari_db` }},{{ user `cb_docker_container_munchausen` }},{{ user `cb_docker_container_consul` }},{{ user `cb_docker_container_gateway` }},{{ user `cb_docker_container_alpine` }},{{ user `cb_docker_container_swarm` }},{{ user `cb_docker_container_cert_tool` }},{{ user `cb_docker_container_haveged` }},{{ user `cb_docker_container_ldap` }},{{ user `cb_docker_container_list_others` }}"
         }
       }
-      ],
-      [
-                {
-      "type":"generator",
-      "template":"openstack.tmpl",
-      "output":"openstack.yml"
-          }
-          ,{
-            "type": "atlas",
-            "token": "{{user `atlas_token`}}",
-            "artifact": "sequenceiq/{{ user `atlas_artifact` }}",
-            "artifact_type": "openstack.yml",
-            "metadata": {
-                "cloudbreak_image_version": "{{ user `cloudbreak_image_version` }}",
-                "created_at": "{{timestamp}}",
-                "created" :"{{ isotime \"2006-01-02 15:04:05 -0700\" }}"
-            }
-          }
       ]
     ]
 }
