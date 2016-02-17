@@ -87,6 +87,7 @@ install_docker() {
   systemctl enable docker.service
 
   getent passwd $OS_USER || adduser $OS_USER
+  getent passwd ec2-user && usermod -a -G docker ec2-user
   usermod -a -G docker $OS_USER
 }
 
