@@ -6,7 +6,7 @@ Requires=docker.socket
 Wants=cloud-final.service waagent.service
 
 [Service]
-ExecStart=/usr/bin/docker daemon -H fd:// -H tcp://0.0.0.0:2376 --selinux-enabled=false --storage-driver=overlay
+ExecStart=/usr/bin/docker daemon --exec-opt native.cgroupdriver=cgroupfs -H fd:// -H tcp://0.0.0.0:2376 --selinux-enabled=false --storage-driver=overlay
 MountFlags=slave
 LimitNOFILE=1048576
 LimitNPROC=1048576
