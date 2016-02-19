@@ -12,4 +12,6 @@ cb_docker_container_swarm: swarm:1.1.0
 cb_docker_container_cert_tool: ehazlett/cert-tool:0.0.3
 cb_docker_container_haveged: "sequenceiq/haveged:1.0"
 cb_docker_container_ldap: "sequenceiq/docker-ldap:1.0"
+cb_docker_container_shipyard: "shipyard/shipyard:v3.0.0"
+cb_docker_container_shipyard_db: "rethinkdb:2.2.4"
 cb_docker_container_list_others: ""
