@@ -36,6 +36,12 @@ generate-vars-local:
 	cat vars-versions.yml | yaml2json | jq . > vars-versions.json
 	cat vars-docker-images.yml | yaml2json | jq . > vars-docker-images.json
 
+check-openstack:
+	ATLAS=$(shell atlas -u sequenceiq -a cloudbreak -t openstack.image -f '{{ .Name }}' -m cloudbreak_image_version=$(CLOUDBREAK_IMAGE_VERSION) 2>/dev/null)
+ifeq ($(ATLAS),"cloudbreak")
+	  echo [WARNING] artifact already exist 
+endif
+
 docker-build:
 	docker build -t images:build - < Dockerfile.build
 
