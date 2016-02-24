@@ -100,8 +100,8 @@
         "resource_group_name": "{{user `resource_group_name`}}",
         "storage_account": "{{user `storage_account`}}",
 
-        "capture_container_name": "images",
-        "capture_name_prefix": "packer",
+        "capture_container_name": "packer",
+        "capture_name_prefix": "{{ user `image_name`}}",
 
         "custom_image_vhd_uri": "https://sequenceiqnortheurope2.blob.core.windows.net/system/Microsoft.Compute/Images/images/packer-osDisk.e1ab6ee0-4e98-4142-a5c6-9dab7d6e3cad.vhd",
         "ssh_pty": "true",
