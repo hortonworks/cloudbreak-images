@@ -18,6 +18,14 @@ setup_tmp_ssh() {
   echo "#tmpssh_end" >> /home/${SSH_USER}/.ssh/authorized_keys
 }
 
+append_aws_ssh_user_key() {
+    SSH_DIR="/home/$SSH_USER/.ssh"
+    mkdir -p $SSH_DIR
+    cat /home/ec2-user/.ssh/authorized_keys >> $SSH_DIR/authorized_keys
+    chown -R $SSH_USER:$SSH_USER $SSH_DIR
+    chmod 644 $SSH_DIR/authorized_keys
+}
+
 get_ip() {
   ifconfig eth0 | awk '/inet addr/{print substr($2,6)}'
 }
@@ -104,6 +112,7 @@ main() {
   elif [ ! -f "/var/cb-init-executed" ]; then
     [[ "$IS_GATEWAY" == "true" ]] && setup_tmp_ssh
     [[ "$RELOCATE_DOCKER" == "true" ]] &&  relocate_docker
+    [[ `getent passwd ec2-user` ]] && [[ "ec-2user" != "$SSH_USER" ]] && append_aws_ssh_user_key
     extend_rootfs
     format_disks
     fix_hostname
