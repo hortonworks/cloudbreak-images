@@ -18,6 +18,7 @@ endif
 	# go get github.com/bronze1man/yaml2json
 
 build-amazon: generate-vars
+	AMI=$(shell atlas -u sequenceiq -a docker -t amazon.image -m image_name=docker-centos-2016-02-01 -f '{{index .Metadata "region.eu-west-1" }}' 2> /dev/null)
 	TRACE=1 ./scripts/packer.sh build -only=amazon $(PACKER_OPTS) packer.json
 
 build-googlecompute: generate-vars
