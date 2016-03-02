@@ -1,4 +1,4 @@
-docker run -it --rm \
+docker run -i --rm \
     -v ~/.azure:/root/.azure \
     -v $PWD:/work \
     -w /work \
@@ -15,7 +15,7 @@ docker run -it --rm \
     --entrypoint azure-copy \
     sequenceiq/azure-cli-tools:0.9.8-v3
   
-docker run -it --rm \
+docker run -i --rm \
     -v ~/.azure:/root/.azure \
     -v $PWD:/work \
     -w /work \
