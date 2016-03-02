@@ -8,16 +8,16 @@ docker run -it --rm \
     -e ARM_STORAGE_ACCOUNT=$ARM_STORAGE_ACCOUNT \
     -e ARM_SUBSCRIPTION_ID=$ARM_SUBSCRIPTION_ID \
     -e ARM_TENANT_ID=$ARM_TENANT_ID \
-    -e AZURE_DESTINATION_IMAGE_PREFIX=$AZURE_DESTINATION_IMAGE_PREFIX \
-    -e AZURE_USERNAME=$AZURE_USERNAME \
-    -e AZURE_PASSWORD=$AZURE_PASSWORD \
+    -e ARM_DESTINATION_IMAGE_PREFIX=$ARM_DESTINATION_IMAGE_PREFIX \
+    -e ARM_USERNAME=$ARM_USERNAME \
+    -e ARM_PASSWORD=$ARM_PASSWORD \
     --entrypoint azure-copy \
-    sequenceiq/azure-cli-tools:0.9.8-v1
+    sequenceiq/azure-cli-tools:0.9.8-v2
   
 docker run -it --rm \
     -v ~/.azure:/root/.azure \
     -v $PWD:/work \
     -w /work \
     --entrypoint pollprogress \
-    sequenceiq/azure-cli-tools:0.9.8-v1 \
+    sequenceiq/azure-cli-tools:0.9.8-v2 \
     checks.yml
