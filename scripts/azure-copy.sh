@@ -2,6 +2,7 @@ docker run -it --rm \
     -v ~/.azure:/root/.azure \
     -v $PWD:/work \
     -w /work \
+    -e TRACE=$TRACE \
     -e ARM_CLIENT_ID=$ARM_CLIENT_ID \
     -e ARM_CLIENT_SECRET=$ARM_CLIENT_SECRET \
     -e ARM_GROUP_NAME=$ARM_GROUP_NAME \
