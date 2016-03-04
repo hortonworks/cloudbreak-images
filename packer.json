@@ -15,7 +15,7 @@
 
     "docker_images": "gliderlabs/alpine:3.1 alpine:latest sequenceiq/mybatis-migrations:1.0.0 sequenceiq/cb-shell:0.5.38",
     "cbd_install_dir": "/bin",
-    "cbd_version": "1.1.0-rc3",
+    "cbd_version": "1.2.0-rc0",
     "os_user": "cloudbreak",
     "atlas_artifact": "cbd",
     "image_name": "cloudbreak-deployer-110-rc3-{{ isotime \"2006-01-02\" }}{{env `IMAGE_NAME_SUFFIX`}}",
