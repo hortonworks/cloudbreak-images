@@ -10,14 +10,6 @@ debug() {
     [[ "$DEBUG" ]] && echo "-----> $*" 1>&2
 }
 
-update_centos_base_yum_repo() {
-  # Use the same CentOS Base yum repo on CentOS images
-  if ! grep "CentOS\|Derived from Red Hat" /etc/redhat-release &> /dev/null; then
-    rm -f /etc/yum.repos.d/CentOS-Base.repo
-  fi
-  yum clean all
-}
-
 update_kernel() {
  if [[ $PACKER_BUILDER_TYPE == "azure" ]]; then
      mv /etc/yum.repos.d/CentOS-Base.repo.rpmnew /tmp/shared/etc/yum.repos.d/
@@ -172,7 +164,6 @@ check_params() {
 
 main() {
     check_params
-    update_centos_base_yum_repo
     update_kernel
     modify_waagent
     extend_rootfs
