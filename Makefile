@@ -2,7 +2,7 @@
 PACKER_VARS=
 
 # this identifies images across cloud providers
-CLOUDBREAK_IMAGE_VERSION=1.2.0-v10
+CLOUDBREAK_IMAGE_VERSION=1.2.0-v11
 PACKER_VARS=-var-file=vars-versions.json -var-file=vars-docker-images.json -var cloudbreak_image_version=$(CLOUDBREAK_IMAGE_VERSION)
 ifdef DOCKER_VERSION
 	PACKER_VARS+=-var yum_version_docker=$(DOCKER_VERSION)
@@ -41,7 +41,7 @@ generate-vars-local:
 check-openstack:
 	ATLAS=$(shell atlas -u sequenceiq -a cloudbreak -t openstack.image -f '{{ .Name }}' -m cloudbreak_image_version=$(CLOUDBREAK_IMAGE_VERSION) 2>/dev/null)
 ifeq ($(ATLAS),"cloudbreak")
-	  echo [WARNING] artifact already exist 
+	  echo [WARNING] artifact already exist
 endif
 
 docker-build:

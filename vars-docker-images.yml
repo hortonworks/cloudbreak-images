@@ -1,5 +1,5 @@
-cb_docker_container_ambari_server: hortonworks/ambari-server:2.2.1-v11
-cb_docker_container_ambari_agent: hortonworks/ambari-agent:2.2.1-v11
+cb_docker_container_ambari_server: hortonworks/ambari-server:2.2.1-v12
+cb_docker_container_ambari_agent: hortonworks/ambari-agent:2.2.1-v12
 cb_docker_container_docker_consul_watch_plugn: sequenceiq/docker-consul-watch-plugn:1.6
 cb_docker_container_registrator: gliderlabs/registrator:v6
 cb_docker_container_logrotate: sequenceiq/logrotate:v0.5.1
