@@ -64,6 +64,11 @@ reset_hostname() {
   rm -vf /etc/hostname
 }
 
+grant-sudo-to-os-user() {
+    echo "$OS_USER ALL=NOPASSWD: ALL" > /etc/sudoers.d/$OS_USER
+    chmod o-r /etc/sudoers.d/$OS_USER
+}
+
 configure_console() {
   export GRUB_CONFIG='/etc/default/grub'
   if [ -f "$GRUB_CONFIG" ] && grep "GRUB_CMDLINE_LINUX" "$GRUB_CONFIG" | grep -q "console=tty0"; then
@@ -105,6 +110,7 @@ main() {
     enable_ipforward
     install_utils
     install_docker
+    grant-sudo-to-os-user
     configure_console
     cleanup
     sync
