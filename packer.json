@@ -103,7 +103,7 @@
         "capture_container_name": "packer",
         "capture_name_prefix": "{{ user `image_name`}}",
 
-        "custom_image_vhd_uri": "https://sequenceiqnortheurope2.blob.core.windows.net/system/Microsoft.Compute/Images/images/packer-osDisk.e1ab6ee0-4e98-4142-a5c6-9dab7d6e3cad.vhd",
+        "custom_image_vhd_uri": "http://sequenceiqnortheurope2.blob.core.windows.net/images/pkrosc75p3642jx.vhd",
         "ssh_pty": "true",
         "username": "{{user `os_user`}}",
         "ssh_password" :"{{user `ssh_password`}}",
