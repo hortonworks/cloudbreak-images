@@ -2,8 +2,8 @@
 PACKER_VARS=
 
 # this identifies images across cloud providers
-CLOUDBREAK_IMAGE_VERSION=1.2.0-v1
-PACKER_VARS=-var-file=vars-versions.json -var-file=vars-docker-images.json -var cloudbreak_image_version=$(CLOUDBREAK_IMAGE_VERSION)
+IMAGE_VERSION=1.9.1-v1
+PACKER_VARS=-var-file=vars-versions.json -var-file=vars-docker-images.json -var image_version=$(IMAGE_VERSION)
 ifdef DOCKER_VERSION
 	PACKER_VARS+=-var yum_version_docker=$(DOCKER_VERSION)
 endif
