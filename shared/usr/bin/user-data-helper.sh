@@ -11,6 +11,9 @@ set
 : ${PUBLIC_SSH_KEY:? required}
 : ${RELOCATE_DOCKER:? required}
 : ${SSH_USER:? required}
+: ${DOCKER_IMAGES_DIR:=/var/lib/docker-images}
+: ${XARGS_PARALLEL:=}
+# : ${XARGS_PARALLEL:="-P 20"}
 
 setup_tmp_ssh() {
   echo "#tmpssh_start" >> /home/${SSH_USER}/.ssh/authorized_keys
@@ -67,10 +70,16 @@ relocate_docker() {
   if [[ $CLOUD_PLATFORM == AZURE* ]] && [ -n "$(mount | grep ' /mnt/resource ')" ] && [ ! -f /var/docker-relocate ]; then
       touch /var/docker-relocate
       systemctl stop docker
-      time mv /var/lib/docker /mnt/resource/docker
+      mv /var/lib/docker /var/lib/docker-backup
+      mkdir -p /mnt/resource/docker
       ln -s /mnt/resource/docker /var/lib/docker
       systemctl start docker
-      release_udev_cookie
+      while ! docker run --rm tianon/true; do
+        echo -n .
+        sleep 1
+      done
+      time (ls -1 $DOCKER_IMAGES_DIR | xargs -n1 $XARGS_PARALLEL -I@ bash -c "time docker load -i $DOCKER_IMAGES_DIR/@")
+      #release_udev_cookie
   fi
 }
 
