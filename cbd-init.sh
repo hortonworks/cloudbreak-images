@@ -2,7 +2,7 @@
 
 : ${DEBUG:=1}
 : ${OS_USER:=cloudbreak}
-: ${CBD_DIR:=cloudbreak-deployment}
+: ${CBD_DIR:="/var/lib/cloudbreak-deployment"}
 
 debug() {
     [[ "$DEBUG" ]] && echo "-----> $*" 1>&2
