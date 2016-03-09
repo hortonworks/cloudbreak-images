@@ -14,10 +14,20 @@ debug() {
 
 init() {
   : ${DEBUG:=1}
+  : ${DOCKER_IMAGES_DIR:=/var/lib/docker-images}
+  : ${XARGS_PARALLEL:=}
+  # : ${XARGS_PARALLEL:="-P 20"}
 }
 
 docker_pull_images() {
-  time (echo ${IMAGES:? required} | xargs -n1 -P 20  docker pull)
+  time (echo ${IMAGES:? required} | xargs -n1 -P 20 docker pull)
+
+  # save images as tar file on azure
+  if [[ $PACKER_BUILDER_TYPE =~ azure ]] ; then
+    mkdir -p $DOCKER_IMAGES_DIR
+    export DOCKER_IMAGES_DIR
+    time (echo $IMAGES | xargs -n1 | xargs -n1 $XARGS_PARALLEL -I@ bash -c 'IMAGE=@; IMG=${IMAGE//\//_}; docker save -o $DOCKER_IMAGES_DIR/${IMG/:/_}.tar @')
+  fi
 }
 
 start_docker() {
