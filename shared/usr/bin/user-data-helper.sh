@@ -96,7 +96,7 @@ format_disks() {
       fi
       mkfs -E lazy_itable_init=1 -O uninit_bg -F -t ext4 $DEVICE
       mkdir /hadoopfs/fs${i}
-      echo $DEVICE /hadoopfs/fs${i} ext4  defaults,noatime 0 2 >> /etc/fstab
+      echo UUID=$(blkid -o value $DEVICE | head -1) /hadoopfs/fs${i} ext4  defaults,noatime 0 2 >> /etc/fstab
       mount /hadoopfs/fs${i}
       chmod 777 /hadoopfs/fs${i}
     fi
