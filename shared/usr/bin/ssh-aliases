@@ -90,9 +90,9 @@ create_default_user() {
   else
     debug "create user: $OS_USER"
     adduser $OS_USER
-    usermod -G docker $OS_USER
   fi
 
+  usermod -G docker $OS_USER || :
   USERHOME=$(sh -c "echo ~$OS_USER")
   debug "USERHOME=$USERHOME"
   mkdir -p $USERHOME/.ssh
