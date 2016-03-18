@@ -1,4 +1,5 @@
 CBD_VERSION=1.2.0
+ENVS=CBD_VERSION=$(CBD_VERSION) TRACE=1
 # it testing, atlas uploads should go to mocking artifact slush
 PACKER_VARS=
 
@@ -17,16 +18,16 @@ endif
 	# go get github.com/bronze1man/yaml2json
 
 build-amazon: generate-vars
-	TRACE=1 ./scripts/packer.sh build -only=amazon $(PACKER_OPTS) packer.json
+	$(ENVS) ./scripts/packer.sh build -only=amazon $(PACKER_OPTS) packer.json
 
 build-googlecompute: generate-vars
-	TRACE=1 ./scripts/packer.sh build -only=googlecompute $(PACKER_OPTS) packer.json
+	$(ENVS) ./scripts/packer.sh build -only=googlecompute $(PACKER_OPTS) packer.json
 
 build-azure: generate-vars
-	TRACE=1 ./scripts/packer.sh build -only=azure $(PACKER_OPTS) packer.json
+	$(ENVS) ./scripts/packer.sh build -only=azure $(PACKER_OPTS) packer.json
 
 build-openstack: generate-vars
-	TRACE=1 ./scripts/packer.sh build $(PACKER_OPTS) packer-openstack.json
+	$(ENVS) ./scripts/packer.sh build $(PACKER_OPTS) packer-openstack.json
 
 generate-vars: docker-build
 	docker run -v $(PWD):/work -w /work --entrypoint=bash images:build -c 'make generate-vars-local'
