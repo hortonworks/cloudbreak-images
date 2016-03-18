@@ -15,6 +15,7 @@ packer_in_container() {
   docker run -i --rm \
     -e ORIG_USER=$USER \
     -e MOCK=$MOCK \
+    -e CBD_VERSION=$CBD_VERSION \
     -e CHECKPOINT_DISABLE=1 \
     -e PACKER_LOG=$PACKER_LOG \
     -e PACKER_LOG_PATH=$PACKER_LOG_PATH \

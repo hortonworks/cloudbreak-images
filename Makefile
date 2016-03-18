@@ -1,3 +1,4 @@
+CBD_VERSION=1.2.0
 # it testing, atlas uploads should go to mocking artifact slush
 PACKER_VARS=
 
