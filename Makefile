@@ -2,7 +2,7 @@
 PACKER_VARS=
 
 # this identifies images across cloud providers
-IMAGE_VERSION=1.9.1-v1
+IMAGE_VERSION=1.9.1-v2
 PACKER_VARS=-var-file=vars-versions.json -var-file=vars-docker-images.json -var image_version=$(IMAGE_VERSION)
 ifdef DOCKER_VERSION
 	PACKER_VARS+=-var yum_version_docker=$(DOCKER_VERSION)
