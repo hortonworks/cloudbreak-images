@@ -53,7 +53,7 @@ cbd_install() {
     : ${CBD_INSTALL_DIR:=/bin}
     : ${CBD_VERSION:?required}
     deubg "Install cbd: ${CBD_VERSION:?required} to ${CBD_INSTALL_DIR}"
-    curl -Ls public-repo-1.hortonworks.com/HDP/cloudbreak/cloudbreak-deployer_${CBD_VERSION:?required}_$(uname)_x86_64.tgz \
+    curl -Ls s3.amazonaws.com/public-repo-1.hortonworks.com/HDP/cloudbreak/cloudbreak-deployer_${CBD_VERSION:?required}_$(uname)_x86_64.tgz \
         | tar -xz -C ${CBD_INSTALL_DIR}
 }
 
