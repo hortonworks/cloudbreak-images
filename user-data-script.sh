@@ -96,6 +96,11 @@ reset_hostname() {
   rm -vf /etc/hostname
 }
 
+grant-sudo-to-os-user() {
+    echo "$OS_USER ALL=NOPASSWD: ALL" > /etc/sudoers.d/$OS_USER
+    chmod o-r /etc/sudoers.d/$OS_USER
+}
+
 configure_cloud_init() {
   if [ -f /etc/cloud/cloud.cfg ]; then
     #/etc/sysconfig/network is not used by CentOS 7 anymore
@@ -175,6 +180,7 @@ main() {
     install_docker
     configure_cloud_init
     configure_console
+    grant-sudo-to-os-user
     cleanup
     sync
 }
