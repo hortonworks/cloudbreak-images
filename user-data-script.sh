@@ -40,9 +40,11 @@ enable_ipforward() {
 install_utils() {
   yum -y install unzip curl git wget bind-utils ntp tmux bash-completion
 
-  if [[ $PACKER_BUILDER_TYPE =~ amazon ]] ; then
+  if ! [[ $PACKER_BUILDER_TYPE =~ azure ]]; then
     yum install -y cloud-init
-fi
+    cp -f /tmp/shared/etc/cloud/cloud.cfg /etc/cloud/cloud.cfg
+    chmod 664 /etc/cloud/cloud.cfg
+  fi
 
   curl -o /usr/bin/jq http://stedolan.github.io/jq/download/linux64/jq && chmod +x /usr/bin/jq
 }
@@ -110,7 +112,7 @@ main() {
     enable_ipforward
     install_utils
     install_docker
-    grant-sudo-to-os-user
+    #grant-sudo-to-os-user
     configure_console
     cleanup
     sync
