@@ -11,9 +11,9 @@ ifdef DOCKER_VERSION
 endif
 
 ifeq ($(MOCK),true)
-	PACKER_OPTS=$(PACKER_VARS) -var atlas_artifact=mock
+	PACKER_OPTS+=$(PACKER_VARS) -var atlas_artifact=mock
 else
-	PACKER_OPTS=$(PACKER_VARS)
+	PACKER_OPTS+=$(PACKER_VARS)
 endif
 
 #deps:
@@ -36,7 +36,7 @@ generate-vars: docker-build
 
 generate-vars-local:
 	cat vars-versions.yml | yaml2json | jq . > vars-versions.json
-	
+
 docker-build:
 	docker build -t images:build - < Dockerfile.build
 
@@ -49,5 +49,3 @@ build-in-docker:
 		-v /var/run/docker.sock:/var/run/docker.sock \
 		-v /usr/local/bin/docker:/usr/local/bin/docker \
 		images:build make build-aws
-
-

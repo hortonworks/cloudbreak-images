@@ -15,14 +15,6 @@ reset_docker() {
     rm -vf /etc/docker/key.json
 }
 
-wait_for_cloudbreak() {
-    debug "waitng for cloudbreak API ..."
-    while ! curl -f  172.17.0.1:8080/info &>/dev/null ; do 
-        echo -n .; sleep 1
-    done
-
-    debug "cloudbreak info: $( curl 172.17.0.1:8080/info)"
-}
 cbd_init() {
     mkdir $CBD_DIR
     cd $_
@@ -35,9 +27,8 @@ cbd_init() {
 
     cbd pull-parallel
     debug "start deployment to trigger image pull"
-    cbd start
+    cbd start-wait
 
-    wait_for_cloudbreak
     debug "stops containers"
     cbd kill
 
