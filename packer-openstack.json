@@ -29,10 +29,10 @@
       "username": "{{user `os_username`}}",
       "password": "{{user `os_password`}}",
       "tenant_name": "{{user `os_tenant_name`}}",
-      "ssh_username": "centos",
+      "ssh_username": "cloudbreak",
       "ssh_pty": "true",
       "image_name": "{{user `image_name`}}",
-      "source_image": "ac3d6c6f-b139-4d1f-a86f-5b0821271984",
+      "source_image": "3d144a1f-0674-4020-b7da-c95ce36daa9e",
       "flavor": "m1.medium",
       "use_floating_ip": true,
       "floating_ip_pool": "8a1ca549-30cb-4fd5-9d32-84a42433558b",
@@ -57,7 +57,6 @@
   {
     "type": "shell",
     "scripts": [
-        "./user-data-script.sh",
         "./pull-docker-images.sh",
         "./cbd-init.sh"
     ],

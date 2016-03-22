@@ -23,6 +23,7 @@
 
     "instance_type": "m3.medium",
 
+    "ami-eu-west-1": "ami-60dd5913"
   },
   "builders":[
   {
@@ -35,7 +36,7 @@
     "secret_key": "{{user `aws_secret_key`}}",
     "source_ami": "{{user `ami-eu-west-1`}}",
     "instance_type": "{{ user `instance_type` }}",
-    "ssh_username": "ec2-user",
+    "ssh_username": "cloudbreak",
     "ami_block_device_mappings": [{
                  "device_name": "/dev/sda1",
                  "volume_type": "gp2",
@@ -61,10 +62,10 @@
     "name": "googlecompute",
     "type": "googlecompute",
     "account_file": "{{user `gcp_account_file`}}",
-    "source_image": "centos-7-v20150603",
+    "source_image": "docker-centos-2016-03-21",
     "zone": "us-central1-b",
     "project_id": "siq-haas",
-    "ssh_username": "centos",
+    "ssh_username": "cloudbreak",
     "ssh_pty": "true",
     "machine_type": "n1-standard-2",
     "image_name": "{{user `image_name`}}",
@@ -119,7 +120,6 @@
   {
     "type": "shell",
     "scripts": [
-        "./user-data-script.sh",
         "./pull-docker-images.sh",
         "./cbd-init.sh",
         "./create-gc-image.sh"
