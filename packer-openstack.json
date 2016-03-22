@@ -43,6 +43,12 @@
   ],
   "provisioners": [
   {
+      "type": "shell",
+      "inline": [
+          "sudo rm -rf /tmp/shared"
+      ]
+  },
+  {
     "type": "file",
     "source": "shared",
     "destination": "/tmp"
