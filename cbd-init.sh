@@ -19,11 +19,7 @@ cbd_init() {
     mkdir $CBD_DIR
     cd $_
     
-    su $OS_USER <<EOF
-    cbd init
-    cbd pull-parallel
-    cbd util cloudbreak-shell-quiet <<< "version"
-EOF
+    su $OS_USER -c 'cbd init && cbd pull-parallel && cbd util cloudbreak-shell-quiet <<< "version"'
 
     rm -rf Profile certs *.yml *.log
     chown -R $OS_USER:$OS_USER $CBD_DIR
