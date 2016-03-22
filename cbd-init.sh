@@ -21,7 +21,6 @@ cbd_init() {
     
     cbd init
     cbd pull-parallel
-    cbd util cloudbreak-shell-quiet <<< "version"
 
     rm -rf Profile certs *.yml *.log
     chown -R $OS_USER:$OS_USER $CBD_DIR
