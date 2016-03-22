@@ -18,27 +18,16 @@ reset_docker() {
 cbd_init() {
     mkdir $CBD_DIR
     cd $_
+    
+    su $OS_USER <<EOF
     cbd init
-
-    if [[ "$CBD_BRANCH" != "" ]]; then
-        debug "[UPDATING] update to: $CBD_BRANCH"
-        cbd update $CBD_BRANCH
-    fi
-
     cbd pull-parallel
-    debug "start deployment to trigger image pull"
-    cbd start-wait
-
-    debug "stops containers"
-    cbd kill
-
-    debug "clean Profile certs and yamls"
     cbd util cloudbreak-shell-quiet <<< "version"
+EOF
 
     rm -rf Profile certs *.yml *.log
-    cd ..
     chown -R $OS_USER:$OS_USER $CBD_DIR
-    sudo chown -R $OS_USER:$OS_USER /var/lib/cloudbreak/
+    chown -R $OS_USER:$OS_USER /var/lib/cloudbreak/
 }
 
 cbd_install() {
