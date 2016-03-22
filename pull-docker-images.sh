@@ -15,19 +15,6 @@ docker_pull_images() {
   time (echo ${IMAGES:? required} | xargs -n 1 | sort -u | xargs -n1 -P 20  docker pull)
 }
 
-reinstall_docker() {
-  debug 'reinstall docker as a workaround for failing "docker service start" ... '
-
-  local docker_version=$(docker version -f '{{.Client.Version}}' 2>/dev/null)
-  debug "docker version: $docker_version"
-    
-  service docker stop || :
-  rm -rf /var/lib/docker/ /var/run/docker.sock
-  yum remove -y docker-engine-${docker_version}
-  yum install -y docker-engine-${docker_version}
-  systemctl enable docker.service
-}
-
 start_docker() {
   debug "starting docker daemon"
   service docker start
@@ -48,7 +35,6 @@ reset_docker() {
 
 main() {
   init
-  reinstall_docker
   start_docker
   docker_pull_images "$@"
   reset_docker
