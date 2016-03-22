@@ -1,5 +1,5 @@
 CBD_VERSION=1.2.0
-CBD_VERSION_UNDERSCORE=$(shell echo $(CBD_VERSION) | tr . _)
+CBD_VERSION_UNDERSCORE=$(shell echo $(CBD_VERSION) | tr -d .)
 
 ENVS=CBD_VERSION=$(CBD_VERSION) CBD_VERSION_UNDERSCORE=$(CBD_VERSION_UNDERSCORE) TRACE=1
 # it testing, atlas uploads should go to mocking artifact slush
