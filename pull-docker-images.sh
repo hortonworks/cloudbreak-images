@@ -11,6 +11,16 @@ init() {
   : ${DEBUG:=1}
 }
 
+extend_rootfs() {
+  if [[ $PACKER_BUILDER_TYPE == "googlecompute" ]]; then
+      yum -y install cloud-utils-growpart
+
+      root_fs_device=$(mount | grep ' / ' | cut -d' ' -f 1 | sed s/1//g)
+      growpart $root_fs_device 1 || :
+      xfs_growfs / || :
+  fi
+}
+
 docker_pull_images() {
   time (echo ${IMAGES:? required} | xargs -n 1 | sort -u | xargs -n1 -P 20  docker pull)
 }
@@ -35,6 +45,7 @@ reset_docker() {
 
 main() {
   init
+  extend_rootfs
   start_docker
   docker_pull_images "$@"
   reset_docker
