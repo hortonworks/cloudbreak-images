@@ -33,6 +33,7 @@ cbd_init() {
     cbd kill
 
     debug "clean Profile certs and yamls"
+    cbd util cloudbreak-shell-quiet <<< "version"
 
     rm -rf Profile certs *.yml *.log
     cd ..
