@@ -32,7 +32,7 @@
       "ssh_username": "cloudbreak",
       "ssh_pty": "true",
       "image_name": "{{user `image_name`}}",
-      "source_image": "3d144a1f-0674-4020-b7da-c95ce36daa9e",
+      "source_image": "7c6d76ba-99de-434f-ba51-c9b6c7bc39ab",
       "flavor": "m1.medium",
       "use_floating_ip": true,
       "floating_ip_pool": "8a1ca549-30cb-4fd5-9d32-84a42433558b",
