@@ -78,13 +78,18 @@ modify_waagent() {
   fi
 }
 
-
+#Add sudo rights to OS_USER, needs to be removed after a new base image is used
+grant_sudo_to_os_user() {
+    echo "$OS_USER ALL=NOPASSWD: ALL" > /etc/sudoers.d/$OS_USER
+    chmod o-r /etc/sudoers.d/$OS_USER
+}
 
 main() {
   init
   extend_rootfs
   configure_cloud_init
   modify_waagent
+  grant_sudo_to_os_user
   start_docker
   docker_pull_images "$@"
   systemctl enable docker.service
