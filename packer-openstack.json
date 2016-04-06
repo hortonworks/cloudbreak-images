@@ -43,8 +43,7 @@
       {
         "type": "shell",
         "scripts": [
-            "./user-data-script.sh",
-            "./optimization-script-for-hdp.sh"
+            "./user-data-script.sh"
         ],
         "environment_vars": [
             "OS_USER={{ user `os_user` }}",

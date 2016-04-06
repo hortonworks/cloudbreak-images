@@ -146,7 +146,6 @@
     "type": "shell",
     "scripts": [
         "./user-data-script.sh",
-        "./optimization-script-for-hdp.sh",
         "./create-gc-image.sh"
     ],
     "environment_vars": [
