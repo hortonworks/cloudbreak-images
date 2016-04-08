@@ -13,7 +13,7 @@
 	"psPath" : "{{env `AZURE_PUBLISH_SETTINGS`}}",
 
 
-    "docker_images": "gliderlabs/alpine:3.1 alpine:latest sequenceiq/mybatis-migrations:1.0.0 sequenceiq/cb-shell:1.2.3",
+    "docker_images": "gliderlabs/alpine:3.1 alpine:latest sequenceiq/mybatis-migrations:1.0.0 sequenceiq/cb-shell:1.2.4",
     "cbd_install_dir": "/bin",
     "cbd_version": "{{ env `CBD_VERSION`}}",
     "os_user": "cloudbreak",
