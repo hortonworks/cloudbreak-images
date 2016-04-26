@@ -24,9 +24,9 @@
       "source_image": "a5a5e5b8-659d-427b-b665-67dd0feabb6a",
       "flavor": "m1.medium",
       "use_floating_ip": true,
-      "floating_ip_pool": "8a1ca549-30cb-4fd5-9d32-84a42433558b",
+      "floating_ip_pool": "290e220b-9177-4d21-9bcb-4cb18cd9c960",
       "networks": [
-        "6414de5e-6085-4469-b8e9-aa293a65c828"
+        "e9317683-24a4-42ad-bc4d-6dea59aae616"
       ]
     }
   ],
