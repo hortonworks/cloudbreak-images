@@ -1,7 +1,7 @@
 {
   "variables": {
     "mock": "{{ env `MOCK` }}",
-    
+
     "aws_access_key": "{{ env `AWS_ACCESS_KEY` }}",
     "aws_secret_key": "{{ env `AWS_SECRET_ACCESS_KEY` }}",
     "gcp_account_file": "{{env `GCP_ACCOUNT_FILE`}}",
@@ -9,8 +9,8 @@
     "os_username": "{{ env `OS_USERNAME` }}",
     "os_password": "{{ env `OS_PASSWORD` }}",
     "os_tenant_name": "{{ env `OS_TENANT_NAME` }}",
-	"sn" : "{{env `AZURE_SUBSCRIPTION_NAME`}}",
-	"psPath" : "{{env `AZURE_PUBLISH_SETTINGS`}}",
+	  "sn" : "{{env `AZURE_SUBSCRIPTION_NAME`}}",
+	  "psPath" : "{{env `AZURE_PUBLISH_SETTINGS`}}",
     "client_id": "{{ env `ARM_CLIENT_ID` }}",
     "client_secret": "{{ env `ARM_CLIENT_SECRET` }}",
     "subscription_id": "{{ env `ARM_SUBSCRIPTION_ID` }}",
@@ -20,8 +20,8 @@
 
     "os_user": "cloudbreak",
     "ssh_password":"S3cr3t",
-    "atlas_artifact": "docker",
-    "image_name": "docker-centos-{{ isotime \"2006-01-02\" }}{{env `IMAGE_NAME_SUFFIX`}}",
+    "atlas_artifact": "cloudbreak",
+    "image_name": "cloudbreak-{{ isotime \"2006-01-02\" }}{{env `IMAGE_NAME_SUFFIX`}}",
 
     "instance_type": "m3.medium",
 
@@ -109,7 +109,7 @@
         "storage_account": "{{user `storage_account`}}",
 
         "capture_container_name": "images",
-        "capture_name_prefix": "packer",
+        "capture_name_prefix": "{{ user `image_name`}}",
 
         "image_publisher": "OpenLogic",
         "image_offer": "CentOS",
@@ -145,12 +145,10 @@
   {
     "type": "shell",
     "scripts": [
-        "./user-data-script.sh",
-        "./create-gc-image.sh"
+        "./user-data-script.sh"
     ],
     "environment_vars": [
         "OS_USER={{ user `os_user` }}",
-        "YUM_VERSION_DOCKER={{ user `yum_version_docker` }}",
         "PACKER_IMAGE_NAME={{user `image_name`}}",
         "TRACE=1"
     ],
@@ -166,9 +164,9 @@
         "created_at": "{{timestamp}}",
         "created" :"{{ isotime \"2006-01-02 15:04:05 -0700\" }}",
         "os_user": "{{user `os_user` }}",
+        "orchestrator": "salt",
         "image_name": "{{ user `image_name` }}",
-        "image_version": "{{ user `image_version`}}",
-        "yum_version_docker": "{{ user `yum_version_docker` }}"
+        "image_version": "{{ user `image_version`}}"
       }
     }
   ]

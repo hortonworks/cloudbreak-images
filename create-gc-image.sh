@@ -1,7 +1,18 @@
 #!/bin/bash
-set -eo pipefail
 
-[[ "$TRACE" ]] && set -x
+set -eo pipefail
+if [[ "$TRACE" ]]; then
+    : ${START_TIME:=$(date +%s)}
+    export START_TIME
+    export PS4='+ [TRACE $BASH_SOURCE:$LINENO][ellapsed: $(( $(date +%s) -  $START_TIME ))] '
+    set -x
+fi
+
+: ${DEBUG:=1}
+
+debug() {
+    [[ "$DEBUG" ]] && echo "-----> $*" 1>&2
+}
 
 main() {
     if [[ ${PACKER_BUILDER_TYPE:? required} == "googlecompute" ]]; then

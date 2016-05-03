@@ -10,25 +10,18 @@ create_motd() {
   debug "create_motd()"
   cat > /etc/motd <<"EOF"
 cat /etc/motd
-                    ##        .
-              ## ## ##       ==
-           ## ## ## ##      ===
-       /""""""""""""""""\___/ ===
-  ~~~ {~~ ~~~~ ~~~ ~~~~ ~~ ~ /  ===- ~~~
-       \______ o          __/
-         \    \        __/
-          \____\______/
-
+                    .-.._
+              __  /`     '.
+           .-'  `/   (   a \
+          /      (    \,_   \
+         /|       '---` |\ =|
+        ` \    /__.-/  /  | |
+           |  / / \ \  \   \_\
+           |__|_|  |_|__\
 =================================================
-You are now logged in to the docker host ...
-Getting started with docker:
-
-  docker ps                : Listing running containers
-  docker logs -f <ID>      : Star tail -f on container stdout/stderr
-  docker exec -it <ID> sh  : Entering the container (instead of ssh)
+You are now logged in to the host ...
 
 Helper commands:
-
   h                        : prints this message
 EOF
   helper_desc >> /etc/motd
@@ -40,7 +33,7 @@ create_motd_login() {
   cat > /etc/motd-login <<EOF
 Please login with one of the following username rather than the user "root":
 
-$(printf '  %-24s : %s\n' $OS_USER  'Reach the host running the ambari container')
+$(printf '  %-24s : %s\n' $OS_USER  'Reach the host running the ambari')
 $(helper_desc)
 
 EOF
@@ -61,10 +54,6 @@ helper_desc() {
 
 link_helpers() {
   debug "link_helpers()"
-  for script in $HELPER_DIR/helper-*; do
-      name=${script#*helper-}
-      [ -e $HELPER_DIR/$name ] || ln -s $script $HELPER_DIR/$name
-  done
 }
 
 fix_root_ssh() {
@@ -90,7 +79,6 @@ create_default_user() {
   else
     debug "create user: $OS_USER"
     adduser $OS_USER
-    usermod -G docker $OS_USER
   fi
 
   USERHOME=$(sh -c "echo ~$OS_USER")
@@ -107,7 +95,7 @@ create_default_user() {
 
   debug "authorized_keys for $OS_USER"
   cat $USERHOME/.ssh/authorized_keys
-  
+
 }
 
 main() {

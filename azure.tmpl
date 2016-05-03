@@ -1,38 +1,20 @@
 versions:
-  docker: {{ .Config.PackerUserVars.yum_version_docker }}
   kernel: {{ .Config.PackerUserVars.yum_version_kernel }}
   systemd: {{ .Config.PackerUserVars.yum_version_systemd }}
   cloudbreak_image: {{ .Config.PackerUserVars.cloudbreak_image_version }}
-docker_images:
-  all: "{{ .Config.PackerUserVars.cb_docker_container_ambari_warmup }},{{ .Config.PackerUserVars.cb_docker_container_ambari }},{{ .Config.PackerUserVars.cb_docker_container_docker_consul_watch_plugn }},{{ .Config.PackerUserVars.cb_docker_container_registrator }},{{ .Config.PackerUserVars.cb_docker_container_logrotate }},{{ .Config.PackerUserVars.cb_docker_container_kerberos }},{{ .Config.PackerUserVars.cb_docker_container_ambari_db }},{{ .Config.PackerUserVars.cb_docker_container_munchausen }},{{ .Config.PackerUserVars.cb_docker_container_consul }},{{ .Config.PackerUserVars.cb_docker_container_gateway }},{{ .Config.PackerUserVars.cb_docker_container_alpine }},{{ .Config.PackerUserVars.cb_docker_container_swarm }},{{ .Config.PackerUserVars.cb_docker_container_cert_tool }},{{ .Config.PackerUserVars.cb_docker_container_list_others }}"
-  cb_docker_container_ambari_warmup: {{ .Config.PackerUserVars.cb_docker_container_ambari_warmup }}
-  cb_docker_container_ambari: {{ .Config.PackerUserVars.cb_docker_container_ambari }}
-  cb_docker_container_docker_consul_watch_plugn: {{ .Config.PackerUserVars.cb_docker_container_docker_consul_watch_plugn }}
-  cb_docker_container_registrator: {{ .Config.PackerUserVars.cb_docker_container_registrator }}
-  cb_docker_container_logrotate: {{ .Config.PackerUserVars.cb_docker_container_logrotate }}
-  cb_docker_container_kerberos: {{ .Config.PackerUserVars.cb_docker_container_kerberos }}
-  cb_docker_container_ambari_db: {{ .Config.PackerUserVars.cb_docker_container_ambari_db }}
-  cb_docker_container_munchausen: {{ .Config.PackerUserVars.cb_docker_container_munchausen }}
-  cb_docker_container_consul: {{ .Config.PackerUserVars.cb_docker_container_consul }}
-  cb_docker_container_gateway: {{ .Config.PackerUserVars.cb_docker_container_gateway }}
-  cb_docker_container_alpine: {{ .Config.PackerUserVars.cb_docker_container_alpine }}
-  cb_docker_container_swarm: {{ .Config.PackerUserVars.cb_docker_container_swarm }}
-  cb_docker_container_cert_tool: {{ .Config.PackerUserVars.cb_docker_container_cert_tool }}
-  cb_docker_container_list_others: {{ .Config.PackerUserVars.cb_docker_container_list_others }}:
 azure_rm:
   id: {{ .Artifact.Id }}
   desc: {{ .Artifact }}
-  EAST_ASIA: https://sequenceiqeastasia.blob.core.windows.net/images/{{ .Artifact.Id }}.vhd
-  EAST_US: https://sequenceiqeastus.blob.core.windows.net/images/{{ .Artifact.Id }}.vhd
-  CENTRAL_US: https://sequenceiqcentralus.blob.core.windows.net/images/{{ .Artifact.Id }}.vhd
-  NORTH_EUROPE: https://sequenceiqnortheurope.blob.core.windows.net/images/{{ .Artifact.Id }}.vhd
-  SOUTH_CENTRAL_US: https://sequenceiqsouthcentralus.blob.core.windows.net/images/{{ .Artifact.Id }}.vhd
-  NORTH_CENTRAL_US: https://sequenceiqnorthcentralus.blob.core.windows.net/images/{{ .Artifact.Id }}.vhd
-  EAST_US_2: https://sequenceiqeastus2.blob.core.windows.net/images/{{ .Artifact.Id }}.vhd
-  JAPAN_EAST: https://sequenceiqjapaneast.blob.core.windows.net/images/{{ .Artifact.Id }}.vhd
-  JAPAN_WEST: https://sequenceiqjapanwest.blob.core.windows.net/images/{{ .Artifact.Id }}.vhd
-  SOUTHEAST_ASIA: https://sequenceiqsoutheastasia.blob.core.windows.net/images/{{ .Artifact.Id }}.vhd
-  WEST_US: https://sequenceiqwestus.blob.core.windows.net/images/{{ .Artifact.Id }}.vhd
-  WEST_EUROPE: https://sequenceiqwesteurope.blob.core.windows.net/images/{{ .Artifact.Id }}.vhd
-  BRAZIL_SOUTH: https://sequenceiqbrazilsouth.blob.core.windows.net/images/{{ .Artifact.Id }}.vhd
-  
+  EAST_ASIA: https://sequenceiqeastasia2.blob.core.windows.net/images/{{ .Artifact.Id }}.vhd
+  EAST_US: https://sequenceiqeastus2.blob.core.windows.net/images/{{ .Artifact.Id }}.vhd
+  CENTRAL_US: https://sequenceiqcentralus2.blob.core.windows.net/images/{{ .Artifact.Id }}.vhd
+  NORTH_EUROPE: https://sequenceiqnortheurope2.blob.core.windows.net/images/{{ .Artifact.Id }}.vhd
+  SOUTH_CENTRAL_US: https://sequenceiqsouthcentralus2.blob.core.windows.net/images/{{ .Artifact.Id }}.vhd
+  NORTH_CENTRAL_US: https://sequenceiqnorthcentralus2.blob.core.windows.net/images/{{ .Artifact.Id }}.vhd
+  EAST_US_2: https://sequenceiqeastus22.blob.core.windows.net/images/{{ .Artifact.Id }}.vhd
+  JAPAN_EAST: https://sequenceiqjapaneast2.blob.core.windows.net/images/{{ .Artifact.Id }}.vhd
+  JAPAN_WEST: https://sequenceiqjapanwest2.blob.core.windows.net/images/{{ .Artifact.Id }}.vhd
+  SOUTHEAST_ASIA: https://sequenceiqsoutheastasia2.blob.core.windows.net/images/{{ .Artifact.Id }}.vhd
+  WEST_US: https://sequenceiqwestus2.blob.core.windows.net/images/{{ .Artifact.Id }}.vhd
+  WEST_EUROPE: https://sequenceiqwesteurope2.blob.core.windows.net/images/{{ .Artifact.Id }}.vhd
+  BRAZIL_SOUTH: https://sequenceiqbrazilsouth2.blob.core.windows.net/images/{{ .Artifact.Id }}.vhd

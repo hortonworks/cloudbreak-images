@@ -2,8 +2,8 @@
 PACKER_VARS=
 
 # this identifies images across cloud providers
-IMAGE_VERSION=1.9.1-v2
-PACKER_VARS=-var-file=vars-versions.json -var-file=vars-docker-images.json -var image_version=$(IMAGE_VERSION)
+IMAGE_VERSION=1.9.1-v3
+PACKER_VARS=-var-file=vars-versions.json -var image_version=$(IMAGE_VERSION)
 ifdef DOCKER_VERSION
 	PACKER_VARS+=-var yum_version_docker=$(DOCKER_VERSION)
 endif
@@ -25,6 +25,8 @@ build-googlecompute: generate-vars
 
 build-azure: generate-vars
 	TRACE=1 ./scripts/packer.sh build -only=azure-arm $(PACKER_OPTS) packer.json
+	./scripts/azure-copy.sh
+
 
 build-openstack: generate-vars
 	TRACE=1 ./scripts/packer.sh build $(PACKER_OPTS) packer-openstack.json
@@ -34,8 +36,7 @@ generate-vars: docker-build
 
 generate-vars-local:
 	cat vars-versions.yml | yaml2json | jq . > vars-versions.json
-	cat vars-docker-images.yml | yaml2json | jq . > vars-docker-images.json
-	
+
 docker-build:
 	docker build -t images:build - < Dockerfile.build
 
@@ -48,5 +49,3 @@ build-in-docker:
 		-v /var/run/docker.sock:/var/run/docker.sock \
 		-v /usr/local/bin/docker:/usr/local/bin/docker \
 		images:build make build-aws
-
-

@@ -17,7 +17,6 @@ case "$1" in
       echo "User '$USER' already exists"
     else
       adduser $USER
-      usermod -G docker $USER
     fi
 
     USERHOME=$(sh -c "echo ~$USER")
@@ -67,4 +66,3 @@ case "$1" in
     ;;
 
 esac
-

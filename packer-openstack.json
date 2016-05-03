@@ -2,12 +2,12 @@
   "variables": {
     "mock": "{{ env `MOCK` }}",
     "atlas_token": "{{ env `ATLAS_TOKEN`}}",
-    "atlas_artifact": "docker",
+    "atlas_artifact": "cloudbreak",
 
     "os_user": "cloudbreak",
 
     "os_auth_url": "{{ env `OS_AUTH_URL` }}",
-    "os_image_name": "docker-centos-{{ isotime \"2006-01-02\" }}{{env `IMAGE_NAME_SUFFIX`}}",
+    "os_image_name": "cloudbreak-{{ isotime \"2006-01-02\" }}{{env `IMAGE_NAME_SUFFIX`}}",
     "os_username": "{{ env `OS_USERNAME` }}",
     "os_password": "{{ env `OS_PASSWORD` }}",
     "os_tenant_name": "{{ env `OS_TENANT_NAME` }}"
@@ -47,7 +47,6 @@
         ],
         "environment_vars": [
             "OS_USER={{ user `os_user` }}",
-            "YUM_VERSION_DOCKER={{ user `yum_version_docker` }}",
             "YUM_VERSION_KERNEL={{ user `yum_version_kernel` }}",
             "YUM_VERSION_SYSTEMD={{ user `yum_version_systemd` }}",
             "TRACE=1"
@@ -76,8 +75,8 @@
             "created_at": "{{timestamp}}",
             "created" :"{{ isotime \"2006-01-02 15:04:05 -0700\" }}",
             "image_name": "{{ user `os_image_name` }}",
+            "orchestrator": "salt",
             "source_image": "CentOS-7-x86_64-GenericCloud-1601",
-            "yum_version_docker": "{{ user `yum_version_docker` }}",
             "os_user": "{{user `os_user` }}",
             "image_version": "{{ user `image_version`}}"
         }
