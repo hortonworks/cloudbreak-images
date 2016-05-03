@@ -21,12 +21,12 @@
       "ssh_username": "centos",
       "ssh_pty": "true",
       "image_name": "{{user `os_image_name`}}",
-      "source_image": "ac3d6c6f-b139-4d1f-a86f-5b0821271984",
+      "source_image": "b9a3bec2-500a-4864-9347-4946d5f88570",
       "flavor": "m1.medium",
       "use_floating_ip": true,
-      "floating_ip_pool": "8a1ca549-30cb-4fd5-9d32-84a42433558b",
+      "floating_ip_pool": "290e220b-9177-4d21-9bcb-4cb18cd9c960",
       "networks": [
-        "6414de5e-6085-4469-b8e9-aa293a65c828"
+        "e9317683-24a4-42ad-bc4d-6dea59aae616"
       ]
     }
   ],
@@ -76,7 +76,7 @@
             "created_at": "{{timestamp}}",
             "created" :"{{ isotime \"2006-01-02 15:04:05 -0700\" }}",
             "image_name": "{{ user `os_image_name` }}",
-            "source_image": "CentOS-7-x86_64-GenericCloud-1511",
+            "source_image": "CentOS-7-x86_64-GenericCloud-1601",
             "yum_version_docker": "{{ user `yum_version_docker` }}",
             "os_user": "{{user `os_user` }}",
             "image_version": "{{ user `image_version`}}"
