@@ -47,7 +47,9 @@ enable_ipforward() {
 
 install_utils() {
   yum -y install epel-release
-  yum -y install unzip curl wget git bind-utils ntp tmux bash-completion nginx
+  yum -y install unzip curl wget git bind-utils ntp tmux bash-completion nginx haveged
+
+  systemctl enable haveged
 
   # https://hortonworks.jira.com/browse/BUG-41308
   yum -y remove snappy

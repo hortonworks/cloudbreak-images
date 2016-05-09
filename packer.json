@@ -108,8 +108,9 @@
         "resource_group_name": "{{user `resource_group_name`}}",
         "storage_account": "{{user `storage_account`}}",
 
-        "capture_container_name": "images",
-        "capture_name_prefix": "packer",
+        "capture_container_name": "packer",
+        "capture_name_prefix": "{{ user `image_name`}}",
+
         "image_publisher": "OpenLogic",
         "image_offer": "CentOS",
         "image_sku": "7.1",
