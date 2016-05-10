@@ -119,7 +119,7 @@
         "ssh_password" :"{{user `ssh_password`}}",
 
         "location": "northeurope",
-        "vm_size": "Standard_A2"
+        "vm_size": "Standard_D4"
     }
 
 
