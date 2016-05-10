@@ -21,7 +21,7 @@
     "os_user": "cloudbreak",
     "ssh_password":"S3cr3t",
     "atlas_artifact": "cloudbreak",
-    "image_name": "cloudbreak-{{ isotime \"2006-01-02\" }}{{env `IMAGE_NAME_SUFFIX`}}",
+    "image_name": "cloudbreak-{{ isotime \"2006-01-02-03-04\" }}{{env `IMAGE_NAME_SUFFIX`}}",
 
     "instance_type": "m3.medium",
 
