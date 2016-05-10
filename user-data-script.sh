@@ -117,6 +117,8 @@ install_ambari() {
   yum -y install ambari-server ambari-agent
   rm -rf /etc/init.d/ambari-agent
   find /etc/rc.d/rc* -name "*ambari*" | xargs rm -v
+  mv /tmp/shared/mysql-connector-java-5.1.17.jar /var/lib/ambari-server/resources/mysql-jdbc-driver.jar
+  mv /tmp/shared/postgresql-8.4-703.jdbc4.jar /var/lib/ambari-server/resources/postgres-jdbc-driver.jar
 }
 
 configure_console() {
