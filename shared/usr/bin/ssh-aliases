@@ -19,10 +19,6 @@ cat /etc/motd
            |  / / \ \  \   \_\
            |__|_|  |_|__\
 =================================================
-You are now logged in to the host ...
-
-Helper commands:
-  h                        : prints this message
 EOF
   helper_desc >> /etc/motd
   echo >> /etc/motd

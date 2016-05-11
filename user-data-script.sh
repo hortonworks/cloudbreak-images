@@ -100,12 +100,12 @@ install_consul() {
 }
 
 install_bootstrap() {
-  # download cloudbreak-bootstrap from github
-  curl -Lo /tmp/shared/cloudbreak-bootstrap_${CLOUDBREAK_BOOTSTRAP_VERSION}_Linux_x86_64.tgz https://github.com/sequenceiq/cloudbreak-bootstrap/releases/download/v${CLOUDBREAK_BOOTSTRAP_VERSION}/cloudbreak-bootstrap_${CLOUDBREAK_BOOTSTRAP_VERSION}_Linux_x86_64.tgz
-  tar -zxf /tmp/shared/cloudbreak-bootstrap_${CLOUDBREAK_BOOTSTRAP_VERSION}_Linux_x86_64.tgz -C /usr/sbin/
+  # download salt-bootstrap from github
+  curl -Lo /tmp/shared/salt-bootstrap_${CLOUDBREAK_BOOTSTRAP_VERSION}_Linux_x86_64.tgz https://github.com/sequenceiq/salt-bootstrap/releases/download/v${CLOUDBREAK_BOOTSTRAP_VERSION}/salt-bootstrap_${CLOUDBREAK_BOOTSTRAP_VERSION}_Linux_x86_64.tgz
+  tar -zxf /tmp/shared/salt-bootstrap_${CLOUDBREAK_BOOTSTRAP_VERSION}_Linux_x86_64.tgz -C /usr/sbin/
 
-  chmod +x /usr/sbin/cloudbreak-bootstrap
-  systemctl enable cloudbreak-bootstrap
+  chmod +x /usr/sbin/salt-bootstrap
+  systemctl enable salt-bootstrap
 }
 
 install_jdk() {
@@ -206,7 +206,7 @@ create_gc_image() {
 check_params() {
     : ${PACKER_BUILDER_TYPE:? required amazon-ebs/googlecompute/openstack }
     : ${CONSUL_VERSION:=0.6.4}
-    : ${CLOUDBREAK_BOOTSTRAP_VERSION:=0.0.2}
+    : ${CLOUDBREAK_BOOTSTRAP_VERSION:=0.1.0}
     : ${EPEL:=epel-release-7-6}
 }
 
