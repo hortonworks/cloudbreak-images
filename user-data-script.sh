@@ -89,11 +89,9 @@ install_consul() {
   # download consul from hashicorp
   curl -Lo /tmp/shared/consul.zip https://releases.hashicorp.com/consul/${CONSUL_VERSION}/consul_${CONSUL_VERSION}_linux_amd64.zip
   cd /tmp/shared && unzip /tmp/shared/consul.zip && rm /tmp/shared/consul.zip
-  chmod +x /tmp/shared/consul
-
-  mv /tmp/shared/consul /usr/sbin/consul || :
+  mv /tmp/shared/consul /usr/sbin/consul
   chmod +x /usr/sbin/consul
-  mkdir /opt/consul/
+
   mv /tmp/shared/etc/dhclient.conf /etc/dhcp/dhclient.conf
   sed -i "/^hosts:/ s/ *files dns/ dns files/" /etc/nsswitch.conf
 }
