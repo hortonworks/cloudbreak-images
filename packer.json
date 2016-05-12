@@ -109,7 +109,7 @@
         "storage_account": "{{user `storage_account`}}",
 
         "capture_container_name": "packer",
-        "capture_name_prefix": "cloudbreak-{{ isotime \"2006-01-02\" }}{{env `IMAGE_NAME_SUFFIX`}}",
+        "capture_name_prefix": "cb-{{ isotime \"20060102-0304\" }}{{env `IMAGE_NAME_SUFFIX`}}",
 
         "image_publisher": "OpenLogic",
         "image_offer": "CentOS",
