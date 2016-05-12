@@ -38,7 +38,7 @@
       },
       {
           "type": "shell",
-          "inline": ["sudo rsync -a /tmp/shared/ /"]
+          "inline": ["sudo rsync -a /tmp/shared/pre/ /"]
       },
       {
         "type": "shell",
@@ -50,6 +50,10 @@
             "TRACE=1"
         ],
         "execute_command": "chmod +x {{ .Path }}; {{ .Vars }} sudo -E bash '{{ .Path }}'"
+      },
+      {
+        "type": "shell",
+        "inline": ["sudo rsync -a /tmp/shared/post/ /"]
       }
   ],
 

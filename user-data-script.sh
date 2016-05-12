@@ -81,8 +81,7 @@ install_salt() {
   # salt install for orchestrating the cluster
   yum -y install salt-master salt-api salt-minion && yum clean all
   adduser saltuser && usermod -G wheel saltuser && echo "saltuser:saltpass"| chpasswd
-  mkdir -p /etc/salt/master.d/
-  mv /tmp/shared/custom.conf /etc/salt/master.d/custom.conf
+
 }
 
 install_consul() {
@@ -92,7 +91,6 @@ install_consul() {
   mv /tmp/shared/consul /usr/sbin/consul
   chmod +x /usr/sbin/consul
 
-  mv /tmp/shared/etc/dhclient.conf /etc/dhcp/dhclient.conf
   sed -i "/^hosts:/ s/ *files dns/ dns files/" /etc/nsswitch.conf
 }
 
@@ -119,8 +117,6 @@ install_ambari() {
   yum -y install ambari-server ambari-agent
   rm -rf /etc/init.d/ambari-agent
   find /etc/rc.d/rc* -name "*ambari*" | xargs rm -v
-  mv /tmp/shared/mysql-connector-java-5.1.17.jar /var/lib/ambari-server/resources/mysql-jdbc-driver.jar
-  mv /tmp/shared/postgresql-8.4-703.jdbc4.jar /var/lib/ambari-server/resources/postgres-jdbc-driver.jar
 }
 
 configure_console() {

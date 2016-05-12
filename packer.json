@@ -139,7 +139,7 @@
       "type": "shell",
       "inline": [
           "sudo yum install -y rsync",
-          "sudo rsync -a /tmp/shared/ /"
+          "sudo rsync -a /tmp/shared/pre/ /"
       ]
   },
   {
@@ -153,6 +153,10 @@
         "TRACE=1"
     ],
     "execute_command": "chmod +x {{ .Path }}; {{ .Vars }} sudo -E bash '{{ .Path }}'"
+  },
+  {
+    "type": "shell",
+    "inline": ["sudo rsync -a /tmp/shared/post/ /"]
   }
   ]
   ,"post-processors": [
