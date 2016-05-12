@@ -111,6 +111,11 @@ install_bootstrap() {
 install_jdk() {
   export JDK_ARTIFACT=jdk-7u67-linux-x64.tar.gz
   mkdir -p /usr/jdk64 && cd /usr/jdk64 && wget http://public-repo-1.hortonworks.com/ARTIFACTS/$JDK_ARTIFACT && tar -xf $JDK_ARTIFACT && rm -f $JDK_ARTIFACT
+
+  curl -LO http://public-repo-1.hortonworks.com/ARTIFACTS/UnlimitedJCEPolicyJDK7.zip
+  unzip UnlimitedJCEPolicyJDK7.zip
+  mv -f UnlimitedJCEPolicy/*jar /usr/jdk64/jdk1.7.0_67/jre/lib/security/
+  rm -f UnlimitedJCEPolicyJDK7.zip
 }
 
 install_ambari() {
