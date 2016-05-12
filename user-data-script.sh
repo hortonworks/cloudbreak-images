@@ -60,9 +60,8 @@ install_utils() {
 
   if ! [[ $PACKER_BUILDER_TYPE =~ azure ]]; then
     yum install -y cloud-init
-    cp -f /tmp/shared/etc/cloud/cloud.cfg /etc/cloud/cloud.cfg
-    chmod 664 /etc/cloud/cloud.cfg
   fi
+
   curl -Lo /sbin/cert-tool https://github.com/ehazlett/certm/releases/download/v0.0.1/cert-tool_linux_amd64 && chmod +x /sbin/cert-tool
   curl -o /usr/bin/jq http://stedolan.github.io/jq/download/linux64/jq && chmod +x /usr/bin/jq
 }
