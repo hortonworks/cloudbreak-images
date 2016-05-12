@@ -94,7 +94,6 @@ install_consul() {
   mv /tmp/shared/consul /usr/sbin/consul || :
   chmod +x /usr/sbin/consul
   mkdir /opt/consul/
-  mv /tmp/shared/stop.sh /opt/consul/stop.sh && chmod +x /opt/consul/stop.sh
   mv /tmp/shared/etc/dhclient.conf /etc/dhcp/dhclient.conf
   sed -i "/^hosts:/ s/ *files dns/ dns files/" /etc/nsswitch.conf
 }
@@ -231,14 +230,11 @@ main() {
     install_ambari
     grant-sudo-to-os-user
     configure_console
-    cleanup
     disable_ipv6
     tuned-adm profile custom
     disable_swap
     set_dirty_ratio
-    reset_hostname
-    reset_fstab
-    yum clean all
+    cleanup
     create_gc_image
 }
 
