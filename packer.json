@@ -22,6 +22,7 @@
     "ssh_password":"S3cr3t",
     "atlas_artifact": "cloudbreak",
     "image_name": "cloudbreak-{{ isotime \"2006-01-02-03-04\" }}{{env `IMAGE_NAME_SUFFIX`}}",
+    "image_name_azure": "cb-{{ isotime \"20060102-0304\" }}{{env `IMAGE_NAME_SUFFIX`}}",
 
     "instance_type": "m3.medium",
 
@@ -109,7 +110,7 @@
         "storage_account": "{{user `storage_account`}}",
 
         "capture_container_name": "packer",
-        "capture_name_prefix": "cb-{{ isotime \"20060102-0304\" }}{{env `IMAGE_NAME_SUFFIX`}}",
+        "capture_name_prefix": "{{ user `image_name_azure`}}",
 
         "image_publisher": "OpenLogic",
         "image_offer": "CentOS",
