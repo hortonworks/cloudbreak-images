@@ -38,7 +38,9 @@
       },
       {
           "type": "shell",
-          "inline": ["sudo rsync -a /tmp/shared/pre/ /"]
+          "inline": [
+            "sudo chown -R root:root /tmp/shared",
+            "sudo rsync -a /tmp/shared/pre/ /"]
       },
       {
         "type": "shell",
@@ -53,7 +55,10 @@
       },
       {
         "type": "shell",
-        "inline": ["sudo rsync -a /tmp/shared/post/ /"]
+        "inline": [
+          "sudo chown -R root:root /tmp/shared",
+          "sudo rsync -a /tmp/shared/post/ /"
+        ]
       }
   ],
 

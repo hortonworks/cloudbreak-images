@@ -139,6 +139,7 @@
       "type": "shell",
       "inline": [
           "sudo yum install -y rsync",
+          "sudo chown -R root:root /tmp/shared",
           "sudo rsync -a /tmp/shared/pre/ /"
       ]
   },
@@ -156,7 +157,10 @@
   },
   {
     "type": "shell",
-    "inline": ["sudo rsync -a /tmp/shared/post/ /"]
+    "inline": [
+      "sudo chown -R root:root /tmp/shared",
+      "sudo rsync -a /tmp/shared/post/ /"
+    ]
   }
   ]
   ,"post-processors": [
