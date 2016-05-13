@@ -55,9 +55,6 @@ install_utils() {
   yum -y remove snappy
   yum -y install snappy-devel
 
-  usermod -a -G root centos || :
-  chmod 555 /
-
   if ! [[ $PACKER_BUILDER_TYPE =~ azure ]]; then
     yum install -y cloud-init
   fi
