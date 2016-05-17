@@ -63,6 +63,10 @@ install_utils() {
   curl -o /usr/bin/jq http://stedolan.github.io/jq/download/linux64/jq && chmod +x /usr/bin/jq
 }
 
+install_kerberos() {
+  yum -y install krb5-server krb5-libs krb5-workstation
+}
+
 reset_hostname() {
   echo "Avoid pre-assigned hostname"
   rm -vf /etc/hostname
@@ -213,6 +217,7 @@ main() {
     permissive_iptables
     enable_ipforward
     install_utils
+    install_kerberos
     install_consul
     install_salt
     install_bootstrap
