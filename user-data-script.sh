@@ -16,6 +16,10 @@ debug() {
 
 update_centos() {
   # Use the same CentOS Base yum repo on CentOS images
+  if grep "Amazon Linux AMI" /etc/issue &> /dev/null; then
+    rm -fv /etc/yum.repos.d/CentOS-Base.repo
+  fi
+  
   if grep "Red Hat Enterprise Linux Server" /etc/redhat-release &> /dev/null; then
     rm -f /etc/yum.repos.d/CentOS-Base.repo
     # epel release not available on Redhat
@@ -37,8 +41,10 @@ permissive_iptables() {
 }
 
 disable_selinux() {
-  setenforce 0
-  sed -i 's/SELINUX=enforcing/SELINUX=disabled/g' /etc/selinux/config
+  if [ $(getenforce) != "Disabled" ]; then
+    setenforce 0;
+    sed -i 's/SELINUX=enforcing/SELINUX=disabled/g' /etc/selinux/config;
+  fi
 }
 
 enable_ipforward() {
@@ -46,10 +52,15 @@ enable_ipforward() {
 }
 
 install_utils() {
-  yum -y install epel-release
+  if grep "Amazon Linux AMI" /etc/issue &> /dev/null; then
+    yum-config-manager --enable epel
+  else
+   yum -y install epel-release
+  fi
+  
   yum -y install unzip curl wget git bind-utils ntp tmux bash-completion nginx haveged
 
-  systemctl enable haveged
+  chkconfig haveged on
 
   # https://hortonworks.jira.com/browse/BUG-41308
   yum -y remove snappy
@@ -73,15 +84,23 @@ reset_hostname() {
 }
 
 grant-sudo-to-os-user() {
+  if grep "Amazon Linux AMI" /etc/issue &> /dev/null; then
+    echo "No need to grant sudo to OS_USER on Amazon Linux"
+  else
     echo "$OS_USER ALL=NOPASSWD: ALL" > /etc/sudoers.d/$OS_USER
     chmod o-r /etc/sudoers.d/$OS_USER
+  fi
 }
 
 install_salt() {
   # salt install for orchestrating the cluster
   yum -y install salt-master salt-api salt-minion && yum clean all
   adduser saltuser && usermod -G wheel saltuser && echo "saltuser:saltpass"| chpasswd
-
+  if grep "Amazon Linux AMI" /etc/issue &> /dev/null; then
+    chkconfig salt-master off
+    chkconfig salt-minion off
+    chkconfig salt-api off
+  fi
 }
 
 install_consul() {
@@ -99,13 +118,22 @@ install_bootstrap() {
   curl -Lo /tmp/shared/salt-bootstrap_${CLOUDBREAK_BOOTSTRAP_VERSION}_Linux_x86_64.tgz https://github.com/sequenceiq/salt-bootstrap/releases/download/v${CLOUDBREAK_BOOTSTRAP_VERSION}/salt-bootstrap_${CLOUDBREAK_BOOTSTRAP_VERSION}_Linux_x86_64.tgz
   tar -zxf /tmp/shared/salt-bootstrap_${CLOUDBREAK_BOOTSTRAP_VERSION}_Linux_x86_64.tgz -C /usr/sbin/
 
-  chmod +x /usr/sbin/salt-bootstrap
-  systemctl enable salt-bootstrap
+  if grep "Amazon Linux AMI" /etc/issue &> /dev/null; then
+    mv /etc/systemd/system/salt-bootstrap /etc/init.d/salt-bootstrap
+    chmod +x /etc/init.d/salt-bootstrap
+    chkconfig salt-bootstrap on
+  else
+    chmod +x /usr/sbin/salt-bootstrap
+    systemctl enable salt-bootstrap
+  fi
 }
 
 install_jdk() {
   export JDK_ARTIFACT=jdk-7u67-linux-x64.tar.gz
-  mkdir -p /usr/jdk64 && cd /usr/jdk64 && wget http://public-repo-1.hortonworks.com/ARTIFACTS/$JDK_ARTIFACT && tar -xf $JDK_ARTIFACT && rm -f $JDK_ARTIFACT
+  mkdir -p /usr/jdk64 && cd /usr/jdk64 
+  curl -LO http://public-repo-1.hortonworks.com/ARTIFACTS/$JDK_ARTIFACT 
+  tar -xf $JDK_ARTIFACT
+  rm -f $JDK_ARTIFACT
 
   curl -LO http://public-repo-1.hortonworks.com/ARTIFACTS/UnlimitedJCEPolicyJDK7.zip
   unzip UnlimitedJCEPolicyJDK7.zip
@@ -115,8 +143,13 @@ install_jdk() {
 
 install_ambari() {
   yum -y install ambari-server ambari-agent
-  rm -rf /etc/init.d/ambari-agent
-  find /etc/rc.d/rc* -name "*ambari*" | xargs rm -v
+  if grep "Amazon Linux AMI" /etc/issue &> /dev/null; then
+    chkconfig ambari-server off
+    chkconfig ambari-agent off
+  else 
+    rm -rf /etc/init.d/ambari-agent 
+    find /etc/rc.d/rc* -name "*ambari*" | xargs rm -v
+  fi
 }
 
 configure_console() {
@@ -163,9 +196,13 @@ cleanup() {
 disable_ipv6() {
   echo 'net.ipv6.conf.default.disable_ipv6 = 1' >> /etc/sysctl.conf
   echo 'net.ipv6.conf.all.disable_ipv6 = 1' >> /etc/sysctl.conf
-  echo 'NETWORKING_IPV6=no' >> /etc/sysconfig/network
-  echo 'IPV6INIT="no"' >> /etc/sysconfig/network-scripts/ifcfg-eth0
-  systemctl disable ip6tables.service
+  if grep "Amazon Linux AMI" /etc/issue &> /dev/null; then
+    echo "IPv6 is disabled by default on Amazon Linux"
+  else
+    echo 'NETWORKING_IPV6=no' >> /etc/sysconfig/network
+    echo 'IPV6INIT="no"' >> /etc/sysconfig/network-scripts/ifcfg-eth0
+    systemctl disable ip6tables.service
+  fi
   sed -i 's/#AddressFamily any/AddressFamily inet/' /etc/ssh/sshd_config
 }
 
@@ -181,6 +218,7 @@ set_dirty_ratio () {
 reset_hostname() {
   echo "Avoid pre-assigned hostname"
   rm -vf /etc/hostname
+  sed -i '/HOSTNAME=/d' /etc/sysconfig/network
 }
 
 reset_fstab() {
@@ -208,6 +246,12 @@ check_params() {
     : ${EPEL:=epel-release-7-6}
 }
 
+tune_vm() {
+  if [[ -n "$(which tuned-adm &>/dev/null)" ]]; then
+    tuned-adm profile custom
+  fi
+}
+
 main() {
     check_params
     update_centos
@@ -226,7 +270,7 @@ main() {
     grant-sudo-to-os-user
     configure_console
     disable_ipv6
-    tuned-adm profile custom
+    tune_vm
     disable_swap
     set_dirty_ratio
     cleanup
