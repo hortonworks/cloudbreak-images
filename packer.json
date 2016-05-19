@@ -23,6 +23,7 @@
     "atlas_artifact": "cbd",
     "ssh_password":"S3cr3t",
     "image_name": "cloudbreak-deployer-{{ env `CBD_VERSION_UNDERSCORE`}}-{{ isotime \"2006-01-02\" }}{{env `IMAGE_NAME_SUFFIX`}}",
+    "short_image_name": "cbd-{{ env `CBD_VERSION_UNDERSCORE`}}-{{ isotime \"2006-01-02\" }}{{env `IMAGE_NAME_SUFFIX`}}",
 
 
     "instance_type": "m3.medium",
@@ -105,7 +106,7 @@
         "storage_account": "{{user `storage_account`}}",
 
         "capture_container_name": "packer",
-        "capture_name_prefix": "{{ user `image_name`}}",
+        "capture_name_prefix": "{{ user `short_image_name`}}",
 
         "custom_image_vhd_uri": "https://sequenceiqnortheurope2.blob.core.windows.net/system/Microsoft.Compute/Images/images/packer-osDisk.a6bfaa30-8de7-4e89-9daa-62cb9057a739.vhd",
         "ssh_pty": "true",
