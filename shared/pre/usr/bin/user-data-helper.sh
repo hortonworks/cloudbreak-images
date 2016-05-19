@@ -113,14 +113,6 @@ reload_sysconf() {
   sysctl -p
 }
 
-stop_ambari() {
-  systemctl stop ambari-agent
-  systemctl stop ambari-server
-
-  rm -rf /etc/init.d/ambari-agent
-  find /etc/rc.d/rc* -name "*ambari*" | xargs rm -v
-}
-
 main() {
   reload_sysconf
   if [[ "$1" == "::" ]]; then
@@ -130,7 +122,6 @@ main() {
     extend_rootfs
     format_disks
     fix_hostname
-    stop_ambari
     [[ "$IS_GATEWAY" == "true" ]] && setup_tmp_ssh
     echo $(date +%Y-%m-%d:%H:%M:%S) >> /var/cb-init-executed
   fi

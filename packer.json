@@ -24,37 +24,29 @@
     "image_name": "cb-{{ isotime \"2006-01-02-03-04\" }}{{env `IMAGE_NAME_SUFFIX`}}",
 
     "instance_type": "m3.medium",
-
-    "ami-sa-east-1": "ami-09e25b14",
-    "ami-eu-west-1": "ami-25158352",
-    "ami-eu-central-1": "ami-dafdcfc7",
-    "ami-us-east-1": "ami-12663b7a",
-    "ami-us-west-1": "ami-a540a5e1",
-    "ami-us-west-2": "ami-4dbf9e7d",
-    "ami-ap-northeast-1": "ami-b1b458b1",
-    "ami-ap-southeast-1": "ami-dc1c2b8e",
-    "ami-ap-southeast-2": "ami-d3daace9"
+    "ami-us-west-2": "ami-c229c0a2"
   },
   "builders":[
   {
     "name": "amazon",
     "type": "amazon-ebs",
-    "region": "eu-west-1",
-    "ami_regions": ["ap-southeast-1","ap-southeast-2","eu-central-1","ap-northeast-1","ap-northeast-2","us-east-1","sa-east-1","us-west-1","us-west-2"],
+    "region": "us-west-2",
+    "ami_regions": ["ap-southeast-1","ap-southeast-2","eu-central-1","ap-northeast-1","ap-northeast-2","us-east-1","sa-east-1","us-west-1","eu-west-1"],
     "ssh_pty" : true,
     "access_key": "{{user `aws_access_key`}}",
     "secret_key": "{{user `aws_secret_key`}}",
-    "source_ami": "{{user `ami-eu-west-1`}}",
+    "source_ami": "{{user `ami-us-west-2`}}",
     "instance_type": "{{ user `instance_type` }}",
     "ssh_username": "ec2-user",
+    "enhanced_networking": true,
     "ami_block_device_mappings": [{
-                 "device_name": "/dev/sda1",
+                 "device_name": "/dev/xvda",
                  "volume_type": "gp2",
                  "delete_on_termination": true,
                  "volume_size": 15
             }],
     "launch_block_device_mappings": [{
-                "device_name": "/dev/sda1",
+                "device_name": "/dev/xvda",
                 "volume_type": "gp2",
                 "delete_on_termination": true,
                 "volume_size": 15
