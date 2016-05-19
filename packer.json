@@ -120,7 +120,13 @@
   "provisioners": [
   {
       "type": "shell",
+      "execute_command": "sudo -S true <<< '{{ user `ssh_password`}}' ; chmod +x {{ .Path }}; {{ .Vars }} sudo -E bash '{{ .Path }}'",
+      "scripts": ["./fix-waagent-sudo.sh"]
+  },
+  {
+      "type": "shell",
       "inline": [
+          "set -x",
           "sudo rm -rf /tmp/shared"
       ]
   },
