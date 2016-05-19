@@ -26,7 +26,7 @@ build-googlecompute: generate-vars
 	$(ENVS) ./scripts/packer.sh build -only=googlecompute $(PACKER_OPTS) packer.json
 
 build-azure: generate-vars
-	$(ENVS) ./scripts/packer.sh build -only=azure $(PACKER_OPTS) packer.json
+	$(ENVS) ./scripts/packer.sh build -only=azure-arm $(PACKER_OPTS) packer.json
 
 build-openstack: generate-vars
 	$(ENVS) ./scripts/packer.sh build $(PACKER_OPTS) packer-openstack.json

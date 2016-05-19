@@ -9,15 +9,19 @@
     "os_username": "{{ env `OS_USERNAME` }}",
     "os_password": "{{ env `OS_PASSWORD` }}",
     "os_tenant_name": "{{ env `OS_TENANT_NAME` }}",
-	"sn" : "{{env `AZURE_SUBSCRIPTION_NAME`}}",
-	"psPath" : "{{env `AZURE_PUBLISH_SETTINGS`}}",
-
+    "client_id": "{{ env `ARM_CLIENT_ID` }}",
+    "client_secret": "{{ env `ARM_CLIENT_SECRET` }}",
+    "subscription_id": "{{ env `ARM_SUBSCRIPTION_ID` }}",
+    "tenant_id": "{{ env `ARM_TENANT_ID` }}",
+    "resource_group_name": "{{ env `ARM_GROUP_NAME` }}",
+    "storage_account": "{{ env `ARM_STORAGE_ACCOUNT` }}",
 
     "docker_images": "gliderlabs/alpine:3.1 alpine:latest sequenceiq/mybatis-migrations:1.0.0 sequenceiq/cb-shell:1.2.5",
     "cbd_install_dir": "/bin",
     "cbd_version": "{{ env `CBD_VERSION`}}",
     "os_user": "cloudbreak",
     "atlas_artifact": "cbd",
+    "ssh_password":"S3cr3t",
     "image_name": "cloudbreak-deployer-{{ env `CBD_VERSION_UNDERSCORE`}}-{{ isotime \"2006-01-02\" }}{{env `IMAGE_NAME_SUFFIX`}}",
 
 
@@ -36,7 +40,7 @@
     "secret_key": "{{user `aws_secret_key`}}",
     "source_ami": "{{user `ami-eu-west-1`}}",
     "instance_type": "{{ user `instance_type` }}",
-    "ssh_username": "cloudbreak",
+    "ssh_username": "{{user `os_user`}}",
     "ami_block_device_mappings": [{
                  "device_name": "/dev/sda1",
                  "volume_type": "gp2",
@@ -65,7 +69,7 @@
     "source_image": "docker-centos-2016-03-21",
     "zone": "us-central1-b",
     "project_id": "siq-haas",
-    "ssh_username": "cloudbreak",
+    "ssh_username": "{{user `os_user`}}",
     "ssh_pty": "true",
     "machine_type": "n1-standard-2",
     "image_name": "{{user `image_name`}}",
@@ -88,19 +92,28 @@
         "6414de5e-6085-4469-b8e9-aa293a65c828"
       ]
     }
-    ,{
-        "name": "azure",
-        "type": "azure",
+     ,{
+        "name": "azure-arm",
+        "type": "azure-arm",
+
+        "client_id": "{{user `client_id`}}",
+        "client_secret": "{{user `client_secret`}}",
+        "subscription_id": "{{user `subscription_id`}}",
+        "tenant_id": "{{user `tenant_id`}}",
+
+        "resource_group_name": "{{user `resource_group_name`}}",
+        "storage_account": "{{user `storage_account`}}",
+
+        "capture_container_name": "packer",
+        "capture_name_prefix": "{{ user `image_name`}}",
+
+        "custom_image_vhd_uri": "https://sequenceiqnortheurope2.blob.core.windows.net/system/Microsoft.Compute/Images/images/packer-osDisk.a6bfaa30-8de7-4e89-9daa-62cb9057a739.vhd",
         "ssh_pty": "true",
-        "publish_settings_path" : "{{user `psPath`}}",
-        "subscription_name": "{{user `sn`}}",
-        "storage_account": "02589fae040d8westeurope2",
-        "storage_account_container" : "images",
-        "os_type": "Linux",
-        "os_image_label": "OpenLogic 7.1",
-        "location": "West Europe",
-        "instance_size": "Large",
-        "user_image_label": "{{user `image_name`}}"
+        "username": "{{user `os_user`}}",
+        "ssh_password" :"{{user `ssh_password`}}",
+
+        "location": "northeurope",
+        "vm_size": "Standard_A2"
     }
 
   ],
