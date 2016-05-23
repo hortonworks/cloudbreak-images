@@ -262,7 +262,7 @@ main() {
     enable_ipforward
     install_utils
     install_kerberos
-    install_consul
+    #install_consul
     install_salt
     install_bootstrap
     install_jdk
