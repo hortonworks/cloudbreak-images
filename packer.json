@@ -24,7 +24,7 @@
     "image_name": "cb-{{ isotime \"2006-01-02-03-04\" }}{{env `IMAGE_NAME_SUFFIX`}}",
 
     "instance_type": "m3.medium",
-    "ami-us-west-2": "ami-c229c0a2"
+    "ami-us-west-2": "ami-d0f506b0"
   },
   "builders":[
   {
