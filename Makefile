@@ -1,4 +1,4 @@
-CBD_VERSION=1.2.3
+CBD_VERSION=1.3.0-rc.1
 CBD_VERSION_UNDERSCORE=$(shell echo $(CBD_VERSION) | tr -d .)
 
 ENVS=CBD_VERSION=$(CBD_VERSION) CBD_VERSION_UNDERSCORE=$(CBD_VERSION_UNDERSCORE) TRACE=1
@@ -21,6 +21,9 @@ endif
 
 build-amazon: generate-vars
 	$(ENVS) ./scripts/packer.sh build -only=amazon $(PACKER_OPTS) packer.json
+
+build-amazon-linux: generate-vars
+	$(ENVS) ./scripts/packer.sh build -only=amazon-linux $(PACKER_OPTS) packer-amazon-linux.json
 
 build-googlecompute: generate-vars
 	$(ENVS) ./scripts/packer.sh build -only=googlecompute $(PACKER_OPTS) packer.json

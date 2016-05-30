@@ -1,0 +1,78 @@
+{
+  "variables": {
+    "mock": "{{ env `MOCK` }}",
+
+    "aws_access_key": "{{ env `AWS_ACCESS_KEY` }}",
+    "aws_secret_key": "{{ env `AWS_SECRET_ACCESS_KEY` }}",
+
+    "cbd_install_dir": "/bin",
+    "cbd_version": "{{ env `CBD_VERSION`}}",
+    "os_user": "cloudbreak",
+    "atlas_artifact": "cbd",
+    "image_name": "cloudbreak-deployer-{{ env `CBD_VERSION_UNDERSCORE`}}-{{ isotime \"2006-01-02\" }}{{env `IMAGE_NAME_SUFFIX`}}",
+    "short_image_name": "cbd-{{ env `CBD_VERSION_UNDERSCORE`}}-{{ isotime \"2006-01-02\" }}{{env `IMAGE_NAME_SUFFIX`}}",
+
+
+    "instance_type": "m3.medium",
+
+    "ami-eu-west-1": "ami-b0ac25c3"
+  },
+  "builders":[
+  {
+    "name": "amazon-linux",
+    "type": "amazon-ebs",
+    "region": "eu-west-1",
+    "ami_regions": ["ap-southeast-1","ap-southeast-2","eu-central-1","ap-northeast-1","us-east-1","sa-east-1","us-west-1","us-west-2"],
+    "ssh_pty" : true,
+    "access_key": "{{user `aws_access_key`}}",
+    "secret_key": "{{user `aws_secret_key`}}",
+    "source_ami": "{{user `ami-eu-west-1`}}",
+    "instance_type": "{{ user `instance_type` }}",
+    "ssh_username": "{{user `os_user`}}",
+    "user_data_file": "cloud-config.cfg",
+    "tags": {
+      "builder": "packer",
+      "cbd_version": "{{user `cbd_version`}}",
+      "docker_version": "{{ user `yum_version_docker`}}"
+    },
+    "ami_groups" :"all",
+    "ami_name": "{{ user `image_name`}}"
+  }
+  ],
+  "provisioners": [
+  {
+      "type": "shell",
+      "inline": [
+          "sudo yum -y install docker"
+      ]
+  },
+  {
+    "type": "shell",
+    "scripts": [
+        "./cbd-init.sh"
+    ],
+    "environment_vars": [
+        "CBD_VERSION={{ user `cbd_version` }}",
+        "CBD_INSTALL_DIR={{ user `cbd_install_dir` }}",
+        "OS_USER={{ user `os_user` }}",
+        "PACKER_IMAGE_NAME={{user `image_name`}}"
+    ]
+  }
+  ]
+  ,"post-processors": [
+    {
+      "type": "atlas",
+      "artifact": "sequenceiq/{{ user `atlas_artifact` }}",
+      "artifact_type": "{{ build_name }}.image",
+      "metadata": {
+        "created_at": "{{timestamp}}",
+        "created" :"{{ isotime \"2006-01-02 15:04:05 -0700\" }}",
+        "cbd_version": "{{ user `cbd_version` }}",
+        "os_user": "{{user `os_user` }}",
+        "image_name": "{{ user `image_name` }}",
+        "yum_version_docker": "{{ user `yum_version_docker` }}"
+      }
+    }
+  ]
+
+}

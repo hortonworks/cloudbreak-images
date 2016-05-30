@@ -1,3 +1,4 @@
+set -eo pipefail
 [[ "$TRACE" ]] && set -x
 
 : ${DEBUG:=1}
@@ -10,38 +11,45 @@ debug() {
 
 reset_docker() {
     debug "STOP docker and clean id"
-    service docker stop
-    echo "Deleting key.json in order to avoid swarm conflicts"
-    rm -vf /etc/docker/key.json
+    sudo service docker stop
+    debug "Deleting key.json in order to avoid swarm conflicts"
+    sudo rm -vf /etc/docker/key.json
+}
+
+reset_hostname() {
+  debug "Avoid pre-assigned hostname"
+  sudo rm -vf /etc/hostname
 }
 
 cbd_init() {
-    mkdir $CBD_DIR
-    cd $_
+    sudo mkdir -p $CBD_DIR
+    sudo chown -R $OS_USER:$OS_USER $CBD_DIR
+    cd $CBD_DIR
     
     cbd init
+    cbd generate
     cbd pull-parallel
 
-    rm -rf Profile certs *.yml *.log
-    chown -R $OS_USER:$OS_USER $CBD_DIR
-    chown -R $OS_USER:$OS_USER /var/lib/cloudbreak/
+    rm -rf certs *.yml *.log
 }
 
 cbd_install() {
     : ${CBD_INSTALL_DIR:=/bin}
     : ${CBD_VERSION:?required}
-    deubg "Install cbd: ${CBD_VERSION:?required} to ${CBD_INSTALL_DIR}"
+    debug "Install cbd: ${CBD_VERSION} to ${CBD_INSTALL_DIR}"
     curl -Ls s3.amazonaws.com/public-repo-1.hortonworks.com/HDP/cloudbreak/cloudbreak-deployer_${CBD_VERSION:?required}_$(uname)_x86_64.tgz \
-        | tar -xz -C ${CBD_INSTALL_DIR}
+        | sudo tar -xz -C ${CBD_INSTALL_DIR}
 }
 
 main() {
     debug "START docker ..."
-    service docker start
+    sudo service docker start
 
     cbd_install
     cbd_init
     reset_docker
+    reset_hostname
+    debug "[DONE] $BASH_SOURCE"
 }
 
 [[ "$0" == "$BASH_SOURCE" ]] && main "$@"
