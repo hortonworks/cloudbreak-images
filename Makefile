@@ -27,7 +27,6 @@ build-azure: generate-vars
 	TRACE=1 ./scripts/packer.sh build -only=azure-arm $(PACKER_OPTS) packer.json
 	./scripts/azure-copy.sh
 
-
 build-openstack: generate-vars
 	TRACE=1 ./scripts/packer.sh build $(PACKER_OPTS) packer-openstack.json
 

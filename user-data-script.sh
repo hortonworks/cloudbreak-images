@@ -1,5 +1,7 @@
 #!/bin/bash
 
+: ${HDP_VERSION:=}
+
 set -eo pipefail
 if [[ "$TRACE" ]]; then
     : ${START_TIME:=$(date +%s)}
@@ -152,6 +154,15 @@ install_ambari() {
   fi
 }
 
+install_hdp() {
+  if [[ -n "$HDP_VERSION" ]]; then
+    cd /etc/yum.repos.d
+    mv HDP-$HDP_VERSION.repo HDP.repo
+    ls -1 | grep -v HDP-UTILS.repo | grep "HDP-" | xargs rm -vf || :
+    yum -y install $(yum list available | awk '$3~/HDP-[1-9]/ && $1~/^(accumulo|atlas|datafu|falcon|flume|hadoop|hadooplzo|hbase|hive|kafka|knox|livy|mahout|oozie|phoenix|pig|ranger|slider|spark|sqoop|storm|tez|zeppelin|zookeeper)_[0-9]_[0-9]/ {print $1}')
+  fi
+}
+
 configure_console() {
   export GRUB_CONFIG='/etc/default/grub'
   if [ -f "$GRUB_CONFIG" ] && grep "GRUB_CMDLINE_LINUX" "$GRUB_CONFIG" | grep -q "console=tty0"; then
@@ -267,6 +278,7 @@ main() {
     install_bootstrap
     install_jdk
     install_ambari
+    install_hdp
     grant-sudo-to-os-user
     configure_console
     disable_ipv6
