@@ -41,10 +41,18 @@ cbd_install() {
         | sudo tar -xz -C ${CBD_INSTALL_DIR}
 }
 
+install_utils() {
+    sudo yum install -y \
+        jq \
+        tmux \
+        mosh
+}
+
 main() {
     debug "START docker ..."
     sudo service docker start
 
+    install_utils
     cbd_install
     cbd_init
     reset_docker
