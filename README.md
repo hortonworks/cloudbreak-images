@@ -1,9 +1,9 @@
 # Cloud images for Cloudbreak
 Cloud images for Cloudbreak
 
-## Building Cloudbreak images
+## Building Cloudbreak images with Packer
 
-To change build parameters in `packer.json` please consult with the [packer](https://www.packer.io/docs/) documentation.
+To change build parameters in `packer.json` or in `packer-openstack.json`  please consult with the [packer](https://www.packer.io/docs/) documentation.
 
 ### Prerequisites
 
@@ -43,4 +43,29 @@ make build-openstack
 
 ```
 PACKER_OPTS=--debug make build-openstack
+```
+
+## Building images without Packer
+
+> *Warning:* this method is not supported or tested, it just replicates what Packer do
+
+* Copy the `shared` folder into the `tmp` folder
+
+* Run the following commands:
+
+```
+# prepare scipts
+sudo yum install -y rsync
+sudo chown -R root:root /tmp/shared
+sudo rsync -a /tmp/shared/pre/ /
+
+# export variables
+export OS_USER=...user-name...
+export PACKER_IMAGE_NAME=...image-name...
+
+chmod +x ./user-data-script.sh
+TRACE=1 sudo -E bash ./user-data-script.sh
+
+# cleanup
+sudo rsync -a /tmp/shared/post/ /
 ```
