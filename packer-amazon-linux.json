@@ -81,6 +81,7 @@
         "created" :"{{ isotime \"2006-01-02 15:04:05 -0700\" }}",
         "cbd_version": "{{ user `cbd_version` }}",
         "os_user": "{{user `os_user` }}",
+        "os_id": "amzn",
         "image_name": "{{ user `image_name` }}",
         "yum_version_docker": "{{ user `yum_version_docker` }}"
       }
