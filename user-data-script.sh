@@ -160,7 +160,41 @@ install_hdp() {
     mv HDP-$HDP_VERSION.repo HDP.repo
     ls -1 | grep -v HDP-UTILS.repo | grep "HDP-" | xargs rm -vf || :
     yum -y install smartsense-hst
-    yum -y install $(yum list available | awk '$3~/HDP-[1-9]/ && $1~/^(accumulo|atlas|datafu|falcon|flume|hadoop|hadooplzo|hbase|hive|kafka|knox|livy|mahout|oozie|phoenix|pig|ranger|slider|spark|sqoop|storm|tez|zeppelin|zookeeper)_[0-9]_[0-9]/ {print $1}')
+    #yum -y install $(yum list available | awk '$3~/HDP-[1-9]/ && $1~/^(accumulo|atlas|datafu|falcon|flume|hadoop|hadooplzo|hbase|hive|kafka|knox|livy|mahout|oozie|phoenix|pig|ranger|slider|spark|sqoop|storm|tez|zeppelin|zookeeper)_[0-9]_[0-9]/ {print $1}')
+    
+    IP=$(ip addr show eth0 | grep "inet\b" | awk '{print $2}' | cut -d/ -f1)
+    echo "$IP $(hostname).mydomain $(hostname)" >> /etc/hosts
+
+    ambari-server setup --silent --java-home /usr/jdk64/jdk1.7.0_67/
+    ambari-server start
+    echo Waiting for Ambari server to start
+    while [[ ! "RUNNING" == "$(curl -s -m 5 -u admin:admin -H "Accept: text/plain" localhost:8080/api/v1/check)" ]]; do 
+      sleep 5; 
+    done
+    ambari-agent start
+    echo Wait for Ambari agent to join
+    while [[ -z "$(curl -s -m 5 -X GET -u admin:admin localhost:8080/api/v1/hosts/ | jq .items[].Hosts.host_name -r)" ]]; do
+      sleep 5; 
+    done
+    # leave MYSQL_SERVER out from the blueprint, because it will create a hive user with invalid credentials
+    BLUEPRINT='{"host_groups":[{"name":"host_group_1","configurations":[],"components":[{"name":"ATLAS_SERVER"},{"name":"SUPERVISOR"},{"name":"SLIDER"},{"name":"ACCUMULO_MASTER"},{"name":"APP_TIMELINE_SERVER"},{"name":"ACCUMULO_MONITOR"},{"name":"HIVE_CLIENT"},{"name":"HDFS_CLIENT"},{"name":"NODEMANAGER"},{"name":"METRICS_COLLECTOR"},{"name":"MAHOUT"},{"name":"FLUME_HANDLER"},{"name":"WEBHCAT_SERVER"},{"name":"RESOURCEMANAGER"},{"name":"STORM_UI_SERVER"},{"name":"HBASE_MASTER"},{"name":"HIVE_SERVER"},{"name":"OOZIE_SERVER"},{"name":"FALCON_CLIENT"},{"name":"SECONDARY_NAMENODE"},{"name":"SQOOP"},{"name":"YARN_CLIENT"},{"name":"ACCUMULO_GC"},{"name":"DRPC_SERVER"},{"name":"PIG"},{"name":"HISTORYSERVER"},{"name":"KAFKA_BROKER"},{"name":"HBASE_REGIONSERVER"},{"name":"OOZIE_CLIENT"},{"name":"HBASE_CLIENT"},{"name":"NAMENODE"},{"name":"FALCON_SERVER"},{"name":"HCAT"},{"name":"KNOX_GATEWAY"},{"name":"METRICS_MONITOR"},{"name":"SPARK_JOBHISTORYSERVER"},{"name":"SPARK_CLIENT"},{"name":"AMBARI_SERVER"},{"name":"DATANODE"},{"name":"ACCUMULO_TSERVER"},{"name":"ZOOKEEPER_SERVER"},{"name":"ZOOKEEPER_CLIENT"},{"name":"HST_AGENT"},{"name":"HST_SERVER"},{"name":"TEZ_CLIENT"},{"name":"METRICS_GRAFANA"},{"name":"HIVE_METASTORE"},{"name":"ACCUMULO_TRACER"},{"name":"MAPREDUCE2_CLIENT"},{"name":"ACCUMULO_CLIENT"},{"name":"NIMBUS"}],"cardinality":"1"}],"Blueprints":{"stack_name":"HDP","stack_version":"2.4"}}'
+    CLUSTER_TEMPLATE="{\"blueprint\":\"bp\",\"default_password\":\"admin\",\"host_groups\":[{\"name\":\"host_group_1\",\"hosts\":[{\"fqdn\":\""$(hostname -f)"\"}]}],\"provision_action\":\"INSTALL_ONLY\"}"
+    curl -X POST -u admin:admin -H "X-Requested-By: ambari" -d "$BLUEPRINT" http://localhost:8080/api/v1/blueprints/bp
+    curl -X POST -u admin:admin -H "X-Requested-By: ambari" -d "$CLUSTER_TEMPLATE" http://localhost:8080/api/v1/clusters/test
+    echo Wait for install to finish
+    while [[ ! "100" == $(curl -s -m 5 -X GET -u admin:admin localhost:8080/api/v1/clusters/test/requests/1 | jq .Requests.progress_percent) ]]; do 
+      if [[ "-1" == $(curl -s -m 5 -X GET -u admin:admin localhost:8080/api/v1/clusters/test/requests/1 | jq .Requests.progress_percent) ]]; then
+        echo Failed to install the packages
+        exit 1;
+      fi
+      sleep 30;
+    done
+    ambari-agent stop
+    ambari-server stop
+    ambari-server reset --verbose --silent
+    # get rid of old commands and configs
+    cd /var/lib/ambari-agent/data/ && ls -1 | grep -v version | xargs rm -vf
+    sed -i "s/$IP *.*//g" /etc/hosts
   fi
 }
 
