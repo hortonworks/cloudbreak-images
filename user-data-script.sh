@@ -159,6 +159,7 @@ install_hdp() {
     cd /etc/yum.repos.d
     mv HDP-$HDP_VERSION.repo HDP.repo
     ls -1 | grep -v HDP-UTILS.repo | grep "HDP-" | xargs rm -vf || :
+    yum -y install smartsense-hst
     yum -y install $(yum list available | awk '$3~/HDP-[1-9]/ && $1~/^(accumulo|atlas|datafu|falcon|flume|hadoop|hadooplzo|hbase|hive|kafka|knox|livy|mahout|oozie|phoenix|pig|ranger|slider|spark|sqoop|storm|tez|zeppelin|zookeeper)_[0-9]_[0-9]/ {print $1}')
   fi
 }
