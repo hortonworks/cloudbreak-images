@@ -17,7 +17,7 @@
     "tenant_id": "{{ env `ARM_TENANT_ID` }}",
     "resource_group_name": "{{ env `ARM_GROUP_NAME` }}",
     "storage_account": "{{ env `ARM_STORAGE_ACCOUNT` }}",
-
+    "hdp_version": "{{ env `HDP_VERSION` }}",
     "os_user": "cloudbreak",
     "ssh_password":"S3cr3t",
     "atlas_artifact": "cloudbreak",
@@ -143,7 +143,8 @@
     "environment_vars": [
         "OS_USER={{ user `os_user` }}",
         "PACKER_IMAGE_NAME={{user `image_name`}}",
-        "TRACE=1"
+        "TRACE=1",
+        "HDP_VERSION={{user `hdp_version`}}"
     ],
     "execute_command": "chmod +x {{ .Path }}; {{ .Vars }} sudo -E bash '{{ .Path }}'"
   },
