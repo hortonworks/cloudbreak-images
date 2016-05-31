@@ -152,6 +152,19 @@ install_ambari() {
     rm -rf /etc/init.d/ambari-agent 
     find /etc/rc.d/rc* -name "*ambari*" | xargs rm -v
   fi
+  
+  IP=$(ip addr show eth0 | grep "inet\b" | awk '{print $2}' | cut -d/ -f1)
+  echo "$IP $(hostname).mydomain $(hostname)" >> /etc/hosts
+  ambari-server setup --silent --java-home /usr/jdk64/jdk1.7.0_67/
+  ambari-server start
+  echo Waiting for Ambari server to start
+  while [[ ! "RUNNING" == "$(curl -s -u admin:admin -H "Accept: text/plain" localhost:8080/api/v1/check)" ]]; do 
+    echo -n .
+    sleep 1; 
+  done
+  ambari-server stop
+  ambari-server reset --verbose --silent
+  sed -i "s/$IP *.*//g" /etc/hosts
 }
 
 install_hdp() {
