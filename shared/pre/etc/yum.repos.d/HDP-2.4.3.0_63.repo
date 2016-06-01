@@ -1,0 +1,7 @@
+[HDP-2.4]
+name=HDP-2.4
+baseurl=http://s3.amazonaws.com/dev.hortonworks.com/HDP/centos6/2.x/BUILDS/2.4.3.0-63
+
+path=/
+enabled=1
+gpgcheck=0
