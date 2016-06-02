@@ -158,7 +158,6 @@ install_hdp() {
   if [[ -n "$HDP_VERSION" ]]; then
     cd /etc/yum.repos.d
     mv HDP-$HDP_VERSION.sh HDP.sh
-    ls -1 | grep HDP-*sh | xargs rm -vf || :
     yum -y install smartsense-hst
     #yum -y install $(yum list available | awk '$3~/HDP-[1-9]/ && $1~/^(accumulo|atlas|datafu|falcon|flume|hadoop|hadooplzo|hbase|hive|kafka|knox|livy|mahout|oozie|phoenix|pig|ranger|slider|spark|sqoop|storm|tez|zeppelin|zookeeper)_[0-9]_[0-9]/ {print $1}')
     
@@ -200,8 +199,8 @@ install_hdp() {
     # get rid of old commands and configs
     cd /var/lib/ambari-agent/data/ && ls -1 | grep -v version | xargs rm -vf
     sed -i "s/$IP *.*//g" /etc/hosts
-    rm -vf /etc/yum.repos.d/HDP.sh
   fi
+  cd /etc/yum.repos.d && ls -1 | grep *.sh | xargs rm -vf || :
 }
 
 configure_console() {
