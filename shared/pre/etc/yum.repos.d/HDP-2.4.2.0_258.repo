@@ -1,7 +1,0 @@
-[HDP-2.4]
-name=HDP-2.4
-baseurl=http://public-repo-1.hortonworks.com/HDP/centos7/2.x/updates/2.4.2.0
-
-path=/
-enabled=1
-gpgcheck=0

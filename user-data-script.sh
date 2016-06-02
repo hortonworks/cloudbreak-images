@@ -157,8 +157,8 @@ install_ambari() {
 install_hdp() {
   if [[ -n "$HDP_VERSION" ]]; then
     cd /etc/yum.repos.d
-    mv HDP-$HDP_VERSION.repo HDP.repo
-    ls -1 | grep -v HDP-UTILS.repo | grep "HDP-" | xargs rm -vf || :
+    mv HDP-$HDP_VERSION.sh HDP.sh
+    ls -1 | grep HDP-*sh | xargs rm -vf || :
     yum -y install smartsense-hst
     #yum -y install $(yum list available | awk '$3~/HDP-[1-9]/ && $1~/^(accumulo|atlas|datafu|falcon|flume|hadoop|hadooplzo|hbase|hive|kafka|knox|livy|mahout|oozie|phoenix|pig|ranger|slider|spark|sqoop|storm|tez|zeppelin|zookeeper)_[0-9]_[0-9]/ {print $1}')
     
@@ -176,6 +176,11 @@ install_hdp() {
     while [[ -z "$(curl -s -m 5 -X GET -u admin:admin localhost:8080/api/v1/hosts/ | jq .items[].Hosts.host_name -r)" ]]; do
       sleep 5; 
     done
+    source /etc/yum.repos.d/HDP.sh
+    REPO_R6="{\"Repositories\":{\"base_url\":\""$BASE_URL_R6"\",\"verify_base_url\":\"false\"}}"
+    REPO_R7="{\"Repositories\":{\"base_url\":\""$BASE_URL_R7"\",\"verify_base_url\":\"false\"}}"
+    curl -X PUT -u admin:admin -H "X-Requested-By: ambari" -d "$REPO_R6" "http://localhost:8080/api/v1/stacks/$STACK/versions/$STACK_VERSION/operating_systems/$OS_TYPE_R6/repositories/$REPO_ID"
+    curl -X PUT -u admin:admin -H "X-Requested-By: ambari" -d "$REPO_R7" "http://localhost:8080/api/v1/stacks/$STACK/versions/$STACK_VERSION/operating_systems/$OS_TYPE_R7/repositories/$REPO_ID"
     # leave MYSQL_SERVER out from the blueprint, because it will create a hive user with invalid credentials
     BLUEPRINT='{"host_groups":[{"name":"host_group_1","configurations":[],"components":[{"name":"ATLAS_SERVER"},{"name":"SUPERVISOR"},{"name":"SLIDER"},{"name":"ACCUMULO_MASTER"},{"name":"APP_TIMELINE_SERVER"},{"name":"ACCUMULO_MONITOR"},{"name":"HIVE_CLIENT"},{"name":"HDFS_CLIENT"},{"name":"NODEMANAGER"},{"name":"METRICS_COLLECTOR"},{"name":"MAHOUT"},{"name":"FLUME_HANDLER"},{"name":"WEBHCAT_SERVER"},{"name":"RESOURCEMANAGER"},{"name":"STORM_UI_SERVER"},{"name":"HBASE_MASTER"},{"name":"HIVE_SERVER"},{"name":"OOZIE_SERVER"},{"name":"FALCON_CLIENT"},{"name":"SECONDARY_NAMENODE"},{"name":"SQOOP"},{"name":"YARN_CLIENT"},{"name":"ACCUMULO_GC"},{"name":"DRPC_SERVER"},{"name":"PIG"},{"name":"HISTORYSERVER"},{"name":"KAFKA_BROKER"},{"name":"HBASE_REGIONSERVER"},{"name":"OOZIE_CLIENT"},{"name":"HBASE_CLIENT"},{"name":"NAMENODE"},{"name":"FALCON_SERVER"},{"name":"HCAT"},{"name":"KNOX_GATEWAY"},{"name":"METRICS_MONITOR"},{"name":"SPARK_JOBHISTORYSERVER"},{"name":"SPARK_CLIENT"},{"name":"AMBARI_SERVER"},{"name":"DATANODE"},{"name":"ACCUMULO_TSERVER"},{"name":"ZOOKEEPER_SERVER"},{"name":"ZOOKEEPER_CLIENT"},{"name":"HST_AGENT"},{"name":"HST_SERVER"},{"name":"TEZ_CLIENT"},{"name":"METRICS_GRAFANA"},{"name":"HIVE_METASTORE"},{"name":"ACCUMULO_TRACER"},{"name":"MAPREDUCE2_CLIENT"},{"name":"ACCUMULO_CLIENT"},{"name":"NIMBUS"}],"cardinality":"1"}],"Blueprints":{"stack_name":"HDP","stack_version":"2.4"}}'
     CLUSTER_TEMPLATE="{\"blueprint\":\"bp\",\"default_password\":\"admin\",\"host_groups\":[{\"name\":\"host_group_1\",\"hosts\":[{\"fqdn\":\""$(hostname -f)"\"}]}],\"provision_action\":\"INSTALL_ONLY\"}"
@@ -195,6 +200,7 @@ install_hdp() {
     # get rid of old commands and configs
     cd /var/lib/ambari-agent/data/ && ls -1 | grep -v version | xargs rm -vf
     sed -i "s/$IP *.*//g" /etc/hosts
+    rm -vf /etc/yum.repos.d/HDP.sh
   fi
 }
 
