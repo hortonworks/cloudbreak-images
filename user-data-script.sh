@@ -130,7 +130,8 @@ install_bootstrap() {
   fi
 }
 
-install_jdk() {
+install_oracle_jdk() {
+  export JAVA_HOME=/usr/jdk64/jdk1.7.0_67
   export JDK_ARTIFACT=jdk-7u67-linux-x64.tar.gz
   mkdir -p /usr/jdk64 && cd /usr/jdk64 
   curl -LO http://public-repo-1.hortonworks.com/ARTIFACTS/$JDK_ARTIFACT 
@@ -139,9 +140,22 @@ install_jdk() {
 
   curl -LO http://public-repo-1.hortonworks.com/ARTIFACTS/UnlimitedJCEPolicyJDK7.zip
   unzip UnlimitedJCEPolicyJDK7.zip
-  mv -f UnlimitedJCEPolicy/*jar /usr/jdk64/jdk1.7.0_67/jre/lib/security/
+  mv -f UnlimitedJCEPolicy/*jar ${JAVA_HOME}/jre/lib/security/
   rm -f UnlimitedJCEPolicyJDK7.zip
+
 }
+
+install_openjdk() {
+  export JAVA_HOME=/usr/lib/jvm/java
+
+  if grep "Amazon Linux AMI" /etc/issue &> /dev/null; then
+    yum install -y java-1.7.0-openjdk-devel-1.7.0.101-2.6.6.1.67.amzn1
+  else
+    yum install -y java-1.7.0-openjdk-devel-1.7.0.95-2.6.4.0.el7_2
+  fi
+
+}
+
 
 install_ambari() {
   yum -y install ambari-server ambari-agent
@@ -164,7 +178,7 @@ install_hdp() {
     IP=$(ip addr show eth0 | grep "inet\b" | awk '{print $2}' | cut -d/ -f1)
     echo "$IP $(hostname).mydomain $(hostname)" >> /etc/hosts
 
-    ambari-server setup --silent --java-home /usr/jdk64/jdk1.7.0_67/
+    ambari-server setup --silent --java-home ${JAVA_HOME}
     ambari-server start
     echo Waiting for Ambari server to start
     while [[ ! "RUNNING" == "$(curl -s -m 5 -u admin:admin -H "Accept: text/plain" localhost:8080/api/v1/check)" ]]; do 
@@ -316,7 +330,7 @@ main() {
     #install_consul
     install_salt
     install_bootstrap
-    install_jdk
+    install_openjdk
     install_ambari
     install_hdp
     grant-sudo-to-os-user
