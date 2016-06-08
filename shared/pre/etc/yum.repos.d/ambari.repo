@@ -1,6 +1,6 @@
-[AMBARI.2.4.0.0-635]
-name=Ambari 2.4.0.0-635
-baseurl=http://s3.amazonaws.com/dev.hortonworks.com/ambari/centos7/2.x/BUILDS/2.4.0.0-635/
+[AMBARI.2.4.0.0-648]
+name=Ambari 2.4.0.0-648
+baseurl=http://s3.amazonaws.com/dev.hortonworks.com/ambari/centos7/2.x/BUILDS/2.4.0.0-648/
 gpgcheck=1
 gpgkey=http://s3.amazonaws.com/dev.hortonworks.com/ambari/centos7/RPM-GPG-KEY/RPM-GPG-KEY-Jenkins
 enabled=1
