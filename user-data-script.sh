@@ -150,8 +150,10 @@ install_openjdk() {
 
   if grep "Amazon Linux AMI" /etc/issue &> /dev/null; then
     yum install -y java-1.7.0-openjdk-devel-1.7.0.101-2.6.6.1.67.amzn1
+    yum install -y java-1.7.0-openjdk-javadoc-1.7.0.101-2.6.6.1.67.amzn1
   else
     yum install -y java-1.7.0-openjdk-devel-1.7.0.95-2.6.4.0.el7_2
+    yum install -y java-1.7.0-openjdk-javadoc-1.7.0.95-2.6.4.0.el7_2
   fi
 
 }
