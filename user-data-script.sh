@@ -168,6 +168,14 @@ install_ambari() {
   fi
 }
 
+install_ambari_jdbc_drivers() {
+  mkdir -p /var/lib/ambari-server/jdbc-drivers
+  curl -L http://dev.mysql.com/get/Downloads/Connector-J/mysql-connector-java-5.1.39.tar.gz | tar -xvz -C /tmp
+  cp /tmp/mysql-connector-java-5.1.39/mysql-connector-java-5.1.39-bin.jar /var/lib/ambari-server/jdbc-drivers
+  rm -rf /tmp/mysql-connector-java-5.1.39
+  curl -o /var/lib/ambari-server/jdbc-drivers/postgresql-9.4.1208.jre7.jar https://jdbc.postgresql.org/download/postgresql-9.4.1208.jre7.jar
+}
+
 install_hdp() {
   if [[ -n "$HDP_VERSION" ]]; then
     cd /etc/yum.repos.d
@@ -332,6 +340,7 @@ main() {
     install_bootstrap
     install_openjdk
     install_ambari
+    install_ambari_jdbc_drivers
     install_hdp
     grant-sudo-to-os-user
     configure_console
