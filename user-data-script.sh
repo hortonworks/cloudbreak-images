@@ -317,7 +317,7 @@ create_gc_image() {
 check_params() {
     : ${PACKER_BUILDER_TYPE:? required amazon-ebs/googlecompute/openstack }
     : ${CONSUL_VERSION:=0.6.4}
-    : ${CLOUDBREAK_BOOTSTRAP_VERSION:=0.1.1}
+    : ${CLOUDBREAK_BOOTSTRAP_VERSION:=0.1.2}
     : ${EPEL:=epel-release-7-6}
 }
 
