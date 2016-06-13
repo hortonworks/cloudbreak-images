@@ -156,6 +156,7 @@ install_openjdk() {
     yum install -y java-1.7.0-openjdk-javadoc-1.7.0.95-2.6.4.0.el7_2
   fi
 
+  mv /usr/lib/jvm/OpenJDK_GPLv2_and_Classpath_Exception.pdf /usr/lib/jvm/java
 }
 
 
