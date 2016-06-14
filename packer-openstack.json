@@ -21,12 +21,11 @@
       "ssh_username": "centos",
       "ssh_pty": "true",
       "image_name": "{{user `os_image_name`}}",
-      "source_image": "b9a3bec2-500a-4864-9347-4946d5f88570",
+      "source_image": "29ec4393-2f3b-4902-8675-261f3cbedb1f",
       "flavor": "m1.medium",
-      "use_floating_ip": true,
-      "floating_ip_pool": "290e220b-9177-4d21-9bcb-4cb18cd9c960",
+      "endpoint_type": "internalURL",
       "networks": [
-        "e9317683-24a4-42ad-bc4d-6dea59aae616"
+        "a5ad7a1d-d3a6-4180-8d61-07a23f6fb449"
       ]
     }
   ],
