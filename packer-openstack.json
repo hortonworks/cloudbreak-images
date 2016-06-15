@@ -81,35 +81,6 @@
   ]
   ,"post-processors": [
     [
-      {
-        "type": "generator",
-        "template": "{{ build_name }}.tmpl",
-        "output": "{{ build_name }}.yml"
-      },
-      {
-        "type": "atlas",
-        "artifact": "sequenceiq/{{ user `atlas_artifact` }}",
-        "artifact_type": "{{ build_name }}.yml",
-        "metadata": {
-            "created_at": "{{timestamp}}",
-            "created" :"{{ isotime \"2006-01-02 15:04:05 -0700\" }}",
-            "cbd_version": "{{ user `cbd_version` }}",
-            "os_user": "{{user `os_user` }}",
-            "image_name": "{{ user `image_name` }}",
-            "yum_version_docker": "{{ user `yum_version_docker` }}"
-        }
-      }
-    ],
-    [
-        {
-            "type":"generator",
-            "Template": "execute.tmpl",
-            "Output": "./execute.sh"
-        }
-        ,{
-            "type": "artifice",
-            "files": ["{{ user `image_name` }}.img"]
-        },
         {
           "type": "atlas",
           "artifact": "sequenceiq/{{ user `atlas_artifact` }}",
