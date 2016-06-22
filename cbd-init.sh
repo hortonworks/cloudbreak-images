@@ -52,6 +52,9 @@ install_utils() {
 }
 
 main() {
+    debug "Update to docker 1.10.3"
+    sudo service docker stop; sudo curl -Lo /usr/bin/docker https://get.docker.com/builds/Linux/x86_64/docker-1.10.3; sudo service docker start
+    
     debug "START docker ..."
     sudo service docker start
 
