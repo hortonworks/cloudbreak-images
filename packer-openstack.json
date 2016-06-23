@@ -32,7 +32,7 @@
       "ssh_username": "cloudbreak",
       "ssh_pty": "true",
       "image_name": "{{user `image_name`}}",
-      "source_image": "62c70df3-3d8f-41d8-a521-878f6cc86c00",
+      "source_image": "2d59e290-7517-4f5b-b2a5-9f428a78550d",
       "flavor": "m1.medium",
       "endpoint_type": "internalURL",
       "networks": [

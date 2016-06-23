@@ -28,7 +28,7 @@
 
     "instance_type": "m3.medium",
 
-    "ami-eu-west-1": "ami-60dd5913"
+    "ami-eu-west-1": "ami-64ec7417"
   },
   "builders":[
   {
@@ -67,7 +67,7 @@
     "name": "googlecompute",
     "type": "googlecompute",
     "account_file": "{{user `gcp_account_file`}}",
-    "source_image": "docker-centos-2016-03-21",
+    "source_image": "docker-centos-2016-06-22",
     "zone": "us-central1-b",
     "project_id": "siq-haas",
     "ssh_username": "{{user `os_user`}}",
@@ -108,7 +108,7 @@
         "capture_container_name": "packer",
         "capture_name_prefix": "{{ user `short_image_name`}}",
 
-        "custom_image_vhd_uri": "https://sequenceiqnortheurope2.blob.core.windows.net/system/Microsoft.Compute/Images/images/packer-osDisk.a6bfaa30-8de7-4e89-9daa-62cb9057a739.vhd",
+        "custom_image_vhd_uri": "https://sequenceiqnortheurope2.blob.core.windows.net/system/Microsoft.Compute/Images/images/packer-osDisk.861a74a9-4e7c-4d2c-a139-44cadb34e467.vhd",
         "ssh_pty": "true",
         "username": "{{user `os_user`}}",
         "ssh_password" :"{{user `ssh_password`}}",
