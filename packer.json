@@ -77,22 +77,7 @@
     "tags": [
 	"packer"
     ]
-  },
-    {
-      "type": "openstack",
-      "username": "{{user `os_username`}}",
-      "password": "{{user `os_password`}}",
-      "tenant_name": "{{user `os_tenant_name`}}",
-      "ssh_username": "centos",
-      "ssh_pty": "true",
-      "image_name": "{{user `image_name`}}",
-      "source_image": "c1632189-f509-4dba-ac1a-b08b07920b6d",
-      "flavor": "3",
-      "use_floating_ip": false,
-      "networks": [
-        "6414de5e-6085-4469-b8e9-aa293a65c828"
-      ]
-    }
+  }
      ,{
         "name": "azure-arm",
         "type": "azure-arm",
