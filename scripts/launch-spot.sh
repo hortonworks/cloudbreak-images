@@ -53,7 +53,7 @@ spot-request() {
     aws ec2 create-tags --resources $instance --tags Key=owner,Value=$OWNER Key=Owner,Value=$OWNER Key=spot,Value=$SPOT_PRICE
 
     local ip=$(aws ec2 describe-instances --instance-ids $instance --query Reservations[0].Instances[0].PublicIpAddress --out text)
-    debug "ip=ip"
+    debug "ip=$ip"
 
     echo =====
     echo "ssh cloudbreak@$ip"
