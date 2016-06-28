@@ -68,6 +68,10 @@ main() {
   : ${SPOT_AMI:=ami-40138c33}
   : ${OWNER:=$USER}
 
+  for v in ${!SPOT_*}; do
+      debug $v=${!v}
+  done
+
   spot-request
 }
 
