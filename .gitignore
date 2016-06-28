@@ -8,3 +8,4 @@ vars-docker-images.json
 execute.sh
 *.image.json
 *.bak
+cloud-init-*
