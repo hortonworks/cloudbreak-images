@@ -60,14 +60,19 @@ spot-request() {
     echo "ssh cloudbreak@$ip"
 }
 
+get-latest-amz-ami() {
+    atlas -f '{{range $k,$v := .Metadata}}{{ if eq $k "region.'${AWS_DEFAULT_REGION}'" }}{{ $v }}{{end}}{{end}}' -l
+}
+
 main() {
   : ${DEBUG:=1}
   : ${SPOT_COUNT:=1}
   : ${SPOT_HOURS:=8}
   : ${SPOT_PRICE:=0.1}
+  : ${AWS_DEFAULT_REGION:=eu-west-1}
   : ${SPOT_TYPE:=m4.large}
   : ${SPOT_KEY:=seq-master}
-  : ${SPOT_AMI:=ami-40138c33}
+  : ${SPOT_AMI:=$(get-latest-amz-ami)}
   : ${OWNER:=$USER}
 
   for v in ${!SPOT_*}; do
