@@ -30,6 +30,10 @@ cbd_init() {
     cbd generate
     cbd pull-parallel
 
+    docker pull hortonworks/cloud-web:${CBD_VERSION}
+    docker pull hortonworks/cloud-auth:${CBD_VERSION}
+    docker pull sequenceiq/cb-shell:${CBD_VERSION}
+
     cat >> ~/.bashrc <<"EOF"
 eval "$(bash -c 'cd /var/lib/cloudbreak-deployment; cbd bash-complete')"
 EOF
@@ -51,6 +55,11 @@ install_utils() {
         mosh
 }
 
+install_init_script() {
+    curl -Lo ${CBD_DIR}/user-data-${CBD_VERSION}.sh https://s3.amazonaws.com/cbd-quickstart/start-cbd-${CBD_VERSION}.sh
+    chmod +x ${CBD_DIR}/user-data-${CBD_VERSION}.sh
+}
+
 main() {
     debug "Update to docker 1.10.3"
     sudo service docker stop; sudo curl -Lo /usr/bin/docker https://get.docker.com/builds/Linux/x86_64/docker-1.10.3; sudo service docker start
@@ -61,6 +70,7 @@ main() {
     install_utils
     cbd_install
     cbd_init
+    install_init_script
     reset_docker
     reset_hostname
     debug "[DONE] $BASH_SOURCE"
