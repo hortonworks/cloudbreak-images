@@ -33,6 +33,7 @@ spot-request() {
         --valid-until ${validUntil}\
         --launch-specification file://<(get_launch_spec) \
         --query SpotInstanceRequests[0].SpotInstanceRequestId \
+        --instance-count $SPOT_COUNT \
         --out text
     )
 
@@ -61,6 +62,7 @@ spot-request() {
 
 main() {
   : ${DEBUG:=1}
+  : ${SPOT_COUNT:=1}
   : ${SPOT_HOURS:=8}
   : ${SPOT_PRICE:=0.1}
   : ${SPOT_TYPE:=m4.large}
