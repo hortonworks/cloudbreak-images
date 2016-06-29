@@ -333,6 +333,13 @@ tune_vm() {
   fi
 }
 
+slider_patch_on_amazon() {
+  # Slider will fail on Amazon, we need to mimic that we are on CentOS
+  if grep "Amazon Linux AMI" /etc/issue &> /dev/null; then
+    echo "CentOS Linux release 7.2.1511 (Core)" > /etc/redhat-release
+  fi
+}
+
 main() {
     check_params
     update_centos
@@ -356,6 +363,7 @@ main() {
     tune_vm
     disable_swap
     set_dirty_ratio
+    slider_patch_on_amazon
     cleanup
     create_gc_image
 }
