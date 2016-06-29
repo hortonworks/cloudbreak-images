@@ -13,12 +13,12 @@ docker run -i --rm \
     -e ARM_USERNAME=$ARM_USERNAME \
     -e ARM_PASSWORD=$ARM_PASSWORD \
     --entrypoint azure-copy \
-    sequenceiq/azure-cli-tools:0.9.8-v3
+    sequenceiq/azure-cli-tools:1.7
 
 docker run -i --rm \
     -v ~/.azure:/root/.azure \
     -v $PWD:/work \
     -w /work \
     --entrypoint pollprogress \
-    sequenceiq/azure-cli-tools:0.9.8-v3 \
+    sequenceiq/azure-cli-tools:1.7 \
     checks.yml
