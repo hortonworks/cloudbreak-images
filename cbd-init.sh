@@ -62,7 +62,9 @@ install_init_script() {
 
 main() {
     debug "Update to docker 1.10.3"
-    sudo service docker stop; sudo curl -Lo /usr/bin/docker https://get.docker.com/builds/Linux/x86_64/docker-1.10.3; sudo service docker start
+    sudo service docker stop; sudo curl -Lo /usr/bin/docker https://get.docker.com/builds/Linux/x86_64/docker-1.10.3
+    debug "Use overlay storage driver"
+    sudo sed -i 's/^DOCKER_STORAGE_OPTIONS=/DOCKER_STORAGE_OPTIONS="-s overlay"/' /etc/sysconfig/docker-storage
     
     debug "START docker ..."
     sudo service docker start
