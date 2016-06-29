@@ -25,6 +25,11 @@ main(){
   echo "Extracting $tar_file."
   tar -zxf ../$tar_file
 
+  if grep "Monkey" slider-agent/agent/main.py; then
+    echo Slider already patched
+    exit 0
+  fi
+  patch -b slider-agent/agent/main.py /opt/patch/slider/SLIDER-942.1.diff
   patch -b slider-agent/resource_management/libraries/functions/os_check.py /opt/patch/slider/os_check.diff
 
   echo "Removing $tar_file."
