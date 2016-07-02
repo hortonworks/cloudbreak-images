@@ -9,7 +9,7 @@
     "cbd_version": "{{ env `CBD_VERSION`}}",
     "os_user": "cloudbreak",
     "atlas_artifact": "cbd",
-    "image_name": "cloudbreak-deployer-{{ env `CBD_VERSION_UNDERSCORE`}}-{{ isotime \"2006-01-02-03-04\" }}{{env `IMAGE_NAME_SUFFIX`}}",
+    "image_name": "cloudbreak-deployer-{{ env `CBD_VERSION_UNDERSCORE`}}-{{ isotime \"2006-01-02-15-04\" }}{{env `IMAGE_NAME_SUFFIX`}}",
 
     "instance_type": "m3.medium",
 
