@@ -1,5 +1,6 @@
 CBD_VERSION=1.4.0-rc.16
 CBD_VERSION_UNDERSCORE=$(shell echo $(CBD_VERSION) | tr -d .)
+NEXT_ATLAS_VERSION=$(shell atlas -s sequenceiq/cbd/amazon-linux.image -f '{{add .Version  1}}' -l)
 
 ENVS=CBD_VERSION=$(CBD_VERSION) CBD_VERSION_UNDERSCORE=$(CBD_VERSION_UNDERSCORE) TRACE=1
 # it testing, atlas uploads should go to mocking artifact slush
@@ -16,7 +17,8 @@ else
 	PACKER_OPTS+=$(PACKER_VARS)
 endif
 
-#deps:
+deps:
+	curl -L https://github.com/lalyos/atlas/releases/download/v0.0.5/atlas_0.0.5_$(shell uname)_x86_64.tgz | tar -xz -C /usr/local/bin/
 	# go get github.com/bronze1man/yaml2json
 
 build-amazon: generate-vars
