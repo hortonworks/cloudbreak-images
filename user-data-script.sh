@@ -171,16 +171,15 @@ install_ambari() {
   fi
 }
 
-install_ambari_jdbc_drivers() {
-  mkdir -p /var/lib/ambari-server/jdbc-drivers
+install_jdbc_drivers() {
+  mkdir -p /opt/jdbc-drivers
   curl -L http://dev.mysql.com/get/Downloads/Connector-J/mysql-connector-java-5.1.39.tar.gz | tar -xvz -C /tmp
-  cp /tmp/mysql-connector-java-5.1.39/mysql-connector-java-5.1.39-bin.jar /var/lib/ambari-server/jdbc-drivers
+  cp /tmp/mysql-connector-java-5.1.39/mysql-connector-java-5.1.39-bin.jar /opt/jdbc-drivers
   rm -rf /tmp/mysql-connector-java-5.1.39
-  curl -o /var/lib/ambari-server/jdbc-drivers/postgresql-9.4.1208.jre7.jar https://jdbc.postgresql.org/download/postgresql-9.4.1208.jre7.jar
+  curl -o /opt/jdbc-drivers/postgresql-9.4.1208.jre7.jar https://jdbc.postgresql.org/download/postgresql-9.4.1208.jre7.jar
 }
 
 install_hdp() {
-  if [[ -n "$HDP_VERSION" ]]; then
     cd /etc/yum.repos.d
     mv HDP-$HDP_VERSION.sh HDP.sh
     yum -y install smartsense-hst
@@ -231,6 +230,13 @@ install_hdp() {
     # get rid of old commands and configs
     cd /var/lib/ambari-agent/data/ && ls -1 | grep -v version | xargs rm -vf
     sed -i "s/$IP *.*//g" /etc/hosts
+}
+
+pre_warm() {
+  if [[ -n "$HDP_VERSION" ]]; then
+    # Install Ambari only in case of pre-warming
+    install_ambari
+    install_hdp
   fi
   cd /etc/yum.repos.d && ls -1 | grep *.sh | xargs rm -vf || :
 }
@@ -358,9 +364,8 @@ main() {
     install_salt
     install_bootstrap
     install_openjdk
-    install_ambari
-    install_ambari_jdbc_drivers
-    install_hdp
+    install_jdbc_drivers
+    pre_warm
     grant-sudo-to-os-user
     configure_console
     disable_ipv6
