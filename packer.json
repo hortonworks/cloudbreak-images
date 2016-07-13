@@ -167,7 +167,6 @@
         "os_user": "{{user `os_user` }}",
         "orchestrator": "salt",
         "image_name": "{{ user `image_name` }}",
-        "image_version": "{{ user `image_version`}}"
       }
     }
   ]
