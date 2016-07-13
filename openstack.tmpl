@@ -1,7 +1,0 @@
-versions:
-  kernel: {{ .Config.PackerUserVars.yum_version_kernel }}
-  systemd: {{ .Config.PackerUserVars.yum_version_systemd }}
-  cloudbreak_image: {{ .Config.PackerUserVars.cloudbreak_image_version }}
-openstack:
-  id: {{ .Artifact.Id }}
-  name: {{ .Config.PackerUserVars.os_image_name }}

@@ -1,8 +1,0 @@
-versions:
-  kernel: {{ .Config.PackerUserVars.yum_version_kernel }}
-  systemd: {{ .Config.PackerUserVars.yum_version_systemd }}
-  cloudbreak_image: {{ .Config.PackerUserVars.cloudbreak_image_version }}
-
-gcp:
-  default: sequenceiqimage/{{ .Artifact.Id }}.tar.gz
-  import_script: gcloud compute images create {{ .Artifact.Id }} --source-uri gs://sequenceiqimage/{{ .Artifact.Id }}.tar.gz

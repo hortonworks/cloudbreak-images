@@ -1,9 +1,0 @@
-versions:
-  kernel: {{ .Config.PackerUserVars.yum_version_kernel }}
-  systemd: {{ .Config.PackerUserVars.yum_version_systemd }}
-  cloudbreak_image: {{ .Config.PackerUserVars.cloudbreak_image_version }}
-
-{{ if .Meta }}
-aws:{{ range $reg, $ami := .Meta}}
-  {{$reg}}: {{$ami}}{{end}}
-{{end}}
