@@ -11,8 +11,14 @@ packer_in_container() {
     dockerOpts="$dockerOpts -v $AZURE_PUBLISH_SETTINGS:$AZURE_PUBLISH_SETTINGS"
   fi
   
+  TTY_OPTS="--tty"
+  if [[ "$JENKINS_HOME" ]]; then
+    ## dont try to use docker tty on jenkins
+    TTY_OPTS=""
+  fi
+
   [[ "$TRACE" ]] && set -x
-  ${DRY_RUN:+echo ===} docker run -i ${PS1+"-t"} --rm \
+  ${DRY_RUN:+echo ===} docker run -i $TTY_OPTS --rm \
     -e ORIG_USER=$USER \
     -e MOCK=$MOCK \
     -e CHECKPOINT_DISABLE=1 \
