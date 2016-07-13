@@ -12,20 +12,23 @@ else
 	PACKER_OPTS+=$(PACKER_VARS)
 endif
 
-#deps:
+deps:
+ifeq (, $(shell which sigil))
+	curl -L https://github.com/lalyos/sigil/releases/download/v0.4.1/sigil_0.4.1_$(shell uname)_x86_64.tgz | tar -xz -C /usr/local/bin
+ endif
 	# go get github.com/bronze1man/yaml2json
-
-build-amazon: generate-vars
+	
+build-amazon: generate
 	TRACE=1 ./scripts/packer.sh build -only=amazon $(PACKER_OPTS) packer.json
 
-build-googlecompute: generate-vars
+build-googlecompute: generate
 	TRACE=1 ./scripts/packer.sh build -only=googlecompute $(PACKER_OPTS) packer.json
 
-build-azure: generate-vars
+build-azure: generate
 	TRACE=1 ./scripts/packer.sh build -only=azure-arm $(PACKER_OPTS) packer.json
 	./scripts/azure-copy.sh
 
-build-openstack: generate-vars
+build-openstack: generate
 	TRACE=1 ./scripts/packer.sh build $(PACKER_OPTS) packer-openstack.json
 
 generate-vars: docker-build
@@ -36,6 +39,8 @@ generate-vars-local:
 
 docker-build:
 	docker build -t images:build - < Dockerfile.build
+generate:
+	SIGIL_DELIMS={{{,}}} sigil -f packer.json.tmpl ATLAS_TOKEN=$(ATLAS_TOKEN) > packer.json
 
 build-in-docker:
 	docker run -it \
