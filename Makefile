@@ -1,4 +1,4 @@
-CBD_VERSION=1.4.0-rc.17
+CBD_VERSION=1.4.0-rc.26
 CBD_VERSION_UNDERSCORE=$(shell echo $(CBD_VERSION) | tr -d .)
 NEXT_ATLAS_VERSION=$(shell atlas -s sequenceiq/cbd/amazon-linux.image -f '{{add .Version  1}}' -l)
 
