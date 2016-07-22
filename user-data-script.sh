@@ -173,10 +173,16 @@ install_ambari() {
 
 install_jdbc_drivers() {
   mkdir -p /opt/jdbc-drivers
-  curl -L http://dev.mysql.com/get/Downloads/Connector-J/mysql-connector-java-5.1.39.tar.gz | tar -xvz -C /tmp
+  
+  curl -sL http://dev.mysql.com/get/Downloads/Connector-J/mysql-connector-java-5.1.39.tar.gz | tar -xvz -C /tmp
   cp /tmp/mysql-connector-java-5.1.39/mysql-connector-java-5.1.39-bin.jar /opt/jdbc-drivers
-  rm -rf /tmp/mysql-connector-java-5.1.39
-  curl -o /opt/jdbc-drivers/postgresql-9.4.1208.jre7.jar https://jdbc.postgresql.org/download/postgresql-9.4.1208.jre7.jar
+  
+  curl -so /opt/jdbc-drivers/postgresql-9.4.1208.jre7.jar https://jdbc.postgresql.org/download/postgresql-9.4.1208.jre7.jar
+  
+  curl -sL https://download.microsoft.com/download/D/6/A/D6A241AC-433E-4CD2-A1CE-50177E8428F0/1033/sqljdbc_3.0.1301.101_enu.tar.gz | tar -xvz -C /tmp
+  cp /tmp/sqljdbc_3.0/enu/*.jar /opt/jdbc-drivers
+  
+  rm -rf /tmp/mysql-connector-java-5.1.39 /tmp/sqljdbc_3.0
 }
 
 install_hdp() {
