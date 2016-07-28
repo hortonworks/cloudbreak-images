@@ -1,53 +1,37 @@
 # it testing, atlas uploads should go to mocking artifact slush
 PACKER_VARS=
 
-# this identifies images across cloud providers
-IMAGE_VERSION=1.9.1-v3
-PACKER_VARS=-var-file=vars-versions.json -var image_version=$(IMAGE_VERSION)
 ifdef DOCKER_VERSION
 	PACKER_VARS+=-var yum_version_docker=$(DOCKER_VERSION)
 endif
 
 ifeq ($(MOCK),true)
-	PACKER_OPTS=$(PACKER_VARS) -var atlas_artifact=mock -var os_image_name=cb-centos71-amb212-2015-10-27
+	PACKER_OPTS=$(PACKER_VARS) -var atlas_artifact=mock
 else
 	PACKER_OPTS+=$(PACKER_VARS)
 endif
 
-#deps:
+deps:
+ifeq (, $(shell which sigil))
+	curl -L https://github.com/lalyos/sigil/releases/download/v0.4.1/sigil_0.4.1_$(shell uname)_x86_64.tgz | tar -xz -C /usr/local/bin
+ endif
 	# go get github.com/bronze1man/yaml2json
-
-build-amazon: generate-vars
+	
+build-amazon: generate
 	TRACE=1 ./scripts/packer.sh build -only=amazon $(PACKER_OPTS) packer.json
 
-build-googlecompute: generate-vars
+build-googlecompute: generate
 	TRACE=1 ./scripts/packer.sh build -only=googlecompute $(PACKER_OPTS) packer.json
 
-build-azure: generate-vars
+build-azure: generate
 	TRACE=1 ./scripts/packer.sh build -only=azure-arm $(PACKER_OPTS) packer.json
 	./scripts/azure-copy.sh
 
-build-openstack: generate-vars
+build-openstack: generate
 	TRACE=1 ./scripts/packer.sh build $(PACKER_OPTS) packer-openstack.json
 
-generate-vars: docker-build
-	docker run -v $(PWD):/work -w /work --entrypoint=bash images:build -c 'make generate-vars-local'
-
-generate-vars-local:
-	cat vars-versions.yml | yaml2json | jq . > vars-versions.json
-
-docker-build:
-	docker build -t images:build - < Dockerfile.build
-
-build-in-docker:
-	docker run -it \
-		-v $(PWD):$(PWD) \
-		-w $(PWD) \
-		-e ATLAS_TOKEN=$(ATLAS_TOKEN) \
-		-e MOCK=true \
-		-v /var/run/docker.sock:/var/run/docker.sock \
-		-v /usr/local/bin/docker:/usr/local/bin/docker \
-		images:build make build-aws
+generate:
+	SIGIL_DELIMS={{{,}}} sigil -f packer.json.tmpl ATLAS_TOKEN=$(ATLAS_TOKEN) > packer.json
 
 list-amz-linux-amis:
 	aws ec2 describe-images --filter Name=owner-alias,Values=amazon --query 'reverse(sort_by(Images[?contains(ImageLocation,`amazon/amzn-ami-hvm`) && ends_with(ImageLocation, `gp2`)].{loc:ImageLocation,id:ImageId}, &loc))' --out table --region us-west-2
