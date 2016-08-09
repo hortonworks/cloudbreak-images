@@ -1,4 +1,4 @@
-CBD_VERSION=1.4.0
+CBD_VERSION ?= $(shell curl -I https://github.com/sequenceiq/cloudbreak-deployer/releases/latest 2>&1 | sed -n "s/^Location:.*tag.v\([0-9\.]*\).*/\1/p")
 CBD_VERSION_UNDERSCORE=$(shell echo $(CBD_VERSION) | tr -d .)
 
 ENVS=CBD_VERSION=$(CBD_VERSION) CBD_VERSION_UNDERSCORE=$(CBD_VERSION_UNDERSCORE) TRACE=1
