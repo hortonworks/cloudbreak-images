@@ -22,15 +22,15 @@ test_docker_build_finished() {
 	local test_tag=$(exist_tag "$1")
 	echo "Test $1 tag exist on docker hub ${test_tag}..."
 	if ! [[ "$test_tag" ]]; then 
-		local count=0
-		local test_code=$(build_in_progress $1)
-		echo "Test $1 build progress ${test_code}..."
-	    while [[ $test_code -ne 10 ]] && [[ $test_code -ne -1 ]] && [ $((count++)) -lt 100 ] ; do
+	    local count=0
+	    local test_code=$(build_in_progress $1)
+            echo "Test $1 build progress ${test_code}..."
+	    while [[ $test_code -ne 10 ]] && [[ $test_code -ne -1 ]] && [ $((count++)) -lt 120 ] ; do
 	        test_code=$(build_in_progress $1)
 	        echo "Test $1 build progress ${test_code}..."
-	        sleep 5;
+	        sleep 15;
 	    done
-	    if [[ $count -gt 99 ]]; then
+	    if [[ $count -gt 119 ]]; then
 	    	echo "Image tag $1 failed to create."
 	    	exit -1
 	    fi
