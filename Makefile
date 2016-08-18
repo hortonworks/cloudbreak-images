@@ -40,6 +40,9 @@ generate-vars-local:
 docker-build:
 	docker build -t images:build - < Dockerfile.build
 
+check-docker-hub-build-status:
+	$(ENVS) ./scripts/docker-hub-build-check.sh
+
 build-in-docker:
 	docker run -it \
 		-v $(PWD):$(PWD) \
