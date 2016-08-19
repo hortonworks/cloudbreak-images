@@ -24,6 +24,19 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+if ! [ -e /var/cb-init-executed  ]; then
+    cat > /etc/motd <<EOF
+
+===========================================================================================
+This EC2 instance has not been launched via the "Hortonworks Data Cloud Controller Service"
+and hence is not configured for use. Terminate this EC2 instance and use one of the
+"Hortonworks Data Cloud Controller Service" options to launch the controller which
+will use this AMI to create clusters with HDP Services.
+===========================================================================================
+
+EOF
+  touch /var/lib/update-motd/disabled
+fi
 
 NAME=`basename $0`
 LOG_DIR="/var/log/saltboot.log"
