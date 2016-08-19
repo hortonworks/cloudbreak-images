@@ -9,7 +9,7 @@ cloud_web_image="hortonworks/cloud-web"
 cloud_auth_image="hortonworks/cloud-auth"
 
 exist_tag() {
-    local is_tag_exist=$(curl -Ls -H "Content-Type:application/json" https://registry.hub.docker.com/v2/repositories/$1/tags | jq '.results[]| select (.name=="'${CBD_VERSION}'")| .name' -r)
+    local is_tag_exist=$(curl -Ls -H "Content-Type:application/json" https://registry.hub.docker.com/v2/repositories/$1/tags?page_size=100 | jq '.results[]| select (.name=="'${CBD_VERSION}'")| .name' -r)
     echo $is_tag_exist
 }
 
