@@ -53,6 +53,25 @@
   {
       "type": "shell",
       "inline": [
+          "set -x",
+          "sudo rm -rf /tmp/shared"
+      ]
+  },
+  {
+    "type": "file",
+    "source": "shared",
+    "destination": "/tmp"
+  },
+  {
+      "type": "shell",
+      "inline": [
+          "sudo yum install -y rsync",
+          "sudo rsync -a /tmp/shared/ /"
+      ]
+  },
+  {
+      "type": "shell",
+      "inline": [
           "sudo yum -y install docker"
       ]
   },
