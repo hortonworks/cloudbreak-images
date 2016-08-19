@@ -159,8 +159,20 @@ install_openjdk() {
   mv /usr/lib/jvm/OpenJDK_GPLv2_and_Classpath_Exception.pdf /usr/lib/jvm/java
 }
 
+generate_ambari_repo() {
+  cat > /etc/yum.repos.d/ambari.repo <<EOF
+[AMBARI.2.4.0.0-1157]
+name=Ambari 2.4.0.0-1157
+baseurl=http://s3.amazonaws.com/dev.hortonworks.com/ambari/centos7/2.x/BUILDS/2.4.0.0-1157/
+gpgcheck=1
+gpgkey=http://s3.amazonaws.com/dev.hortonworks.com/ambari/centos7/RPM-GPG-KEY/RPM-GPG-KEY-Jenkins
+enabled=1
+priority=1
+EOF
+}
 
 install_ambari() {
+  generate_ambari_repo
   yum -y install ambari-server ambari-agent
   if grep "Amazon Linux AMI" /etc/issue &> /dev/null; then
     chkconfig ambari-server off
