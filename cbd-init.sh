@@ -21,6 +21,12 @@ reset_hostname() {
   sudo rm -vf /etc/hostname
 }
 
+reset_authorized_keys() {
+  debug "Deleting authorized_keys files to remove temporary packer entries"
+  sudo rm "/root/.ssh/authorized_keys"
+  sudo rm "/home/$OS_USER/.ssh/authorized_keys"
+}
+
 cbd_init() {
     sudo mkdir -p $CBD_DIR
     sudo chown -R $OS_USER:$OS_USER $CBD_DIR
@@ -69,6 +75,7 @@ main() {
     cbd_init
     reset_docker
     reset_hostname
+    reset_authorized_keys
     debug "[DONE] $BASH_SOURCE"
 }
 
