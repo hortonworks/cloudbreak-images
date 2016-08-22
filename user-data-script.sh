@@ -322,8 +322,7 @@ reset_fstab() {
 
 reset_authorized_keys() {
    debug "Deleting authorized_keys files to remove temporary packer entries"
-   rm "/root/.ssh/authorized_keys"
-   rm "/home/$OS_USER/.ssh/authorized_keys"
+   rm -f /root/.ssh/authorized_keys /home/$OS_USER/.ssh/authorized_keys
 }
 
 create_gc_image() {
