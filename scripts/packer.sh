@@ -42,6 +42,7 @@ packer_in_container() {
     -e OS_USERNAME=$OS_USERNAME \
     -e IMAGE_NAME_SUFFIX=$IMAGE_NAME_SUFFIX \
     -e HDP_VERSION=$HDP_VERSION \
+    -e AMBARI_VERSION=$AMBARI_VERSION \
     -e ATLAS_TOKEN=$ATLAS_TOKEN \
     -v $HOME/.aws:/root/.aws \
     -v /var/run/docker.sock:/var/run/docker.sock \

@@ -80,11 +80,6 @@ install_kerberos() {
   yum -y install krb5-server krb5-libs krb5-workstation
 }
 
-reset_hostname() {
-  echo "Avoid pre-assigned hostname"
-  rm -vf /etc/hostname
-}
-
 grant-sudo-to-os-user() {
   if grep "Amazon Linux AMI" /etc/issue &> /dev/null; then
     echo "No need to grant sudo to OS_USER on Amazon Linux"
@@ -284,15 +279,10 @@ modify_waagent() {
   fi
 }
 
-reset_fstab() {
-  echo "Removing ephemeral /dev/xvdb from fstab"
-  cat /etc/fstab
-  sed -i "/dev\/xvdb/ d" /etc/fstab
-}
-
 cleanup() {
   reset_hostname
   reset_fstab
+  reset_authorized_keys
   yum clean all
 }
 
@@ -328,6 +318,12 @@ reset_fstab() {
   echo "Removing ephemeral /dev/xvdb from fstab"
   cat /etc/fstab
   sed -i "/dev\/xvdb/ d" /etc/fstab
+}
+
+reset_authorized_keys() {
+   debug "Deleting authorized_keys files to remove temporary packer entries"
+   rm "/root/.ssh/authorized_keys"
+   rm "/home/$OS_USER/.ssh/authorized_keys"
 }
 
 create_gc_image() {
