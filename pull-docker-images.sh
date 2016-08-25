@@ -48,7 +48,7 @@ main() {
   extend_rootfs
   start_docker
   docker_pull_images "$@"
-  reset_docker
+  #reset_docker
 }
 
 [[ "$0" == "$BASH_SOURCE" ]] && main "$@"
