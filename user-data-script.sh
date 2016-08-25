@@ -92,7 +92,6 @@ grant-sudo-to-os-user() {
 install_salt() {
   # salt install for orchestrating the cluster
   yum -y install salt-master salt-api salt-minion && yum clean all
-  adduser saltuser && usermod -G wheel saltuser && echo "saltuser:saltpass"| chpasswd
   if grep "Amazon Linux AMI" /etc/issue &> /dev/null; then
     chkconfig salt-master off
     chkconfig salt-minion off
@@ -120,7 +119,6 @@ install_bootstrap() {
     chmod +x /etc/init.d/salt-bootstrap
     chkconfig salt-bootstrap on
   else
-    chmod +x /usr/sbin/salt-bootstrap
     systemctl enable salt-bootstrap
   fi
 }
@@ -340,7 +338,7 @@ create_gc_image() {
 check_params() {
     : ${PACKER_BUILDER_TYPE:? required amazon-ebs/googlecompute/openstack }
     : ${CONSUL_VERSION:=0.6.4}
-    : ${CLOUDBREAK_BOOTSTRAP_VERSION:=0.1.2}
+    : ${CLOUDBREAK_BOOTSTRAP_VERSION:=0.2.2}
     : ${EPEL:=epel-release-7-6}
 }
 
