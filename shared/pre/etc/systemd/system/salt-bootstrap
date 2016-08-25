@@ -39,7 +39,7 @@ EOF
 fi
 
 NAME=`basename $0`
-LOG_DIR="/var/log/saltboot.log"
+LOG_DIR="/var/log"
 SALTBOOT_PORT=7070
 
 get_pid() {
