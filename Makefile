@@ -1,8 +1,9 @@
+BASE_NAME ?= "cloudbreak-deployer"
 CBD_VERSION ?= $(shell curl -I https://github.com/sequenceiq/cloudbreak-deployer/releases/latest 2>&1 | sed -n "s/^Location:.*tag.v\([0-9\.]*\).*/\1/p")
 CBD_VERSION_UNDERSCORE=$(shell echo $(CBD_VERSION) | tr -d .)
 NEXT_ATLAS_VERSION=$(shell atlas -s sequenceiq/cbd/amazon-linux.image -f '{{add .Version  1}}' -l)
 
-ENVS=CBD_VERSION=$(CBD_VERSION) CBD_VERSION_UNDERSCORE=$(CBD_VERSION_UNDERSCORE) TRACE=1
+ENVS=CBD_VERSION=$(CBD_VERSION) CBD_VERSION_UNDERSCORE=$(CBD_VERSION_UNDERSCORE) BASE_NAME=$(BASE_NAME) TRACE=1
 # it testing, atlas uploads should go to mocking artifact slush
 PACKER_VARS=
 

@@ -15,6 +15,7 @@ packer_in_container() {
   ${DRY_RUN:+echo ===} docker run -i --rm \
     -e ORIG_USER=$USER \
     -e MOCK=$MOCK \
+    -e BASE_NAME=$BASE_NAME \
     -e CBD_VERSION=$CBD_VERSION \
     -e CBD_VERSION_UNDERSCORE=$CBD_VERSION_UNDERSCORE \
     -e CHECKPOINT_DISABLE=1 \
