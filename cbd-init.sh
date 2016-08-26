@@ -18,7 +18,7 @@ reset_docker() {
 cbd_init() {
     mkdir $CBD_DIR
     cd $_
-    
+
     cbd init
     cbd pull-parallel
 
@@ -41,7 +41,7 @@ main() {
 
     cbd_install
     cbd_init
-    reset_docker
+    debug "cbd-init successfully finished"
 }
 
 [[ "$0" == "$BASH_SOURCE" ]] && main "$@"
