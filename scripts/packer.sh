@@ -17,6 +17,8 @@ packer_in_container() {
     TTY_OPTS=""
   fi
 
+  HDP_VERSION_SHORT=$([ -n "$HDP_VERSION" ] && echo "hdp-$(echo ${HDP_VERSION} | tr -d . | cut -c1-2)-")
+
   [[ "$TRACE" ]] && set -x
   ${DRY_RUN:+echo ===} docker run -i $TTY_OPTS --rm \
     -e ORIG_USER=$USER \
@@ -24,6 +26,7 @@ packer_in_container() {
     -e CHECKPOINT_DISABLE=1 \
     -e PACKER_LOG=$PACKER_LOG \
     -e PACKER_LOG_PATH=$PACKER_LOG_PATH \
+    -e BASE_NAME=$BASE_NAME \
     -e AWS_ACCESS_KEY_ID=$AWS_ACCESS_KEY_ID \
     -e AWS_SECRET_ACCESS_KEY=$AWS_SECRET_ACCESS_KEY \
     -e AZURE_PUBLISH_SETTINGS=$AZURE_PUBLISH_SETTINGS \
@@ -42,6 +45,7 @@ packer_in_container() {
     -e OS_USERNAME=$OS_USERNAME \
     -e IMAGE_NAME_SUFFIX=$IMAGE_NAME_SUFFIX \
     -e HDP_VERSION=$HDP_VERSION \
+    -e HDP_VERSION_SHORT=$HDP_VERSION_SHORT \
     -e AMBARI_VERSION=$AMBARI_VERSION \
     -e ATLAS_TOKEN=$ATLAS_TOKEN \
     -v $HOME/.aws:/root/.aws \

@@ -25,7 +25,7 @@
     "os_user": "cloudbreak",
     "ssh_password":"S3cr3t",
     "atlas_artifact": "cloudbreak",
-    "image_name": "cb-{{ isotime \"2006-01-02-15-04\" }}{{env `IMAGE_NAME_SUFFIX`}}",
+    "image_name": "{{env `BASE_NAME`}}-{{env `HDP_VERSION_SHORT`}}{{ isotime \"2006-01-02-15-04\" }}{{env `IMAGE_NAME_SUFFIX`}}",
 
     "instance_type": "m3.medium",
     "ami-eu-west-1": "ami-c39604b0"
