@@ -319,8 +319,11 @@ reset_fstab() {
 }
 
 reset_authorized_keys() {
-   debug "Deleting authorized_keys files to remove temporary packer entries"
-   rm -f /root/.ssh/authorized_keys /home/$OS_USER/.ssh/authorized_keys
+  debug "Deleting authorized_keys files to remove temporary packer entries"
+  rm -f /root/.ssh/authorized_keys /home/$OS_USER/.ssh/authorized_keys
+  if grep "Amazon Linux AMI" /etc/issue &> /dev/null; then
+    rm -f /home/ec2-user/.ssh/authorized_keys
+  fi
 }
 
 create_gc_image() {
