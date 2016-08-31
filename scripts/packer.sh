@@ -47,6 +47,8 @@ packer_in_container() {
     -e HDP_VERSION=$HDP_VERSION \
     -e HDP_VERSION_SHORT=$HDP_VERSION_SHORT \
     -e AMBARI_VERSION=$AMBARI_VERSION \
+    -e AMBARI_BASEURL=$AMBARI_BASEURL \
+    -e AMBARI_GPGKEY=$AMBARI_GPGKEY \
     -e ATLAS_TOKEN=$ATLAS_TOKEN \
     -v $HOME/.aws:/root/.aws \
     -v /var/run/docker.sock:/var/run/docker.sock \
