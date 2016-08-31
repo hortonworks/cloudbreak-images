@@ -18,6 +18,8 @@
     "resource_group_name": "{{ env `ARM_GROUP_NAME` }}",
     "storage_account": "{{ env `ARM_STORAGE_ACCOUNT` }}",
     "ambari_version": "{{ env `AMBARI_VERSION` }}",
+    "ambari_baseurl": "{{ env `AMBARI_BASEURL` }}",
+    "ambari_gpgkey": "{{ env `AMBARI_GPGKEY` }}",
     "hdp_version": "{{ env `HDP_VERSION` }}",
     "git_rev": "{{ env `GIT_REV` }}",
     "git_branch": "{{ env `GIT_BRANCH` }}",
