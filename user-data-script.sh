@@ -154,13 +154,15 @@ install_openjdk() {
 
 generate_ambari_repo() {
   : ${AMBARI_VERSION:? reqired}
+  : ${AMBARI_BASEURL:? reqired}
+  : ${AMBARI_GPGKEY:? reqired}
   
   cat > /etc/yum.repos.d/ambari.repo <<EOF
 [AMBARI.${AMBARI_VERSION}]
 name=Ambari ${AMBARI_VERSION}
-baseurl=http://s3.amazonaws.com/dev.hortonworks.com/ambari/centos7/2.x/BUILDS/${AMBARI_VERSION}/
+baseurl=${AMBARI_BASEURL}
 gpgcheck=1
-gpgkey=http://s3.amazonaws.com/dev.hortonworks.com/ambari/centos7/RPM-GPG-KEY/RPM-GPG-KEY-Jenkins
+gpgkey=${AMBARI_GPGKEY}
 enabled=1
 priority=1
 EOF
