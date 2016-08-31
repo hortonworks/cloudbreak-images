@@ -151,6 +151,8 @@
         "PACKER_IMAGE_NAME={{user `image_name`}}",
         "TRACE=1",
         "AMBARI_VERSION={{user `ambari_version`}}",
+        "AMBARI_BASEURL={{user `ambari_baseurl`}}",
+        "AMBARI_GPGKEY={{user `ambari_gpgkey`}}",
         "HDP_VERSION={{user `hdp_version`}}"
     ],
     "execute_command": "chmod +x {{ .Path }}; {{ .Vars }} sudo -E bash '{{ .Path }}'"
@@ -178,6 +180,8 @@
         "orchestrator": "salt",
         "image_name": "{{ user `image_name` }}",
         "ambari_version": "{{ user `ambari_version` }}",
+        "ambari_baseurl": "{{ user `ambari_baseurl` }}",
+        "ambari_gpgkey": "{{ user `ambari_gpgkey` }}",
         "hdp_version": "{{user `hdp_version`}}"
       }
     }
