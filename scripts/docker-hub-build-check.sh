@@ -25,7 +25,7 @@ test_docker_build_finished() {
 	    local count=0
 	    local test_code=$(build_in_progress $1)
             echo "Test $1 build progress ${test_code}..."
-	    while [[ $test_code -ne 10 ]] && [[ $test_code -ne -1 ]] && [ $((count++)) -lt 120 ] ; do
+	    while [[ $test_code -ne 10 ]] && [[ $test_code -ne -1 ]] && [ $((count++)) -lt 480 ] ; do
 	        test_code=$(build_in_progress $1)
 	        echo "Test $1 build progress ${test_code}..."
 	        sleep 15;
