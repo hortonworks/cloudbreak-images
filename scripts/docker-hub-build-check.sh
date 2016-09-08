@@ -1,9 +1,9 @@
 echo $CBD_VERSION
-cloudbreak_image="sequenceiq/cloudbreak"
+cloudbreak_image="hortonworks/cloudbreak"
 cloudbreak_web_image="hortonworks/cloudbreak-web"
 cloudbreak_auth_image="hortonworks/cloudbreak-auth"
-periscope_image="sequenceiq/periscope"
-cloudbreak_shell_image="sequenceiq/cb-shell"
+periscope_image="hortonworks/cloudbreak-autoscale"
+cloudbreak_shell_image="hortonworks/cloudbreak-shell"
 
 cloud_web_image="hortonworks/cloud-web"
 cloud_auth_image="hortonworks/cloud-auth"
