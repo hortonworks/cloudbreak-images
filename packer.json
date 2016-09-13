@@ -19,6 +19,7 @@
     "docker_images": "gliderlabs/alpine:3.1 alpine:latest sequenceiq/mybatis-migrations:1.0.0 sequenceiq/cb-shell:1.2.5",
     "cbd_install_dir": "/bin",
     "cbd_version": "{{ env `CBD_VERSION`}}",
+    "hdc_cli_version": "{{ env `HDC_CLI_VERSION`}}",
     "os_user": "cloudbreak",
     "atlas_artifact": "cbd",
     "ssh_password":"S3cr3t",
@@ -152,6 +153,7 @@
     ],
     "environment_vars": [
         "CBD_VERSION={{ user `cbd_version` }}",
+        "HDC_CLI_VERSION={{ user `hdc_cli_version` }}",
         "CBD_INSTALL_DIR={{ user `cbd_install_dir` }}",
         "OS_USER={{ user `os_user` }}",
         "YUM_VERSION_DOCKER={{ user `yum_version_docker` }}",
@@ -173,6 +175,7 @@
         "created_at": "{{timestamp}}",
         "created" :"{{ isotime \"2006-01-02 15:04:05 -0700\" }}",
         "cbd_version": "{{ user `cbd_version` }}",
+        "hdc_cli_version": "{{ user `hdc_cli_version` }}",
         "os_user": "{{user `os_user` }}",
         "image_name": "{{ user `image_name` }}",
         "yum_version_docker": "{{ user `yum_version_docker` }}"

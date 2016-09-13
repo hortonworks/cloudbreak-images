@@ -61,6 +61,24 @@ install_utils() {
         mosh
 }
 
+install_hdc_cli() {
+    : ${HDC_CLI_VERSION:? required}
+    : ${GITHUB_REPO:=hortonworks/hdc-cli}
+
+  local baseUrl=https://api.github.com/repos/$GITHUB_REPO/releases
+  local releaseUrl=$baseUrl/tags/v${HDC_CLI_VERSION}
+  if ! curl --fail -sG -o /dev/null -d access_token=$GITHUB_TOKEN $releaseUrl; then
+    debug "WARNING: couldnt find hdc cli release: ${HDC_CLI_VERSION}, using latest github release instead"
+    releaseUrl=$baseUrl/latest
+  fi
+
+  curl -s -G \
+   -d access_token=$GITHUB_TOKEN \
+   $releaseUrl \
+    | jq ".assets[]|[.name,.url][]" -r \
+    | xargs -t -n 2 -P 3 curl -sG -d access_token=$GH_TOKEN -H "Accept: application/octet-stream" -Lo
+}
+
 main() {
     debug "Update to docker 1.10.3"
     sudo service docker stop; sudo curl -Lo /usr/bin/docker https://get.docker.com/builds/Linux/x86_64/docker-1.10.3
@@ -71,6 +89,7 @@ main() {
     sudo service docker start
 
     install_utils
+    install_hdc_cli
     cbd_install
     cbd_init
     reset_docker
