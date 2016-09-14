@@ -81,6 +81,9 @@ install_hdc_cli() {
    $releaseUrl \
     | jq ".assets[]|[.name,.url][]" -r \
     | xargs -t -n 2 -P 3 curl -sG -d access_token=$GITHUB_TOKEN -H "Accept: application/octet-stream" -Lo
+   
+   tar -xzf hdc-cli_*$(uname)_x86_64.tgz  -C /bin || true
+   hdc --version || echo "Warning hdc cli installation failed"
    cd -
 }
 
