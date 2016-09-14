@@ -40,6 +40,7 @@ packer_in_container() {
     -e OS_USERNAME=$OS_USERNAME \
     -e IMAGE_NAME_SUFFIX=$IMAGE_NAME_SUFFIX \
     -e ATLAS_TOKEN=$ATLAS_TOKEN \
+    -e GITHUB_TOKEN=$GITHUB_TOKEN \
     -v /var/run/docker.sock:/var/run/docker.sock \
     -v $PWD:/$PWD \
     -w $PWD \

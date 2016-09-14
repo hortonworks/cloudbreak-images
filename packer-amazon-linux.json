@@ -5,6 +5,8 @@
     "aws_access_key": "{{ env `AWS_ACCESS_KEY` }}",
     "aws_secret_key": "{{ env `AWS_SECRET_ACCESS_KEY` }}",
 
+    "hdc_cli_version": "{{ env `HDC_CLI_VERSION`}}",
+    "github_token": "{{ env `GITHUB_TOKEN`}}",
     "cbd_install_dir": "/bin",
     "cbd_version": "{{ env `CBD_VERSION`}}",
     "os_user": "cloudbreak",
@@ -81,6 +83,8 @@
         "./cbd-init.sh"
     ],
     "environment_vars": [
+        "HDC_CLI_VERSION={{ user `hdc_cli_version` }}",
+        "GITHUB_TOKEN={{ user `github_token` }}",
         "CBD_VERSION={{ user `cbd_version` }}",
         "CBD_INSTALL_DIR={{ user `cbd_install_dir` }}",
         "OS_USER={{ user `os_user` }}",
@@ -97,6 +101,7 @@
         "created_at": "{{timestamp}}",
         "created" :"{{ isotime \"2006-01-02 15:04:05 -0700\" }}",
         "cbd_version": "{{ user `cbd_version` }}",
+        "hdc_cli_version": "{{ user `hdc_cli_version` }}",
         "os_user": "{{user `os_user` }}",
         "os_id": "amzn",
         "image_name": "{{ user `image_name` }}",

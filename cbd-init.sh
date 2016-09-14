@@ -63,7 +63,7 @@ install_utils() {
 
 install_hdc_cli() {
   : ${HDC_CLI_VERSION:? required}
-  : ${GH_TOKEN:? required}
+  : ${GITHUB_TOKEN:? required}
   : ${GITHUB_REPO:=hortonworks/hdc-cli}
   : ${HDC_CLI_INSTALL_DIR:=/var/lib/cloudbreak/hdc-cli}
 
@@ -80,7 +80,7 @@ install_hdc_cli() {
    -d access_token=$GITHUB_TOKEN \
    $releaseUrl \
     | jq ".assets[]|[.name,.url][]" -r \
-    | xargs -t -n 2 -P 3 curl -sG -d access_token=$GH_TOKEN -H "Accept: application/octet-stream" -Lo
+    | xargs -t -n 2 -P 3 curl -sG -d access_token=$GITHUB_TOKEN -H "Accept: application/octet-stream" -Lo
    cd -
 }
 
