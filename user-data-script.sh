@@ -188,9 +188,28 @@ install_jdbc_drivers() {
   curl -o /opt/jdbc-drivers/postgresql-9.4.1208.jre7.jar https://jdbc.postgresql.org/download/postgresql-9.4.1208.jre7.jar
 }
 
+generate_hdp_script() {
+  : ${HDP_STACK_VERSION:? required}
+  : ${HDP_VERSION:? reqired}
+  : ${HDP_BASEURL:? reqired}
+  : ${HDP_REPOID:? required}
+  if grep "Amazon Linux AMI" /etc/issue &> /dev/null; then
+    OS_TYPE="redhat6"
+  else
+    OS_TYPE="redhat7"
+  fi
+  cat > /etc/yum.repos.d/HDP.sh <<EOF
+export STACK=HDP
+export STACK_VERSION=${HDP_STACK_VERSION}
+export OS_TYPE=${OS_TYPE}
+export REPO_ID=${HDP_REPOID}
+export BASE_URL=${HDP_BASEURL}
+EOF
+}
+
 install_hdp() {
     cd /etc/yum.repos.d
-    mv HDP-$HDP_VERSION.sh HDP.sh
+    generate_hdp_script
     yum -y install smartsense-hst
     chkconfig hst off
     chkconfig hst-gateway off
@@ -211,10 +230,8 @@ install_hdp() {
       sleep 5;
     done
     source /etc/yum.repos.d/HDP.sh
-    REPO_R6="{\"Repositories\":{\"base_url\":\""$BASE_URL_R6"\",\"verify_base_url\":\"false\"}}"
-    REPO_R7="{\"Repositories\":{\"base_url\":\""$BASE_URL_R7"\",\"verify_base_url\":\"false\"}}"
-    curl -X PUT -u admin:admin -H "X-Requested-By: ambari" -d "$REPO_R6" "http://localhost:8080/api/v1/stacks/$STACK/versions/$STACK_VERSION/operating_systems/$OS_TYPE_R6/repositories/$REPO_ID"
-    curl -X PUT -u admin:admin -H "X-Requested-By: ambari" -d "$REPO_R7" "http://localhost:8080/api/v1/stacks/$STACK/versions/$STACK_VERSION/operating_systems/$OS_TYPE_R7/repositories/$REPO_ID"
+    REPO="{\"Repositories\":{\"base_url\":\""$BASE_URL"\",\"verify_base_url\":\"false\"}}"
+    curl -X PUT -u admin:admin -H "X-Requested-By: ambari" -d "$REPO" "http://localhost:8080/api/v1/stacks/$STACK/versions/$STACK_VERSION/operating_systems/$OS_TYPE/repositories/$REPO_ID"
     # leave MYSQL_SERVER out from the blueprint, because it will create a hive user with invalid credentials
     if [[ "$STACK_VERSION" == "2.4" ]]; then
       BLUEPRINT='{"host_groups":[{"name":"host_group_1","configurations":[],"components":[{"name":"ATLAS_SERVER"},{"name":"SUPERVISOR"},{"name":"SLIDER"},{"name":"ACCUMULO_MASTER"},{"name":"APP_TIMELINE_SERVER"},{"name":"ACCUMULO_MONITOR"},{"name":"HIVE_CLIENT"},{"name":"HDFS_CLIENT"},{"name":"NODEMANAGER"},{"name":"METRICS_COLLECTOR"},{"name":"MAHOUT"},{"name":"FLUME_HANDLER"},{"name":"WEBHCAT_SERVER"},{"name":"RESOURCEMANAGER"},{"name":"STORM_UI_SERVER"},{"name":"HIVE_SERVER"},{"name":"OOZIE_SERVER"},{"name":"FALCON_CLIENT"},{"name":"SECONDARY_NAMENODE"},{"name":"SQOOP"},{"name":"YARN_CLIENT"},{"name":"ACCUMULO_GC"},{"name":"DRPC_SERVER"},{"name":"PIG"},{"name":"HISTORYSERVER"},{"name":"KAFKA_BROKER"},{"name":"OOZIE_CLIENT"},{"name":"NAMENODE"},{"name":"FALCON_SERVER"},{"name":"HCAT"},{"name":"KNOX_GATEWAY"},{"name":"METRICS_MONITOR"},{"name":"SPARK_JOBHISTORYSERVER"},{"name":"SPARK_CLIENT"},{"name":"AMBARI_SERVER"},{"name":"DATANODE"},{"name":"ACCUMULO_TSERVER"},{"name":"ZOOKEEPER_SERVER"},{"name":"ZOOKEEPER_CLIENT"},{"name":"TEZ_CLIENT"},{"name":"METRICS_GRAFANA"},{"name":"HIVE_METASTORE"},{"name":"ACCUMULO_TRACER"},{"name":"MAPREDUCE2_CLIENT"},{"name":"ACCUMULO_CLIENT"},{"name":"NIMBUS"}],"cardinality":"1"}],"Blueprints":{"stack_name":"HDP","stack_version":"2.4"}}'

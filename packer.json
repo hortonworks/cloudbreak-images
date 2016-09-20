@@ -21,6 +21,12 @@
     "ambari_baseurl": "{{ env `AMBARI_BASEURL` }}",
     "ambari_gpgkey": "{{ env `AMBARI_GPGKEY` }}",
     "hdp_version": "{{ env `HDP_VERSION` }}",
+    "hdp_stack_version": "{{ env `HDP_STACK_VERSION` }}",
+    "hdp_repoid": "{{ env `HDP_REPOID` }}",
+    "hdp_baseurl": "{{ env `HDP_BASEURL` }}",
+    "hdputil_version": "{{ env `HDPUTIL_VERSION` }}",
+    "hdputil_repoid": "{{ env `HDPUTIL_REPOID` }}",
+    "hdputil_baseurl": "{{ env `HDPUTIL_BASEURL` }}",
     "git_rev": "{{ env `GIT_REV` }}",
     "git_branch": "{{ env `GIT_BRANCH` }}",
     "git_tag": "{{ env `GIT_TAG` }}",
@@ -153,7 +159,13 @@
         "AMBARI_VERSION={{user `ambari_version`}}",
         "AMBARI_BASEURL={{user `ambari_baseurl`}}",
         "AMBARI_GPGKEY={{user `ambari_gpgkey`}}",
-        "HDP_VERSION={{user `hdp_version`}}"
+        "HDP_VERSION={{user `hdp_version`}}",
+        "HDP_STACK_VERSION={{user `hdp_stack_version`}}",
+        "HDP_REPOID={{user `hdp_repoid`}}",
+        "HDP_BASEURL={{user `hdp_baseurl`}}",
+        "HDPUTIL_VERSION={{user `hdputil_version`}}",
+        "HDPUTIL_REPOID={{user `hdputil_repoid`}}",
+        "HDPUTIL_BASEURL={{user `hdputil_baseurl`}}"
     ],
     "execute_command": "chmod +x {{ .Path }}; {{ .Vars }} sudo -E bash '{{ .Path }}'"
   },
@@ -164,8 +176,8 @@
       "sudo rsync -a /tmp/shared/post/ /"
     ]
   }
-  ]
-  ,"post-processors": [
+  ],
+  "post-processors": [
     {
       "type": "atlas",
       "artifact": "sequenceiq/{{ user `atlas_artifact` }}",
@@ -182,9 +194,13 @@
         "ambari_version": "{{ user `ambari_version` }}",
         "ambari_baseurl": "{{ user `ambari_baseurl` }}",
         "ambari_gpgkey": "{{ user `ambari_gpgkey` }}",
-        "hdp_version": "{{user `hdp_version`}}"
+        "hdp_version": "{{user `hdp_version`}}",
+        "hdp_baseurl": "{{ user `hdp_baseurl` }}",
+        "hdp_repoid": "{{ user `hdp_repoid` }}",
+        "hdputil_version": "{{user `hdputil_version`}}",
+        "hdputil_baseurl": "{{ user `hdputil_baseurl` }}",
+        "hdputil_repoid": "{{ user `hdputil_repoid` }}"
       }
     }
   ]
-
 }
