@@ -82,7 +82,7 @@ install_hdc_cli() {
     | jq ".assets[]|[.name,.url][]" -r \
     | xargs -t -n 2 -P 3 curl -sG -d access_token=$GITHUB_TOKEN -H "Accept: application/octet-stream" -Lo
    
-   tar -xzf hdc-cli_*$(uname)_x86_64.tgz  -C /bin || true
+   sudo tar -xzf hdc-cli_*$(uname)_x86_64.tgz  -C /bin || true
 
    for osname in Darwin Linux Windows; do
        ln -fs hdc-cli_*_${osname}_x86_64.tgz hdc-cli_${osname}_x86_64.tgz
