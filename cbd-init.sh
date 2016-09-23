@@ -39,6 +39,7 @@ cbd_init() {
     docker pull hortonworks/cloud-web:${CBD_VERSION}
     docker pull hortonworks/cloud-auth:${CBD_VERSION}
     docker pull hortonworks/cloudbreak-shell:${CBD_VERSION}
+    docker pull hortonworks/cbd-smartsense:0.1.0
 
     cat >> ~/.bashrc <<"EOF"
 eval "$(bash -c 'cd /var/lib/cloudbreak-deployment; cbd bash-complete')"
