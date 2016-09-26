@@ -53,6 +53,11 @@ enable_ipforward() {
   sed -i 's/net.ipv4.ip_forward = 0/net.ipv4.ip_forward = 1/g' /etc/sysctl.conf
 }
 
+reserve_known_ports() {
+  #https://docs.hortonworks.com/HDPDocuments/HDP2/HDP-2.5.0/bk_reference/content/reference_chap2.html
+  echo "net.ipv4.ip_local_reserved_ports=41414,42424,45454,50010,50020,50070,50075,50090,50091,50095,50475" >> /etc/sysctl.conf
+}
+
 install_utils() {
   if grep "Amazon Linux AMI" /etc/issue &> /dev/null; then
     yum-config-manager --enable epel
@@ -378,6 +383,7 @@ main() {
     disable_selinux
     permissive_iptables
     enable_ipforward
+    reserve_known_ports
     install_utils
     install_kerberos
     #install_consul
