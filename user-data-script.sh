@@ -116,7 +116,7 @@ install_consul() {
 
 install_bootstrap() {
   # download salt-bootstrap from github
-  curl -Lo /tmp/shared/salt-bootstrap_${CLOUDBREAK_BOOTSTRAP_VERSION}_Linux_x86_64.tgz https://github.com/sequenceiq/salt-bootstrap/releases/download/v${CLOUDBREAK_BOOTSTRAP_VERSION}/salt-bootstrap_${CLOUDBREAK_BOOTSTRAP_VERSION}_Linux_x86_64.tgz
+  curl -Lo /tmp/shared/salt-bootstrap_${CLOUDBREAK_BOOTSTRAP_VERSION}_Linux_x86_64.tgz https://github.com/hortonworks/salt-bootstrap/releases/download/v${CLOUDBREAK_BOOTSTRAP_VERSION}/salt-bootstrap_${CLOUDBREAK_BOOTSTRAP_VERSION}_Linux_x86_64.tgz
   tar -zxf /tmp/shared/salt-bootstrap_${CLOUDBREAK_BOOTSTRAP_VERSION}_Linux_x86_64.tgz -C /usr/sbin/
 
   if grep "Amazon Linux AMI" /etc/issue &> /dev/null; then
@@ -365,7 +365,7 @@ create_gc_image() {
 check_params() {
     : ${PACKER_BUILDER_TYPE:? required amazon-ebs/googlecompute/openstack }
     : ${CONSUL_VERSION:=0.6.4}
-    : ${CLOUDBREAK_BOOTSTRAP_VERSION:=0.3.0}
+    : ${CLOUDBREAK_BOOTSTRAP_VERSION:=0.9.0}
     : ${EPEL:=epel-release-7-6}
 }
 
