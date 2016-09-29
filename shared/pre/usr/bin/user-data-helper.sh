@@ -10,7 +10,10 @@ set
 : ${IS_GATEWAY:? required}
 : ${TMP_SSH_KEY:? required}
 : ${PUBLIC_SSH_KEY:? required}
+: ${SALT_BOOT_PASSWORD:? required}
+: ${SALT_BOOT_SIGN_KEY:? required}
 : ${SSH_USER:? required}
+
 : ${XARGS_PARALLEL:=}
 # : ${XARGS_PARALLEL:="-P 20"}
 
@@ -113,7 +116,20 @@ reload_sysconf() {
   sysctl -p
 }
 
+configure-salt-bootstrap() {
+  mkdir /root/.salt-bootstrap
+  cat > /root/.salt-bootstrap/security-config.yml <<EOF
+username: cbadmin
+password: ${SALT_BOOT_PASSWORD}
+signKey: |-
+ -----BEGIN PUBLIC KEY-----
+ ${SALT_BOOT_SIGN_KEY}
+ -----END PUBLIC KEY-----
+EOF
+}
+
 main() {
+  configure-salt-bootstrap
   reload_sysconf
   if [[ "$1" == "::" ]]; then
     shift
