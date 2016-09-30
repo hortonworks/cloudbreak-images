@@ -9,5 +9,7 @@ Wants=cloud-final.service waagent.service google-startup-scripts.service
 [Service]
 Restart=on-failure
 TimeoutSec=15s
+RestartSec=5s
+DefaultStartLimitIntervalSec=0
 ExecStart=/usr/sbin/salt-bootstrap
 Environment='SALTBOOT_PORT=7070'
