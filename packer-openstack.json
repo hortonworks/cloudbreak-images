@@ -15,6 +15,7 @@
 
     "docker_images": "gliderlabs/alpine:3.1 alpine:latest sequenceiq/mybatis-migrations:1.0.0 sequenceiq/cb-shell:1.3.0",
     "cbd_install_dir": "/bin",
+    "cbd_version_without_pre_release": "{{ env `CBD_VERSION_WITHOUT_PRE_RELEASE`}}",
     "cbd_version": "{{ env `CBD_VERSION`}}",
     "os_user": "cloudbreak",
     "atlas_artifact": "cbd",
@@ -67,6 +68,7 @@
     ],
     "environment_vars": [
         "CBD_VERSION={{ user `cbd_version` }}",
+        "CBD_VERSION_WITHOUT_PRE_RELEASE={{ user `cbd_version_without_pre_release` }}",
         "CBD_INSTALL_DIR={{ user `cbd_install_dir` }}",
         "OS_USER={{ user `os_user` }}",
         "YUM_VERSION_DOCKER={{ user `yum_version_docker` }}",
@@ -89,6 +91,7 @@
             "created_at": "{{timestamp}}",
             "created" :"{{ isotime \"2006-01-02 15:04:05 -0700\" }}",
             "cbd_version": "{{ user `cbd_version` }}",
+            "cbd_version_without_pre_release": "{{ user `cbd_version_without_pre_release` }}",
             "os_user": "{{user `os_user` }}",
             "image_name": "{{ user `image_name` }}",
             "yum_version_docker": "{{ user `yum_version_docker` }}"

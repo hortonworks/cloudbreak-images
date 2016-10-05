@@ -10,13 +10,18 @@ packer_in_container() {
   if [[ "$AZURE_PUBLISH_SETTINGS" ]]; then
     dockerOpts="$dockerOpts -v $AZURE_PUBLISH_SETTINGS:$AZURE_PUBLISH_SETTINGS"
   fi
+
+  export CBD_VERSION_WITHOUT_PRE_RELEASE=$(echo $CBD_VERSION | grep -o '[0-9]\+\.[0-9]\+\.[0-9]\+\(-[a-z]\+\)\?')
   
+  echo "CBD_VERSION_WITHOUT_PRE_RELEASE: $CBD_VERSION_WITHOUT_PRE_RELEASE"
+
   [[ "$TRACE" ]] && set -x
   ${DRY_RUN:+echo ===} docker run -i --rm \
     -e ORIG_USER=$USER \
     -e MOCK=$MOCK \
     -e CBD_VERSION=$CBD_VERSION \
     -e CBD_VERSION_UNDERSCORE=$CBD_VERSION_UNDERSCORE \
+    -e CBD_VERSION_WITHOUT_PRE_RELEASE=$CBD_VERSION_WITHOUT_PRE_RELEASE \
     -e CHECKPOINT_DISABLE=1 \
     -e PACKER_LOG=$PACKER_LOG \
     -e PACKER_LOG_PATH=$PACKER_LOG_PATH \
