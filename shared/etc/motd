@@ -1,9 +1,0 @@
-
-============================================================================================
-
-This EC2 instance has not be launched via CloudFormation and hence is not configured for use.
-Terminate this EC2 instance and use one of the "Hortonworks Data Cloud Controller Service"
-CloudFormation options to launch from: https://aws.amazon.com/marketplace
-
-============================================================================================
-
