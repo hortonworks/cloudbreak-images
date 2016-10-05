@@ -126,6 +126,7 @@ signKey: |-
  ${SALT_BOOT_SIGN_KEY}
  -----END PUBLIC KEY-----
 EOF
+  if [ ! -f /bin/systemctl ]; then service salt-bootstrap restart; fi
 }
 
 main() {
