@@ -71,11 +71,11 @@
     "ami_name": "{{ user `image_name`}}"
   },
   {
-    "disk_size": "40",
+    "disk_size": "10",
     "name": "googlecompute",
     "type": "googlecompute",
     "account_file": "{{user `gcp_account_file`}}",
-    "source_image": "centos-7-v20150603",
+    "source_image": "centos-7-v20160921",
     "zone": "us-central1-b",
     "project_id": "siq-haas",
     "ssh_username": "centos",

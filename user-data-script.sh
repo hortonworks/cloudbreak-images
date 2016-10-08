@@ -104,16 +104,6 @@ install_salt() {
   fi
 }
 
-install_consul() {
-  # download consul from hashicorp
-  curl -Lo /tmp/shared/consul.zip https://releases.hashicorp.com/consul/${CONSUL_VERSION}/consul_${CONSUL_VERSION}_linux_amd64.zip
-  cd /tmp/shared && unzip /tmp/shared/consul.zip && rm /tmp/shared/consul.zip
-  mv /tmp/shared/consul /usr/sbin/consul
-  chmod +x /usr/sbin/consul
-
-  sed -i "/^hosts:/ s/ *files dns/ dns files/" /etc/nsswitch.conf
-}
-
 install_bootstrap() {
   # download salt-bootstrap from github
   curl -Lo /tmp/shared/salt-bootstrap_${CLOUDBREAK_BOOTSTRAP_VERSION}_Linux_x86_64.tgz https://github.com/hortonworks/salt-bootstrap/releases/download/v${CLOUDBREAK_BOOTSTRAP_VERSION}/salt-bootstrap_${CLOUDBREAK_BOOTSTRAP_VERSION}_Linux_x86_64.tgz
@@ -281,16 +271,6 @@ configure_console() {
   fi
 }
 
-extend_rootfs() {
-  if [[ $PACKER_BUILDER_TYPE == "googlecompute" ]]; then
-      yum -y install cloud-utils-growpart
-
-      root_fs_device=$(mount | grep ' / ' | cut -d' ' -f 1 | sed s/1//g)
-      growpart $root_fs_device 1 || :
-      xfs_growfs / || :
-  fi
-}
-
 modify_waagent() {
   if [ -f /etc/waagent.conf ]; then
     cp /etc/waagent.conf /etc/waagent.conf.bak
@@ -306,6 +286,7 @@ cleanup() {
   reset_fstab
   reset_authorized_keys
   yum clean all
+  sync
 }
 
 disable_ipv6() {
@@ -350,18 +331,6 @@ reset_authorized_keys() {
   fi
 }
 
-create_gc_image() {
-    if [[ ${PACKER_BUILDER_TYPE:? required} == "googlecompute" ]]; then
-        mkdir -p /tmp/imagebundle
-        gcimagebundle -d /dev/sda -o /tmp/imagebundle --fssize=16106127360 --log_file=/tmp/imagebundle/create_imagebundle.log
-        curl -O https://storage.googleapis.com/pub/gsutil.tar.gz
-        tar xfz gsutil.tar.gz -C $HOME
-        export PATH=${PATH}:$HOME/gsutil
-        gsutil cp -a public-read /tmp/imagebundle/*.image.tar.gz gs://sequenceiqimage/"${PACKER_IMAGE_NAME:?required}".tar.gz
-        rm -rf /tmp/imagebundle
-    fi
-}
-
 check_params() {
     : ${PACKER_BUILDER_TYPE:? required amazon-ebs/googlecompute/openstack }
     : ${CONSUL_VERSION:=0.6.4}
@@ -378,7 +347,6 @@ tune_vm() {
 main() {
     check_params
     update_centos
-    extend_rootfs
     modify_waagent
     disable_selinux
     permissive_iptables
@@ -386,7 +354,6 @@ main() {
     reserve_known_ports
     install_utils
     install_kerberos
-    #install_consul
     install_salt
     install_bootstrap
     install_openjdk
@@ -399,7 +366,6 @@ main() {
     disable_swap
     set_dirty_ratio
     cleanup
-    create_gc_image
 }
 
 [[ "$0" == "$BASH_SOURCE" ]] && main "$@"

@@ -29,6 +29,9 @@ build-amazon: generate-vars
 build-googlecompute: generate-vars
 	$(ENVS) ./scripts/packer.sh build -only=googlecompute $(PACKER_OPTS) packer.json
 
+bundle-googlecompute:
+	./bundle-gcp-image.sh
+
 build-azure: generate-vars
 	$(ENVS) ./scripts/packer.sh build -only=azure-arm $(PACKER_OPTS) packer.json
 	./scripts/azure-copy.sh

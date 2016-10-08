@@ -35,13 +35,6 @@ fix_hostname() {
   fi
 }
 
-extend_rootfs() {
-  # Usable on GCP, does not harm anywhere else
-  root_fs_device=$(mount | grep ' / ' | cut -d' ' -f 1 | sed s/1//g)
-  growpart $root_fs_device 1 || :
-  xfs_growfs / || :
-}
-
 format_disks() {
   local disks=( $(list_attached_disks) )
   if [[ $CLOUD_PLATFORM == AZURE* ]] && [ "${#disks[*]}" -gt "$LAZY_FORMAT_DISK_LIMIT" ]; then
@@ -135,7 +128,6 @@ main() {
     shift
     eval "$@"
   elif [ ! -f "/var/cb-init-executed" ]; then
-    extend_rootfs
     format_disks
     fix_hostname
     [[ "$IS_GATEWAY" == "true" ]] && setup_tmp_ssh
