@@ -32,7 +32,6 @@ export ZONE=${ZONE_PROJECT##*/}
 export HOSTNAME=$(hostname)
 cat>/opt/img.sh<<"EOF"
 set -x
-curl -o /usr/bin/jq http://stedolan.github.io/jq/download/linux64/jq && chmod +x /usr/bin/jq
 while [[ ! -e /dev/sdb ]]; do sleep 1; done
 mkdir -p /mnt/packer 
 mount /dev/sdb1 /mnt/packer/ -t xfs -o nouuid
