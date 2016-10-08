@@ -27,35 +27,38 @@ main() {
 
     docker run --name gcloud-config-$IMAGE_NAME -v "${GCP_ACCOUNT_FILE}":/gcp.p12 google/cloud-sdk gcloud auth activate-service-account $SERVICE_ACCOUNT_EMAIL --key-file /gcp.p12 --project $PROJECT
 	docker run --rm --name gcloud-create-instance-$IMAGE_NAME --volumes-from gcloud-config-$IMAGE_NAME google/cloud-sdk gcloud compute instances create $INSTANCE_NAME --image centos-7-v20160921 --machine-type n1-standard-2 --zone $ZONE --boot-disk-size 200GB --image-project centos-cloud --scopes $SERVICE_ACCOUNT_EMAIL=storage-full,$SERVICE_ACCOUNT_EMAIL=compute-rw,$SERVICE_ACCOUNT_EMAIL=cloud-platform --metadata startup-script='#! /bin/bash
+export ZONE_PROJECT=$(curl 169.254.169.254/0.1/meta-data/zone)
+export ZONE=${ZONE_PROJECT##*/}
+export HOSTNAME=$(hostname)
 cat>/opt/img.sh<<"EOF"
 set -x
 curl -o /usr/bin/jq http://stedolan.github.io/jq/download/linux64/jq && chmod +x /usr/bin/jq
-echo Started: $(date) >> /var/log/image.log
-while [[ ! -e /dev/sdb ]]; do echo $(date) waiting for disk >> /var/log/image.log; sleep 1; done
-echo Create TAR: $(date) >> /var/log/image.log
+while [[ ! -e /dev/sdb ]]; do sleep 1; done
 mkdir -p /mnt/packer 
 mount /dev/sdb1 /mnt/packer/ -t xfs -o nouuid
 mkdir -p /home/centos/image
 dd if=/dev/sdb of=/home/centos/image/disk.raw bs=4096
 tar czvf /home/centos/image/myimage.tar.gz /home/centos/image/disk.raw
-HOSTNAME=$(hostname)
 gsutil cp -a public-read /home/centos/image/myimage.tar.gz gs://sequenceiqimage/$HOSTNAME.tar.gz
-echo Ended: $(date) >> /var/log/image.log
-echo Cleanup: $(date) >> /var/log/image.log
 umount /mnt/packer
-ZONE_PROJECT=$(curl 169.254.169.254/0.1/meta-data/zone)
-ZONE=${ZONE_PROJECT##*/}
 gcloud compute instances detach-disk $HOSTNAME --disk ${HOSTNAME//-}disk --zone $ZONE
 gcloud compute disks delete ${HOSTNAME//-}disk --zone $ZONE -q
-gcloud compute instances delete $HOSTNAME --zone $ZONE -q
+gcloud compute images delete $HOSTNAME -q
+echo FINISHED
 EOF
 chmod +x /opt/img.sh
-nohup /opt/img.sh &'
+/opt/img.sh &> /var/log/bundle-$HOSTNAME.log
+gsutil cp /var/log/bundle-$HOSTNAME.log gs://sequenceiqimagelog/bundle-$HOSTNAME.log
+gcloud compute instances delete $HOSTNAME --zone $ZONE -q'
 	docker run --rm --name gcloud-create-disk-$IMAGE_NAME --volumes-from gcloud-config-$IMAGE_NAME google/cloud-sdk gcloud compute disks create $TEMP_DISK_NAME --image $IMAGE_NAME --zone $ZONE
 	docker run --rm --name gcloud-attach-disk-$IMAGE_NAME --volumes-from gcloud-config-$IMAGE_NAME google/cloud-sdk gcloud compute instances attach-disk $INSTANCE_NAME --disk $TEMP_DISK_NAME --zone $ZONE
 	while ! docker run --rm --name gcloud-wait-$IMAGE_NAME --volumes-from gcloud-config-$IMAGE_NAME google/cloud-sdk gsutil ls gs://sequenceiqimage/${IMAGE_NAME}.tar.gz 2>/dev/null; do echo waiting for tar: ${IMAGE_NAME}.tar.gz; sleep 10; done
+	if ! docker run --rm --name gcloud-check-result-$IMAGE_NAME --volumes-from gcloud-config-$IMAGE_NAME google/cloud-sdk gsutil cat gs://sequenceiqimagelog/bundle-${IMAGE_NAME}.log | grep FINISHED &>/dev/null; then
+		docker rm gcloud-config-$IMAGE_NAME
+		exit 1
+	fi
 	docker rm gcloud-config-$IMAGE_NAME
-
+	exit 0
 }
 
 [[ "$0" == "$BASH_SOURCE" ]] && main "$@"
