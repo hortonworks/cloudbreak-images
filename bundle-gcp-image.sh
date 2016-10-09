@@ -21,11 +21,11 @@ main() {
 	: ${ZONE:=us-central1-b}
 	: ${INSTANCE_NAME:=$IMAGE_NAME}
 	: ${TEMP_DISK_NAME:=${IMAGE_NAME//-}disk}
-	: ${PROJECT:=}
+	: ${GCP_PROJECT:=}
 	: ${GCP_ACCOUNT_FILE:=}
 	: ${SERVICE_ACCOUNT_EMAIL:=$(cat $GCP_ACCOUNT_FILE | jq .client_email -r)}	
 
-    docker run --name gcloud-config-$IMAGE_NAME -v "${GCP_ACCOUNT_FILE}":/gcp.p12 google/cloud-sdk gcloud auth activate-service-account $SERVICE_ACCOUNT_EMAIL --key-file /gcp.p12 --project $PROJECT
+    docker run --name gcloud-config-$IMAGE_NAME -v "${GCP_ACCOUNT_FILE}":/gcp.p12 google/cloud-sdk gcloud auth activate-service-account $SERVICE_ACCOUNT_EMAIL --key-file /gcp.p12 --project $GCP_PROJECT
 	docker run --rm --name gcloud-create-instance-$IMAGE_NAME --volumes-from gcloud-config-$IMAGE_NAME google/cloud-sdk gcloud compute instances create $INSTANCE_NAME --image centos-7-v20160921 --machine-type n1-standard-2 --zone $ZONE --boot-disk-size 200GB --image-project centos-cloud --scopes $SERVICE_ACCOUNT_EMAIL=storage-full,$SERVICE_ACCOUNT_EMAIL=compute-rw,$SERVICE_ACCOUNT_EMAIL=cloud-platform --metadata startup-script='#! /bin/bash
 export ZONE_PROJECT=$(curl 169.254.169.254/0.1/meta-data/zone)
 export ZONE=${ZONE_PROJECT##*/}
