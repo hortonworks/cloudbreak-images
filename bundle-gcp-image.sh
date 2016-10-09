@@ -51,7 +51,7 @@ gsutil cp /var/log/bundle-$HOSTNAME.log gs://sequenceiqimagelog/bundle-$HOSTNAME
 gcloud compute instances delete $HOSTNAME --zone $ZONE -q'
 	docker run --rm --name gcloud-create-disk-$IMAGE_NAME --volumes-from gcloud-config-$IMAGE_NAME google/cloud-sdk gcloud compute disks create $TEMP_DISK_NAME --image $IMAGE_NAME --zone $ZONE
 	docker run --rm --name gcloud-attach-disk-$IMAGE_NAME --volumes-from gcloud-config-$IMAGE_NAME google/cloud-sdk gcloud compute instances attach-disk $INSTANCE_NAME --disk $TEMP_DISK_NAME --zone $ZONE
-	while ! docker run --rm --name gcloud-wait-$IMAGE_NAME --volumes-from gcloud-config-$IMAGE_NAME google/cloud-sdk gsutil ls gs://sequenceiqimage/${IMAGE_NAME}.tar.gz 2>/dev/null; do echo waiting for tar: ${IMAGE_NAME}.tar.gz; sleep 10; done
+	while ! docker run --rm --name gcloud-wait-$IMAGE_NAME --volumes-from gcloud-config-$IMAGE_NAME google/cloud-sdk gsutil ls gs://sequenceiqimagelog/bundle-${IMAGE_NAME}.log 2>/dev/null; do echo waiting for tar: ${IMAGE_NAME}.tar.gz; sleep 10; done
 	if ! docker run --rm --name gcloud-check-result-$IMAGE_NAME --volumes-from gcloud-config-$IMAGE_NAME google/cloud-sdk gsutil cat gs://sequenceiqimagelog/bundle-${IMAGE_NAME}.log | grep FINISHED &>/dev/null; then
 		docker rm gcloud-config-$IMAGE_NAME
 		exit 1
