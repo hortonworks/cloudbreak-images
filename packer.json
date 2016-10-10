@@ -167,7 +167,7 @@
         "HDPUTIL_VERSION={{user `hdputil_version`}}",
         "HDPUTIL_REPOID={{user `hdputil_repoid`}}",
         "HDPUTIL_BASEURL={{user `hdputil_baseurl`}}",
-        "COPY_AWS_MARKETPLACE_EULA={{user `copy_aws_marketplace_eula`}}",
+        "COPY_AWS_MARKETPLACE_EULA={{user `copy_aws_marketplace_eula`}}"
     ],
     "execute_command": "chmod +x {{ .Path }}; {{ .Vars }} sudo -E bash '{{ .Path }}'"
   },
