@@ -110,8 +110,8 @@ reload_sysconf() {
 }
 
 configure-salt-bootstrap() {
-  mkdir /root/.salt-bootstrap
-  cat > /root/.salt-bootstrap/security-config.yml <<EOF
+  mkdir -p /etc/salt-bootstrap
+  cat > /etc/salt-bootstrap/security-config.yml <<EOF
 username: cbadmin
 password: ${SALT_BOOT_PASSWORD}
 signKey: |-
