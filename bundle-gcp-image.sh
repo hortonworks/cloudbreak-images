@@ -42,8 +42,9 @@ mkdir -p /mnt/packer
 mount /dev/sdb1 /mnt/packer/ -t xfs -o nouuid
 mkdir -p /home/centos/image
 dd if=/dev/sdb of=/home/centos/image/disk.raw bs=4096
-tar czvf /home/centos/image/myimage.tar.gz /home/centos/image/disk.raw
-gsutil cp -a public-read /home/centos/image/myimage.tar.gz gs://sequenceiqimage/$HOSTNAME.tar.gz
+cd /home/centos/image
+tar czvf myimage.tar.gz disk.raw
+gsutil cp -a public-read myimage.tar.gz gs://sequenceiqimage/$HOSTNAME.tar.gz
 umount /mnt/packer
 gcloud compute instances detach-disk $HOSTNAME --disk ${HOSTNAME//-}disk --zone $ZONE
 gcloud compute disks delete ${HOSTNAME//-}disk --zone $ZONE -q
