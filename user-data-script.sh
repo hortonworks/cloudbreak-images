@@ -281,7 +281,14 @@ modify_waagent() {
   fi
 }
 
+cleanup_aws_marketplace_eula() {
+  if [[ "$COPY_AWS_MARKETPLACE_EULA" == false ]]; then
+    rm -f /tmp/etc/hortonworks/hdcloud*
+  fi
+}
+
 cleanup() {
+  cleanup_aws_marketplace_eula
   reset_hostname
   reset_fstab
   reset_authorized_keys

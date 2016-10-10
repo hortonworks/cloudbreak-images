@@ -27,6 +27,7 @@
     "hdputil_version": "{{ env `HDPUTIL_VERSION` }}",
     "hdputil_repoid": "{{ env `HDPUTIL_REPOID` }}",
     "hdputil_baseurl": "{{ env `HDPUTIL_BASEURL` }}",
+    "copy_aws_marketplace_eula": "{{ env `COPY_AWS_MARKETPLACE_EULA`}}",
     "git_rev": "{{ env `GIT_REV` }}",
     "git_branch": "{{ env `GIT_BRANCH` }}",
     "git_tag": "{{ env `GIT_TAG` }}",
@@ -165,7 +166,8 @@
         "HDP_BASEURL={{user `hdp_baseurl`}}",
         "HDPUTIL_VERSION={{user `hdputil_version`}}",
         "HDPUTIL_REPOID={{user `hdputil_repoid`}}",
-        "HDPUTIL_BASEURL={{user `hdputil_baseurl`}}"
+        "HDPUTIL_BASEURL={{user `hdputil_baseurl`}}",
+        "COPY_AWS_MARKETPLACE_EULA={{user `copy_aws_marketplace_eula`}}",
     ],
     "execute_command": "chmod +x {{ .Path }}; {{ .Vars }} sudo -E bash '{{ .Path }}'"
   },
