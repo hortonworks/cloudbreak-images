@@ -70,7 +70,7 @@ install_openjdk() {
   sudo yum install -y java-1.8.0-openjdk-javadoc
   sudo yum install -y java-1.8.0-openjdk-src
 
-  mv /usr/lib/jvm/OpenJDK_GPLv2_and_Classpath_Exception.pdf /usr/lib/jvm/java
+  sudo mv /usr/lib/jvm/OpenJDK_GPLv2_and_Classpath_Exception.pdf /usr/lib/jvm/java
 }
 
 
