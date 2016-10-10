@@ -63,6 +63,17 @@ install_utils() {
         mosh
 }
 
+install_openjdk() {
+  export JAVA_HOME=/usr/lib/jvm/java
+
+  sudo yum install -y java-1.8.0-openjdk-devel
+  sudo yum install -y java-1.8.0-openjdk-javadoc
+  sudo yum install -y java-1.8.0-openjdk-src
+
+  mv /usr/lib/jvm/OpenJDK_GPLv2_and_Classpath_Exception.pdf /usr/lib/jvm/java
+}
+
+
 install_hdc_cli() {
   : ${HDC_CLI_VERSION:? required}
   : ${GITHUB_TOKEN:? required}
@@ -104,6 +115,7 @@ main() {
     sudo service docker start
 
     install_utils
+    install_openjdk
     install_hdc_cli
     cbd_install
     cbd_init
