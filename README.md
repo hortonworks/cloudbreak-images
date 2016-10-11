@@ -49,7 +49,7 @@ PACKER_OPTS=--debug make build-openstack
 
 > *Warning:* this method is not supported or tested, it just replicates what Packer do
 
-* Copy the `shared` folder into the `tmp` folder
+* tar the `shared` folder and scp into the `tmp` folder of the instance to be used for building images.
 
 * Run the following commands:
 
@@ -60,8 +60,9 @@ sudo chown -R root:root /tmp/shared
 sudo rsync -a /tmp/shared/pre/ /
 
 # export variables
-export OS_USER=...user-name...
+export OS_USER=...user-name...(use cloudbreak)
 export PACKER_IMAGE_NAME=...image-name...
+export PACKER_BUILDER_TYPE=...amazon-ebs/googlecompute/openstack....
 
 chmod +x ./user-data-script.sh
 TRACE=1 sudo -E bash ./user-data-script.sh
@@ -69,3 +70,4 @@ TRACE=1 sudo -E bash ./user-data-script.sh
 # cleanup
 sudo rsync -a /tmp/shared/post/ /
 ```
+create ami or image out of the instance where you executed above scripts using cloud tools.
