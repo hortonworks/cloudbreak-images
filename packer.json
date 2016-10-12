@@ -118,7 +118,7 @@
 
         "image_publisher": "OpenLogic",
         "image_offer": "CentOS",
-        "image_sku": "7.1",
+        "image_sku": "7.2",
         "ssh_pty": "true",
         "username": "{{user `os_user`}}",
         "ssh_password" :"{{user `ssh_password`}}",
