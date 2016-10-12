@@ -118,21 +118,6 @@ install_bootstrap() {
   fi
 }
 
-install_oracle_jdk() {
-  export JAVA_HOME=/usr/jdk64/jdk1.7.0_67
-  export JDK_ARTIFACT=jdk-7u67-linux-x64.tar.gz
-  mkdir -p /usr/jdk64 && cd /usr/jdk64
-  curl -LO http://public-repo-1.hortonworks.com/ARTIFACTS/$JDK_ARTIFACT
-  tar -xf $JDK_ARTIFACT
-  rm -f $JDK_ARTIFACT
-
-  curl -LO http://public-repo-1.hortonworks.com/ARTIFACTS/UnlimitedJCEPolicyJDK7.zip
-  unzip UnlimitedJCEPolicyJDK7.zip
-  mv -f UnlimitedJCEPolicy/*jar ${JAVA_HOME}/jre/lib/security/
-  rm -f UnlimitedJCEPolicyJDK7.zip
-
-}
-
 install_openjdk() {
   export JAVA_HOME=/usr/lib/jvm/java
 
@@ -342,7 +327,7 @@ reset_authorized_keys() {
 
 check_params() {
     : ${PACKER_BUILDER_TYPE:? required amazon-ebs/googlecompute/openstack }
-    : ${CLOUDBREAK_BOOTSTRAP_VERSION:=0.9.2}
+    : ${CLOUDBREAK_BOOTSTRAP_VERSION:=0.10.0}
     : ${EPEL:=epel-release-7-6}
 }
 
