@@ -24,7 +24,7 @@ else
 endif
 
 show-image-name:
-	echo IMAGE_NAME=$(IMAGE_NAME)
+	@echo IMAGE_NAME=$(IMAGE_NAME)
 
 #deps:
 	# go get github.com/bronze1man/yaml2json
