@@ -114,7 +114,7 @@
         "storage_account": "{{user `storage_account`}}",
 
         "capture_container_name": "packer",
-        "capture_name_prefix": "{{ user `image_name`}}",
+        "capture_name_prefix": "{{env `BASE_NAME`}}-{{env `HDP_VERSION_SHORT`}}{{ isotime \"0601021504\" }}",
 
         "image_publisher": "OpenLogic",
         "image_offer": "CentOS",
