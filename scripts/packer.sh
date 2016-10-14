@@ -10,14 +10,14 @@ packer_in_container() {
   if [[ "$AZURE_PUBLISH_SETTINGS" ]]; then
     dockerOpts="$dockerOpts -v $AZURE_PUBLISH_SETTINGS:$AZURE_PUBLISH_SETTINGS"
   fi
-  
+
   TTY_OPTS="--tty"
   if [[ "$JENKINS_HOME" ]]; then
     ## dont try to use docker tty on jenkins
     TTY_OPTS=""
   fi
 
-  HDP_VERSION_SHORT=$([ -n "$HDP_VERSION" ] && echo "hdp-$(echo ${HDP_VERSION} | tr -d . | cut -c1-2)-")
+  #HDP_VERSION_SHORT=$([ -n "$HDP_VERSION" ] && echo "hdp-$(echo ${HDP_VERSION} | tr -d . | cut -c1-2)-")
 
   [[ "$TRACE" ]] && set -x
   ${DRY_RUN:+echo ===} docker run -i $TTY_OPTS --rm \
