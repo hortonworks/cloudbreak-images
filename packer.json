@@ -34,8 +34,7 @@
     "os_user": "cloudbreak",
     "ssh_password":"S3cr3t",
     "atlas_artifact": "cloudbreak",
-    "image_name": "{{env `BASE_NAME`}}-{{env `HDP_VERSION_SHORT`}}{{ isotime \"2006-01-02-15-04\" }}{{env `IMAGE_NAME_SUFFIX`}}",
-    "azure_image_name": "{{env `BASE_NAME`}}-{{env `HDP_VERSION_SHORT`}}{{ isotime \"0601021504\" }}",	  
+    "image_name": "{{ env `IMAGE_NAME` }}",
 
     "instance_type": "m3.medium",
     "ami-eu-west-1": "ami-c39604b0"
@@ -115,7 +114,7 @@
         "storage_account": "{{user `storage_account`}}",
 
         "capture_container_name": "packer",
-        "capture_name_prefix": "{{user `azure_image_name`}}",
+        "capture_name_prefix": "{{user `image_name`}}",
 
         "image_publisher": "OpenLogic",
         "image_offer": "CentOS",
