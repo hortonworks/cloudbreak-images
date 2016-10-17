@@ -40,7 +40,7 @@ bundle-googlecompute:
 
 build-azure:
 	$(ENVS) ./scripts/packer.sh build -only=azure-arm $(PACKER_OPTS) packer.json
-	./scripts/azure-copy.sh
+	$(ENVS) ./scripts/azure-copy.sh
 
 build-openstack:
 	$(ENVS) ./scripts/packer.sh build $(PACKER_OPTS) packer-openstack.json
