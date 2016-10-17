@@ -1,7 +1,10 @@
-BASE_NAME ?= "cb"
+BASE_NAME ?= "hdc"
 HDP_VERSION ?= ""
 
-ENVS=HDP_VERSION=$(HDP_VERSION) BASE_NAME=$(BASE_NAME) TRACE=1
+HDP_VERSION_SHORT=hdp-$(shell echo $(HDP_VERSION) | tr -d . | cut -c1-2 )
+IMAGE_NAME=$(BASE_NAME)-$(HDP_VERSION_SHORT)-$(shell date +%y%m%d%H%M)$(IMAGE_NAME_SUFFIX)
+
+ENVS=HDP_VERSION=$(HDP_VERSION) BASE_NAME=$(BASE_NAME) IMAGE_NAME=$(IMAGE_NAME) TRACE=1
 
 # it testing, atlas uploads should go to mocking artifact slush
 PACKER_VARS=
@@ -20,30 +23,27 @@ else
 	PACKER_OPTS+=$(PACKER_VARS)
 endif
 
+show-image-name:
+	@echo IMAGE_NAME=$(IMAGE_NAME)
+
 #deps:
 	# go get github.com/bronze1man/yaml2json
 
-build-amazon: generate-vars
+build-amazon:
 	$(ENVS) ./scripts/packer.sh build -only=amazon $(PACKER_OPTS) packer.json
 
-build-googlecompute: generate-vars
+build-googlecompute:
 	$(ENVS) ./scripts/packer.sh build -only=googlecompute $(PACKER_OPTS) packer.json
 
 bundle-googlecompute:
 	./bundle-gcp-image.sh
 
-build-azure: generate-vars
+build-azure:
 	$(ENVS) ./scripts/packer.sh build -only=azure-arm $(PACKER_OPTS) packer.json
 	./scripts/azure-copy.sh
 
-build-openstack: generate-vars
+build-openstack:
 	$(ENVS) ./scripts/packer.sh build $(PACKER_OPTS) packer-openstack.json
-
-generate-vars: docker-build
-	docker run -v $(PWD):/work -w /work --entrypoint=bash images:build -c 'make generate-vars-local'
-
-generate-vars-local:
-	cat vars-versions.yml | yaml2json | jq . > vars-versions.json
 
 docker-build:
 	docker build -t images:build - < Dockerfile.build
