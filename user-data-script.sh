@@ -334,7 +334,7 @@ reset_authorized_keys() {
 check_params() {
     : ${PACKER_BUILDER_TYPE:? required amazon-ebs/googlecompute/openstack }
     : ${CONSUL_VERSION:=0.6.4}
-    : ${CLOUDBREAK_BOOTSTRAP_VERSION:=0.3.0}
+    : ${CLOUDBREAK_BOOTSTRAP_VERSION:=0.3.1}
     : ${EPEL:=epel-release-7-6}
 }
 
