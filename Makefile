@@ -45,6 +45,9 @@ build-azure:
 build-openstack:
 	$(ENVS) ./scripts/packer.sh build $(PACKER_OPTS) packer-openstack.json
 
+upload-openstack-image:
+	./scripts/openstack-s3-upload.sh
+
 docker-build:
 	docker build -t images:build - < Dockerfile.build
 
