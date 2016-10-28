@@ -17,7 +17,17 @@ set
 : ${XARGS_PARALLEL:=}
 # : ${XARGS_PARALLEL:="-P 20"}
 
+wait_for_authorized_keys() {
+  echo "Wait for /home/${SSH_USER}/.ssh/authorized_keys to be created"
+  while [[ ! -f /home/${SSH_USER}/.ssh/authorized_keys ]]; do
+    echo "/home/${SSH_USER}/.ssh/authorized_keys does not exist"
+    sleep 1
+  done
+  echo "/home/${SSH_USER}/.ssh/authorized_keys is created"
+}
+
 setup_tmp_ssh() {
+  wait_for_authorized_keys
   echo "#tmpssh_start" >> /home/${SSH_USER}/.ssh/authorized_keys
   echo "$TMP_SSH_KEY" >> /home/${SSH_USER}/.ssh/authorized_keys
   echo "#tmpssh_end" >> /home/${SSH_USER}/.ssh/authorized_keys
