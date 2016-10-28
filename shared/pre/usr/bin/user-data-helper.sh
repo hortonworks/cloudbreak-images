@@ -18,6 +18,7 @@ set
 # : ${XARGS_PARALLEL:="-P 20"}
 
 setup_tmp_ssh() {
+  mkdir -p /home/${SSH_USER}/.ssh
   echo "#tmpssh_start" >> /home/${SSH_USER}/.ssh/authorized_keys
   echo "$TMP_SSH_KEY" >> /home/${SSH_USER}/.ssh/authorized_keys
   echo "#tmpssh_end" >> /home/${SSH_USER}/.ssh/authorized_keys
