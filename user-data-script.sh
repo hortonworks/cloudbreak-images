@@ -234,6 +234,7 @@ install_hdp() {
     done
     ambari-agent stop
     ambari-server stop
+    pkill -f ambari-server || true
     ambari-server reset --verbose --silent
     # get rid of old commands and configs
     cd /var/lib/ambari-agent/data/ && ls -1 | grep -v version | xargs rm -vf
