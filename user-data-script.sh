@@ -122,13 +122,16 @@ install_openjdk() {
   export JAVA_HOME=/usr/lib/jvm/java
 
   if grep "Amazon Linux AMI" /etc/issue &> /dev/null; then
-    yum install -y java-1.7.0-openjdk-devel-1.7.0.111-2.6.7.2.68.amzn1
-    yum install -y java-1.7.0-openjdk-javadoc-1.7.0.111-2.6.7.2.68.amzn1
-    yum install -y java-1.7.0-openjdk-src-1.7.0.111-2.6.7.2.68.amzn1
+    yum remove -y java-1.7.0-openjdk
+    yum install -y java-1.8.0-openjdk-headless-1.8.0.101-3.b13.24.amzn1
+    yum install -y java-1.8.0-openjdk-devel-1.8.0.101-3.b13.24.amzn1
+    yum install -y java-1.8.0-openjdk-javadoc-1.8.0.101-3.b13.24.amzn1
+    yum install -y java-1.8.0-openjdk-src-1.8.0.101-3.b13.24.amzn1
   else
-    yum install -y java-1.7.0-openjdk-devel-1.7.0.95-2.6.4.0.el7_2
-    yum install -y java-1.7.0-openjdk-javadoc-1.7.0.95-2.6.4.0.el7_2
-    yum install -y java-1.7.0-openjdk-src-1.7.0.95-2.6.4.0.el7_2
+    yum install -y java-1.8.0-openjdk-headless-1.8.0.101-3.b13.el7_2
+    yum install -y java-1.8.0-openjdk-devel-1.8.0.101-3.b13.el7_2
+    yum install -y java-1.8.0-openjdk-javadoc-1.8.0.101-3.b13.el7_2
+    yum install -y java-1.8.0-openjdk-src-1.8.0.101-3.b13.el7_2
   fi
 
   mv /usr/lib/jvm/OpenJDK_GPLv2_and_Classpath_Exception.pdf /usr/lib/jvm/java
