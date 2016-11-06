@@ -111,6 +111,10 @@
   },
   {
       "type": "shell",
+      "scripts": ["./modify_waagent.sh"]
+  },
+  {
+      "type": "shell",
       "inline": [
           "set -x",
           "sudo rm -rf /tmp/shared"
