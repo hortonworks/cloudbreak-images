@@ -16,7 +16,7 @@
     "resource_group_name": "{{ env `ARM_GROUP_NAME` }}",
     "storage_account": "{{ env `ARM_STORAGE_ACCOUNT` }}",
 
-    "docker_images": "gliderlabs/alpine:3.1 alpine:latest sequenceiq/mybatis-migrations:1.0.0 hortonworks/cloudbreak-shell:1.6.0",
+    "docker_images": "gliderlabs/alpine:3.1 alpine:latest sequenceiq/mybatis-migrations:1.0.0 hortonworks/cloudbreak-shell:1.6.1",
     "cbd_install_dir": "/bin",
     "cbd_version": "{{ env `CBD_VERSION`}}",
     "os_user": "cloudbreak",
