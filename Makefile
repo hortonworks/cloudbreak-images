@@ -1,5 +1,6 @@
 BASE_NAME ?= "hdc"
 HDP_VERSION ?= ""
+ATLAS_PROJECT ?= "cloudbreak"
 
 HDP_VERSION_SHORT=hdp-$(shell echo $(HDP_VERSION) | tr -d . | cut -c1-2 )
 IMAGE_NAME=$(BASE_NAME)-$(HDP_VERSION_SHORT)-$(shell date +%y%m%d%H%M)$(IMAGE_NAME_SUFFIX)
@@ -46,7 +47,7 @@ build-openstack:
 	$(ENVS) ./scripts/packer.sh build $(PACKER_OPTS) packer-openstack.json
 
 upload-openstack-image:
-	./scripts/openstack-s3-upload.sh
+	ATLAS_PROJECT=${ATLAS_PROJECT} ./scripts/openstack-s3-upload.sh
 
 docker-build:
 	docker build -t images:build - < Dockerfile.build
