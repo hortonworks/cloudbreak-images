@@ -59,7 +59,7 @@ packer_in_container() {
     -v $PWD:$PWD \
     -w $PWD \
     $dockerOpts \
-    sequenceiq/packer:v0.8.7-v10 "$@"
+    hashicorp/packer "$@"
 }
 
 main() {
