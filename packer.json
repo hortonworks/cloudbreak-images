@@ -172,7 +172,9 @@
     "type": "shell",
     "inline": [
       "sudo chown -R root:root /tmp/shared",
-      "sudo rsync -a /tmp/shared/post/ /"
+      "sudo rsync -a /tmp/shared/post/ /",
+      "chkconfig node_exporter",
+      "chkconfig spot_exporter"
     ]
   }
   ],
