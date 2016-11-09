@@ -187,6 +187,7 @@
       "artifact_type": "{{ build_name }}.image",
       "metadata": {
         "created_at": "{{timestamp}}",
+        "prometheus":"true",
         "created" :"{{ isotime \"2006-01-02 15:04:05 -0700\" }}",
         "git_rev": "{{user `git_rev`}}",
         "git_branch": "{{user `git_branch`}}",
