@@ -145,7 +145,7 @@
       "inline": [
           "sudo yum install -y rsync",
           "sudo chown -R root:root /tmp/shared",
-          "sudo rsync -a /tmp/shared/pre/ /"
+          "sudo rsync -rtvu /tmp/shared/pre/ /"
       ]
   },
   {
@@ -176,7 +176,7 @@
     "type": "shell",
     "inline": [
       "sudo chown -R root:root /tmp/shared",
-      "sudo rsync -a /tmp/shared/post/ /"
+      "sudo rsync -rtvu /tmp/shared/post/ /"
     ]
   }
   ],
