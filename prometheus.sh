@@ -29,8 +29,8 @@ install_ssm_agent() {
 install_prometheus_exporters() {
     curl -Lks https://github.com/prometheus/node_exporter/releases/download/0.12.0/node_exporter-0.12.0.linux-amd64.tar.gz | tar --strip-components=1 -xz -C ${INSTALL_DIR}
     curl -Lks https://github.com/deathowl/spot_expiry_collector/releases/download/1.0.1/spot_expiry_collector-1.0.1.linux-amd64.tar.gz | tar  --strip-components=1 -xz -C ${INSTALL_DIR}
-    curl -s -o /opt/process_exporter-0.2.0.tar.gz  sequenceiq.s3.amazonaws.com/process_exporter-0.2.0.tar.gz
-    pip install -q /opt/process_exporter-0.2.0.tar.gz
+    curl -s -o /opt/process_exporter-0.2.1.tar.gz  sequenceiq.s3.amazonaws.com/process_exporter-0.2.1.tar.gz
+    pip install -q /opt/process_exporter-0.2.1.tar.gz
 }
 
 main() {
