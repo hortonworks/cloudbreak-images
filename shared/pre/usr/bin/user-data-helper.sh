@@ -18,6 +18,7 @@ set
 # : ${XARGS_PARALLEL:="-P 20"}
 
 wait_for_authorized_keys() {
+  if [[ $CLOUD_PLATFORM != "GCP" ]]; then return 0; fi
   echo "Wait for /home/${SSH_USER}/.ssh/authorized_keys to be created"
   while [[ ! -f /home/${SSH_USER}/.ssh/authorized_keys ]]; do
     echo "/home/${SSH_USER}/.ssh/authorized_keys does not exist"
