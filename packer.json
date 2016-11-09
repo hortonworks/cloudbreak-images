@@ -37,7 +37,7 @@
     "image_name": "{{ env `IMAGE_NAME` }}",
 
     "instance_type": "m3.medium",
-    "ami-eu-west-1": "ami-c39604b0"
+    "ami-eu-west-1": "ami-9398d3e0"
   },
   "builders":[
   {
@@ -152,6 +152,7 @@
     "type": "shell",
     "scripts": [
         "./user-data-script.sh"
+        ,"./prometheus.sh"
     ],
     "environment_vars": [
         "OS_USER={{ user `os_user` }}",
