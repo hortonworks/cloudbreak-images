@@ -2,8 +2,6 @@
   "variables": {
     "mock": "{{ env `MOCK` }}",
 
-    "aws_access_key": "{{ env `AWS_ACCESS_KEY` }}",
-    "aws_secret_key": "{{ env `AWS_SECRET_ACCESS_KEY` }}",
     "gcp_account_file": "{{env `GCP_ACCOUNT_FILE`}}",
     "os_auth_url": "{{ env `OS_AUTH_URL` }}",
     "os_username": "{{ env `OS_USERNAME` }}",
@@ -46,8 +44,6 @@
     "region": "eu-west-1",
     "ami_regions": ["ap-southeast-1","ap-southeast-2","eu-central-1","ap-northeast-1","ap-northeast-2","us-east-1","sa-east-1","us-west-1","us-west-2"],
     "ssh_pty" : true,
-    "access_key": "{{user `aws_access_key`}}",
-    "secret_key": "{{user `aws_secret_key`}}",
     "source_ami": "{{user `ami-eu-west-1`}}",
     "instance_type": "{{ user `instance_type` }}",
     "ssh_username": "ec2-user",
