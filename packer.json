@@ -179,7 +179,8 @@
     "type": "shell",
     "inline": [
       "sudo /sbin/chkconfig --add node_exporter",
-      "sudo /sbin/chkconfig --add spot_exporter"
+      "sudo /sbin/chkconfig --add spot_exporter",
+      "sudo /sbin/chkconfig --add process_exporter"
     ]
   }
   ],

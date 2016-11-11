@@ -1,0 +1,121 @@
+#!/bin/bash
+#
+# process_exporter
+#
+# chkconfig:   2345 95 95
+# description: Prometheus exporter for Processes
+
+### BEGIN INIT INFO
+# Provides:       process_exporter
+# Required-Start: $local_fs $network
+# Required-Stop:
+# Should-Start:
+# Should-Stop:
+# Default-Start: 2 3 4 5
+# Default-Stop:  0 1 6
+# Short-Description: Process Exporter
+# Description: Prometheus exporter for Processes
+### END INIT INFO
+
+# source function library
+. /etc/rc.d/init.d/functions
+
+
+
+prog="process_exporter"
+user=root
+exec="/usr/local/bin/process_exporter.py"
+DAEMON_ARGS="/etc/process_exporter/conf.d"
+
+pidfile=/var/run/$prog.pid
+lockfile="/var/lock/subsys/$prog"
+logfile="/var/log/$prog.log"
+
+# pull in default settings
+[ -e /etc/default/$prog ] && . /etc/default/$prog
+
+start() {
+    #[ -x $exec ] || exit 5
+
+    echo -n $"Starting $prog: server"
+
+    ## holy shell shenanigans, batman!
+    ## daemon can't be backgrounded.  we need the pid of the spawned process,
+    ## which is actually done via runuser thanks to --user.  you can't do "cmd
+    ## &; action" but you can do "{cmd &}; action".
+    daemon \
+        --pidfile=$pidfile \
+        --user=$user \
+        " { python $exec $DAEMON_ARGS &>> $logfile & } ; echo \$! >| $pidfile "
+
+    RETVAL=$?
+
+    echo
+
+    [ $RETVAL -eq 0 ] && touch $lockfile
+
+    return $RETVAL
+}
+
+stop() {
+    echo -n $"Shutting down $prog: "
+    ## graceful shutdown with SIGINT
+    killproc -p $pidfile -INT
+    RETVAL=$?
+    echo
+    [ $RETVAL -eq 0 ] && rm -f $lockfile
+    return $RETVAL
+}
+
+restart() {
+    stop
+    start
+}
+
+reload() {
+    echo -n $"Reloading $prog: "
+    killproc -p $pidfile -HUP
+    echo
+}
+
+force_reload() {
+    restart
+}
+
+rh_status() {
+    # run checks to determine if the service is running or use generic status
+    status -p $pidfile
+}
+
+rh_status_q() {
+    rh_status >/dev/null 2>&1
+}
+
+case "$1" in
+    start)
+        rh_status_q && exit 0
+        $1
+        ;;
+    stop)
+        rh_status_q || exit 0
+        $1
+        ;;
+    restart)
+        $1
+        ;;
+    reload)
+        rh_status_q || exit 7
+        $1
+        ;;
+    force-reload)
+        force_reload
+        ;;
+    status)
+        rh_status
+        ;;
+    *)
+        echo $"Usage: $0 {start|stop|status|restart|reload|force-reload}"
+        exit 2
+esac
+
+exit $?
