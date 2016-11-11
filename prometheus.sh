@@ -31,6 +31,8 @@ install_prometheus_exporters() {
     curl -Lks https://github.com/deathowl/spot_expiry_collector/releases/download/1.0.1/spot_expiry_collector-1.0.1.linux-amd64.tar.gz | tar  --strip-components=1 -xz -C ${INSTALL_DIR}
     curl -s -o /opt/process_exporter-0.2.1.tar.gz  sequenceiq.s3.amazonaws.com/process_exporter-0.2.1.tar.gz
     pip install -q /opt/process_exporter-0.2.1.tar.gz
+    curl -s -o /opt/jmx_http_server.rpm http://hcube-infra.s3.amazonaws.com/rpm/jmx_exporter/jmx_prometheus_httpserver-0.7-SNAPSHOT.noarch.rpm
+    yum install -y /opt/jmx_http_server.rpm
 }
 
 main() {
