@@ -33,6 +33,7 @@ install_prometheus_exporters() {
     pip install -q /opt/process_exporter-0.2.2.tar.gz
     curl -s -o /opt/jmx_http_server.rpm http://hcube-infra.s3.amazonaws.com/rpm/jmx_exporter/jmx_prometheus_httpserver-0.7-SNAPSHOT.noarch.rpm
     yum install -y /opt/jmx_http_server.rpm
+    curl -s -o /opt/jmx_javaagent.jar sequenceiq.s3.amazonaws.com/jmx_prometheus_javaagent-0.8-SNAPSHOT.jar
 }
 
 main() {
