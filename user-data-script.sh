@@ -336,7 +336,11 @@ check_params() {
 }
 
 tune_vm() {
-  if [[ -n "$(which tuned-adm &>/dev/null)" ]]; then
+  if grep "Amazon Linux AMI" /etc/issue &> /dev/null; then
+    echo never > /sys/kernel/mm/transparent_hugepage/defrag
+    echo never > /sys/kernel/mm/transparent_hugepage/enabled
+  fi
+  if [[ -n "$(which tuned-adm 2>/dev/null)" ]]; then
     tuned-adm profile custom
   fi
 }
