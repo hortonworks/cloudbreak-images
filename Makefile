@@ -13,7 +13,6 @@ GIT_REV=$(shell git rev-parse --short HEAD)
 GIT_BRANCH=$(shell git rev-parse --abbrev-ref HEAD)
 GIT_TAG=$(shell git describe --exact-match --tags 2>/dev/null )
 
-PACKER_VARS=-var-file=vars-versions.json
 ifdef DOCKER_VERSION
 	PACKER_VARS+=-var yum_version_docker=$(DOCKER_VERSION)
 endif
