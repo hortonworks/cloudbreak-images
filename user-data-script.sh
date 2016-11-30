@@ -110,7 +110,6 @@ install_bootstrap() {
   tar -zxf /tmp/shared/salt-bootstrap_${CLOUDBREAK_BOOTSTRAP_VERSION}_Linux_x86_64.tgz -C /usr/sbin/
 
   if grep "Amazon Linux AMI" /etc/issue &> /dev/null; then
-    mv /etc/systemd/system/salt-bootstrap /etc/init.d/salt-bootstrap
     chmod +x /etc/init.d/salt-bootstrap
     chkconfig salt-bootstrap on
   else
@@ -337,10 +336,11 @@ check_params() {
 
 tune_vm() {
   if grep "Amazon Linux AMI" /etc/issue &> /dev/null; then
-    echo never > /sys/kernel/mm/transparent_hugepage/defrag
-    echo never > /sys/kernel/mm/transparent_hugepage/enabled
+    chmod +x /etc/init.d/disable-thp
+    chkconfig disable-thp on
   fi
   if [[ -n "$(which tuned-adm 2>/dev/null)" ]]; then
+    rm -f /etc/init.d/disable-thp
     tuned-adm profile custom
   fi
 }

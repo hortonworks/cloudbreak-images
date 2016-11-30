@@ -145,7 +145,7 @@
       "inline": [
           "sudo yum install -y rsync",
           "sudo chown -R root:root /tmp/shared",
-          "sudo rsync -a /tmp/shared/pre/ /"
+          "sudo rsync -a --ignore-existing /tmp/shared/pre/ /"
       ]
   },
   {
