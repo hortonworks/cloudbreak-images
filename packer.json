@@ -175,7 +175,7 @@
     "type": "shell",
     "inline": [
       "sudo chown -R root:root /tmp/shared",
-      "sudo rsync -a /tmp/shared/post/ /"
+      "sudo rsync -a --ignore-existing /tmp/shared/post/ /"
     ]
   }
   ],
