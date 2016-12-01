@@ -35,7 +35,7 @@
       "ssh_username": "centos",
       "ssh_pty": "true",
       "image_name": "{{user `os_image_name`}}",
-      "source_image": "29ec4393-2f3b-4902-8675-261f3cbedb1f",
+      "source_image": "d619e553-6a78-4b86-8b03-39b8a06df35e",
       "flavor": "m1.medium",
       "endpoint_type": "internalURL",
       "networks": [
@@ -53,7 +53,7 @@
           "type": "shell",
           "inline": [
             "sudo chown -R root:root /tmp/shared",
-            "sudo rsync -a /tmp/shared/pre/ /"]
+            "sudo rsync -a --ignore-existing /tmp/shared/pre/ /"]
       },
       {
         "type": "shell",
@@ -80,7 +80,7 @@
         "type": "shell",
         "inline": [
           "sudo chown -R root:root /tmp/shared",
-          "sudo rsync -a /tmp/shared/post/ /"
+          "sudo rsync -a --ignore-existing /tmp/shared/post/ /"
         ]
       }
   ],
