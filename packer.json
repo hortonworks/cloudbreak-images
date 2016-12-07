@@ -148,6 +148,7 @@
     "type": "shell",
     "scripts": [
         "./user-data-script.sh"
+        "./install-consul.sh"
         ,"./prometheus.sh"
     ],
     "environment_vars": [
