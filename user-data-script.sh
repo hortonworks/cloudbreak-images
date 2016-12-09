@@ -271,7 +271,9 @@ modify_waagent() {
 
 cleanup_aws_marketplace_eula() {
   if [[ "$COPY_AWS_MARKETPLACE_EULA" == false ]]; then
-    rm -f /tmp/etc/hortonworks/hdcloud*
+    rm -f /tmp/shared/post/etc/hortonworks/hdcloud*marketplace*
+  else
+    rm -f /tmp/shared/post/etc/hortonworks/hdcloud*technical-preview*
   fi
 }
 
