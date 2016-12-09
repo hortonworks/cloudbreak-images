@@ -105,6 +105,14 @@ install_hdc_cli() {
    cd -
 }
 
+cleanup_aws_marketplace_eula() {
+  if [[ "$COPY_AWS_MARKETPLACE_EULA" == false ]]; then
+    sudo rm -f /etc/hortonworks/hdcloud*marketplace*
+  else
+    sudo rm -f /etc/hortonworks/hdcloud*technical-preview*
+  fi
+}
+
 main() {
     debug "Update to docker 1.10.3"
     sudo service docker stop; sudo curl -Lo /usr/bin/docker https://get.docker.com/builds/Linux/x86_64/docker-1.10.3
@@ -122,6 +130,7 @@ main() {
     reset_docker
     reset_hostname
     reset_authorized_keys
+    cleanup_aws_marketplace_eula
     debug "[DONE] $BASH_SOURCE"
 }
 

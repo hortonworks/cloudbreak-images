@@ -41,6 +41,7 @@ packer_in_container() {
     -e IMAGE_NAME_SUFFIX=$IMAGE_NAME_SUFFIX \
     -e ATLAS_TOKEN=$ATLAS_TOKEN \
     -e GITHUB_TOKEN=$GITHUB_TOKEN \
+    -e COPY_AWS_MARKETPLACE_EULA=$COPY_AWS_MARKETPLACE_EULA \
     -v /var/run/docker.sock:/var/run/docker.sock \
     -v $PWD:/$PWD \
     -w $PWD \

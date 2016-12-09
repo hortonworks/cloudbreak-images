@@ -12,6 +12,7 @@
     "os_user": "cloudbreak",
     "atlas_artifact": "cbd",
     "image_name": "{{ env `BASE_NAME`}}-{{ env `CBD_VERSION_UNDERSCORE`}}-{{ isotime \"2006-01-02-15-04\" }}{{env `IMAGE_NAME_SUFFIX`}}",
+    "copy_aws_marketplace_eula": "{{ env `COPY_AWS_MARKETPLACE_EULA`}}",
 
     "instance_type": "m3.medium",
 
@@ -88,7 +89,8 @@
         "CBD_VERSION={{ user `cbd_version` }}",
         "CBD_INSTALL_DIR={{ user `cbd_install_dir` }}",
         "OS_USER={{ user `os_user` }}",
-        "PACKER_IMAGE_NAME={{user `image_name`}}"
+        "PACKER_IMAGE_NAME={{user `image_name`}}",
+        "COPY_AWS_MARKETPLACE_EULA={{user `copy_aws_marketplace_eula`}}"
     ]
   }
   ]
