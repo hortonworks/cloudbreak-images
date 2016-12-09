@@ -132,8 +132,6 @@ install_openjdk() {
     yum install -y java-1.8.0-openjdk-javadoc-1.8.0.101-3.b13.el7_2
     yum install -y java-1.8.0-openjdk-src-1.8.0.101-3.b13.el7_2
   fi
-
-  mv /usr/lib/jvm/OpenJDK_GPLv2_and_Classpath_Exception.pdf /usr/lib/jvm/java
 }
 
 generate_ambari_repo() {
