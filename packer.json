@@ -37,7 +37,11 @@
     "image_name": "{{ env `IMAGE_NAME` }}",
 
     "instance_type": "m3.medium",
-    "ami-eu-west-1": "ami-c39604b0"
+    "ami-eu-west-1": "ami-c39604b0",
+    "azure_image_publisher": "{{ env `AZURE_IMAGE_PUBLISHER` }}",
+    "azure_image_offer": "{{ env `AZURE_IMAGE_OFFER` }}",
+    "azure_image_sku": "{{ env `AZURE_IMAGE_SKU` }}"
+
   },
   "builders":[
   {
@@ -116,9 +120,9 @@
         "capture_container_name": "packer",
         "capture_name_prefix": "{{user `image_name`}}",
 
-        "image_publisher": "OpenLogic",
-        "image_offer": "CentOS",
-        "image_sku": "7.2",
+        "image_publisher": "{{user `azure_image_publisher`}}",
+        "image_offer": "{{user `azure_image_offer`}}",
+        "image_sku": "{{user `azure_image_sku`}}",
         "ssh_pty": "true",
         "username": "{{user `os_user`}}",
         "ssh_password" :"{{user `ssh_password`}}",
