@@ -26,8 +26,11 @@ update_centos() {
     rm -f /etc/yum.repos.d/CentOS-Base.repo
     # epel release not available on Redhat
     yum -y install wget
-    wget http://dl.fedoraproject.org/pub/epel/7/x86_64/e/${EPEL}.noarch.rpm
-    rpm -Uvh ${EPEL}.noarch.rpm
+    RH_VERSION=$(cat /etc/redhat-release | awk '{print int($7)}')
+    wget https://dl.fedoraproject.org/pub/epel/epel-release-latest-${RH_VERSION}.noarch.rpm
+    rpm -Uvh epel-release-latest-${RH_VERSION}*.rpm
+    #wget http://dl.fedoraproject.org/pub/epel/7/x86_64/e/${EPEL}.noarch.rpm
+    #rpm -Uvh ${EPEL}.noarch.rpm
   fi
   yum clean all
   yum update -y
@@ -112,6 +115,9 @@ install_bootstrap() {
   if grep "Amazon Linux AMI" /etc/issue &> /dev/null; then
     chmod +x /etc/init.d/salt-bootstrap
     chkconfig salt-bootstrap on
+  elif [ ! -z $RH_VERSION ] && (( $RH_VERSION < 7 )); then
+    chmod +x /etc/init.d/salt-bootstrap
+    chkconfig salt-bootstrap on
   else
     systemctl enable salt-bootstrap
   fi
@@ -126,6 +132,10 @@ install_openjdk() {
     yum install -y java-1.8.0-openjdk-devel-1.8.0.101-3.b13.24.amzn1
     yum install -y java-1.8.0-openjdk-javadoc-1.8.0.101-3.b13.24.amzn1
     yum install -y java-1.8.0-openjdk-src-1.8.0.101-3.b13.24.amzn1
+  elif [ ! -z $RH_VERSION ] && (( $RH_VERSION < 7 )); then
+    yum install -y java-1.8.0-openjdk-devel
+    yum install -y java-1.8.0-openjdk-javadoc
+    yum install -y java-1.8.0-openjdk-src
   else
     yum install -y java-1.8.0-openjdk-headless-1.8.0.101-3.b13.el7_2
     yum install -y java-1.8.0-openjdk-devel-1.8.0.101-3.b13.el7_2
@@ -138,7 +148,7 @@ generate_ambari_repo() {
   : ${AMBARI_VERSION:? reqired}
   : ${AMBARI_BASEURL:? reqired}
   : ${AMBARI_GPGKEY:? reqired}
-  
+
   cat > /etc/yum.repos.d/ambari.repo <<EOF
 [AMBARI.${AMBARI_VERSION}]
 name=Ambari ${AMBARI_VERSION}
@@ -291,6 +301,8 @@ disable_ipv6() {
   echo 'net.ipv6.conf.all.disable_ipv6 = 1' >> /etc/sysctl.conf
   if grep "Amazon Linux AMI" /etc/issue &> /dev/null; then
     echo "IPv6 is disabled by default on Amazon Linux"
+  elif [ ! -z $RH_VERSION ] && (( $RH_VERSION < 7 )); then
+    sysctl -p    
   else
     echo 'NETWORKING_IPV6=no' >> /etc/sysconfig/network
     echo 'IPV6INIT="no"' >> /etc/sysconfig/network-scripts/ifcfg-eth0
@@ -331,7 +343,7 @@ reset_authorized_keys() {
 check_params() {
     : ${PACKER_BUILDER_TYPE:? required amazon-ebs/googlecompute/openstack }
     : ${CLOUDBREAK_BOOTSTRAP_VERSION:=0.10.2}
-    : ${EPEL:=epel-release-7-6}
+    : ${EPEL:=epel-release-7-8}
 }
 
 tune_vm() {
