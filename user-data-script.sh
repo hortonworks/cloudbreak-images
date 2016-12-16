@@ -96,6 +96,11 @@ grant-sudo-to-os-user() {
 
 install_salt() {
   # salt install for orchestrating the cluster
+
+  if grep "Amazon Linux AMI" /etc/issue &> /dev/null; then
+    yum -y install https://repo.saltstack.com/yum/amazon/salt-amzn-repo-latest-2.amzn1.noarch.rpm
+  fi
+
   yum -y install salt-master salt-api salt-minion && yum clean all
   if grep "Amazon Linux AMI" /etc/issue &> /dev/null; then
     chkconfig salt-master off
