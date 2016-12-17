@@ -178,6 +178,36 @@ install_jdbc_drivers() {
   curl -o /opt/jdbc-drivers/postgresql-9.4.1208.jre7.jar https://jdbc.postgresql.org/download/postgresql-9.4.1208.jre7.jar
 }
 
+install_consul() {
+  echo "Fetching Consul..."
+  cd /tmp
+  curl -s -L -o consul.zip https://releases.hashicorp.com/consul/0.7.1/consul_0.7.1_linux_amd64.zip
+
+  echo "Installing Consul..."
+  unzip consul.zip >/dev/null
+  sudo chmod +x consul
+  sudo mv consul /usr/local/bin/consul
+  sudo mkdir -p /etc/consul.d
+  sudo mkdir -p /opt/consul
+  sudo mkdir -p /etc/service
+}
+
+install_prometheus_exporters() {
+  : ${INSTALL_DIR:=/usr/local/bin/}
+  echo "Installing node exporter..."
+  curl -Lks https://github.com/prometheus/node_exporter/releases/download/0.12.0/node_exporter-0.12.0.linux-amd64.tar.gz | tar --strip-components=1 -xz -C ${INSTALL_DIR}
+  echo "Installing spot expiry exporter..."
+  curl -Lks https://github.com/deathowl/spot_expiry_collector/releases/download/1.0.1/spot_expiry_collector-1.0.1.linux-amd64.tar.gz | tar  --strip-components=1 -xz -C ${INSTALL_DIR}
+  echo "Installing process exporter..."
+  pip install -q http://sequenceiq.s3.amazonaws.com/process_exporter-0.2.2.tar.gz
+  echo "install jmx javaagent exporter..."
+  curl -s -o /opt/jmx_javaagent.jar sequenceiq.s3.amazonaws.com/jmx_prometheus_javaagent-0.8-SNAPSHOT.jar
+}
+
+install_ssm_agent() {
+  yum install -y https://amazon-ssm-eu-west-1.s3.amazonaws.com/latest/linux_amd64/amazon-ssm-agent.rpm
+}
+
 generate_hdp_script() {
   : ${HDP_STACK_VERSION:? required}
   : ${HDP_VERSION:? reqired}
@@ -360,6 +390,9 @@ main() {
     install_bootstrap
     install_openjdk
     install_jdbc_drivers
+    install_consul
+    install_prometheus_exporters
+    install_ssm_agent
     pre_warm
     grant-sudo-to-os-user
     configure_console
