@@ -385,6 +385,11 @@ tune_vm() {
   fi
 }
 
+configure_ssh() {
+  sed -e 's/^.*UseDNS.*/UseDNS no/g' /etc/ssh/sshd_config
+  sed -e 's/^.*GSSAPIAuthentication.*/GSSAPIAuthentication no/' /etc/ssh/sshd_config
+}
+
 main() {
     check_params
     update_centos
@@ -403,6 +408,7 @@ main() {
     install_consul
     install_prometheus_exporters
     install_ssm_agent
+    configure_ssh
     pre_warm
     grant-sudo-to-os-user
     configure_console
