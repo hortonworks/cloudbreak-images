@@ -65,7 +65,7 @@ install_utils() {
     yum -y install epel-release
   fi
 
-  yum -y install unzip curl wget git bind-utils ntp tmux bash-completion nginx haveged
+  yum -y install tar unzip curl wget git bind-utils ntp tmux bash-completion nginx haveged
 
   chkconfig haveged on
 
