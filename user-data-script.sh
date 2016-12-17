@@ -62,7 +62,7 @@ install_utils() {
   if grep "Amazon Linux AMI" /etc/issue &> /dev/null; then
     yum-config-manager --enable epel
   else
-   yum -y install epel-release
+    yum -y install epel-release
   fi
 
   yum -y install unzip curl wget git bind-utils ntp tmux bash-completion nginx haveged
