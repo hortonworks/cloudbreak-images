@@ -178,6 +178,15 @@ install_jdbc_drivers() {
   curl -o /opt/jdbc-drivers/postgresql-9.4.1208.jre7.jar https://jdbc.postgresql.org/download/postgresql-9.4.1208.jre7.jar
 }
 
+install_dnsserver() {
+  if grep "Amazon Linux AMI" /etc/issue &> /dev/null; then
+    yum install -y http://mirror.centos.org/centos/6/extras/x86_64/Packages/ldns-1.6.16-7.el6.1.x86_64.rpm
+    yum install -y http://mirror.centos.org/centos/6/extras/x86_64/Packages/unbound-libs-1.4.20-23.el6.1.x86_64.rpm
+    yum install -y http://mirror.centos.org/centos/6/extras/x86_64/Packages/unbound-1.4.20-23.el6.1.x86_64.rpm
+    chkconfig unbound on
+  fi
+}
+
 install_consul() {
   echo "Fetching Consul..."
   cd /tmp
@@ -390,6 +399,7 @@ main() {
     install_bootstrap
     install_openjdk
     install_jdbc_drivers
+    install_dnsserver
     install_consul
     install_prometheus_exporters
     install_ssm_agent
