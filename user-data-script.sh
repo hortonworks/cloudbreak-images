@@ -128,10 +128,10 @@ install_openjdk() {
 
   if grep "Amazon Linux AMI" /etc/issue &> /dev/null; then
     yum remove -y java-1.7.0-openjdk
-    yum install -y java-1.8.0-openjdk-headless-1.8.0.101-3.b13.24.amzn1
-    yum install -y java-1.8.0-openjdk-devel-1.8.0.101-3.b13.24.amzn1
-    yum install -y java-1.8.0-openjdk-javadoc-1.8.0.101-3.b13.24.amzn1
-    yum install -y java-1.8.0-openjdk-src-1.8.0.101-3.b13.24.amzn1
+    yum install --enablerepo amzn-updates -y java-1.8.0-openjdk-headless
+    yum install --enablerepo amzn-updates -y java-1.8.0-openjdk-devel
+    yum install --enablerepo amzn-updates -y java-1.8.0-openjdk-javadoc
+    yum install --enablerepo amzn-updates -y java-1.8.0-openjdk-src
   else
     yum install -y java-1.8.0-openjdk-headless-1.8.0.101-3.b13.el7_2
     yum install -y java-1.8.0-openjdk-devel-1.8.0.101-3.b13.el7_2
