@@ -146,7 +146,7 @@ generate_ambari_repo() {
   : ${AMBARI_VERSION:? reqired}
   : ${AMBARI_BASEURL:? reqired}
   : ${AMBARI_GPGKEY:? reqired}
-  
+
   cat > /etc/yum.repos.d/ambari.repo <<EOF
 [AMBARI.${AMBARI_VERSION}]
 name=Ambari ${AMBARI_VERSION}
@@ -199,6 +199,16 @@ install_consul() {
   sudo mkdir -p /etc/consul.d
   sudo mkdir -p /opt/consul
   sudo mkdir -p /etc/service
+}
+
+install_consul_template() {
+  echo "Fetching Consul Template"
+  cd /tmp
+  curl -s -L -o consul-template.zip https://releases.hashicorp.com/consul-template/0.16.0/consul-template_0.16.0_linux_amd64.zip
+
+  echo "Installing Consul..."
+  unzip /tmp/consul-template.zip -d /usr/local/bin
+  sudo chmod +x /usr/local/bin/consul-template
 }
 
 install_prometheus_exporters() {
@@ -406,6 +416,7 @@ main() {
     install_jdbc_drivers
     install_dnsserver
     install_consul
+    install_consul_template
     install_prometheus_exporters
     install_ssm_agent
     configure_ssh
