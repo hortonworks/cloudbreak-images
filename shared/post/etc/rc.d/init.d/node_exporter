@@ -41,7 +41,7 @@ start() {
     daemon \
         --pidfile=$pidfile \
         --user=$user \
-        " { $exec $DAEMON_ARGS &>> /dev/null & } ; echo \$! >| $pidfile "
+        " { $exec -web.listen-address 127.0.0.1:9100 $DAEMON_ARGS &>> /dev/null & } ; echo \$! >| $pidfile "
 
     RETVAL=$?
 

@@ -41,7 +41,7 @@ start() {
     daemon \
         --pidfile=$pidfile \
         --user=$user \
-        " { $exec $DAEMON_ARGS &>> /dev/null & } ; echo \$! >| $pidfile "
+        " { $exec -bind-addr 127.0.0.1:9189 $DAEMON_ARGS &>> /dev/null & } ; echo \$! >| $pidfile "
 
     RETVAL=$?
 
