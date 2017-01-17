@@ -36,7 +36,7 @@ build-googlecompute:
 	$(ENVS) ./scripts/packer.sh build -only=googlecompute $(PACKER_OPTS) packer.json
 
 bundle-googlecompute:
-	./bundle-gcp-image.sh
+	$(ENVS) ./bundle-gcp-image.sh
 
 build-azure:
 	$(ENVS) ./scripts/packer.sh build -only=azure-arm $(PACKER_OPTS) packer.json
