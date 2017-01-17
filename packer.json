@@ -23,7 +23,7 @@
     "atlas_artifact": "cbd",
     "ssh_password":"S3cr3t",
     "image_name": "cloudbreak-deployer-{{ env `CBD_VERSION_UNDERSCORE`}}-{{ isotime \"2006-01-02\" }}{{env `IMAGE_NAME_SUFFIX`}}",
-    "short_image_name": "cbd-{{ env `CBD_VERSION_UNDERSCORE`}}-{{ isotime \"2006-01-02\" }}{{env `IMAGE_NAME_SUFFIX`}}",
+    "short_image_name": "cbd-{{ env `CBD_VERSION_UNDERSCORE`}}-{{ isotime \"20060102\" }}{{env `IMAGE_NAME_SUFFIX`}}",
 
 
     "instance_type": "m3.medium",
