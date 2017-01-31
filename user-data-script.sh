@@ -289,6 +289,11 @@ cleanup_aws_marketplace_eula() {
   else
     rm -f /tmp/shared/post/etc/hortonworks/hdcloud*technical-preview*
   fi
+  if [[ "$HDP_VERSION" == *"2.5"* ]]; then
+    rm -f /tmp/shared/post/etc/hortonworks/hdcloud*hdp26*
+  else
+    rm -f /tmp/shared/post/etc/hortonworks/hdcloud*hdp25*
+  fi
 }
 
 cleanup() {
