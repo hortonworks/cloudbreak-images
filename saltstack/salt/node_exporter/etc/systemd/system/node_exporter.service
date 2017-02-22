@@ -1,0 +1,12 @@
+[Unit]
+Description=Node Exporter
+
+[Service]
+User=root
+ExecStartPre=/usr/bin/rm -f /var/run/node_exporter.pid
+ExecStart=/usr/local/bin/node_exporter.sh
+PIDFile=/var/run/node_exporter.pid
+Restart=on-failure
+
+[Install]
+WantedBy=default.target

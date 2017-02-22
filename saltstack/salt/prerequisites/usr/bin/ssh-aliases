@@ -1,0 +1,124 @@
+#!/bin/bash
+
+[[ "$TRACE" ]] && set -x
+
+debug() {
+  [[ "$DEBUG" ]] && echo "---> $*" 1>&2
+}
+
+create_motd() {
+  debug "create_motd()"
+  cat > /etc/motd <<"EOF"
+cat /etc/motd
+                    .-.._
+              __  /`     '.
+           .-'  `/   (   a \
+          /      (    \,_   \
+         /|       '---` |\ =|
+        ` \    /__.-/  /  | |
+           |  / / \ \  \   \_\
+           |__|_|  |_|__\
+=================================================
+EOF
+  helper_desc >> /etc/motd
+  echo >> /etc/motd
+}
+
+create_motd_login() {
+  debug "create_motd_login"
+  cat > /etc/motd-login <<EOF
+Please login with one of the following username rather than the user "root":
+
+$(printf '  %-24s : %s\n' $OS_USER  'Reach the host running the ambari')
+$(helper_desc)
+
+EOF
+}
+
+script_desc() {
+  declare desc="Inspect a function's description"
+  desc=""
+  eval "$(grep desc <${1:? script path is required} | head -1)"; echo $desc
+}
+
+helper_desc() {
+  for script in $HELPER_DIR/helper-*; do
+      name=${script#*helper-}
+      printf "  %-24s : %s\n" "$name" "$(script_desc $script)"
+  done
+}
+
+link_helpers() {
+  debug "link_helpers()"
+}
+
+fix_root_ssh() {
+  debug "fix_root_ssh()"
+  sed -i 's#command=".*" ssh-rsa#command="cat /etc/motd-login;sleep 5" ssh-rsa#' /root/.ssh/authorized_keys
+}
+
+create_ssh_aliases() {
+  debug "create_ssh_aliases()"
+  for script in $HELPER_DIR/helper-*; do
+    name=${script#*helper-}
+    grep -q $user /etc/passwd && userdel -rf $name
+    sshcommand create $name $script
+    echo "$PUBLIC_SSH_KEY" | sshcommand acl-add $name default
+  done
+}
+
+create_default_user() {
+  debug "create_default_user()"
+
+  if id -u $OS_USER >/dev/null 2>&1; then
+    debug "User '$OS_USER' already exists"
+  else
+    debug "create user: $OS_USER"
+    adduser $OS_USER
+  fi
+
+  USERHOME=$(sh -c "echo ~$OS_USER")
+  debug "USERHOME=$USERHOME"
+  mkdir -p $USERHOME/.ssh
+  touch $USERHOME/.ssh/authorized_keys
+  echo "$PUBLIC_SSH_KEY" >> $USERHOME/.ssh/authorized_keys
+  chown -R $OS_USER $USERHOME
+  chmod 700 $USERHOME/.ssh
+  chmod 600 $USERHOME/.ssh/authorized_keys
+
+  debug "check permissions"
+  find $USERHOME/.ssh -ls
+
+  debug "authorized_keys for $OS_USER"
+  cat $USERHOME/.ssh/authorized_keys
+
+}
+
+main() {
+  : ${DEBUG:=1}
+  : ${PUBLIC_SSH_KEY: required}
+  : ${OS_USER:=cloudbreak}
+  : ${HELPER_DIR:=/usr/bin}
+
+  [[ "$TRACE" ]] && set -x
+
+  case "$1" in
+      -h)
+        cat <<EOF
+Usage:
+    setup:   copies helper scripts, create links, motd file
+    create:  creates ssh alias users for each helper script
+EOF
+        ;;
+      *)
+        create_default_user
+        create_ssh_aliases
+        fix_root_ssh
+        link_helpers
+        create_motd
+        create_motd_login
+        ;;
+    esac
+}
+
+[[ "$0" == "$BASH_SOURCE" ]] && main "$@"

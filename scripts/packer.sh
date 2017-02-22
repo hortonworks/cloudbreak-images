@@ -27,8 +27,6 @@ packer_in_container() {
     -e BASE_NAME=$BASE_NAME \
     -e AWS_ACCESS_KEY_ID=$AWS_ACCESS_KEY_ID \
     -e AWS_SECRET_ACCESS_KEY=$AWS_SECRET_ACCESS_KEY \
-    -e AZURE_PUBLISH_SETTINGS=$AZURE_PUBLISH_SETTINGS \
-    -e AZURE_SUBSCRIPTION_NAME=$AZURE_SUBSCRIPTION_NAME \
     -e AZURE_IMAGE_PUBLISHER=$AZURE_IMAGE_PUBLISHER \
     -e AZURE_IMAGE_OFFER=$AZURE_IMAGE_OFFER \
     -e AZURE_IMAGE_SKU=$AZURE_IMAGE_SKU \
@@ -50,7 +48,6 @@ packer_in_container() {
     -e HDP_BASEURL=$HDP_BASEURL \
     -e HDP_REPOID=$HDP_REPOID \
     -e IMAGE_NAME=$IMAGE_NAME \
-    -e COPY_AWS_MARKETPLACE_EULA=$COPY_AWS_MARKETPLACE_EULA \
     -e HDPUTIL_VERSION=$HDPUTIL_VERSION \
     -e HDPUTIL_BASEURL=$HDPUTIL_BASEURL \
     -e HDPUTIL_REPOID=$HDPUTIL_REPOID \
@@ -58,12 +55,14 @@ packer_in_container() {
     -e AMBARI_BASEURL=$AMBARI_BASEURL \
     -e AMBARI_GPGKEY=$AMBARI_GPGKEY \
     -e ATLAS_TOKEN=$ATLAS_TOKEN \
+    -e SALT_INSTALL_OS=$SALT_INSTALL_OS \
+    -e SALT_INSTALL_REPO=$SALT_INSTALL_REPO \
     -v $HOME/.aws:/root/.aws \
     -v /var/run/docker.sock:/var/run/docker.sock \
     -v $PWD:$PWD \
     -w $PWD \
     $dockerOpts \
-    sequenceiq/packer:v0.8.7-v10 "$@"
+    hashicorp/packer "$@"
 }
 
 main() {
