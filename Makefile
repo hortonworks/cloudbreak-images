@@ -31,43 +31,49 @@ show-image-name:
 
 build-aws-amazonlinux:
 	$(ENVS) \
+	ATLAS_ARTIFACT_TYPE=amazon \
 	SALT_INSTALL_OS=amazon \
 	SALT_INSTALL_REPO="https://repo.saltstack.com/yum/amazon/salt-amzn-repo-2016.11-1.amzn1.noarch.rpm" \
 	./scripts/packer.sh build -only=aws-amazonlinux $(PACKER_OPTS) packer.json
 
 build-aws-centos6:
 	$(ENVS) \
+	ATLAS_ARTIFACT_TYPE=amazon \
 	SALT_INSTALL_OS=centos \
 	SALT_INSTALL_REPO="https://repo.saltstack.com/yum/redhat/salt-repo-2016.11-1.el6.noarch.rpm" \
 	$(ENVS) ./scripts/packer.sh build -only=aws-centos6 $(PACKER_OPTS) packer.json
 
 build-aws-debian7:
 	$(ENVS) \
+	ATLAS_ARTIFACT_TYPE=amazon \
 	SALT_INSTALL_OS=debian \
 	SALT_INSTALL_REPO="http://repo.saltstack.com/apt/debian/7/amd64/latest wheezy" \
 	$(ENVS) ./scripts/packer.sh build -only=aws-debian7 $(PACKER_OPTS) packer.json
 
 build-os-centos7:
 	$(ENVS) \
+	ATLAS_ARTIFACT_TYPE=openstack \
 	SALT_INSTALL_OS=centos \
 	SALT_INSTALL_REPO="https://repo.saltstack.com/yum/redhat/salt-repo-2016.11-1.el7.noarch.rpm" \
 	$(ENVS) ./scripts/packer.sh build -only=os-centos7 $(PACKER_OPTS) packer.json
 
 build-gc-centos7:
 	$(ENVS) \
+	ATLAS_ARTIFACT_TYPE=googlecompute \
 	SALT_INSTALL_OS=centos \
 	SALT_INSTALL_REPO="https://repo.saltstack.com/yum/redhat/salt-repo-2016.11-1.el7.noarch.rpm" \
 	$(ENVS) ./scripts/packer.sh build -only=gc-centos7 $(PACKER_OPTS) packer.json
 
 build-azure-centos7:
 	$(ENVS) \
+	ATLAS_ARTIFACT_TYPE=azure-arm \
 	SALT_INSTALL_OS=centos \
 	SALT_INSTALL_REPO="https://repo.saltstack.com/yum/redhat/salt-repo-2016.11-1.el7.noarch.rpm" \
 	./scripts/packer.sh build -only=arm-centos7 $(PACKER_OPTS) packer.json
 	$(ENVS) ./scripts/azure-copy.sh
 
 bundle-googlecompute:
-	./bundle-gcp-image.sh
+	$(ENVS) ./bundle-gcp-image.sh
 
 upload-openstack-image:
 	ATLAS_PROJECT=${ATLAS_PROJECT} ./scripts/openstack-s3-upload.sh

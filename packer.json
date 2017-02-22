@@ -29,6 +29,7 @@
     "os_user": "cloudbreak",
     "ssh_password": "S3cr3t",
     "atlas_artifact": "cloudbreak",
+    "atlas_artifact_type": "{{ env `ATLAS_ARTIFACT_TYPE` }}",
     "image_name": "{{ env `IMAGE_NAME` }}",
     "azure_image_publisher": "{{ env `AZURE_IMAGE_PUBLISHER` }}",
     "azure_image_offer": "{{ env `AZURE_IMAGE_OFFER` }}",
@@ -268,7 +269,7 @@
     {
       "type": "atlas",
       "artifact": "sequenceiq/{{ user `atlas_artifact` }}",
-      "artifact_type": "{{ build_name }}.image",
+      "artifact_type": "{{ user `atlas_artifact_type` }}.image",
       "metadata": {
         "created_at": "{{timestamp}}",
         "prometheus": "true",

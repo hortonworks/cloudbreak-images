@@ -57,6 +57,7 @@ packer_in_container() {
     -e ATLAS_TOKEN=$ATLAS_TOKEN \
     -e SALT_INSTALL_OS=$SALT_INSTALL_OS \
     -e SALT_INSTALL_REPO=$SALT_INSTALL_REPO \
+    -e ATLAS_ARTIFACT_TYPE=$ATLAS_ARTIFACT_TYPE \
     -v $HOME/.aws:/root/.aws \
     -v /var/run/docker.sock:/var/run/docker.sock \
     -v $PWD:$PWD \
