@@ -31,6 +31,15 @@ config_unbound_server:
     - source: salt://{{ slspath }}/etc/unbound/unbound.conf
     - mode: 644
 
+{% if grains['init'] == 'systemd' %}
+
+unbound_service:
+  file.managed:
+    - name: /etc/systemd/system/unbound.service
+    - source: salt://{{ slspath }}/etc/systemd/system/unbound.service
+
+{% endif %}
+
 enable_unbound:
   service.enabled:
     - name: unbound
