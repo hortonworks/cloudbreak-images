@@ -35,7 +35,8 @@
     "azure_image_offer": "{{ env `AZURE_IMAGE_OFFER` }}",
     "azure_image_sku": "{{ env `AZURE_IMAGE_SKU` }}",
     "salt_install_os": "{{ env `SALT_INSTALL_OS` }}",
-    "salt_install_repo": "{{ env `SALT_INSTALL_REPO` }}"
+    "salt_install_repo": "{{ env `SALT_INSTALL_REPO` }}",
+    "aws_instance_type": "m3.large"
   },
   "builders": [
     {
@@ -55,7 +56,7 @@
       ],
       "ssh_pty": true,
       "source_ami": "ami-9398d3e0",
-      "instance_type": "m3.medium",
+      "instance_type": "{{ user `aws_instance_type` }}",
       "ssh_username": "ec2-user",
       "enhanced_networking": true,
       "ami_block_device_mappings": [
@@ -98,7 +99,7 @@
       ],
       "ssh_pty": true,
       "source_ami": "ami-edb9069e",
-      "instance_type": "m3.medium",
+      "instance_type": "{{ user `aws_instance_type` }}",
       "ssh_username": "centos",
       "enhanced_networking": true,
       "ami_block_device_mappings": [
@@ -157,7 +158,7 @@
       ],
       "ssh_pty": true,
       "source_ami": "ami-61e56916",
-      "instance_type": "m3.medium",
+      "instance_type": "{{ user `aws_instance_type` }}",
       "ssh_username": "admin",
       "enhanced_networking": true,
       "ami_block_device_mappings": [
