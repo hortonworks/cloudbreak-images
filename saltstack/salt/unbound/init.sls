@@ -40,8 +40,17 @@ unbound_service:
 
 {% endif %}
 
+{% if grains['init'] == 'upstart' %}
+
+config_unbound_upstart:
+  file.managed:
+    - name: /etc/init/unbound.conf
+    - source:
+      - salt://{{ slspath }}/etc/init/unbound.conf
+    - mode: 644
+
+{% endif %}
+
 enable_unbound:
   service.enabled:
     - name: unbound
-    - require:
-      - file: config_unbound_server
