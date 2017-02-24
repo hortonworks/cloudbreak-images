@@ -1,0 +1,17 @@
+#!/bin/bash
+
+source /etc/dhcp/dhclient-enter-hooks
+
+case "$2" in
+    up|dhcp4-change)
+        interface=$1
+        new_domain_name_servers=$DHCP4_DOMAIN_NAME_SERVERS
+        SEARCH=$DHCP4_DOMAIN_SEARCH
+        new_domain_search=$SEARCH
+        new_domain_name=$DHCP4_DOMAIN_NAME
+        make_resolv_conf
+        ;;
+    *)
+        echo "https://people.freedesktop.org/~lkundrak/nm-docs/NetworkManager.html"
+        exit
+esac

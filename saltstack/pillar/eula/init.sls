@@ -1,0 +1,1 @@
+COPY_AWS_MARKETPLACE_EULA: {{ salt['environ.get']('COPY_AWS_MARKETPLACE_EULA', False) }}

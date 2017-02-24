@@ -1,0 +1,11 @@
+[Install]
+WantedBy=multi-user.target
+
+[Unit]
+Description=Disable THP Service
+After=network.target network.service
+
+[Service]
+Type=forking
+ExecStart=/etc/init.d/disable-thp start
+ExecStop=/etc/init.d/disable-thp stop
