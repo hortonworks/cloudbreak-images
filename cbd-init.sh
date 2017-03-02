@@ -19,7 +19,8 @@ cbd_init() {
     mkdir $CBD_DIR
     cd $_
 
-    cbd init
+    echo export PUBLIC_IP=$(dig +short myip.opendns.com @resolver1.opendns.com) > Profile
+    cbd generate
     cbd pull-parallel
 
     rm -rf Profile certs *.yml *.log

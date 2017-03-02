@@ -16,7 +16,7 @@
     "resource_group_name": "{{ env `ARM_GROUP_NAME` }}",
     "storage_account": "{{ env `ARM_STORAGE_ACCOUNT` }}",
 
-    "docker_images": "gliderlabs/alpine:3.1 alpine:latest sequenceiq/mybatis-migrations:1.0.0 hortonworks/cloudbreak-shell:1.6.1",
+    "docker_images": "gliderlabs/alpine:3.4 alpine:latest sequenceiq/mybatis-migrations:1.0.0 hortonworks/cloudbreak-shell:1.13.1",
     "cbd_install_dir": "/bin",
     "cbd_version": "{{ env `CBD_VERSION`}}",
     "os_user": "cloudbreak",
@@ -24,10 +24,7 @@
     "ssh_password":"S3cr3t",
     "image_name": "cloudbreak-deployer-{{ env `CBD_VERSION_UNDERSCORE`}}-{{ isotime \"2006-01-02\" }}{{env `IMAGE_NAME_SUFFIX`}}",
     "short_image_name": "cbd-{{ env `CBD_VERSION_UNDERSCORE`}}-{{ isotime \"20060102\" }}{{env `IMAGE_NAME_SUFFIX`}}",
-
-
     "instance_type": "m3.medium",
-
     "ami-eu-west-1": "ami-64ec7417"
   },
   "builders":[
