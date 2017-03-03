@@ -1,7 +1,7 @@
 download_service_registration:
   file.managed:
     - name: /tmp/service-registration.tgz
-    - source: https://github.com/sequenceiq/service-registration/releases/download/v0.5/service-registration_0.5_Linux_x86_64.tgz
+    - source: https://github.com/sequenceiq/service-registration/releases/download/v0.6/service-registration_0.6_Linux_x86_64.tgz
     - skip_verify: True
     - unless: ls -1 /tmp/service-registration.tgz
 
