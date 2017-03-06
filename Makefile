@@ -2,7 +2,7 @@
 PACKER_VARS=
 
 # this identifies images across cloud providers
-IMAGE_VERSION=1.10.3-v1
+IMAGE_VERSION=1.13.1-v1
 PACKER_VARS=-var-file=vars-versions.json -var-file=vars-docker-images.json -var image_version=$(IMAGE_VERSION)
 ifdef DOCKER_VERSION
 	PACKER_VARS+=-var yum_version_docker=$(DOCKER_VERSION)
@@ -35,7 +35,7 @@ generate-vars: docker-build
 generate-vars-local:
 	cat vars-versions.yml | yaml2json | jq . > vars-versions.json
 	cat vars-docker-images.yml | yaml2json | jq . > vars-docker-images.json
-	
+
 docker-build:
 	docker build -t images:build - < Dockerfile.build
 
@@ -48,5 +48,3 @@ build-in-docker:
 		-v /var/run/docker.sock:/var/run/docker.sock \
 		-v /usr/local/bin/docker:/usr/local/bin/docker \
 		images:build make build-aws
-
-

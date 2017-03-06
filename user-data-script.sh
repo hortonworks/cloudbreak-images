@@ -52,8 +52,11 @@ install_utils() {
 install_docker() {
   yum install -y docker-engine-$YUM_VERSION_DOCKER
 
+  wget https://raw.githubusercontent.com/docker/docker/master/contrib/init/systemd/docker.socket -O /usr/lib/systemd/system/docker.socket
   systemctl daemon-reload
-  service docker start
+  systemctl start docker.socket
+  systemctl start docker
+
   systemctl enable docker.service
 
   getent passwd $OS_USER || adduser $OS_USER
