@@ -8,7 +8,7 @@ RemainAfterExit=no
 WorkingDirectory=/opt/prometheus
 User=prometheus
 Group=prometheus
-ExecStart=/usr/local/bin/prometheus -config.file=/etc/prometheus/prometheus.yml  -storage.local.path=/opt/prometheus/data -log.level info
+ExecStart=/usr/local/bin/prometheus -config.file=/etc/prometheus/prometheus.yml -web.route-prefix /prometheus -storage.local.path=/opt/prometheus/data -log.level info
 
 [Install]
 WantedBy=multi-user.target

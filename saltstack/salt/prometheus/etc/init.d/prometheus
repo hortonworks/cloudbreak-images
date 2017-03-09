@@ -51,7 +51,7 @@ start() {
     daemon \
         --pidfile=$pidfile \
         --user=$user \
-        " { $exec -config.file $conffile -storage.local.path $datadir  $1 &>> $logfile & } ; echo \$! >| $pidfile "
+        " { $exec -config.file $conffile -web.route-prefix /prometheus -storage.local.path $datadir  $1 &>> $logfile & } ; echo \$! >| $pidfile "
 
     RETVAL=$?
     echo
