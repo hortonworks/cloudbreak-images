@@ -58,6 +58,7 @@ packer_in_container() {
     -e SALT_INSTALL_OS=$SALT_INSTALL_OS \
     -e SALT_INSTALL_REPO=$SALT_INSTALL_REPO \
     -e ATLAS_ARTIFACT_TYPE=$ATLAS_ARTIFACT_TYPE \
+    -e COPY_AWS_MARKETPLACE_EULA=$COPY_AWS_MARKETPLACE_EULA \
     -v $HOME/.aws:/root/.aws \
     -v /var/run/docker.sock:/var/run/docker.sock \
     -v $PWD:$PWD \
