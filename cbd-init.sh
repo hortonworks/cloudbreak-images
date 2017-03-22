@@ -76,32 +76,22 @@ install_openjdk() {
 
 install_hdc_cli() {
   : ${HDC_CLI_VERSION:? required}
-  : ${GITHUB_TOKEN:? required}
-  : ${GITHUB_REPO:=hortonworks/hdc-cli}
   : ${HDC_CLI_INSTALL_DIR:=/var/lib/cloudbreak/hdc-cli}
-
-  local baseUrl=https://api.github.com/repos/$GITHUB_REPO/releases
-  local releaseUrl=$baseUrl/tags/v${HDC_CLI_VERSION}
-  if ! curl --fail -sG -o /dev/null -d access_token=$GITHUB_TOKEN $releaseUrl; then
-    debug "WARNING: couldnt find hdc cli release: ${HDC_CLI_VERSION}, using latest github release instead"
-    releaseUrl=$baseUrl/latest
-  fi
 
   mkdir -p $HDC_CLI_INSTALL_DIR
   cd $HDC_CLI_INSTALL_DIR
-  curl -s -G \
-   -d access_token=$GITHUB_TOKEN \
-   $releaseUrl \
-    | jq ".assets[]|[.name,.url][]" -r \
-    | xargs -t -n 2 -P 3 curl -sG -d access_token=$GITHUB_TOKEN -H "Accept: application/octet-stream" -Lo
+
+  curl -LO "https://s3-eu-west-1.amazonaws.com/hdc-cli/hdc-cli_${HDC_CLI_VERSION}_Darwin_x86_64.tgz"
+  curl -LO "https://s3-eu-west-1.amazonaws.com/hdc-cli/hdc-cli_${HDC_CLI_VERSION}_Linux_x86_64.tgz"
+  curl -LO "https://s3-eu-west-1.amazonaws.com/hdc-cli/hdc-cli_${HDC_CLI_VERSION}_Windows_x86_64.tgz"
    
-   sudo tar -xzf hdc-cli_*$(uname)_x86_64.tgz  -C /bin || true
+  sudo tar -xzf hdc-cli_*$(uname)_x86_64.tgz  -C /bin || true
 
-   for osname in Darwin Linux Windows; do
-       ln -fs hdc-cli_*_${osname}_x86_64.tgz hdc-cli_${osname}_x86_64.tgz
-   done
+  for osname in Darwin Linux Windows; do
+    ln -fs hdc-cli_*_${osname}_x86_64.tgz hdc-cli_${osname}_x86_64.tgz
+  done
 
-   hdc --version || echo "Warning hdc cli installation failed"
+   hdc --version || echo "Warning: hdc cli installation failed"
    cd -
 }
 
