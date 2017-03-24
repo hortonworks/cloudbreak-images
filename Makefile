@@ -42,6 +42,9 @@ docker-build:
 
 check-docker-hub-build-status:
 	$(ENVS) ./scripts/docker-hub-build-check.sh
+	
+bundle-googlecompute:
+	$(ENVS) ./bundle-gcp-image.sh
 
 build-in-docker:
 	docker run -it \
