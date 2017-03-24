@@ -17,7 +17,12 @@ function debug {
 }
 
 function setting_up_epel() {
-  yum install -y epel-release
+  if grep -q -i "Red Hat Enterprise Linux Server release 6." /etc/redhat-release; then
+    wget https://dl.fedoraproject.org/pub/epel/epel-release-latest-6.noarch.rpm
+    yum install -y epel-release-latest-6.noarch.rpm
+  else
+    yum install -y epel-release
+  fi
   yum-config-manager --disable epel
   yum-config-manager epel --setopt "epel.exclude=zeromq* salt* python-zmq*" --save
 }
