@@ -132,8 +132,7 @@
     "type": "shell",
     "scripts": [
         "./pull-docker-images.sh",
-        "./cbd-init.sh",
-        "./create-gc-image.sh"
+        "./cbd-init.sh"
     ],
     "environment_vars": [
         "CBD_VERSION={{ user `cbd_version` }}",
