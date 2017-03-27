@@ -16,6 +16,10 @@ install_python_pip:
       - python-pip
     {% endif %}
 
+update_python_pip:
+  cmd.run:
+    - name: pip install --upgrade pip==8.1.2
+
 pip_install_requests_security:
   pip.installed:
     - pkgs:

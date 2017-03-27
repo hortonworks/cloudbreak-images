@@ -3,7 +3,6 @@ base:
     - prerequisites
     - eula
     - cloud-init
-    - waagent
     - selinux
     - unbound
     - consul
@@ -33,4 +32,5 @@ base:
     - prometheus
     - dhcp
     - performance
+    - waagent
     - cleanup
