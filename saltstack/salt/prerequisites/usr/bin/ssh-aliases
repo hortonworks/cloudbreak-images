@@ -57,16 +57,6 @@ fix_root_ssh() {
   sed -i 's#command=".*" ssh-rsa#command="cat /etc/motd-login;sleep 5" ssh-rsa#' /root/.ssh/authorized_keys
 }
 
-create_ssh_aliases() {
-  debug "create_ssh_aliases()"
-  for script in $HELPER_DIR/helper-*; do
-    name=${script#*helper-}
-    grep -q $user /etc/passwd && userdel -rf $name
-    sshcommand create $name $script
-    echo "$PUBLIC_SSH_KEY" | sshcommand acl-add $name default
-  done
-}
-
 create_default_user() {
   debug "create_default_user()"
 
@@ -112,7 +102,6 @@ EOF
         ;;
       *)
         create_default_user
-        create_ssh_aliases
         fix_root_ssh
         link_helpers
         create_motd
