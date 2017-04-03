@@ -3,7 +3,7 @@ install_saltbootstrap:
     - name: /usr/sbin/
     - source: https://github.com/hortonworks/salt-bootstrap/releases/download/v0.11.0/salt-bootstrap_0.11.0_Linux_x86_64.tgz
     - archive_format: tar
-    - source_hash: md5=bf18fb354d9799485f94a8ec6a867c7d
+    - source_hash: md5=db8552b4d37703af7c66886921b15473
     - enforce_toplevel: false
     - if_missing: /usr/sbin/salt-bootstrap
 
