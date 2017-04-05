@@ -33,7 +33,7 @@ update_centos() {
     #rpm -Uvh ${EPEL}.noarch.rpm
   fi
   yum clean all
-  #yum update -y
+  yum update -y
 }
 
 permissive_iptables() {
