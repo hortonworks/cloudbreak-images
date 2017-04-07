@@ -8,7 +8,6 @@ include:
   - {{ slspath }}.pip
   - {{ slspath }}.cert-tool
   - {{ slspath }}.dnsmasq
-  - {{ slspath }}.amazon2017
 
 /usr/bin/:
   file.recurse:
