@@ -45,6 +45,10 @@ make build-openstack
 PACKER_OPTS=--debug make build-openstack
 ```
 
+### Check the logs without debug mode
+A simple file browser is launched during image creation which can be accessed on port 9999. User: `admin`, password: `secret`. 
+To access the browser you need to open the port in the security groups on the cloud provider.
+
 ## Building images without Packer
 
 > *Warning:* this method is not supported or tested, it just replicates what Packer do
