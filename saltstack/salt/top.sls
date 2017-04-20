@@ -1,6 +1,7 @@
 base:
   '*':
     - prerequisites
+    - simple-webserver
     - eula
     - cloud-init
     - selinux

@@ -17,6 +17,7 @@ packages_install:
       - bash-completion
       - iptables
       - mc
+      - ruby
     {% if grains['os_family'] == 'RedHat' %}
       - snappy
       - snappy-devel
