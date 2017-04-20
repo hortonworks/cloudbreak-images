@@ -24,6 +24,7 @@ base:
 {% if grains['os_family'] == 'RedHat' %}
     {% if pillar['AMBARI_VERSION'] and pillar['AMBARI_BASEURL'] and pillar['AMBARI_GPGKEY'] %}
     - ambari
+    - grafana
     - smartsense
     {% if  pillar['HDP_STACK_VERSION'] and  pillar['HDP_VERSION'] and  pillar['HDP_BASEURL'] and  pillar['HDP_REPOID'] %}
     - pre-warm
