@@ -36,7 +36,7 @@
     "azure_image_sku": "{{ env `AZURE_IMAGE_SKU` }}",
     "salt_install_os": "{{ env `SALT_INSTALL_OS` }}",
     "salt_install_repo": "{{ env `SALT_INSTALL_REPO` }}",
-    "aws_instance_type": "m3.large"
+    "aws_instance_type": "m3.2xlarge"
   },
   "builders": [
     {
