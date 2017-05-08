@@ -1,10 +1,10 @@
 install_saltbootstrap:
   archive.extracted:
     - name: /usr/sbin/
-    - source: https://github.com/hortonworks/salt-bootstrap/releases/download/v0.11.0/salt-bootstrap_0.11.0_Linux_x86_64.tgz
+    - source: https://github.com/hortonworks/salt-bootstrap/releases/download/v0.11.1/salt-bootstrap_0.11.1_Linux_x86_64.tgz
     - archive_format: tar
-    - source_hash: md5=db8552b4d37703af7c66886921b15473
     - enforce_toplevel: false
+    - skip_verify: True
     - if_missing: /usr/sbin/salt-bootstrap
 
 create_saltbootstrap_service_files:
