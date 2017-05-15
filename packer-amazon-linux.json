@@ -16,7 +16,7 @@
 
     "instance_type": "m3.medium",
 
-    "ami-eu-west-1": "ami-c61b13a0"
+    "ami-eu-west-1": "ami-01ccc867"
   },
   "builders":[
   {
