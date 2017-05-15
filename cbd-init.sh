@@ -31,8 +31,9 @@ cbd_init() {
     sudo mkdir -p $CBD_DIR
     sudo chown -R $OS_USER:$OS_USER $CBD_DIR
     cd $CBD_DIR
-    
+
     cbd init
+    cbd_prepare
     cbd generate
     cbd pull-parallel
 
@@ -46,6 +47,18 @@ cbd_init() {
 eval "$(bash -c 'cd /var/lib/cloudbreak-deployment; cbd bash-complete')"
 EOF
     rm -rf certs *.yml *.log
+}
+
+cbd_prepare() {
+  cd $CBD_DIR
+  echo "export UAA_DEFAULT_SECRET=fakesecret" >> Profile
+  echo "export UAA_DEFAULT_USER_PW=fakepw" >> Profile
+}
+
+cbd_cleanup() {
+  cd $CBD_DIR
+  sed -i.bak '/export UAA_DEFAULT_SECRET=fakesecret/d' ./Profile
+  sed -i.bak '/export UAA_DEFAULT_USER_PW=fakepw/d' ./Profile
 }
 
 cbd_install() {
@@ -121,6 +134,7 @@ main() {
     reset_hostname
     reset_authorized_keys
     cleanup_aws_marketplace_eula
+    cbd_cleanup
     debug "[DONE] $BASH_SOURCE"
 }
 
