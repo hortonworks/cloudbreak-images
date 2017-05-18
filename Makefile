@@ -43,6 +43,13 @@ build-aws-centos6:
 	SALT_INSTALL_REPO="https://repo.saltstack.com/yum/redhat/salt-repo-2016.11-1.el6.noarch.rpm" \
 	$(ENVS) ./scripts/packer.sh build -only=aws-centos6 $(PACKER_OPTS) packer.json
 
+build-aws-centos7:
+	$(ENVS) \
+	ATLAS_ARTIFACT_TYPE=amazon \
+	SALT_INSTALL_OS=centos \
+	SALT_INSTALL_REPO="https://repo.saltstack.com/yum/redhat/salt-repo-2016.11-1.el7.noarch.rpm" \
+	$(ENVS) ./scripts/packer.sh build -only=aws-centos7 $(PACKER_OPTS) packer.json
+
 build-aws-debian7:
 	$(ENVS) \
 	ATLAS_ARTIFACT_TYPE=amazon \
