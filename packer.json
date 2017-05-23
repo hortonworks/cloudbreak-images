@@ -161,6 +161,7 @@
         "cbd_version": "{{ user `cbd_version` }}",
         "os_user": "{{user `os_user` }}",
         "image_name": "{{ user `image_name` }}",
+        "short_image_name": "{{ user `short_image_name` }}",
         "yum_version_docker": "{{ user `yum_version_docker` }}"
       }
     }
