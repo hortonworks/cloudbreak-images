@@ -20,6 +20,10 @@ cbd_init() {
     cd $_
 
     echo export PUBLIC_IP=$(dig +short myip.opendns.com @resolver1.opendns.com) > Profile
+    echo "export UAA_DEFAULT_USER_EMAIL=admin@example.com" >> Profile
+    echo "export UAA_DEFAULT_USER_PW=cloudbreak" >> Profile
+    echo "export UAA_DEFAULT_SECRET=cbsecret2015" >> Profile
+    echo "export CB_INSTANCE_UUID=$(uuidgen | tr '[:upper:]' '[:lower:]')" >> Profile
     cbd generate
     cbd pull-parallel
 
