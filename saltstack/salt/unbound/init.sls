@@ -1,15 +1,29 @@
 {% if grains['os'] == 'Amazon' %}
-create_centos_extra_repo:
+create_centos_os_repo:
   pkgrepo.managed:
-    - name: centos-extras
-    - humanname: "CentOS-6 - Extras"
-    - mirrorlist: http://mirrorlist.centos.org/?release=6&arch=$basearch&repo=extras&infra=$infra
+    - name: centos-os
+    - enabled: True
+    - humanname: "CentOS-6 - OS"
+    - mirrorlist: http://mirrorlist.centos.org/?release=6&arch=$basearch&repo=os&infra=$infra
     - gpgcheck: 1
     - gpgkey: "http://mirror.centos.org/centos/RPM-GPG-KEY-CentOS-6"
 {% endif %}
 
+{% if grains['os'] == 'Amazon' %}
+install_pyhton26:
+  pkg.installed:
+    - pkgs:
+      - compat-libevent
+      - libpcap
+      - python26
+      - python26-libs
+{% endif %}
+
 install_unbound_server:
   pkg.installed:
+    {% if grains['os'] == 'Amazon' %}
+    - fromrepo: centos-os
+    {% endif %}
     - pkgs:
       {% if grains['os_family'] == 'RedHat' %}
       - ldns
@@ -22,6 +36,13 @@ install_unbound_server:
       - unbound-anchor
       - unbound
       {% endif %}
+
+{% if grains['os'] == 'Amazon' %}
+disable_centos_os_repo:
+  pkgrepo.managed:
+    - name: centos-os
+    - enabled: False
+{% endif %}
 
 config_unbound_server:
   file.managed:
