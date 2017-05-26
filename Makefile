@@ -28,6 +28,9 @@ build-googlecompute: generate-vars
 build-azure: generate-vars
 	$(ENVS) ./scripts/packer.sh build -only=azure-arm $(PACKER_OPTS) packer.json
 
+create-managed-image:
+	$(ENVS) ./scripts/create-managed-disk.sh
+
 build-openstack: generate-vars
 	$(ENVS) ./scripts/packer.sh build $(PACKER_OPTS) packer-openstack.json
 
