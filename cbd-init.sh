@@ -45,7 +45,7 @@ cbd_init() {
     cat >> ~/.bashrc <<"EOF"
 eval "$(bash -c 'cd /var/lib/cloudbreak-deployment; cbd bash-complete')"
 EOF
-    rm -rf certs *.yml *.log
+    rm -rf certs *.yml *.log .starttime
 }
 
 cbd_prepare() {
