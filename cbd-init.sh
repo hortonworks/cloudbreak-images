@@ -22,7 +22,7 @@ cbd_init() {
     cbd init
     cbd pull-parallel
 
-    rm -rf Profile certs *.yml *.log
+    rm -rf Profile certs *.yml *.log .starttime
     chown -R $OS_USER:$OS_USER $CBD_DIR
     chown -R $OS_USER:$OS_USER /var/lib/cloudbreak/
 }
