@@ -19,7 +19,7 @@ cbd_init() {
     mkdir $CBD_DIR
     cd $_
 
-    cbd init
+    echo "export UAA_DEFAULT_USER_PW=password" > Profile
     cbd pull-parallel
 
     rm -rf Profile certs *.yml *.log .starttime
