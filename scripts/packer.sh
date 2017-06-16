@@ -74,7 +74,7 @@ packer_in_container() {
     -v $PWD:$PWD \
     -w $PWD \
     $dockerOpts \
-    hashicorp/packer:0.12.2 "$@" $packerFile
+    hashicorp/packer:1.0.3 "$@" $packerFile
 }
 
 main() {

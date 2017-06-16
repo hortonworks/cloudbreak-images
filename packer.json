@@ -52,7 +52,11 @@
         "us-east-1",
         "sa-east-1",
         "us-west-1",
-        "us-west-2"
+        "us-west-2",
+        "us-east-2",
+        "ca-central-1",
+        "eu-west-2",
+        "ap-south-1"
       ],
       "ssh_pty": true,
       "source_ami": "ami-9398d3e0",
@@ -95,7 +99,11 @@
         "us-east-1",
         "sa-east-1",
         "us-west-1",
-        "us-west-2"
+        "us-west-2",
+        "us-east-2",
+        "ca-central-1",
+        "eu-west-2",
+        "ap-south-1"
       ],
       "ssh_pty": true,
       "source_ami": "ami-edb9069e",
@@ -138,7 +146,11 @@
         "us-east-1",
         "sa-east-1",
         "us-west-1",
-        "us-west-2"
+        "us-west-2",
+        "us-east-2",
+        "ca-central-1",
+        "eu-west-2",
+        "ap-south-1"
       ],
       "ssh_pty": true,
       "source_ami": "ami-061b1560",
@@ -238,7 +250,11 @@
         "us-east-1",
         "sa-east-1",
         "us-west-1",
-        "us-west-2"
+        "us-west-2",
+        "us-east-2",
+        "ca-central-1",
+        "eu-west-2",
+        "ap-south-1"
       ],
       "ssh_pty": true,
       "source_ami": "ami-61e56916",
