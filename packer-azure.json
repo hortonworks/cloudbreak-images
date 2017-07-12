@@ -66,7 +66,7 @@
         ,{
           "type": "atlas",
           "token": "{{user `atlas_token`}}",
-          "artifact": "sequenceiq/{{ user `atlas_artifact` }}",
+          "artifact": "hortonworks/{{ user `atlas_artifact` }}",
           "artifact_type": "azure.yml",
           "metadata": {
             "cloudbreak_image_version": "{{ user `cloudbreak_image_version` }}",
@@ -78,7 +78,7 @@
     ,{
       "type": "atlas",
       "token": "{{user `atlas_token`}}",
-      "artifact": "sequenceiq/{{ user `atlas_artifact` }}",
+      "artifact": "hortonworks/{{ user `atlas_artifact` }}",
       "artifact_type": "azure.image",
       "metadata": {
         "created_at": "{{timestamp}}",

@@ -16,7 +16,7 @@ _glance() {
         -e OS_PASSWORD=$OS_PASSWORD \
         -e OS_TENANT_NAME=$OS_TENANT_NAME \
         -e OS_USERNAME=$OS_USERNAME \
-        sequenceiq/glance-cli:1.1.0 \
+        hortonworks/glance-cli:1.1.0 \
       "$@"
   else
     glance "$@"

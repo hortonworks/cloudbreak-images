@@ -15,7 +15,7 @@ debug() {
 
 main() {
 	if [[ -z "$IMAGE_NAME" ]]; then
-		IMAGE_NAME=$(curl https://atlas.hashicorp.com/api/v1/artifacts/sequenceiq/cloudbreak/googlecompute.image/search | jq '.versions[0].metadata.image_name' -r)
+		IMAGE_NAME=$(curl https://atlas.hashicorp.com/api/v1/artifacts/hortonworks/cloudbreak/googlecompute.image/search | jq '.versions[0].metadata.image_name' -r)
 	fi
 
 	: ${ZONE:=us-central1-b}

@@ -82,7 +82,7 @@
       {
         "type": "atlas",
         "token": "{{user `atlas_token`}}",
-        "artifact": "sequenceiq/{{ user `atlas_artifact` }}",
+        "artifact": "hortonworks/{{ user `atlas_artifact` }}",
         "artifact_type": "aws.image",
         "metadata": {
           "created_at": "{{timestamp}}"
@@ -92,7 +92,7 @@
     {
       "type": "atlas",
       "token": "{{user `atlas_token`}}",
-      "artifact": "sequenceiq/{{ user `atlas_artifact` }}",
+      "artifact": "hortonworks/{{ user `atlas_artifact` }}",
       "artifact_type": "amazon.image",
       "metadata": {
         "created_at": "{{timestamp}}"
