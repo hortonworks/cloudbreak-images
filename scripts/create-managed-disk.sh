@@ -9,7 +9,7 @@ set -x
 
 echo "CBD_VERSION_UNDERSCORE: $CBD_VERSION_UNDERSCORE"
 
-IMAGE_NAME="$(atlas -s sequenceiq/cbd/azure-arm.image --meta cbd_version=$CBD_VERSION -l | jq .metadata.short_image_name -r)"
+IMAGE_NAME="$(atlas -s hortonworks/cbd/azure-arm.image --meta cbd_version=$CBD_VERSION -l | jq .metadata.short_image_name -r)"
 echo "IMAGE_NAME: $IMAGE_NAME"
 
 IMAGE_VHD=$(docker run -i --rm azuresdk/azure-cli-python:0.2.9 /bin/bash -c "az login --username $ARM_USERNAME --password $ARM_PASSWORD &> /dev/null; \
