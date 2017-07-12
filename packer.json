@@ -311,7 +311,7 @@
   "post-processors": [
     {
       "type": "atlas",
-      "artifact": "sequenceiq/{{ user `atlas_artifact` }}",
+      "artifact": "hortonworks/{{ user `atlas_artifact` }}",
       "artifact_type": "{{ user `atlas_artifact_type` }}.image",
       "metadata": {
         "created_at": "{{timestamp}}",
