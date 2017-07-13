@@ -37,8 +37,8 @@ cbd_init() {
     cbd generate
     cbd pull-parallel
 
-    docker pull hortonworks/cloud-web:${CBD_VERSION}
-    docker pull hortonworks/cloud-auth:${CBD_VERSION}
+    docker pull hortonworks/hdc-web:${CBD_VERSION}
+    docker pull hortonworks/hdc-auth:${CBD_VERSION}
     docker pull hortonworks/cloudbreak-shell:${CBD_VERSION}
     docker pull postgres:9.4.1
 
