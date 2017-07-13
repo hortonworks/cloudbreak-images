@@ -1,12 +1,12 @@
 echo $CBD_VERSION
 cloudbreak_image="hortonworks/cloudbreak"
-cloudbreak_web_image="hortonworks/cloudbreak-web"
-cloudbreak_auth_image="hortonworks/cloudbreak-auth"
+cloudbreak_web_image="hortonworks/cb-web"
+cloudbreak_auth_image="hortonworks/cb-auth"
 periscope_image="hortonworks/cloudbreak-autoscale"
 cloudbreak_shell_image="hortonworks/cloudbreak-shell"
 
-cloud_web_image="hortonworks/cloud-web"
-cloud_auth_image="hortonworks/cloud-auth"
+cloud_web_image="hortonworks/hdc-web"
+cloud_auth_image="hortonworks/hdc-auth"
 
 exist_tag() {
     local is_tag_exist=$(curl -Ls -H "Content-Type:application/json" https://registry.hub.docker.com/v2/repositories/$1/tags?page_size=100 | jq '.results[]| select (.name=="'${CBD_VERSION}'")| .name' -r)
