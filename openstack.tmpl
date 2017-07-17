@@ -1,8 +1,0 @@
-versions:
-  docker: {{ .Config.PackerUserVars.yum_version_docker }}
-  kernel: {{ .Config.PackerUserVars.yum_version_kernel }}
-  systemd: {{ .Config.PackerUserVars.yum_version_systemd }}
-  cbd: {{ .Config.PackerUserVars.cbd_version }}
-openstack:
-  id: {{ .Artifact.Id }}
-  name: {{ .Config.PackerUserVars.image_name }}

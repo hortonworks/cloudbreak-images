@@ -23,20 +23,8 @@ deps:
 	curl -L https://github.com/lalyos/atlas/releases/download/v0.0.5/atlas_0.0.5_$(shell uname)_x86_64.tgz | tar -xz -C /usr/local/bin/
 	# go get github.com/bronze1man/yaml2json
 
-build-amazon: generate-vars
-	$(ENVS) ./scripts/packer.sh build -only=amazon $(PACKER_OPTS) packer.json
-
 build-amazon-linux: generate-vars
 	$(ENVS) ./scripts/packer.sh build -only=amazon-linux $(PACKER_OPTS) packer-amazon-linux.json
-
-build-googlecompute: generate-vars
-	$(ENVS) ./scripts/packer.sh build -only=googlecompute $(PACKER_OPTS) packer.json
-
-build-azure: generate-vars
-	$(ENVS) ./scripts/packer.sh build -only=azure-arm $(PACKER_OPTS) packer.json
-
-build-openstack: generate-vars
-	$(ENVS) ./scripts/packer.sh build $(PACKER_OPTS) packer-openstack.json
 
 generate-vars: docker-build
 	docker run -v $(PWD):/work -w /work --entrypoint=bash images:build -c 'make generate-vars-local'
