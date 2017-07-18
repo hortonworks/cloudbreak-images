@@ -20,6 +20,10 @@ function setting_up_epel() {
   if grep -q -i "Red Hat Enterprise Linux Server release 6." /etc/redhat-release; then
     wget https://dl.fedoraproject.org/pub/epel/epel-release-latest-6.noarch.rpm
     yum install -y epel-release-latest-6.noarch.rpm
+  elif grep -q -i "Red Hat Enterprise Linux Server release 7." /etc/redhat-release; then
+    yum install -y wget
+    wget https://dl.fedoraproject.org/pub/epel/epel-release-latest-7.noarch.rpm
+    yum install -y epel-release-latest-7.noarch.rpm
   else
     yum install -y epel-release
   fi
