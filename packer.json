@@ -168,6 +168,48 @@
       "ami_name": "{{ user `image_name`}}"
     },
     {
+      "name": "aws-rhel7",
+      "type": "amazon-ebs",
+      "region": "eu-west-1",
+      "ssh_pty": true,
+      "source_ami": "ami-f1978897",
+      "ami_regions": [
+        "ap-southeast-1",
+        "ap-southeast-2",
+        "eu-central-1",
+        "ap-northeast-1",
+        "ap-northeast-2",
+        "us-east-1",
+        "sa-east-1",
+        "us-west-1",
+        "us-west-2"
+      ],
+      "instance_type": "{{ user `aws_instance_type` }}",
+      "ssh_username": "ec2-user",
+      "enhanced_networking": false,
+      "ami_block_device_mappings": [
+        {
+          "device_name": "/dev/xvda",
+          "volume_type": "gp2",
+          "delete_on_termination": true,
+          "volume_size": 15
+        }
+      ],
+      "launch_block_device_mappings": [
+        {
+          "device_name": "/dev/xvda",
+          "volume_type": "gp2",
+          "delete_on_termination": true,
+          "volume_size": 15
+        }
+      ],
+      "tags": {
+        "builder": "packer",
+        "version": "{{user `version`}}"
+      },
+      "ami_name": "{{ user `image_name`}}"
+    },
+    {
       "name": "os-centos7",
       "type": "openstack",
       "username": "{{user `os_username`}}",
