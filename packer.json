@@ -172,7 +172,7 @@
       "type": "amazon-ebs",
       "region": "eu-west-1",
       "ssh_pty": true,
-      "source_ami": "ami-f1978897",
+      "source_ami": "ami-b22961c1",
       "ami_regions": [
         "ap-southeast-1",
         "ap-southeast-2",
