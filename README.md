@@ -39,6 +39,33 @@ The following environment variables are necessary for building OpenStack images:
 make build-openstack
 ```
 
+
+### GCP
+
+Install and Setup https://cloud.google.com/sdk/docs/quickstart-mac-os-x
+
+The following environment variables are necessary for building Google Cloud Platform images:
+
+* GCP_ACCOUNT_FILE
+
+```
+PACKER_OPTS=--debug make build-gc-centos7
+```
+
+Without Atlas
+- Delete the atlas postprocessor from `packer.json`
+```
+   export SALT_INSTALL_OS=centos
+   export SALT_INSTALL_REPO=“https://repo.saltstack.com/yum/redhat/salt-repo-2016.11-2.el7.noarch.rpm”
+   export HDP_VERSION=""
+   export BASE_NAME="hdc"
+   export IMAGE_NAME="hdp-1707131428"
+   export GCP_ACCOUNT_FILE=/Users/<username>/.config/gcloud/legacy_credentials/<googlecloudemail>/adc.json
+   export PACKER_OPTS=--debug
+   
+   ./scripts/packer.sh build packer_gcloud.json
+```
+
 ### Running packer in debug mode
 
 ```
