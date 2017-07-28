@@ -301,7 +301,7 @@
       "ssh_pty": "true",
       "username": "{{user `os_user`}}",
       "os_type": "Linux",
-      "ssh_username":"centos",
+      "ssh_username": "centos",
       "ssh_password": "{{user `ssh_password`}}",
       "location": "northeurope",
       "vm_size": "Standard_D4"
@@ -325,9 +325,9 @@
     {
       "type": "shell",
       "inline": [
-          "sudo chown -R root:root /tmp/saltstack",
-          "sudo mv /tmp/saltstack/salt /srv/salt",
-          "sudo mv /tmp/saltstack/pillar /srv/pillar"
+        "sudo chown -R root:root /tmp/saltstack",
+        "sudo mv /tmp/saltstack/salt /srv/salt",
+        "sudo mv /tmp/saltstack/pillar /srv/pillar"
       ]
     },
     {
