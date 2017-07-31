@@ -1,5 +1,4 @@
 docker run -i --rm \
-    -v ~/.azure:/root/.azure \
     -v $PWD:/work \
     -w /work \
     -e TRACE=$TRACE \
@@ -16,7 +15,6 @@ docker run -i --rm \
     hortonworks/cloudbreak-azure-cli-tools:1.8
 
 docker run -i --rm \
-    -v ~/.azure:/root/.azure \
     -v $PWD:/work \
     -w /work \
     --entrypoint pollprogress \
