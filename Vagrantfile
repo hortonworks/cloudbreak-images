@@ -34,7 +34,7 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
         :box => "centos/7",
         :ram => 1024,
         :cpu => 2,
-        :salt_repo => "https://repo.saltstack.com/yum/redhat/salt-repo-2016.11-1.el7.noarch.rpm"
+        :salt_repo => "https://repo.saltstack.com/yum/redhat/salt-repo-2016.11-2.el7.noarch.rpm"
       },
       {
         :hostname => "centos6-vagrant",

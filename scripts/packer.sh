@@ -2,6 +2,7 @@
 
 packer_in_container() {
   local dockerOpts=""
+  local packerFile="packer.json"
 
   if [[ "$GCP_ACCOUNT_FILE" ]]; then
     dockerOpts="$dockerOpts -v $GCP_ACCOUNT_FILE:$GCP_ACCOUNT_FILE"
@@ -15,6 +16,12 @@ packer_in_container() {
   if [[ "$JENKINS_HOME" ]]; then
     ## dont try to use docker tty on jenkins
     TTY_OPTS=""
+  fi
+
+  if [[ "$DISABLE_POSTPROCESSORS" ]]; then
+    rm -fv packer_no_pp.json
+    jq 'del(."post-processors")' packer.json > packer_no_pp.json
+    packerFile="packer_no_pp.json"
   fi
 
   [[ "$TRACE" ]] && set -x
@@ -64,7 +71,7 @@ packer_in_container() {
     -v $PWD:$PWD \
     -w $PWD \
     $dockerOpts \
-    hashicorp/packer:0.12.2 "$@"
+    hashicorp/packer:0.12.2 "$@" $packerFile
 }
 
 main() {

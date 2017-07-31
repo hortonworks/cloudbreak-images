@@ -13,3 +13,4 @@ build.sh
 *.iml
 *.pem
 .*
+packer_no_pp.json
