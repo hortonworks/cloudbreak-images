@@ -25,6 +25,26 @@ The following environment variables are necessary for building aws images:
 make build-amazon
 ```
 
+### Azure
+
+The following environment variables are necessary for building Azure images:
+
+* ARM_CLIENT_ID
+* ARM_CLIENT_SECRET
+* ARM_SUBSCRIPTION_ID
+* ARM_TENANT_ID
+* ARM_GROUP_NAME
+* ARM_STORAGE_ACCOUNT
+* AZURE_IMAGE_PUBLISHER (OpenLogic|RedHat)
+* AZURE_IMAGE_OFFER (CentOS|RHEL)
+* AZURE_IMAGE_SKU (6.8|7.2)
+* (ATLAS_TOKEN)
+
+```
+make build-azure-centos7
+```
+
+
 ### OpenStack
 
 The following environment variables are necessary for building OpenStack images:
@@ -62,7 +82,7 @@ Without Atlas
    export IMAGE_NAME="hdp-1707131428"
    export GCP_ACCOUNT_FILE=/Users/<username>/.config/gcloud/legacy_credentials/<googlecloudemail>/adc.json
    export PACKER_OPTS=--debug
-   
+
    ./scripts/packer.sh build packer_gcloud.json
 ```
 
@@ -73,7 +93,7 @@ PACKER_OPTS=--debug make build-openstack
 ```
 
 ### Check the logs without debug mode
-A simple file browser is launched during image creation which can be accessed on port 9999. User: `admin`, password: `secret`. 
+A simple file browser is launched during image creation which can be accessed on port 9999. User: `admin`, password: `secret`.
 To access the browser you need to open the port in the security groups on the cloud provider.
 
 ## Building images without Packer
