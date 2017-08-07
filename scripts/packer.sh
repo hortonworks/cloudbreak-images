@@ -18,7 +18,10 @@ packer_in_container() {
     TTY_OPTS=""
   fi
 
-  if [[ "$DISABLE_POSTPROCESSORS" ]]; then
+  if [[ "$ENABLE_POSTPROCESSORS" ]]; then
+    echo "Postprocessors are enabled"
+  else
+    echo "Postprocessors are disabled"
     rm -fv packer_no_pp.json
     jq 'del(."post-processors")' packer.json > packer_no_pp.json
     packerFile="packer_no_pp.json"

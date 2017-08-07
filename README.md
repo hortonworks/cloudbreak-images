@@ -3,31 +3,50 @@ Cloud images for Cloudbreak
 
 ## Building Cloudbreak images with Packer
 
-To change build parameters in `packer.json` or in `packer-openstack.json`  please consult with the [packer](https://www.packer.io/docs/) documentation.
+Images for Cloudbreak are created by [Packer](https://www.packer.io/docs/). The main entry point for creating an image is the `Makefile` which provides wrapper functionality around Packer scripts. Main configuration of Packer is located `packer.json` file, you can find more details about how it works in the [Packer documentation](https://www.packer.io/docs/).
 
 ### Prerequisites
 
-Only `docker` is necessary for building cloudbreak images.
+Only [Docker](https://www.docker.com/) and [GNU Make](https://www.gnu.org/software/make/) are necessary for building Cloudbreak images, since every step of image buring is encapsulated by these two Docker containers.
 
-### Using without atlas
+### Packer postprocessors
 
-Delete the atlas postprocessor from `packer.json` or in the case of OpenStack `packer-openstack.json`.
+By default all Packer postprocessors are removed before build. This behaviour can be changed by setting the: 
+```
+export ENABLE_POSTPROCESSORS=1
+```
+ 
+For example a postprocessor could be used to store image metadata into  [HashiCorp Atlas](https://www.hashicorp.com/blog/atlas-announcement/) for further processing. 
+
+If you don't know how postprocessors are working then you can safely ignore this section and please do NOT set ENABLE_POSTPROCESSORS=1 unless you know what you are doing.
 
 ### AWS
 
-The following environment variables are necessary for building aws images:
+Following environment variables are necessary for building aws images:
 
-* AWS_SECRET_ACCESS_KEY
 * AWS_ACCESS_KEY_ID
-* (ATLAS_TOKEN)
+* AWS_SECRET_ACCESS_KEY
 
+Example for environment variables:
 ```
-make build-amazon
+export AWS_ACCESS_KEY_ID=AKIAIQ**********
+export AWS_SECRET_ACCESS_KEY=XHj6bjmal***********************
 ```
 
+If you would like to build an image for AWS which is based on Amazon Linux you can execute:
+```
+make build-aws-amazonlinux
+```
+
+If you would like to build images based on different operating systems like CentOS 6, CentOS 7 or RHEL 7 use one of the following commands: 
+```
+build-aws-centos6
+build-aws-centos7
+build-aws-rhel7
+```
 ### Azure
 
-The following environment variables are necessary for building Azure images:
+Following environment variables are necessary for building Azure images:
 
 * ARM_CLIENT_ID
 * ARM_CLIENT_SECRET
@@ -38,87 +57,78 @@ The following environment variables are necessary for building Azure images:
 * AZURE_IMAGE_PUBLISHER (OpenLogic|RedHat)
 * AZURE_IMAGE_OFFER (CentOS|RHEL)
 * AZURE_IMAGE_SKU (6.8|7.2)
-* (ATLAS_TOKEN)
 
+Example for environment variables:
+```
+export ARM_CLIENT_ID=3234bb21-e6d0-*****-****-**********
+export ARM_CLIENT_SECRET=2c8bzH******************************
+export ARM_SUBSCRIPTION_ID=a9d4456e-349f-*****-****-**********
+export ARM_TENANT_ID=b60c9401-2154-*****-****-**********
+export ARM_GROUP_NAME=resourcegroupname
+export ARM_STORAGE_ACCOUNT=storageaccountname
+export AZURE_IMAGE_PUBLISHER=OpenLogic
+export AZURE_IMAGE_OFFER=CentOS
+export AZURE_IMAGE_SKU=7.2
+```
+
+If you would like to build an image for Azure which is based on CentOS 7 you can execute:
 ```
 make build-azure-centos7
 ```
 
-
 ### OpenStack
 
-The following environment variables are necessary for building OpenStack images:
+Following environment variables are necessary for building OpenStack images:
 
 * OS_AUTH_URL
 * OS_TENANT_NAME
 * OS_USERNAME
 * OS_PASSWORD
-* (ATLAS_TOKEN)
 
+Example for environment variables:
 ```
-make build-openstack
+export OS_AUTH_URL=http://openstack.eng.hortonworks.com:5000/v2.0
+export OS_USERNAME=cloudbreak
+export OS_TENANT_NAME=cloudbreak
+export OS_PASSWORD=**********
+```
+
+If you would like to build an image for OpenStack which is based on CentOS 7 you can execute:
+```
+make build-os-centos7
 ```
 
 
 ### GCP
 
-Install and Setup https://cloud.google.com/sdk/docs/quickstart-mac-os-x
-
-The following environment variables are necessary for building Google Cloud Platform images:
+Following environment variables are necessary for building Google Cloud Platform images:
 
 * GCP_ACCOUNT_FILE
+* GCP_CLIENT_SECRET
+* GCP_PROJECT
 
+Example for environment variables:
 ```
-PACKER_OPTS=--debug make build-gc-centos7
+export GCP_ACCOUNT_FILE=/var/lib/jenkins/.gce/siq-haas.json
+export GCP_CLIENT_SECRET=/var/lib/jenkins/.gce/client_secret.json
+export GCP_PROJECT=siq-haas
 ```
 
-Without Atlas
-- Delete the atlas postprocessor from `packer.json`
+If you would like to build an image for Google Cloud Platform which is based on CentOS 7 you can execute:
 ```
-   export SALT_INSTALL_OS=centos
-   export SALT_INSTALL_REPO=“https://repo.saltstack.com/yum/redhat/salt-repo-2016.11-2.el7.noarch.rpm”
-   export HDP_VERSION=""
-   export BASE_NAME="hdc"
-   export IMAGE_NAME="hdp-1707131428"
-   export GCP_ACCOUNT_FILE=/Users/<username>/.config/gcloud/legacy_credentials/<googlecloudemail>/adc.json
-   export PACKER_OPTS=--debug
+make build-gc-centos7
+```
 
-   ./scripts/packer.sh build packer_gcloud.json
-```
 
 ### Running packer in debug mode
 
+If you run Packer in degug mode then you can ssh into the VM during build phase and do additional debuging steps on the VM:
+
 ```
-PACKER_OPTS=--debug make build-openstack
+PACKER_OPTS=--debug make build-os-centos7
 ```
 
 ### Check the logs without debug mode
 A simple file browser is launched during image creation which can be accessed on port 9999. User: `admin`, password: `secret`.
 To access the browser you need to open the port in the security groups on the cloud provider.
 
-## Building images without Packer
-
-> *Warning:* this method is not supported or tested, it just replicates what Packer do
-
-* tar the `shared` folder and scp into the `tmp` folder of the instance to be used for building images.
-
-* Run the following commands:
-
-```
-# prepare scipts
-sudo yum install -y rsync
-sudo chown -R root:root /tmp/shared
-sudo rsync -a /tmp/shared/pre/ /
-
-# export variables
-export OS_USER=...user-name...(use cloudbreak)
-export PACKER_IMAGE_NAME=...image-name...
-export PACKER_BUILDER_TYPE=...amazon-ebs/googlecompute/openstack....
-
-chmod +x ./user-data-script.sh
-TRACE=1 sudo -E bash ./user-data-script.sh
-
-# cleanup
-sudo rsync -a /tmp/shared/post/ /
-```
-create ami or image out of the instance where you executed above scripts using cloud tools.
