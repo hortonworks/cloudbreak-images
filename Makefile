@@ -81,7 +81,7 @@ build-azure-centos7:
 	$(ENVS) ./scripts/azure-copy.sh
 
 bundle-googlecompute:
-	$(ENVS) ./bundle-gcp-image.sh
+	$(ENVS) ./scripts/bundle-gcp-image.sh
 
 upload-openstack-image:
 	ATLAS_PROJECT=${ATLAS_PROJECT} ./scripts/openstack-s3-upload.sh
