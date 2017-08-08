@@ -125,8 +125,13 @@ make build-gc-centos7
 If you run Packer in degug mode then you can ssh into the VM during build phase and do additional debuging steps on the VM:
 
 ```
-PACKER_OPTS=--debug make build-os-centos7
+PACKER_OPTS=--debug make build-aws-rhel7
 ```
+In debug mode you need to hit enter before each step is executed by Packer. Once the VM is launched by Packer you can login and do additional debug steps:
+
+```
+ssh -i ec2_aws-rhel7.pem ec2-user@<address of the machine displayed by Packer>
+``` 
 
 ### Check the logs without debug mode
 A simple file browser is launched during image creation which can be accessed on port 9999. User: `admin`, password: `secret`.
