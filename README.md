@@ -1,11 +1,13 @@
 # Cloud images for Cloudbreak
 
+## What is Cloudbreak?
 Cloudbreak, as part of the Hortonworks Data Platform, makes it easy to provision, configure and elastically grow HDP clusters on cloud infrastructure. Cloudbreak can be used to provision Hadoop across cloud infrastructure providers including Amazon Web Services, Microsoft Azure, Google Cloud Platform and OpenStack.
 
-Cloudbreak can launch clusters from images which includes default configuration and default  tooling for provision, but it does not necessarily includes Ambari / HDP package. Hortonworks makes a  set of such images publicly available for every released Cloudbreak version, but in some cases these publicly available images might not fit to the expectations of customers, because they would like to start the cluster from their own image.
+## Default an custom images
+Cloudbreak can launch clusters from an image that includes default configuration and default tooling for provisioning, but such an image does not necessarily include Ambari/HDP packages. Hortonworks makes a set of images publicly available for every released Cloudbreak version, but in some cases these publicly available images might not fit the expectations of customers, because they would like to start the cluster from their own image (e.g. they need custom OS hardening)
 
 ## Default image content
-From bird's perspective images contain the followings:
+From bird's-eye view, images contain the followings:
 - Operating system (Red Hat derivative e.g CentOS, Amazon Linux, RHEL)
 - Standard configuration (disabled SE Linux, permissive iptables, best practice configs, etc.)
 - Standard tooling (bootstrap scripts, bootstrap binaries)
@@ -21,21 +23,22 @@ Cloudbreak supports Red Hat Linux based operating systems, by default the follow
 
 It is also possible to create CentOS 6.x, CentOS 7.x, RHEL 6.x, RHEL 7.x based images for every platform. 
 
+# Custom image burning
 ## Access to image repository
-The recommended way is to fork this repo to to your own github account or to the account of your organisation and you can make changes there and create an image for there.
-If you think that some of the changes you made might be useful for Cloudbreak product then you can raise a JIRA and send us a pull request.
+The recommended way is to fork this repo to to your own github account or to the account of your organisation and you can make changes there and create an image from there.
+If you think that some of the changes you made might be useful for the Cloudbreak product also then you can raise a JIRA and send us a pull request.
 
-Note: After you have have forked the repository you are responsible to keep it up to date and fetch the latest changes from upstream. 
+> Note: After you have have forked the repository you are responsible to keep it up to date and fetch the latest changes from upstream. 
 
 ## Finding the right branch
-Cloudbreak-images repository contains different branches for different Cloudbreak versions. Cloudbreak version is defined as:
+Cloudbreak-images repository contains different branches for different Cloudbreak versions. Cloudbreak versions are defined as:
 ```
 <major>.<minor>.<patch>[-build sequence] e.g 1.16.3 or 1.16.4-rc.7
 ```
 
 If you are creating a custom image for Cloudbreak,  always make sure that you are using the correct branch from cloudbreak-images git repository.  You can find the related branch based on the <major> and <minor> version numbers of Cloudbreak, e.g if you are using 1.16.3 or 1.16.4-rc.7 version of Cloudbreak then the related branch is rc-1.16. If you are using 2.0.1 version of Cloudbreak then the related image branch is rc-2.0.
 
-Note: If you are not using the appropriate branch for creating your image then most probably Cloudbreak will not be able to install the cluster successfully.
+> Note: If you are not using the appropriate branch for creating your image then there is a chance that Cloudbreak will not be able to install the cluster successfully.
 
 ## Building Cloudbreak images with Packer
 
@@ -43,7 +46,7 @@ Images for Cloudbreak are created by [Packer](https://www.packer.io/docs/). The 
 
 ### Prerequisites
 
-Only [Docker](https://www.docker.com/) and [GNU Make](https://www.gnu.org/software/make/) are necessary for building Cloudbreak images, since every step of image buring is encapsulated by these two Docker containers.
+Only [Docker](https://www.docker.com/) and [GNU Make](https://www.gnu.org/software/make/) are necessary for building Cloudbreak images, since every step of image buring is encapsulated by Docker containers.
 
 ### AWS
 
@@ -65,9 +68,9 @@ make build-aws-amazonlinux
 
 If you would like to build images based on different operating systems like CentOS 6, CentOS 7 or RHEL 7 use one of the following commands: 
 ```
-build-aws-centos6
-build-aws-centos7
-build-aws-rhel7
+make build-aws-centos6
+make build-aws-centos7
+make build-aws-rhel7
 ```
 ### Azure
 
@@ -147,18 +150,22 @@ make build-gc-centos7
 
 ### Running packer in debug mode
 
-If you run Packer in degug mode then you can ssh into the VM during build phase and do additional debuging steps on the VM:
+If you run Packer in debug mode then you can SSH into the VM during build phase and do additional debugging steps on the VM.
+This is how to start a build in debug mode:
 
 ```
 PACKER_OPTS=--debug make build-aws-rhel7
 ```
-In debug mode you need to hit enter before each step is executed by Packer. Once the VM is launched by Packer you can login and do additional debug steps:
+In debug mode, you need to hit enter before each step is executed by Packer. Once the VM is launched by Packer you can login and do additional debug steps:
 
 ```
 ssh -i ec2_aws-rhel7.pem ec2-user@<address of the machine displayed by Packer>
 ``` 
 
 ### Check the logs without debug mode
-A simple file browser is launched during image creation which can be accessed on port 9999. User: `admin`, password: `secret`.
-To access the browser you need to open the port in the security groups on the cloud provider.
+A simple file browser is launched during image creation which can be accessed on port 9999. 
+> User: `admin`, password: `secret`.
 
+To access the browser you need to open the port in the (TODO: which?) security group of your cloud provider.
+
+TODO: Howto replace source-image
