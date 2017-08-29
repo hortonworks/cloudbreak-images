@@ -12,7 +12,7 @@ ENVS=HDP_VERSION=$(HDP_VERSION) BASE_NAME=$(BASE_NAME) IMAGE_NAME=$(IMAGE_NAME) 
 #PACKER_VARS=
 GIT_REV=$(shell git rev-parse --short HEAD)
 GIT_BRANCH=$(shell git rev-parse --abbrev-ref HEAD)
-GIT_TAG=$(shell git describe --exact-match --tags 2>/dev/null )
+GIT_TAG=$(shell git describe --exact-match --tags 2>/dev/null)
 
 ifdef DOCKER_VERSION
 	PACKER_VARS+=-var yum_version_docker=$(DOCKER_VERSION)
