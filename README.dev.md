@@ -57,7 +57,7 @@ The provisioning steps are implemented with [Salt state files](https://docs.salt
  - You can place your scripts inside `custom.sh`  
  - You can copy and reference your scripts like `custom.sh` is referred from `custom.sls`. 
  For each new file, a `file.managed` state is needed to copy the script to the VM and a `cmd.run` state is needed to actually run and log the script. 
- - You can create and reference your state file like `custom.sls` is referred from `init.sls`. You can include any custom Salt states, if your new sls file is included in `init.sls`, they will be applied automatically  
+ - You can create and reference your state file like `custom.sls` is referred from `init.sls`. You can include any custom Salt states, if your new sls files are included in `init.sls`, they will be applied automatically  
  
  > Warning: Please ensure that your script runs without any errors or mandatory user inputs
  

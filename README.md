@@ -166,7 +166,17 @@ ssh -i ec2_aws-rhel7.pem ec2-user@<address of the machine displayed by Packer>
 A simple file browser is launched during image creation which can be accessed on port 9999. 
 > User: `admin`, password: `secret`.
 
-To access the browser you need to open the port in the (TODO: which?) security group of your cloud provider.
+To access the browser, you need to open port 9999 in the security group of the generated resource group manually on your cloud provider.
+The generated resource group name will be displayed at the start of the build process.
+
+E.g. on Azure:
+```
+    arm-centos7: Creating Azure Resource Manager (ARM) client ...
+==> arm-centos7: Creating resource group ...
+==> arm-centos7:  -> ResourceGroupName : 'packer-Resource-Group-qx0lx7wkg7'
+==> arm-centos7:  -> Location          : 'northeurope'
+==> arm-centos7:  -> Tags              :
+```
 
 ### Advanced topics
 
