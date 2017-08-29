@@ -12,19 +12,11 @@ docker run -i --rm \
     -e ARM_USERNAME=$ARM_USERNAME \
     -e ARM_PASSWORD=$ARM_PASSWORD \
     --entrypoint azure-copy \
-<<<<<<< Updated upstream
-    hortonworks/cloudbreak-azure-cli-tools:1.8
-=======
     hortonworks/cloudbreak-azure-cli-tools:1.9.1
->>>>>>> Stashed changes
 
 docker run -i --rm \
     -v $PWD:/work \
     -w /work \
     --entrypoint pollprogress \
-<<<<<<< Updated upstream
-    hortonworks/cloudbreak-azure-cli-tools:1.8 \
-=======
     hortonworks/cloudbreak-azure-cli-tools:1.9.1 \
->>>>>>> Stashed changes
     checks.yml
