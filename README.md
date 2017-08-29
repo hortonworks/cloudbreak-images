@@ -3,7 +3,7 @@
 ## What is Cloudbreak?
 Cloudbreak, as part of the Hortonworks Data Platform, makes it easy to provision, configure and elastically grow HDP clusters on cloud infrastructure. Cloudbreak can be used to provision Hadoop across cloud infrastructure providers including Amazon Web Services, Microsoft Azure, Google Cloud Platform and OpenStack.
 
-## Default an custom images
+## Default and custom images
 Cloudbreak can launch clusters from an image that includes default configuration and default tooling for provisioning, but such an image does not necessarily include Ambari/HDP packages. Hortonworks makes a set of images publicly available for every released Cloudbreak version, but in some cases these publicly available images might not fit the expectations of customers, because they would like to start the cluster from their own image (e.g. they need custom OS hardening)
 
 ## Default image content
@@ -168,4 +168,8 @@ A simple file browser is launched during image creation which can be accessed on
 
 To access the browser you need to open the port in the (TODO: which?) security group of your cloud provider.
 
-TODO: Howto replace source-image
+### Advanced topics
+
+You can read more about postprocessors and customizing your base image 
+[here](README.dev.md).
+

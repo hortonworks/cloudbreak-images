@@ -35,4 +35,5 @@ base:
     - dhcp
     - performance
     - waagent
+    - custom
     - cleanup
