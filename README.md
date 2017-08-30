@@ -1,3 +1,24 @@
+**Table of Contents**
+
+- [Cloud images for Cloudbreak](#cloud-images-for-cloudbreak)
+  - [What is Cloudbreak?](#what-is-cloudbreak)
+  - [Default and custom images](#default-and-custom-images)
+  - [Default image content](#default-image-content)
+  - [Supported Operating Systems](#supported-operating-systems)
+- [Custom image burning](#custom-image-burning)
+  - [Access to image repository](#access-to-image-repository)
+  - [Finding the right branch](#finding-the-right-branch)
+  - [Building Cloudbreak images with Packer](#building-cloudbreak-images-with-packer)
+    - [Prerequisites](#prerequisites)
+    - [AWS](#aws)
+    - [Azure](#azure)
+    - [OpenStack](#openstack)
+    - [GCP](#gcp)
+    - [Running packer in debug mode](#running-packer-in-debug-mode)
+    - [Check the logs without debug mode](#check-the-logs-without-debug-mode)
+   - [Advanced topics](#advanced-topics)
+
+
 # Cloud images for Cloudbreak
 
 ## What is Cloudbreak?
@@ -178,8 +199,8 @@ E.g. on Azure:
 ==> arm-centos7:  -> Tags              :
 ```
 
-### Advanced topics
+## Advanced topics
 
-You can read more about postprocessors and customizing your base image 
+You can read more about postprocessors and customizing your base image with custom scripts and logic 
 [here](README.dev.md).
 
