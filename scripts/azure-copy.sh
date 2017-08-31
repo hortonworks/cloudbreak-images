@@ -12,11 +12,11 @@ docker run -i --rm \
     -e ARM_USERNAME=$ARM_USERNAME \
     -e ARM_PASSWORD=$ARM_PASSWORD \
     --entrypoint azure-copy \
-    hortonworks/cloudbreak-azure-cli-tools:1.9.1
+    hortonworks/cloudbreak-azure-cli-tools:1.9.2
 
 docker run -i --rm \
     -v $PWD:/work \
     -w /work \
     --entrypoint pollprogress \
-    hortonworks/cloudbreak-azure-cli-tools:1.9.1 \
+    hortonworks/cloudbreak-azure-cli-tools:1.9.2 \
     checks.yml
