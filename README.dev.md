@@ -1,16 +1,5 @@
 # Cloud images for Cloudbreak
-Addavnced topics for building Cloudbreak Images.
-
-## Packer postprocessors
-
-By default all Packer postprocessors are removed before build. This behaviour can be changed by setting the: 
-```
-export ENABLE_POSTPROCESSORS=1
-```
- 
-For example a postprocessor could be used to store image metadata into  [HashiCorp Atlas](https://www.hashicorp.com/blog/atlas-announcement/) for further processing. 
-
-If you don't know how postprocessors are working then you can safely ignore this section and please do NOT set ENABLE_POSTPROCESSORS=1 unless you know what you are doing.
+Advanced topics for building Cloudbreak Images.
 
 ## Customize image
 If you would like to use a customized image you could either
@@ -60,4 +49,16 @@ The provisioning steps are implemented with [Salt state files](https://docs.salt
  - You can create and reference your state file like `custom.sls` is referred from `init.sls`. You can include any custom Salt states, if your new sls files are included in `init.sls`, they will be applied automatically  
  
  > Warning: Please ensure that your script runs without any errors or mandatory user inputs
+
+
+## Packer postprocessors
+
+By default all Packer postprocessors are removed before build. This behaviour can be changed by setting the: 
+```
+export ENABLE_POSTPROCESSORS=1
+```
  
+For example a postprocessor could be used to store image metadata into  [HashiCorp Atlas](https://www.hashicorp.com/blog/atlas-announcement/) for further processing. 
+
+If you don't know how postprocessors are working then you can safely ignore this section and please do NOT set ENABLE_POSTPROCESSORS=1 unless you know what you are doing.
+
