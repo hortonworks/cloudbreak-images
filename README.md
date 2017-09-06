@@ -35,6 +35,9 @@ From bird's-eye view, images contain the following:
 - Standard configuration (disabled SE Linux, permissive iptables, best practice configs, etc.)
 - Standard tooling (bootstrap scripts, bootstrap binaries)
 
+> Important: Ambari and HDP packages are not part of the image and the desired version of Ambari and HDP packages
+  are downloaded during provision time. This makes the images agnostic to the version of Ambari and HDP that can be installed by Cloudbreak.
+
 In some cases, these default images might not fit the requirements of users (e.g. they need custom OS hardening, libraries, tooling, etc) and
 instead, the user would like to start their clusters from their own **custom image**.
 
