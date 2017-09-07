@@ -38,6 +38,14 @@ From bird's-eye view, images contain the following:
 > Important: Ambari and HDP packages are not part of the image and the desired version of Ambari and HDP packages
   are downloaded during provision time. This makes the images agnostic to the version of Ambari and HDP that can be installed by Cloudbreak.
 
+The following **standard** default images and Linux versions are available for each Cloudbreak version:
+- Amazon: Amazon Linux 2017
+- Azure: CentOS 7.3
+- GCP: CentOS 7.3
+- OpenStack: CentOS 7.3
+
+It is also possible to create CentOS 6.x, CentOS 7.x, RHEL 6.x, RHEL 7.x based images for every platform. 
+
 In some cases, these default images might not fit the requirements of users (e.g. they need custom OS hardening, libraries, tooling, etc) and
 instead, the user would like to start their clusters from their own **custom image**.
 
