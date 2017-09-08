@@ -1,18 +1,21 @@
-# Cloud images for Cloudbreak
-Advanced topics for building Cloudbreak Images.
+# Custom Images for Cloudbreak
 
-## Customize image
-If you would like to use a customized image you could either
-- set Packer to start from your [own custom image](#custom_base)
-- add your [custom logic](#custom_logic) - either as custom script or as custom [Salt]((https://docs.saltstack.com/en/latest/)) state
+This section covers advanced topics for building Custom Images.
 
-### <a name="custom_base"></a> Custom base image
+## Customizing the Base Image
 
-You have the option to start from your own pre-created source image, you have to modify the relevant section in the `builders` in the  `packer.json`.
+If you would like to start from a customized image, you could either:
+
+- Set Packer to start from your [own custom image](#custom_base)
+- Add your [custom logic](#custom_logic) - either as custom script or as custom [Salt]((https://docs.saltstack.com/en/latest/)) state
+
+### <a name="custom_base"></a> Custom Base Image
+
+You have the option to start from your own pre-created source image, you have to modify the relevant section in the `builders` in the  [packer.json](packer.json) file.
 
 The following table lists the property to be modified to be able to start from a custom image:  
 
- Provider | Name | Base image property 
+ Cloud Provider | Builder Name | Source Image Property 
  ---- | ---- | ----
  AWS | aws-amazonlinux | `source_ami: "ami-9398d3e0"`
  AWS | aws-centos6 | `source_ami: "ami-edb9069e"`
@@ -25,22 +28,21 @@ The following table lists the property to be modified to be able to start from a
 
 > Note: For Azure, you can list popular images as written in [documentation](https://docs.microsoft.com/en-us/azure/virtual-machines/linux/cli-ps-findimage#list-popular-images), but please note that only RHEL and CentOS is supported.
  
-### <a name="custom_logic"></a> Custom script
+### <a name="custom_logic"></a> Custom Script
 
-Cloudbreak uses [Salt stack](https://docs.saltstack.com/en/latest/) for image provisioninig, you have an option to extend the factory scripts based on custom requirements.
+Cloudbreak uses [SaltStack](https://docs.saltstack.com/en/latest/) for image provisioninig. You have an option to extend the factory scripts based on custom requirements.
 
-> Warning: Understanding the following content requires a basic understanding of the concepts of [Salt stack](https://docs.saltstack.com/en/latest/), please read the relevant sections of the documentation
+> Warning: This is very advanced option. Understanding the following content requires a basic understanding of the concepts of [SaltStack](https://docs.saltstack.com/en/latest/). Please read the relevant sections of the documentation.
 
-The provisioning steps are implemented with [Salt state files](https://docs.saltstack.com/en/latest/topics/tutorials/states_pt1.html), there is a placeholder state file called `custom`.
- The following section describes the steps required to extend this `custom` state with either your own script or Salt state file.
+The provisioning steps are implemented with [Salt state files](https://docs.saltstack.com/en/latest/topics/tutorials/states_pt1.html), there is a placeholder state file called `custom`. The following section describes the steps required to extend this `custom` state with either your own script or Salt state file.
  
  1. Check the contents of the following directory:  `saltstack/salt/custom`, it provides extension points for implementing custom logic. The contents of the directory are the following:
  
- Filename | Description | 
- ---- | ---- 
- `init.sls` |  Top level descriptor for state, it references other state files
- `custom.sls` | Example for custom state file, by default it contains the example of copying and running `custom.sh` with some basic logging configured
- `/tmp/custom.sh` | Placeholder for custom logic
+| Filename | Description | 
+| ---- | ---- |
+| `init.sls` |  Top level descriptor for state, it references other state files |
+| `custom.sls` | Example for custom state file, by default it contains the example of copying and running `custom.sh` with some basic logging configured |
+| `/tmp/custom.sh` | Placeholder for custom logic |
  
  2. You have the following options to extend this state:
  - You can place your scripts inside `custom.sh`  
@@ -51,7 +53,7 @@ The provisioning steps are implemented with [Salt state files](https://docs.salt
  > Warning: Please ensure that your script runs without any errors or mandatory user inputs
 
 
-## Packer postprocessors
+## Packer Postprocessors
 
 By default all Packer postprocessors are removed before build. This behaviour can be changed by setting the: 
 ```
