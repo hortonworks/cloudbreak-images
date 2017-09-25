@@ -91,6 +91,11 @@ export AWS_ACCESS_KEY_ID=AKIAIQ**********
 export AWS_SECRET_ACCESS_KEY=XHj6bjmal***********************
 ```
 
+> Note: Since Packer is the underlaying technology used to build the AWS images, you can learn more 
+> about the minimal set of AWS IAM or Role policies necessary
+> [Packer > Amazon EC2](https://www.packer.io/docs/builders/amazon.html#using-an-iam-task-or-instance-role)
+
+
 Use the following commands to build AWS images based on the following base operating systems:
 
 | OS | Command |
