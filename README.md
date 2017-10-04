@@ -1,14 +1,12 @@
 **Table of Contents**
 
-- [Cloud images for Cloudbreak](#cloud-images-for-cloudbreak)
+- [Custom Images for Cloudbreak](#cloud-images-for-cloudbreak)
   - [What is Cloudbreak?](#what-is-cloudbreak)
-  - [Default and custom images](#default-and-custom-images)
-  - [Default image content](#default-image-content)
-  - [Supported Operating Systems](#supported-operating-systems)
-- [Custom image burning](#custom-image-burning)
-  - [Access to image repository](#access-to-image-repository)
-  - [Finding the right branch](#finding-the-right-branch)
-  - [Building Cloudbreak images with Packer](#building-cloudbreak-images-with-packer)
+  - [What are Custom Images?](#what-are-custom-images)
+  - [Using this Repository](#using-this-repository)
+  - [Finding the Correct Branch](#finding-the-correct-branch)
+- [Building a Custom Image](#building-a-custom-image)
+  - [Packer](#packer)
     - [Prerequisites](#prerequisites)
     - [AWS](#aws)
     - [Azure](#azure)
@@ -16,27 +14,31 @@
     - [GCP](#gcp)
     - [Running packer in debug mode](#running-packer-in-debug-mode)
     - [Check the logs without debug mode](#check-the-logs-without-debug-mode)
-   - [Advanced topics](#advanced-topics)
+    - [Advanced topics](#advanced-topics)
 
 
-# Cloud images for Cloudbreak
+# Custom Images for Cloudbreak
 
 ## What is Cloudbreak?
-Cloudbreak, as part of the Hortonworks Data Platform, makes it easy to provision, configure and elastically grow HDP clusters on cloud infrastructure. Cloudbreak can be used to provision Hadoop across cloud infrastructure providers including Amazon Web Services, Microsoft Azure, Google Cloud Platform and OpenStack.
+Cloudbreak is a tool to simplify the provisioning, configuration and scaling of **Hortonworks Data Platform** clusters
+on cloud provider infrastructure. Cloudbreak can be used to provision across
+cloud infrastructure providers including: Amazon Web Services (AWS), Microsoft Azure and Google Cloud Platform (GCP).
 
-## Default and custom images
-Cloudbreak can launch clusters from an image that includes default configuration and default tooling for provisioning, but such an image does not necessarily include Ambari/HDP packages. Hortonworks makes a set of images publicly available for every released Cloudbreak version, but in some cases these publicly available images might not fit the expectations of customers, because they would like to start the cluster from their own image (e.g. they need custom OS hardening)
+Learn more about Cloudbreak here: http://hortonworks.github.io/cloudbreak-docs/
 
-## Default image content
-From bird's-eye view, images contain the followings:
-- Operating system (Red Hat derivative e.g CentOS, Amazon Linux, RHEL)
+## What are Custom Images?
+Cloudbreak launches clusters from an image that includes default configuration and default tooling for provisioning. These
+are considered the **Standard** default images and these images are provided with each Cloudbreak version.
+
+From bird's-eye view, images contain the following:
+- Operating system (e.g. CentOS, Amazon Linux)
 - Standard configuration (disabled SE Linux, permissive iptables, best practice configs, etc.)
 - Standard tooling (bootstrap scripts, bootstrap binaries)
 
-Images do not limit the version of Ambari and HDP that can be installed by Cloudbreak. Ambari and HDP packages are not part of the image and the desired version of Ambari/HDP packages are downloaded during provision time. 
+> Important: Ambari and HDP packages are not part of the image and the desired version of Ambari and HDP packages
+  are downloaded during provision time. This makes the images agnostic to the version of Ambari and HDP that can be installed by Cloudbreak.
 
-## Supported Operating Systems
-Cloudbreak supports Red Hat Linux based operating systems, by default the following images are publicly available:
+The following **standard** default images and Linux versions are available for each Cloudbreak version:
 - Amazon: Amazon Linux 2017
 - Azure: CentOS 7.3
 - GCP: CentOS 7.3
@@ -44,34 +46,49 @@ Cloudbreak supports Red Hat Linux based operating systems, by default the follow
 
 It is also possible to create CentOS 6.x, CentOS 7.x, RHEL 6.x, RHEL 7.x based images for every platform. 
 
-# Custom image burning
-## Access to image repository
-The recommended way is to fork this repo to to your own github account or to the account of your organisation and you can make changes there and create an image from there.
-If you think that some of the changes you made might be useful for the Cloudbreak product also then you can raise a JIRA and send us a pull request.
+In some cases, these default images might not fit the requirements of users (e.g. they need custom OS hardening, libraries, tooling, etc) and
+instead, the user would like to start their clusters from their own **custom image**.
 
-> Note: After you have have forked the repository you are responsible to keep it up to date and fetch the latest changes from upstream. 
+The repository includes **instructions** and **scripts** to help build those **custom images**. Once you have an images, refer to the Cloudbreak documentation
+for information on how to register and use these images with Cloudbreak: http://hortonworks.github.io/cloudbreak-docs/
 
-## Finding the right branch
-Cloudbreak-images repository contains different branches for different Cloudbreak versions. Cloudbreak versions are defined as:
+## Using this Repository
+Our recommendation is to fork this repo to to your own GitHub account or to the account of your organization and you can make changes there and create an image from there.
+If you think that some of the changes you made might be useful for the Cloudbreak product as a whole, feel free to send us a pull request.
+
+> Note: After you have have forked the repository, you are responsible to keep it up to date and fetch the latest changes from the upstream repository. 
+
+## Finding the Correct Branch
+This repository contains different branches for different Cloudbreak versions. Cloudbreak versions are defined as:
 ```
 <major>.<minor>.<patch>[-build sequence] e.g 1.16.3 or 1.16.4-rc.7
 ```
+If you are creating a custom image for Cloudbreak, always make sure that you are using the correct branch from `cloudbreak-images` repository.
+You can find the related branch based on the <major> and <minor> version numbers of Cloudbreak (e.g if you are using 1.16.3 or 1.16.4-rc.7 version of Cloudbreak then the related branch is rc-1.16).
+If you are using 2.0.1 version of Cloudbreak then the related image branch is rc-2.0.
 
-If you are creating a custom image for Cloudbreak,  always make sure that you are using the correct branch from cloudbreak-images git repository.  You can find the related branch based on the <major> and <minor> version numbers of Cloudbreak, e.g if you are using 1.16.3 or 1.16.4-rc.7 version of Cloudbreak then the related branch is rc-1.16. If you are using 2.0.1 version of Cloudbreak then the related image branch is rc-2.0.
+> Note: If you do not use the appropriate branch for creating your image then there is a chance that Cloudbreak will not be able to install the cluster successfully.
 
-> Note: If you are not using the appropriate branch for creating your image then there is a chance that Cloudbreak will not be able to install the cluster successfully.
+# Building a Custom Image
 
-## Building Cloudbreak images with Packer
+## Packer
 
-Images for Cloudbreak are created by [Packer](https://www.packer.io/docs/). The main entry point for creating an image is the `Makefile` which provides wrapper functionality around Packer scripts. Main configuration of Packer is located `packer.json` file, you can find more details about how it works in the [Packer documentation](https://www.packer.io/docs/).
+Images for Cloudbreak are created by [Packer](https://www.packer.io/docs/). The main entry point for creating an image is the `Makefile` which provides wrapper functionality around Packer scripts.
+You can find more details about how it works in the [Packer documentation](https://www.packer.io/docs/).
+
+Main configuration of Packer for building the Cloudbreak images is located in the `packer.json` file.
 
 ### Prerequisites
 
-Only [Docker](https://www.docker.com/) and [GNU Make](https://www.gnu.org/software/make/) are necessary for building Cloudbreak images, since every step of image buring is encapsulated by Docker containers.
+The following are requirements for the image building environment:
+
+- [Docker](https://www.docker.com/)
+- [GNU Make](https://www.gnu.org/software/make/)
+- [jq](https://stedolan.github.io/jq/)
 
 ### AWS
 
-Following environment variables are necessary for building aws images:
+Set the following environment variables to build AWS images:
 
 * AWS_ACCESS_KEY_ID
 * AWS_SECRET_ACCESS_KEY
@@ -82,20 +99,24 @@ export AWS_ACCESS_KEY_ID=AKIAIQ**********
 export AWS_SECRET_ACCESS_KEY=XHj6bjmal***********************
 ```
 
-If you would like to build an image for AWS which is based on Amazon Linux you can execute:
-```
-make build-aws-amazonlinux
-```
+> Note: Since Packer is the underlaying technology used to build the AWS images, you can learn more 
+> about the environment variables at [Packer > Amazon Reference](https://www.packer.io/docs/builders/amazon-ebs.html#configuration-reference) and the minimal set of AWS IAM or Role policies necessary at
+> [Packer > Amazon EC2 Roles](https://www.packer.io/docs/builders/amazon.html#using-an-iam-task-or-instance-role)
 
-If you would like to build images based on different operating systems like CentOS 6, CentOS 7 or RHEL 7 use one of the following commands: 
-```
-make build-aws-centos6
-make build-aws-centos7
-make build-aws-rhel7
-```
+
+Use the following commands to build AWS images based on the following base operating systems:
+
+| OS | Command |
+|---|---|
+| Amazon Linux | `make build-aws-amazonlinux` |
+| CentOS 6 | `make build-aws-centos6` |
+| CentOS 7 | `make build-aws-centos7` |
+| RHEL 7 | `make build-aws-rhel7` |
+
+
 ### Azure
 
-Following environment variables are necessary for building Azure images:
+Set the following environment variables to build Azure images:
 
 * ARM_CLIENT_ID
 * ARM_CLIENT_SECRET
@@ -120,14 +141,43 @@ export AZURE_IMAGE_OFFER=CentOS
 export AZURE_IMAGE_SKU=7.2
 ```
 
-If you would like to build an image for Azure which is based on CentOS 7 you can execute:
+> Note: Since Packer is the underlaying technology used to build the Azure images, you can learn more 
+> about the environment variables at [Packer > Azure Reference](https://www.packer.io/docs/builders/azure.html#configuration-reference).  
+
+Use the following commands to build Azure images based on the following base operating systems:
+
+| OS | Command |
+|---|---|
+| CentOS 7 | `make build-azure-centos7` |
+
+### GCP
+
+Set the following environment variables to build Google Cloud Platform images:
+
+* GCP_ACCOUNT_FILE
+* GCP_CLIENT_SECRET
+* GCP_PROJECT
+
+Example for environment variables:
 ```
-make build-azure-centos7
+export GCP_ACCOUNT_FILE=/var/lib/jenkins/.gce/siq-haas.json
+export GCP_CLIENT_SECRET=/var/lib/jenkins/.gce/client_secret.json
+export GCP_PROJECT=siq-haas
 ```
+
+> Note: Since Packer is the underlaying technology used to build the Google Cloud Platform images, you can learn more 
+> about the environment variables at [Packer > Google Compute Reference](https://www.packer.io/docs/builders/googlecompute.html#configuration-reference).  
+
+Use the following commands to build GCP images based on the following base operating systems:
+
+| OS | Command |
+|---|---|
+| CentOS 7 | `make build-gc-centos7` |
+
 
 ### OpenStack
 
-Following environment variables are necessary for building OpenStack images:
+Set the following environment variables to build OpenStack images:
 
 * OS_AUTH_URL
 * OS_TENANT_NAME
@@ -142,31 +192,14 @@ export OS_TENANT_NAME=cloudbreak
 export OS_PASSWORD=**********
 ```
 
-If you would like to build an image for OpenStack which is based on CentOS 7 you can execute:
-```
-make build-os-centos7
-```
+> Note: Since Packer is the underlaying technology used to build the OpenStack images, you can learn more 
+> about the environment variables at [Packer > OpenStack Reference](https://www.packer.io/docs/builders/openstack.html#configuration-reference). 
 
+Use the following commands to build OpenStack images based on the following base operating systems:
 
-### GCP
-
-Following environment variables are necessary for building Google Cloud Platform images:
-
-* GCP_ACCOUNT_FILE
-* GCP_CLIENT_SECRET
-* GCP_PROJECT
-
-Example for environment variables:
-```
-export GCP_ACCOUNT_FILE=/var/lib/jenkins/.gce/siq-haas.json
-export GCP_CLIENT_SECRET=/var/lib/jenkins/.gce/client_secret.json
-export GCP_PROJECT=siq-haas
-```
-
-If you would like to build an image for Google Cloud Platform which is based on CentOS 7 you can execute:
-```
-make build-gc-centos7
-```
+| OS | Command |
+|---|---|
+| CentOS 7 | `make build-os-centos7` |
 
 
 ### Running packer in debug mode
