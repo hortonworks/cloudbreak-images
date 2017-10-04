@@ -100,8 +100,8 @@ export AWS_SECRET_ACCESS_KEY=XHj6bjmal***********************
 ```
 
 > Note: Since Packer is the underlaying technology used to build the AWS images, you can learn more 
-> about the minimal set of AWS IAM or Role policies necessary
-> [Packer > Amazon EC2](https://www.packer.io/docs/builders/amazon.html#using-an-iam-task-or-instance-role)
+> about the environment variables at [Packer > Amazon Reference](https://www.packer.io/docs/builders/amazon-ebs.html#configuration-reference) and the minimal set of AWS IAM or Role policies necessary at
+> [Packer > Amazon EC2 Roles](https://www.packer.io/docs/builders/amazon.html#using-an-iam-task-or-instance-role)
 
 
 Use the following commands to build AWS images based on the following base operating systems:
@@ -141,6 +141,9 @@ export AZURE_IMAGE_OFFER=CentOS
 export AZURE_IMAGE_SKU=7.2
 ```
 
+> Note: Since Packer is the underlaying technology used to build the Azure images, you can learn more 
+> about the environment variables at [Packer > Azure Reference](https://www.packer.io/docs/builders/azure.html#configuration-reference).  
+
 Use the following commands to build Azure images based on the following base operating systems:
 
 | OS | Command |
@@ -161,6 +164,9 @@ export GCP_ACCOUNT_FILE=/var/lib/jenkins/.gce/siq-haas.json
 export GCP_CLIENT_SECRET=/var/lib/jenkins/.gce/client_secret.json
 export GCP_PROJECT=siq-haas
 ```
+
+> Note: Since Packer is the underlaying technology used to build the Google Cloud Platform images, you can learn more 
+> about the environment variables at [Packer > Google Compute Reference](https://www.packer.io/docs/builders/googlecompute.html#configuration-reference).  
 
 Use the following commands to build GCP images based on the following base operating systems:
 
@@ -185,6 +191,9 @@ export OS_USERNAME=cloudbreak
 export OS_TENANT_NAME=cloudbreak
 export OS_PASSWORD=**********
 ```
+
+> Note: Since Packer is the underlaying technology used to build the OpenStack images, you can learn more 
+> about the environment variables at [Packer > OpenStack Reference](https://www.packer.io/docs/builders/openstack.html#configuration-reference). 
 
 Use the following commands to build OpenStack images based on the following base operating systems:
 
