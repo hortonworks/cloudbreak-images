@@ -28,7 +28,7 @@ Learn more about Cloudbreak here: http://hortonworks.github.io/cloudbreak-docs/
 
 ## What are Custom Images?
 Cloudbreak launches clusters from an image that includes default configuration and default tooling for provisioning. These
-are considered the **Standard** default images and these images are provided with each Cloudbreak version.
+are considered the **Standard Default** images and these images are provided with each Cloudbreak version.
 
 From bird's-eye view, images contain the following:
 - Operating system (e.g. CentOS, Amazon Linux)
@@ -38,7 +38,7 @@ From bird's-eye view, images contain the following:
 > Important: Ambari and HDP packages are not part of the image and the desired version of Ambari and HDP packages
   are downloaded during provision time. This makes the images agnostic to the version of Ambari and HDP that can be installed by Cloudbreak.
 
-The following **standard** default images and Linux versions are available for each Cloudbreak version:
+The following **Standard Default** images and Linux versions are available for each Cloudbreak version:
 - Amazon: Amazon Linux 2017
 - Azure: CentOS 7.3
 - GCP: CentOS 7.3
@@ -47,10 +47,15 @@ The following **standard** default images and Linux versions are available for e
 It is also possible to create CentOS 6.x, CentOS 7.x, RHEL 6.x, RHEL 7.x based images for every platform. 
 
 In some cases, these default images might not fit the requirements of users (e.g. they need custom OS hardening, libraries, tooling, etc) and
-instead, the user would like to start their clusters from their own **custom image**.
-
-The repository includes **instructions** and **scripts** to help build those **custom images**. Once you have an images, refer to the Cloudbreak documentation
+instead, the user would like to start their clusters from their own **custom image**. The repository includes **instructions** and **scripts** to help build those **custom images**. Once you have an images, refer to the Cloudbreak documentation
 for information on how to register and use these images with Cloudbreak: http://hortonworks.github.io/cloudbreak-docs/
+
+You have two options for building a **custom image**:
+
+- If you are only looking to **change the OS and use a Cloudbreak base image for that OS**, use the instructions below for your
+cloud provider and build the image for a different OS, or
+- If you want to start from **your own base image**, follow the instructions in [Advanced topics](#advanced-topics) to
+modify the `package.json` to start from your own base image.
 
 ## Using this Repository
 Our recommendation is to fork this repo to to your own GitHub account or to the account of your organization and you can make changes there and create an image from there.
@@ -106,12 +111,15 @@ export AWS_SECRET_ACCESS_KEY=XHj6bjmal***********************
 
 Use the following commands to build AWS images based on the following base operating systems:
 
-| OS | Command |
+| OS | Build Command |
 |---|---|
 | Amazon Linux | `make build-aws-amazonlinux` |
 | CentOS 6 | `make build-aws-centos6` |
 | CentOS 7 | `make build-aws-centos7` |
 | RHEL 7 | `make build-aws-rhel7` |
+
+> If you want to start from **your own base image**, follow the instructions in [Advanced topics](#advanced-topics) to
+modify the `package.json` to start from your own base image. Then use the commands above to build that image.
 
 
 ### Azure
@@ -146,9 +154,13 @@ export AZURE_IMAGE_SKU=7.2
 
 Use the following commands to build Azure images based on the following base operating systems:
 
-| OS | Command |
+| OS | Build Command |
 |---|---|
 | CentOS 7 | `make build-azure-centos7` |
+
+> If you want to start from **your own base image**, follow the instructions in [Advanced topics](#advanced-topics) to
+modify the `package.json` to start from your own base image. Then use the commands above to build that image.
+
 
 ### GCP
 
@@ -170,9 +182,12 @@ export GCP_PROJECT=siq-haas
 
 Use the following commands to build GCP images based on the following base operating systems:
 
-| OS | Command |
+| OS | Build Command |
 |---|---|
 | CentOS 7 | `make build-gc-centos7` |
+
+> If you want to start from **your own base image**, follow the instructions in [Advanced topics](#advanced-topics) to
+modify the `package.json` to start from your own base image. Then use the commands above to build that image.
 
 
 ### OpenStack
@@ -197,9 +212,12 @@ export OS_PASSWORD=**********
 
 Use the following commands to build OpenStack images based on the following base operating systems:
 
-| OS | Command |
+| OS | Build Command |
 |---|---|
 | CentOS 7 | `make build-os-centos7` |
+
+> If you want to start from **your own base image**, follow the instructions in [Advanced topics](#advanced-topics) to
+modify the `package.json` to start from your own base image. Then use the commands above to build that image.
 
 
 ### Running packer in debug mode
