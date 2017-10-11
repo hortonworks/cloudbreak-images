@@ -11,23 +11,32 @@ If you would like to start from a customized image, you could either:
 
 ### <a name="custom_base"></a> Custom Base Image
 
-You have the option to start from your own pre-created source image, you have to modify the relevant section in the `builders` in the  [packer.json](packer.json) file.
+You have the option to start from your own pre-created source image, you have to modify the relevant section in the `builders` in the [packer.json](packer.json) file.
 
 The following table lists the property to be modified to be able to start from a custom image:  
 
- Cloud Provider | Builder Name | Source Image Property 
+ Cloud Provider | Builder Name | Base Source Image Properties
  ---- | ---- | ----
- AWS | aws-amazonlinux | `source_ami: "ami-9398d3e0"`
- AWS | aws-centos6 | `source_ami: "ami-edb9069e"`
- AWS | aws-centos7 | `source_ami: "ami-061b1560"`
- AWS | aws-rhel7 | `source_ami: "ami-b22961c1"`
- AWS | aws-debian7 | `source_ami: "ami-61e56916"`
+ AWS | aws-amazonlinux | `source_ami: "ami-9398d3e0"` and `"region": "..."`
+ AWS | aws-centos6 | `source_ami: "ami-edb9069e"` and `"region": "..."`
+ AWS | aws-centos7 | `source_ami: "ami-061b1560"` and `"region": "..."`
+ AWS | aws-rhel7 | `source_ami: "ami-b22961c1"` and `"region": "..."`
+ AWS | aws-debian7 | `source_ami: "ami-61e56916"` and `"region": "..."`
  Azure | arm-centos7 |  driven by input parameters:`image_publisher`, ` image_offer` and `image_sku`
  Google Cloud | gc-centos7 | `source_image: "centos-7-v20160921"`
  OpenStack | os-centos7 | `source_image: "d619e553-6a78-4b86-8b03-39b8a06df35e"`
 
 > Note: For Azure, you can list popular images as written in [documentation](https://docs.microsoft.com/en-us/azure/virtual-machines/linux/cli-ps-findimage#list-popular-images), but please note that only RHEL and CentOS is supported.
  
+#### AWS Example
+
+1. For this example, suppose you have your own RHEL 7 AMI `ami-XXXXXXXX` in region `us-east-1` in your AWS account.
+2. Open the [packer.json](packer.json) file.
+3. Find the section for `builders` and the section `"name": "aws-rhel7"`.
+4. Modify the properties `source_ami` and `region` to match the AMI in your AWS account.
+5. Save the [packer.json](packer.json) file.
+6. Proceed to [AWS](README.md#aws) and run the **Build Command** for RHEL 7.
+
 ### <a name="custom_logic"></a> Custom Script
 
 Cloudbreak uses [SaltStack](https://docs.saltstack.com/en/latest/) for image provisioninig. You have an option to extend the factory scripts based on custom requirements.
