@@ -9,7 +9,6 @@ set
 : ${LAZY_FORMAT_DISK_LIMIT:? required}
 : ${IS_GATEWAY:? required}
 : ${TMP_SSH_KEY:? required}
-: ${PUBLIC_SSH_KEY:? required}
 : ${SALT_BOOT_PASSWORD:? required}
 : ${SALT_BOOT_SIGN_KEY:? required}
 : ${SSH_USER:? required}
