@@ -1,5 +1,5 @@
 {% if grains['os_family'] == 'Debian' %}
-{% if grains['osmajorrelease'] == '7' %}
+{% if grains['osmajorrelease'] == 7 %}
 install_wheezy_backports_repository:
   pkgrepo.managed:
   - humanname: Wheezy backports components repo
@@ -19,7 +19,7 @@ install_cloud-init_packages:
     - pkgs:
       - cloud-init
     {% if grains['os_family'] == 'Debian' %}
-    {% if grains['osmajorrelease'] == '7' %}
+    {% if grains['osmajorrelease'] == 7 %}
     - fromrepo: wheezy-backports
     {% endif %}
     {% endif %}

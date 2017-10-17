@@ -34,49 +34,49 @@ build-aws-amazonlinux:
 	$(ENVS) \
 	ATLAS_ARTIFACT_TYPE=amazon \
 	SALT_INSTALL_OS=amazon \
-	SALT_INSTALL_REPO="https://repo.saltstack.com/yum/amazon/salt-amzn-repo-2016.11-1.amzn1.noarch.rpm" \
+	SALT_INSTALL_REPO="https://repo.saltstack.com/yum/amazon/salt-amzn-repo-2017.7-1.amzn1.noarch.rpm" \
 	./scripts/packer.sh build -only=aws-amazonlinux $(PACKER_OPTS)
 
 build-aws-centos6:
 	$(ENVS) \
 	ATLAS_ARTIFACT_TYPE=amazon \
 	SALT_INSTALL_OS=centos \
-	SALT_INSTALL_REPO="https://repo.saltstack.com/yum/redhat/salt-repo-2016.11-2.el6.noarch.rpm" \
+	SALT_INSTALL_REPO="https://repo.saltstack.com/yum/redhat/salt-repo-2017.7-1.el6.noarch.rpm" \
 	$(ENVS) ./scripts/packer.sh build -only=aws-centos6 $(PACKER_OPTS)
 
 build-aws-centos7:
 	$(ENVS) \
 	ATLAS_ARTIFACT_TYPE=amazon \
 	SALT_INSTALL_OS=centos \
-	SALT_INSTALL_REPO="https://repo.saltstack.com/yum/redhat/salt-repo-2016.11-2.el7.noarch.rpm" \
+	SALT_INSTALL_REPO="https://repo.saltstack.com/yum/redhat/salt-repo-2017.7-1.el7.noarch.rpm" \
 	$(ENVS) ./scripts/packer.sh build -only=aws-centos7 $(PACKER_OPTS)
 
 build-aws-rhel7:
 	$(ENVS) \
 	ATLAS_ARTIFACT_TYPE=amazon \
 	SALT_INSTALL_OS=redhat \
-	SALT_INSTALL_REPO="https://repo.saltstack.com/yum/redhat/salt-repo-2016.11-2.el7.noarch.rpm" \
+	SALT_INSTALL_REPO="https://repo.saltstack.com/yum/redhat/salt-repo-2017.7-1.el7.noarch.rpm" \
 	$(ENVS) ./scripts/packer.sh build -only=aws-rhel7 $(PACKER_OPTS)
 
 build-os-centos7:
 	$(ENVS) \
 	ATLAS_ARTIFACT_TYPE=openstack \
 	SALT_INSTALL_OS=centos \
-	SALT_INSTALL_REPO="https://repo.saltstack.com/yum/redhat/salt-repo-2016.11-2.el7.noarch.rpm" \
+	SALT_INSTALL_REPO="https://repo.saltstack.com/yum/redhat/salt-repo-2017.7-1.el7.noarch.rpm" \
 	$(ENVS) ./scripts/packer.sh build -only=os-centos7 $(PACKER_OPTS)
 
 build-gc-centos7:
 	$(ENVS) \
 	ATLAS_ARTIFACT_TYPE=googlecompute \
 	SALT_INSTALL_OS=centos \
-	SALT_INSTALL_REPO="https://repo.saltstack.com/yum/redhat/salt-repo-2016.11-2.el7.noarch.rpm" \
+	SALT_INSTALL_REPO="https://repo.saltstack.com/yum/redhat/salt-repo-2017.7-1.el7.noarch.rpm" \
 	$(ENVS) ./scripts/packer.sh build -only=gc-centos7 $(PACKER_OPTS)
 
 build-azure-centos7:
 	$(ENVS) \
 	ATLAS_ARTIFACT_TYPE=azure-arm \
 	SALT_INSTALL_OS=centos \
-	SALT_INSTALL_REPO="https://repo.saltstack.com/yum/redhat/salt-repo-2016.11-2.el7.noarch.rpm" \
+	SALT_INSTALL_REPO="https://repo.saltstack.com/yum/redhat/salt-repo-2017.7-1.el7.noarch.rpm" \
 	./scripts/packer.sh build -only=arm-centos7 $(PACKER_OPTS)
 	$(ENVS) ./scripts/azure-copy.sh
 
