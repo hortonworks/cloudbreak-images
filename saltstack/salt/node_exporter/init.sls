@@ -14,7 +14,7 @@ create_node_exporter_service_files:
 {% if grains['init'] in [ 'upstart', 'sysvinit'] %}
     - name: /etc/init.d/node_exporter
     - source: 
-      - salt://{{ slspath }}/etc/init.d/node_exporter.{{ grains['os'] | lower }}
+      - salt://{{ slspath }}/etc/init.d/node_exporter.{{ grains['os_family'] | lower }}
       - salt://{{ slspath }}/etc/init.d/node_exporter
     - mode: 755
 {% elif grains['init'] == 'systemd' %}
