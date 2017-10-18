@@ -34,7 +34,7 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
         :box => "centos/7",
         :ram => 1024,
         :cpu => 2,
-        :salt_repo => "https://repo.saltstack.com/yum/redhat/salt-repo-2016.11-2.el7.noarch.rpm"
+        :salt_repo_file => "salt-repo-2016.11-6.el7.repo"
       },
       {
         :hostname => "centos6-vagrant",
@@ -47,7 +47,7 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
         :hdp_version => "2.5.0.1-60",
         :hdp_baseurl => "http://s3.amazonaws.com/dev.hortonworks.com/HDP/centos6/2.x/BUILDS/2.5.0.1-60",
         :hdp_repoid => "HDP-2.5",
-        :salt_repo => "https://repo.saltstack.com/yum/redhat/salt-repo-2016.11-1.el6.noarch.rpm"
+        :salt_repo_file => "salt-repo-2016.11-6.el6.repo"
       },
       {
         :hostname => "wheezy-vagrant",
@@ -56,7 +56,7 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
         :cpu => 2,
         :ambari_baseurl => "http://s3.amazonaws.com/dev.hortonworks.com/ambari/debian7/2.x/BUILDS/2.4.1.0-22/",
         :ambari_key => "B9733A7A07513CAD",
-        :salt_repo => "http://repo.saltstack.com/apt/debian/7/amd64/latest"
+        :salt_repo_file => "salt-repo-2016.11-6.debian7.list"
       },
       {
         :hostname => "precise-vagrant",
@@ -65,7 +65,7 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
         :cpu => 2,
         :ambari_baseurl => "http://s3.amazonaws.com/dev.hortonworks.com/ambari/ubuntu12/2.x/BUILDS/2.4.1.0-22/",
         :ambari_key => "B9733A7A07513CAD",
-        :salt_repo => "http://repo.saltstack.com/apt/ubuntu/12.04/amd64/latest"
+        :salt_repo_file => "salt-repo-2016.11-6.ubuntu12.list"
       },
       {
         :hostname => "trusty-vagrant",
@@ -74,7 +74,7 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
         :cpu => 2,
         :ambari_baseurl => "http://s3.amazonaws.com/dev.hortonworks.com/ambari/ubuntu14/2.x/BUILDS/2.4.1.0-22/",
         :ambari_key => "B9733A7A07513CAD",
-        :salt_repo => "http://repo.saltstack.com/apt/ubuntu/14.04/amd64/latest"
+        :salt_repo_file => "salt-repo-2016.11-6.ubuntu14.list"
       },
   ].each do |machine|
     config.vm.define machine[:hostname] do |node|
@@ -91,15 +91,16 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
         node.vm.synced_folder "saltstack/salt", "/srv/salt"
         node.vm.synced_folder "saltstack/pillar", "/srv/pillar"
         node.vm.synced_folder "saltstack/config", "/srv/config"
+        node.vm.synced_folder "saltstack/repo", "/srv/repo"
 
         node.vm.provision :shell do |shell|
           shell.path = "scripts/salt-install.sh"
-          shell.args = machine[:box].split('/',-1)[0] + " " + machine[:salt_repo] + " " + machine[:box].split('/',-1)[1].gsub(/ *\d+$/, '')
+          shell.args = machine[:box].split('/',-1)[0] + " " + machine[:salt_repo_file] + " " + machine[:box].split('/',-1)[1].gsub(/ *\d+$/, '')
           shell.keep_color = false
         end
 
         node.vm.provision :shell do |shell|
-          shell.inline = "salt-call --local state.highstate --file-root=/srv/salt --pillar-root=/srv/pillar --retcode-passthrough -l info --config-dir=/srv/config"
+          shell.inline = "salt-call --local state.highstate --file-root=/srv/salt --pillar-root=/srv/pillar --retcode-passthrough -l debug --config-dir=/srv/config"
           shell.keep_color = true
         end
 
