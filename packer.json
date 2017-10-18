@@ -28,7 +28,7 @@
     "git_tag": "{{ env `GIT_TAG` }}",
     "os_user": "cloudbreak",
     "ssh_password": "S3cr3t",
-    "atlas_artifact": "cloudbreak",
+    "atlas_artifact": "{{ env `ATLAS_ARTIFACT` }}",
     "atlas_artifact_type": "{{ env `ATLAS_ARTIFACT_TYPE` }}",
     "image_name": "{{ env `IMAGE_NAME` }}",
     "azure_image_publisher": "{{ env `AZURE_IMAGE_PUBLISHER` }}",
