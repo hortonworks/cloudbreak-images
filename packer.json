@@ -30,12 +30,14 @@
     "ssh_password": "S3cr3t",
     "atlas_artifact": "{{ env `ATLAS_ARTIFACT` }}",
     "atlas_artifact_type": "{{ env `ATLAS_ARTIFACT_TYPE` }}",
+    "atlas_meta_os_description_id": "{{ env `ATLAS_META_OS_DISTRIBUTION_ID` }}",
+    "atlas_meta_os_release": "{{ env `ATLAS_META_OS_RELEASE` }}",
     "image_name": "{{ env `IMAGE_NAME` }}",
     "azure_image_publisher": "{{ env `AZURE_IMAGE_PUBLISHER` }}",
     "azure_image_offer": "{{ env `AZURE_IMAGE_OFFER` }}",
     "azure_image_sku": "{{ env `AZURE_IMAGE_SKU` }}",
     "salt_install_os": "{{ env `SALT_INSTALL_OS` }}",
-    "salt_install_repo": "{{ env `SALT_INSTALL_REPO` }}",
+    "salt_repo_file": "{{ env `SALT_REPO_FILE`}}",
     "aws_instance_type": "m3.2xlarge"
   },
   "builders": [
@@ -210,6 +212,22 @@
       "ami_name": "{{ user `image_name`}}"
     },
     {
+      "name": "os-centos6",
+      "type": "openstack",
+      "username": "{{user `os_username`}}",
+      "password": "{{user `os_password`}}",
+      "tenant_name": "{{user `os_tenant_name`}}",
+      "ssh_username": "centos",
+      "ssh_pty": "true",
+      "image_name": "{{user `image_name`}}",
+      "source_image": "69feee3a-d63f-4a9d-8251-d2df9f7a6905",
+      "flavor": "m1.medium",
+      "endpoint_type": "internalURL",
+      "networks": [
+        "a5ad7a1d-d3a6-4180-8d61-07a23f6fb449"
+      ]
+    },
+    {
       "name": "os-centos7",
       "type": "openstack",
       "username": "{{user `os_username`}}",
@@ -218,7 +236,39 @@
       "ssh_username": "centos",
       "ssh_pty": "true",
       "image_name": "{{user `image_name`}}",
-      "source_image": "d619e553-6a78-4b86-8b03-39b8a06df35e",
+      "source_image": "d6ab73c1-da3f-467f-8ef7-69b9fd18ac07",
+      "flavor": "m1.medium",
+      "endpoint_type": "internalURL",
+      "networks": [
+        "a5ad7a1d-d3a6-4180-8d61-07a23f6fb449"
+      ]
+    },
+    {
+      "name": "os-ubuntu12",
+      "type": "openstack",
+      "username": "{{user `os_username`}}",
+      "password": "{{user `os_password`}}",
+      "tenant_name": "{{user `os_tenant_name`}}",
+      "ssh_username": "ubuntu",
+      "ssh_pty": "true",
+      "image_name": "{{user `image_name`}}",
+      "source_image": "5101c82a-42b8-4c97-9a74-10a7ece4e036",
+      "flavor": "m1.medium",
+      "endpoint_type": "internalURL",
+      "networks": [
+        "a5ad7a1d-d3a6-4180-8d61-07a23f6fb449"
+      ]
+    },
+    {
+      "name": "os-ubuntu14",
+      "type": "openstack",
+      "username": "{{user `os_username`}}",
+      "password": "{{user `os_password`}}",
+      "tenant_name": "{{user `os_tenant_name`}}",
+      "ssh_username": "ubuntu",
+      "ssh_pty": "true",
+      "image_name": "{{user `image_name`}}",
+      "source_image": "e35cc02d-c934-46d6-9eb1-c34cc421dd1b",
       "flavor": "m1.medium",
       "endpoint_type": "internalURL",
       "networks": [
@@ -309,15 +359,6 @@
   ],
   "provisioners": [
     {
-      "type": "shell",
-      "script": "scripts/salt-install.sh",
-      "environment_vars": [
-        "SALT_INSTALL_OS={{ user `salt_install_os` }}",
-        "SALT_INSTALL_REPO={{user `salt_install_repo`}}"
-      ],
-      "execute_command": "chmod +x {{ .Path }}; sudo {{ .Vars }} {{ .Path }}"
-    },
-    {
       "type": "file",
       "source": "saltstack",
       "destination": "/tmp"
@@ -327,8 +368,18 @@
       "inline": [
         "sudo chown -R root:root /tmp/saltstack",
         "sudo mv /tmp/saltstack/salt /srv/salt",
-        "sudo mv /tmp/saltstack/pillar /srv/pillar"
+        "sudo mv /tmp/saltstack/pillar /srv/pillar",
+        "sudo mv /tmp/saltstack/repo /srv/repo"
       ]
+    },
+    {
+      "type": "shell",
+      "script": "scripts/salt-install.sh",
+      "environment_vars": [
+        "SALT_INSTALL_OS={{ user `salt_install_os` }}",
+        "SALT_REPO_FILE={{user `salt_repo_file`}}"
+      ],
+      "execute_command": "chmod +x {{ .Path }}; sudo {{ .Vars }} {{ .Path }}"
     },
     {
       "type": "shell",
@@ -373,7 +424,9 @@
         "hdp_repoid": "{{ user `hdp_repoid` }}",
         "hdputil_version": "{{user `hdputil_version`}}",
         "hdputil_baseurl": "{{ user `hdputil_baseurl` }}",
-        "hdputil_repoid": "{{ user `hdputil_repoid` }}"
+        "hdputil_repoid": "{{ user `hdputil_repoid` }}",
+        "os_description_id": "{{ user `atlas_meta_os_description_id` }}",
+        "os_release": "{{ user `atlas_meta_os_release` }}"
       }
     }
   ]
