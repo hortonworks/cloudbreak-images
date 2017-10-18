@@ -79,6 +79,8 @@ build-os-centos6:
 build-os-ubuntu14:
 	$(ENVS) \
 	ATLAS_ARTIFACT_TYPE=openstack \
+	ATLAS_META_OS_DISTRIBUTION_ID=Ubuntu \
+	ATLAS_META_OS_RELEASE=14 \
 	SALT_INSTALL_OS=ubuntu \
 	SALT_REPO_FILE="salt-repo-2016.11-6.ubuntu14.list" \
 	$(ENVS) ./scripts/packer.sh build -only=os-ubuntu14 $(PACKER_OPTS)
@@ -86,6 +88,8 @@ build-os-ubuntu14:
 build-os-ubuntu12:
 	$(ENVS) \
 	ATLAS_ARTIFACT_TYPE=openstack \
+	ATLAS_META_OS_DISTRIBUTION_ID=Ubuntu \
+	ATLAS_META_OS_RELEASE=12 \
 	SALT_INSTALL_OS=ubuntu \
 	SALT_REPO_FILE="salt-repo-2016.11-6.ubuntu12.list" \
 	$(ENVS) ./scripts/packer.sh build -only=os-ubuntu12 $(PACKER_OPTS)
