@@ -7,8 +7,8 @@
 /etc/salt/pki/master:
   file.absent
 
-/srv/salt:
+/srv/salt/*:
   file.absent
 
-/srv/pillar:
+/srv/pillar/*:
   file.absent
