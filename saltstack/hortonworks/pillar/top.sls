@@ -1,0 +1,3 @@
+hortonworks:
+  '*':
+    - eula

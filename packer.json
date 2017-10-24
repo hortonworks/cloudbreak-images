@@ -36,7 +36,8 @@
     "azure_image_sku": "{{ env `AZURE_IMAGE_SKU` }}",
     "salt_install_os": "{{ env `SALT_INSTALL_OS` }}",
     "salt_install_repo": "{{ env `SALT_INSTALL_REPO` }}",
-    "aws_instance_type": "m3.2xlarge"
+    "aws_instance_type": "m3.2xlarge",
+    "custom_image_type": "{{ env `CUSTOM_IMAGE_TYPE` }}"
   },
   "builders": [
     {
@@ -324,17 +325,10 @@
     },
     {
       "type": "shell",
-      "inline": [
-        "sudo chown -R root:root /tmp/saltstack",
-        "sudo mv /tmp/saltstack/salt /srv/salt",
-        "sudo mv /tmp/saltstack/pillar /srv/pillar"
-      ]
-    },
-    {
-      "type": "shell",
-      "inline": "salt-call --local state.highstate --file-root=/srv/salt --pillar-root=/srv/pillar --retcode-passthrough -l info --config-dir=/tmp/",
-      "execute_command": "sudo {{ .Vars }} {{ .Path }} ",
+      "script": "scripts/salt-setup.sh",
+      "execute_command": "chmod +x {{ .Path }}; sudo {{ .Vars }} {{ .Path }} ",
       "environment_vars": [
+        "CUSTOM_IMAGE_TYPE={{user `custom_image_type`}}",
         "OS_USER={{ user `os_user` }}",
         "AMBARI_VERSION={{user `ambari_version`}}",
         "AMBARI_BASEURL={{user `ambari_baseurl`}}",

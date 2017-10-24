@@ -1,0 +1,15 @@
+file_client: local
+requests_lib: True
+backend_requests: True
+
+pillar_roots:
+  base:
+    - /srv/pillar/base
+  hortonworks:
+    - /srv/pillar/hortonworks
+
+file_roots:
+  base:
+    - /srv/salt/base
+  hortonworks:
+    - /srv/salt/hortonworks
