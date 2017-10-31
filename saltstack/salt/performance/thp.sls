@@ -1,6 +1,8 @@
 /etc/init.d/disable-thp:
   file.managed:
-    - source: salt://{{ slspath }}/etc/init.d/disable-thp
+    - source:
+      - salt://{{ slspath }}/etc/init.d/disable-thp.{{ grains['os_family'] | lower }}
+      - salt://{{ slspath }}/etc/init.d/disable-thp
     - mode: 755
 
 {% if grains['init'] == 'systemd' %}
