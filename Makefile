@@ -2,7 +2,7 @@ BASE_NAME ?= "hdc"
 HDP_VERSION ?= ""
 ATLAS_PROJECT ?= "cloudbreak"
 ENABLE_POSTPROCESSORS ?= ""
-CUSTOM_IMAGE_TYPE ?="base"
+CUSTOM_IMAGE_TYPE ?="hortonworks"
 
 HDP_VERSION_SHORT=hdp-$(shell echo $(HDP_VERSION) | tr -d . | cut -c1-2 )
 IMAGE_NAME ?= $(BASE_NAME)-$(HDP_VERSION_SHORT)-$(shell date +%y%m%d%H%M)$(IMAGE_NAME_SUFFIX)
