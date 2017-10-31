@@ -5,4 +5,4 @@ failovermethod=priority
 priority=10
 enabled=1
 gpgcheck=1
-gpgkey=file:///etc/pki/rpm-gpg/saltstack-signing-key
+gpgkey=file:///srv/repo/saltstack-gpg-key.pub

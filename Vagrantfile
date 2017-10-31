@@ -56,7 +56,7 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
         :cpu => 2,
         :ambari_baseurl => "http://s3.amazonaws.com/dev.hortonworks.com/ambari/debian7/2.x/BUILDS/2.4.1.0-22/",
         :ambari_key => "B9733A7A07513CAD",
-        :salt_repo_file => "salt-repo-2016.11-6.debian7.list"
+        :salt_repo_file => "salt-repo-2016.11-5.debian7.list"
       },
       {
         :hostname => "precise-vagrant",

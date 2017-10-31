@@ -91,7 +91,7 @@ build-os-ubuntu12:
 	ATLAS_META_OS_DISTRIBUTION_ID=Ubuntu \
 	ATLAS_META_OS_RELEASE=12 \
 	SALT_INSTALL_OS=ubuntu \
-	SALT_REPO_FILE="salt-repo-2016.11-6.ubuntu12.list" \
+	SALT_REPO_FILE="salt-repo-2016.11-3.ubuntu12.list" \
 	$(ENVS) ./scripts/packer.sh build -only=os-ubuntu12 $(PACKER_OPTS)
 
 build-gc-centos7:
