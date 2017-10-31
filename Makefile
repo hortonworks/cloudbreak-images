@@ -94,6 +94,15 @@ build-os-ubuntu12:
 	SALT_REPO_FILE="salt-repo-2016.11-3.ubuntu12.list" \
 	$(ENVS) ./scripts/packer.sh build -only=os-ubuntu12 $(PACKER_OPTS)
 
+build-os-debian7:
+	$(ENVS) \
+	ATLAS_ARTIFACT_TYPE=openstack \
+	ATLAS_META_OS_DISTRIBUTION_ID=Debian \
+	ATLAS_META_OS_RELEASE=7 \
+	SALT_INSTALL_OS=debian \
+	SALT_REPO_FILE="salt-repo-2016.11-5.debian7.list" \
+	$(ENVS) ./scripts/packer.sh build -only=os-debian7 $(PACKER_OPTS)
+
 build-gc-centos7:
 	$(ENVS) \
 	ATLAS_ARTIFACT_TYPE=googlecompute \
