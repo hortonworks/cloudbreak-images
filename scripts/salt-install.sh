@@ -33,6 +33,8 @@ function setting_up_epel() {
 
 function install_with_apt() {
   apt-key add /srv/repo/saltstack-gpg-key.pub
+  apt-get update
+  apt-get install -y apt-transport-https
   cp /srv/repo/$1 /etc/apt/sources.list.d/$1
   apt-get update
   apt-get -y install salt-minion
