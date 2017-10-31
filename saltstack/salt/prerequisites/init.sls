@@ -8,6 +8,7 @@ include:
   - {{ slspath }}.pip
   - {{ slspath }}.cert-tool
   - {{ slspath }}.dnsmasq
+  - {{ slspath }}.firewall
 
 /usr/bin/:
   file.recurse:
