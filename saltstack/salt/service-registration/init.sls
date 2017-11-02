@@ -19,10 +19,10 @@ unpack_service_registration:
       - salt://{{ slspath }}/etc/init.d/service-registration.{{ grains['os_family'] | lower }}
       - salt://{{ slspath }}/etc/init.d/service-registration
 {% elif grains['init'] == 'systemd' %}
-    service_registration_service:
-      file.managed:
-        - name: /etc/systemd/system/service-registration.service
-        - source: salt://{{ slspath }}/etc/systemd/system/service-registration.service
+/etc/systemd/system/service-registration.service:
+  file.managed:
+    - name: /etc/systemd/system/service-registration.service
+    - source: salt://{{ slspath }}/etc/systemd/system/service-registration.service
 {% endif %}
 
 ensure_service_registration_enabled:
