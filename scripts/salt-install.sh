@@ -32,9 +32,10 @@ function setting_up_epel() {
 }
 
 function install_with_apt() {
-  apt-get install -y
-  wget -O - $1/SALTSTACK-GPG-KEY.pub | apt-key add -
-  echo deb $1 $2 main >/etc/apt/sources.list.d/salt.list
+  apt-key add /srv/repo/saltstack-gpg-key.pub
+  apt-get update
+  apt-get install -y apt-transport-https
+  cp /srv/repo/$1 /etc/apt/sources.list.d/$1
   apt-get update
   apt-get -y install salt-minion
   create_temp_monion_config
@@ -45,7 +46,9 @@ function install_with_yum() {
   yum install -y yum-utils
   setting_up_epel
   yum remove -y salt-repo
-  yum install -y $1
+  cp /srv/repo/$1 /etc/yum.repos.d/$1
+  cat /etc/yum.repos.d/$1
+
   yum clean metadata
   yum install -y --disablerepo epel salt-minion
   create_temp_monion_config
@@ -57,18 +60,19 @@ function create_temp_monion_config() {
 }
 
 : ${SALT_INSTALL_OS:=$1}
-: ${SALT_INSTALL_REPO:="$2 $3"}
+: ${SALT_REPO_FILE:="$2 $3"}
 
 case ${SALT_INSTALL_OS} in
   amazon|centos|redhat)
     echo "Install with yum"
-    echo ${SALT_INSTALL_REPO}
-    install_with_yum ${SALT_INSTALL_REPO}
+    echo ${SALT_REPO_FILE}
+    echo ${SALT_VERSION}
+    install_with_yum ${SALT_REPO_FILE} ${SALT_VERSION}
     ;;
  debian|ubuntu)
    echo "Install with apt"
-   echo ${SALT_INSTALL_REPO}
-   install_with_apt ${SALT_INSTALL_REPO}
+   echo ${SALT_REPO_FILE}
+   install_with_apt ${SALT_REPO_FILE}
    ;;
  *)
   echo "Unsupported platform:" $1

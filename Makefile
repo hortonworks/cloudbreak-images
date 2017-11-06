@@ -6,7 +6,7 @@ ENABLE_POSTPROCESSORS ?= ""
 HDP_VERSION_SHORT=hdp-$(shell echo $(HDP_VERSION) | tr -d . | cut -c1-2 )
 IMAGE_NAME ?= $(BASE_NAME)-$(HDP_VERSION_SHORT)-$(shell date +%y%m%d%H%M)$(IMAGE_NAME_SUFFIX)
 
-ENVS=HDP_VERSION=$(HDP_VERSION) BASE_NAME=$(BASE_NAME) IMAGE_NAME=$(IMAGE_NAME) ENABLE_POSTPROCESSORS=$(ENABLE_POSTPROCESSORS) TRACE=1
+ENVS=HDP_VERSION=$(HDP_VERSION) BASE_NAME=$(BASE_NAME) IMAGE_NAME=$(IMAGE_NAME) ENABLE_POSTPROCESSORS=$(ENABLE_POSTPROCESSORS) TRACE=1 ATLAS_ARTIFACT=$(ATLAS_PROJECT)
 
 # it testing, atlas uploads should go to mocking artifact slush
 #PACKER_VARS=
@@ -34,49 +34,87 @@ build-aws-amazonlinux:
 	$(ENVS) \
 	ATLAS_ARTIFACT_TYPE=amazon \
 	SALT_INSTALL_OS=amazon \
-	SALT_INSTALL_REPO="https://repo.saltstack.com/yum/amazon/salt-amzn-repo-2016.11-1.amzn1.noarch.rpm" \
+	SALT_REPO_FILE="salt-repo-2016.11-6.amzn.repo" \
 	./scripts/packer.sh build -only=aws-amazonlinux $(PACKER_OPTS)
 
 build-aws-centos6:
 	$(ENVS) \
 	ATLAS_ARTIFACT_TYPE=amazon \
 	SALT_INSTALL_OS=centos \
-	SALT_INSTALL_REPO="https://repo.saltstack.com/yum/redhat/salt-repo-2016.11-2.el6.noarch.rpm" \
+	SALT_REPO_FILE="salt-repo-2016.11-6.el.repo" \
 	$(ENVS) ./scripts/packer.sh build -only=aws-centos6 $(PACKER_OPTS)
 
 build-aws-centos7:
 	$(ENVS) \
 	ATLAS_ARTIFACT_TYPE=amazon \
 	SALT_INSTALL_OS=centos \
-	SALT_INSTALL_REPO="https://repo.saltstack.com/yum/redhat/salt-repo-2016.11-2.el7.noarch.rpm" \
+	SALT_REPO_FILE="salt-repo-2016.11-6.el.repo" \
 	$(ENVS) ./scripts/packer.sh build -only=aws-centos7 $(PACKER_OPTS)
 
 build-aws-rhel7:
 	$(ENVS) \
 	ATLAS_ARTIFACT_TYPE=amazon \
 	SALT_INSTALL_OS=redhat \
-	SALT_INSTALL_REPO="https://repo.saltstack.com/yum/redhat/salt-repo-2016.11-2.el7.noarch.rpm" \
+	SALT_REPO_FILE="salt-repo-2016.11-6.el.repo" \
 	$(ENVS) ./scripts/packer.sh build -only=aws-rhel7 $(PACKER_OPTS)
 
 build-os-centos7:
 	$(ENVS) \
 	ATLAS_ARTIFACT_TYPE=openstack \
-	SALT_INSTALL_OS=centos \
-	SALT_INSTALL_REPO="https://repo.saltstack.com/yum/redhat/salt-repo-2016.11-2.el7.noarch.rpm" \
+	ATLAS_META_OS_DISTRIBUTION_ID=CentOS \
+	ATLAS_META_OS_RELEASE=7 \
+    SALT_INSTALL_OS=centos \
+	SALT_REPO_FILE="salt-repo-2016.11-6.el.repo" \
 	$(ENVS) ./scripts/packer.sh build -only=os-centos7 $(PACKER_OPTS)
+
+build-os-centos6:
+	$(ENVS) \
+	ATLAS_ARTIFACT_TYPE=openstack \
+	ATLAS_META_OS_DISTRIBUTION_ID=CentOS \
+	ATLAS_META_OS_RELEASE=6 \
+    SALT_INSTALL_OS=centos \
+	SALT_REPO_FILE="salt-repo-2016.11-6.el.repo" \
+	$(ENVS) ./scripts/packer.sh build -only=os-centos6 $(PACKER_OPTS)
+
+build-os-ubuntu14:
+	$(ENVS) \
+	ATLAS_ARTIFACT_TYPE=openstack \
+	ATLAS_META_OS_DISTRIBUTION_ID=Ubuntu \
+	ATLAS_META_OS_RELEASE=14 \
+	SALT_INSTALL_OS=ubuntu \
+	SALT_REPO_FILE="salt-repo-2016.11-6.ubuntu14.list" \
+	$(ENVS) ./scripts/packer.sh build -only=os-ubuntu14 $(PACKER_OPTS)
+
+build-os-ubuntu12:
+	$(ENVS) \
+	ATLAS_ARTIFACT_TYPE=openstack \
+	ATLAS_META_OS_DISTRIBUTION_ID=Ubuntu \
+	ATLAS_META_OS_RELEASE=12 \
+	SALT_INSTALL_OS=ubuntu \
+	SALT_REPO_FILE="salt-repo-2016.11-3.ubuntu12.list" \
+	$(ENVS) ./scripts/packer.sh build -only=os-ubuntu12 $(PACKER_OPTS)
+
+build-os-debian7:
+	$(ENVS) \
+	ATLAS_ARTIFACT_TYPE=openstack \
+	ATLAS_META_OS_DISTRIBUTION_ID=Debian \
+	ATLAS_META_OS_RELEASE=7 \
+	SALT_INSTALL_OS=debian \
+	SALT_REPO_FILE="salt-repo-2016.11-5.debian7.list" \
+	$(ENVS) ./scripts/packer.sh build -only=os-debian7 $(PACKER_OPTS)
 
 build-gc-centos7:
 	$(ENVS) \
 	ATLAS_ARTIFACT_TYPE=googlecompute \
 	SALT_INSTALL_OS=centos \
-	SALT_INSTALL_REPO="https://repo.saltstack.com/yum/redhat/salt-repo-2016.11-2.el7.noarch.rpm" \
+	SALT_REPO_FILE="salt-repo-2016.11-6.el.repo" \
 	$(ENVS) ./scripts/packer.sh build -only=gc-centos7 $(PACKER_OPTS)
 
 build-azure-centos7:
 	$(ENVS) \
 	ATLAS_ARTIFACT_TYPE=azure-arm \
 	SALT_INSTALL_OS=centos \
-	SALT_INSTALL_REPO="https://repo.saltstack.com/yum/redhat/salt-repo-2016.11-2.el7.noarch.rpm" \
+	SALT_REPO_FILE="salt-repo-2016.11-6.el.repo" \
 	./scripts/packer.sh build -only=arm-centos7 $(PACKER_OPTS)
 	$(ENVS) ./scripts/azure-copy.sh
 
