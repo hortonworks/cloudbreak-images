@@ -1,6 +1,7 @@
 {
   "variables": {
     "mock": "{{ env `MOCK` }}",
+    "description": "{{ env `DESCRIPTION` }}",
     "gcp_account_file": "{{env `GCP_ACCOUNT_FILE`}}",
     "os_auth_url": "{{ env `OS_AUTH_URL` }}",
     "os_username": "{{ env `OS_USERNAME` }}",
@@ -26,6 +27,8 @@
     "git_rev": "{{ env `GIT_REV` }}",
     "git_branch": "{{ env `GIT_BRANCH` }}",
     "git_tag": "{{ env `GIT_TAG` }}",
+    "os": "{{ env `OS` }}",
+    "os_type": "{{ env `OS_TYPE` }}",
     "os_user": "cloudbreak",
     "ssh_password": "S3cr3t",
     "atlas_artifact": "cloudbreak",
@@ -369,6 +372,39 @@
         "hdputil_baseurl": "{{ user `hdputil_baseurl` }}",
         "hdputil_repoid": "{{ user `hdputil_repoid` }}"
       }
+    },
+    {
+      "type": "manifest",
+      "output": "{{ user `image_name` }}_manifest.json"
+    },
+    {
+      "type": "shell-local",
+      "script": "scripts/pp_json.sh",
+      "environment_vars": [
+        "created_at={{timestamp}}",
+        "prometheus=true",
+        "created={{ isotime \"2006-01-02 15:04:05 -0700\" }}",
+        "git_rev={{user `git_rev`}}",
+        "git_branch={{user `git_branch`}}",
+        "git_tag={{user `git_tag`}}",
+        "os={{user `os`}}",
+        "os_user={{user `os_user` }}",
+        "orchestrator=salt",
+        "image_name={{ user `image_name` }}",
+        "description={{ user `description` }}",
+        "ambari_version={{ user `ambari_version` }}",
+        "ambari_os_type={{user `os_type`}}",
+        "ambari_baseurl={{ user `ambari_baseurl` }}",
+        "ambari_gpgkey={{ user `ambari_gpgkey` }}",
+        "hdp_os_type={{user `os_type`}}",
+        "hdp_version={{user `hdp_version`}}",
+        "hdp_baseurl={{ user `hdp_baseurl` }}",
+        "hdp_repoid={{ user `hdp_repoid` }}",
+        "hdputil_version={{user `hdputil_version`}}",
+        "hdputil_os_type={{user `os_type`}}",
+        "hdputil_baseurl={{ user `hdputil_baseurl` }}",
+        "hdputil_repoid={{ user `hdputil_repoid` }}"
+      ]
     }
   ]
 }

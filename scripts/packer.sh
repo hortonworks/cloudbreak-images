@@ -29,8 +29,10 @@ packer_in_container() {
 
   [[ "$TRACE" ]] && set -x
   ${DRY_RUN:+echo ===} docker run -i $TTY_OPTS --rm \
-    -e ORIG_USER=$USER \
     -e MOCK=$MOCK \
+    -e ORIG_USER=$USER \
+    -e OS=$OS \
+    -e OS_TYPE=$OS_TYPE \
     -e CHECKPOINT_DISABLE=1 \
     -e PACKER_LOG=$PACKER_LOG \
     -e PACKER_LOG_PATH=$PACKER_LOG_PATH \
@@ -70,6 +72,7 @@ packer_in_container() {
     -e ATLAS_ARTIFACT_TYPE=$ATLAS_ARTIFACT_TYPE \
     -e COPY_AWS_MARKETPLACE_EULA=$COPY_AWS_MARKETPLACE_EULA \
     -e CUSTOM_IMAGE_TYPE=$CUSTOM_IMAGE_TYPE \
+    -e DESCRIPTION="$DESCRIPTION" \
     -v $HOME/.aws:/root/.aws \
     -v /var/run/docker.sock:/var/run/docker.sock \
     -v $PWD:$PWD \
