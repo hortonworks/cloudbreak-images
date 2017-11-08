@@ -1,4 +1,5 @@
 BASE_NAME ?= "hdc"
+DESCRIPTION ?= "Official Cloudbreak image"
 HDP_VERSION ?= ""
 ATLAS_PROJECT ?= "cloudbreak"
 ENABLE_POSTPROCESSORS ?= ""
@@ -7,7 +8,7 @@ CUSTOM_IMAGE_TYPE ?="hortonworks"
 HDP_VERSION_SHORT=hdp-$(shell echo $(HDP_VERSION) | tr -d . | cut -c1-2 )
 IMAGE_NAME ?= $(BASE_NAME)-$(HDP_VERSION_SHORT)-$(shell date +%y%m%d%H%M)$(IMAGE_NAME_SUFFIX)
 
-ENVS=HDP_VERSION=$(HDP_VERSION) BASE_NAME=$(BASE_NAME) IMAGE_NAME=$(IMAGE_NAME) ENABLE_POSTPROCESSORS=$(ENABLE_POSTPROCESSORS) CUSTOM_IMAGE_TYPE=$(CUSTOM_IMAGE_TYPE) TRACE=1
+ENVS=DESCRIPTION=$(DESCRIPTION) HDP_VERSION=$(HDP_VERSION) BASE_NAME=$(BASE_NAME) IMAGE_NAME=$(IMAGE_NAME) ENABLE_POSTPROCESSORS=$(ENABLE_POSTPROCESSORS) CUSTOM_IMAGE_TYPE=$(CUSTOM_IMAGE_TYPE) TRACE=1
 
 # it testing, atlas uploads should go to mocking artifact slush
 #PACKER_VARS=
@@ -33,6 +34,8 @@ show-image-name:
 
 build-aws-amazonlinux:
 	$(ENVS) \
+	OS=centos6 \
+	OS_TYPE=redhat6 \
 	ATLAS_ARTIFACT_TYPE=amazon \
 	SALT_INSTALL_OS=amazon \
 	SALT_INSTALL_REPO="https://repo.saltstack.com/yum/amazon/salt-amzn-repo-2017.7-1.amzn1.noarch.rpm" \
@@ -40,6 +43,8 @@ build-aws-amazonlinux:
 
 build-aws-centos6:
 	$(ENVS) \
+	OS=centos6 \
+	OS_TYPE=redhat6 \
 	ATLAS_ARTIFACT_TYPE=amazon \
 	SALT_INSTALL_OS=centos \
 	SALT_INSTALL_REPO="https://repo.saltstack.com/yum/redhat/salt-repo-2017.7-1.el6.noarch.rpm" \
@@ -47,6 +52,8 @@ build-aws-centos6:
 
 build-aws-centos7:
 	$(ENVS) \
+	OS=centos7 \
+	OS_TYPE=redhat7 \
 	ATLAS_ARTIFACT_TYPE=amazon \
 	SALT_INSTALL_OS=centos \
 	SALT_INSTALL_REPO="https://repo.saltstack.com/yum/redhat/salt-repo-2017.7-1.el7.noarch.rpm" \
@@ -54,6 +61,8 @@ build-aws-centos7:
 
 build-aws-rhel7:
 	$(ENVS) \
+	OS=redhat7 \
+	OS_TYPE=redhat7 \
 	ATLAS_ARTIFACT_TYPE=amazon \
 	SALT_INSTALL_OS=redhat \
 	SALT_INSTALL_REPO="https://repo.saltstack.com/yum/redhat/salt-repo-2017.7-1.el7.noarch.rpm" \
@@ -61,6 +70,8 @@ build-aws-rhel7:
 
 build-os-centos7:
 	$(ENVS) \
+	OS=centos7 \
+	OS_TYPE=redhat7 \
 	ATLAS_ARTIFACT_TYPE=openstack \
 	SALT_INSTALL_OS=centos \
 	SALT_INSTALL_REPO="https://repo.saltstack.com/yum/redhat/salt-repo-2017.7-1.el7.noarch.rpm" \
@@ -68,6 +79,8 @@ build-os-centos7:
 
 build-gc-centos7:
 	$(ENVS) \
+	OS=centos7 \
+	OS_TYPE=redhat7 \
 	ATLAS_ARTIFACT_TYPE=googlecompute \
 	SALT_INSTALL_OS=centos \
 	SALT_INSTALL_REPO="https://repo.saltstack.com/yum/redhat/salt-repo-2017.7-1.el7.noarch.rpm" \
@@ -75,6 +88,8 @@ build-gc-centos7:
 
 build-azure-centos7:
 	$(ENVS) \
+	OS=centos7 \
+	OS_TYPE=redhat7 \
 	ATLAS_ARTIFACT_TYPE=azure-arm \
 	SALT_INSTALL_OS=centos \
 	SALT_INSTALL_REPO="https://repo.saltstack.com/yum/redhat/salt-repo-2017.7-1.el7.noarch.rpm" \
