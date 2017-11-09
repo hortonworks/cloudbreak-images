@@ -10,6 +10,13 @@ IMAGE_NAME ?= $(BASE_NAME)-$(HDP_VERSION_SHORT)-$(shell date +%y%m%d%H%M)$(IMAGE
 
 ENVS=DESCRIPTION=$(DESCRIPTION) HDP_VERSION=$(HDP_VERSION) BASE_NAME=$(BASE_NAME) IMAGE_NAME=$(IMAGE_NAME) ENABLE_POSTPROCESSORS=$(ENABLE_POSTPROCESSORS) CUSTOM_IMAGE_TYPE=$(CUSTOM_IMAGE_TYPE) TRACE=1
 
+GITHUB_ORG ?= hortonworks
+GITHUB_REPO ?= cloudbreak-images-metadata
+GITHUB_USER ?= jenkins-cloudbreak
+GITHUB_PASSWORD ?= ""
+
+GITHUB_ENVS=GITHUB_ORG=$(GITHUB_ORG) GITHUB_REPO=$(GITHUB_REPO) GITHUB_USER=$(GITHUB_USER) GITHUB_PASSWORD=$(GITHUB_PASSWORD)
+
 # it testing, atlas uploads should go to mocking artifact slush
 #PACKER_VARS=
 GIT_REV=$(shell git rev-parse --short HEAD)
@@ -34,6 +41,7 @@ show-image-name:
 
 build-aws-amazonlinux:
 	$(ENVS) \
+	$(GITHUB_ENVS) \
 	OS=centos6 \
 	OS_TYPE=redhat6 \
 	ATLAS_ARTIFACT_TYPE=amazon \
@@ -43,58 +51,64 @@ build-aws-amazonlinux:
 
 build-aws-centos6:
 	$(ENVS) \
+	$(GITHUB_ENVS) \
 	OS=centos6 \
 	OS_TYPE=redhat6 \
 	ATLAS_ARTIFACT_TYPE=amazon \
 	SALT_INSTALL_OS=centos \
 	SALT_INSTALL_REPO="https://repo.saltstack.com/yum/redhat/salt-repo-2017.7-1.el6.noarch.rpm" \
-	$(ENVS) ./scripts/packer.sh build -only=aws-centos6 $(PACKER_OPTS)
+	./scripts/packer.sh build -only=aws-centos6 $(PACKER_OPTS)
 
 build-aws-centos7:
 	$(ENVS) \
+	$(GITHUB_ENVS) \
 	OS=centos7 \
 	OS_TYPE=redhat7 \
 	ATLAS_ARTIFACT_TYPE=amazon \
 	SALT_INSTALL_OS=centos \
 	SALT_INSTALL_REPO="https://repo.saltstack.com/yum/redhat/salt-repo-2017.7-1.el7.noarch.rpm" \
-	$(ENVS) ./scripts/packer.sh build -only=aws-centos7 $(PACKER_OPTS)
+	./scripts/packer.sh build -only=aws-centos7 $(PACKER_OPTS)
 
 build-aws-rhel7:
 	$(ENVS) \
+	$(GITHUB_ENVS) \
 	OS=redhat7 \
 	OS_TYPE=redhat7 \
 	ATLAS_ARTIFACT_TYPE=amazon \
 	SALT_INSTALL_OS=redhat \
 	SALT_INSTALL_REPO="https://repo.saltstack.com/yum/redhat/salt-repo-2017.7-1.el7.noarch.rpm" \
-	$(ENVS) ./scripts/packer.sh build -only=aws-rhel7 $(PACKER_OPTS)
+	./scripts/packer.sh build -only=aws-rhel7 $(PACKER_OPTS)
 
 build-os-centos7:
 	$(ENVS) \
+	$(GITHUB_ENVS) \
 	OS=centos7 \
 	OS_TYPE=redhat7 \
 	ATLAS_ARTIFACT_TYPE=openstack \
 	SALT_INSTALL_OS=centos \
 	SALT_INSTALL_REPO="https://repo.saltstack.com/yum/redhat/salt-repo-2017.7-1.el7.noarch.rpm" \
-	$(ENVS) ./scripts/packer.sh build -only=os-centos7 $(PACKER_OPTS)
+	./scripts/packer.sh build -only=os-centos7 $(PACKER_OPTS)
 
 build-gc-centos7:
 	$(ENVS) \
+	$(GITHUB_ENVS) \
 	OS=centos7 \
 	OS_TYPE=redhat7 \
 	ATLAS_ARTIFACT_TYPE=googlecompute \
 	SALT_INSTALL_OS=centos \
 	SALT_INSTALL_REPO="https://repo.saltstack.com/yum/redhat/salt-repo-2017.7-1.el7.noarch.rpm" \
-	$(ENVS) ./scripts/packer.sh build -only=gc-centos7 $(PACKER_OPTS)
+	./scripts/packer.sh build -only=gc-centos7 $(PACKER_OPTS)
 
 build-azure-centos7:
 	$(ENVS) \
+	$(GITHUB_ENVS) \
 	OS=centos7 \
 	OS_TYPE=redhat7 \
 	ATLAS_ARTIFACT_TYPE=azure-arm \
 	SALT_INSTALL_OS=centos \
 	SALT_INSTALL_REPO="https://repo.saltstack.com/yum/redhat/salt-repo-2017.7-1.el7.noarch.rpm" \
 	./scripts/packer.sh build -only=arm-centos7 $(PACKER_OPTS)
-	$(ENVS) ./scripts/azure-copy.sh
+	./scripts/azure-copy.sh
 
 bundle-googlecompute:
 	$(ENVS) ./scripts/bundle-gcp-image.sh
