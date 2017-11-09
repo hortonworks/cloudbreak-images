@@ -1,0 +1,8 @@
+[saltstack-repo]
+name=SaltStack 2016.11.6 Release Channel for native Amazon Linux
+baseurl=https://repo.saltstack.com/yum/amazon/2016.09/$basearch/archive/2016.11.6/
+failovermethod=priority
+priority=10
+enabled=1
+gpgcheck=1
+gpgkey=file:///srv/repo/saltstack-gpg-key.pub

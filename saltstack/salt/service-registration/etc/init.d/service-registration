@@ -14,8 +14,8 @@
 # Required-Stop:     $local_fs $network
 # Default-Start:     2 3 4 5
 # Default-Stop:      S 0 1 6
-# Short-Description: Salt Bootstrap
-# Description:       Salt Bootstrap
+# Short-Description: Service registration daemon
+# Description:       Service registration daemon
 #
 ### END INIT INFO
 
