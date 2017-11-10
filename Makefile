@@ -128,9 +128,7 @@ cleanup-metadata-repo:
 	rm -rf $(GITHUB_REPO)
 
 push-to-metadata-repo: cleanup-metadata-repo
-	git clone https://github.com/$(GITHUB_ORG)/$(GITHUB_REPO).git
+	git clone git@github.com:$(GITHUB_ORG)/$(GITHUB_REPO).git
 	cp $(shell (ls -1 *_manifest.json | tail -1 | sed "s/_manifest//")) $(GITHUB_REPO)
-	cd $(GITHUB_REPO)
-	git commit -am"Upload new metadata file"
-	git push
+	cd $(GITHUB_REPO) && git add -A && git commit -am"Upload new metadata file" && git push
 	make cleanup-metadata-repo
