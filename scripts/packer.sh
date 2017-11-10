@@ -78,7 +78,7 @@ packer_in_container() {
     -v $PWD:$PWD \
     -w $PWD \
     $dockerOpts \
-    hortonworks/packer-plus:0.12.2-2 "$@" $packerFile
+    hashicorp/packer:0.12.2 "$@" $packerFile
 }
 
 main() {
