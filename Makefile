@@ -12,10 +12,6 @@ ENVS=DESCRIPTION=$(DESCRIPTION) HDP_VERSION=$(HDP_VERSION) BASE_NAME=$(BASE_NAME
 
 GITHUB_ORG ?= hortonworks
 GITHUB_REPO ?= cloudbreak-images-metadata
-GITHUB_USER ?= jenkins-cloudbreak
-GITHUB_PASSWORD ?= ""
-
-GITHUB_ENVS=GITHUB_ORG=$(GITHUB_ORG) GITHUB_REPO=$(GITHUB_REPO) GITHUB_USER=$(GITHUB_USER) GITHUB_PASSWORD=$(GITHUB_PASSWORD)
 
 # it testing, atlas uploads should go to mocking artifact slush
 #PACKER_VARS=
@@ -41,7 +37,6 @@ show-image-name:
 
 build-aws-amazonlinux:
 	$(ENVS) \
-	$(GITHUB_ENVS) \
 	OS=centos6 \
 	OS_TYPE=redhat6 \
 	ATLAS_ARTIFACT_TYPE=amazon \
@@ -51,7 +46,6 @@ build-aws-amazonlinux:
 
 build-aws-centos6:
 	$(ENVS) \
-	$(GITHUB_ENVS) \
 	OS=centos6 \
 	OS_TYPE=redhat6 \
 	ATLAS_ARTIFACT_TYPE=amazon \
@@ -61,7 +55,6 @@ build-aws-centos6:
 
 build-aws-centos7:
 	$(ENVS) \
-	$(GITHUB_ENVS) \
 	OS=centos7 \
 	OS_TYPE=redhat7 \
 	ATLAS_ARTIFACT_TYPE=amazon \
@@ -71,7 +64,6 @@ build-aws-centos7:
 
 build-aws-rhel7:
 	$(ENVS) \
-	$(GITHUB_ENVS) \
 	OS=redhat7 \
 	OS_TYPE=redhat7 \
 	ATLAS_ARTIFACT_TYPE=amazon \
@@ -81,7 +73,6 @@ build-aws-rhel7:
 
 build-os-centos7:
 	$(ENVS) \
-	$(GITHUB_ENVS) \
 	OS=centos7 \
 	OS_TYPE=redhat7 \
 	ATLAS_ARTIFACT_TYPE=openstack \
@@ -91,7 +82,6 @@ build-os-centos7:
 
 build-gc-centos7:
 	$(ENVS) \
-	$(GITHUB_ENVS) \
 	OS=centos7 \
 	OS_TYPE=redhat7 \
 	ATLAS_ARTIFACT_TYPE=googlecompute \
@@ -101,7 +91,6 @@ build-gc-centos7:
 
 build-azure-centos7:
 	$(ENVS) \
-	$(GITHUB_ENVS) \
 	OS=centos7 \
 	OS_TYPE=redhat7 \
 	ATLAS_ARTIFACT_TYPE=azure-arm \
@@ -134,3 +123,14 @@ list-amz-linux-amis:
 
 latest-amz-linux-ami:
 	aws ec2 describe-images --filter Name=owner-alias,Values=amazon --query 'reverse(sort_by(Images[?contains(ImageLocation,`amazon/amzn-ami-hvm`) && ends_with(ImageLocation, `gp2`)].{loc:ImageLocation,id:ImageId}, &loc))[0].id' --out text --region us-west-2
+
+cleanup-metadata-repo:
+	rm -rf $(GITHUB_REPO)
+
+push-to-metadata-repo: cleanup-metadata-repo
+	git clone https://github.com/$(GITHUB_ORG)/$(GITHUB_REPO).git
+	cp $(shell (ls -1 *_manifest.json | tail -1 | sed "s/_manifest//")) $(GITHUB_REPO)
+	cd $(GITHUB_REPO)
+	git commit -am"Upload new metadata file"
+	git push
+	make cleanup-metadata-repo

@@ -40,11 +40,7 @@
     "salt_install_os": "{{ env `SALT_INSTALL_OS` }}",
     "salt_install_repo": "{{ env `SALT_INSTALL_REPO` }}",
     "aws_instance_type": "m3.2xlarge",
-    "custom_image_type": "{{ env `CUSTOM_IMAGE_TYPE` }}",
-    "github_org": "{{ env `GITHUB_ORG` }}",
-    "github_repo": "{{ env `GITHUB_REPO` }}",
-    "github_user": "{{ env `GITHUB_USER` }}",
-    "github_password": "{{ env `GITHUB_PASSWORD` }}"
+    "custom_image_type": "{{ env `CUSTOM_IMAGE_TYPE` }}"
   },
   "builders": [
     {
@@ -408,17 +404,6 @@
         "hdputil_os_type={{user `os_type`}}",
         "hdputil_baseurl={{ user `hdputil_baseurl` }}",
         "hdputil_repoid={{ user `hdputil_repoid` }}"
-      ]
-    },
-    {
-      "type": "shell-local",
-      "script": "scripts/pp_github.sh",
-      "environment_vars": [
-        "image_name={{ user `image_name` }}",
-        "github_org={{user `github_org`}}",
-        "github_repo={{user `github_repo`}}",
-        "github_user={{ user `github_user` }}",
-        "github_password={{ user `github_password` }}"
       ]
     }
   ]

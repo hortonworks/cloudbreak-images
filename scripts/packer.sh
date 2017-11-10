@@ -73,16 +73,12 @@ packer_in_container() {
     -e COPY_AWS_MARKETPLACE_EULA=$COPY_AWS_MARKETPLACE_EULA \
     -e CUSTOM_IMAGE_TYPE=$CUSTOM_IMAGE_TYPE \
     -e DESCRIPTION="$DESCRIPTION" \
-    -e GITHUB_ORG=$GITHUB_ORG \
-    -e GITHUB_REPO=$GITHUB_REPO \
-    -e GITHUB_USER=$GITHUB_USER \
-    -e GITHUB_PASSWORD="$GITHUB_PASSWORD" \
     -v $HOME/.aws:/root/.aws \
     -v /var/run/docker.sock:/var/run/docker.sock \
     -v $PWD:$PWD \
     -w $PWD \
     $dockerOpts \
-    hortonworks/packer-plus:0.12.2-1 "$@" $packerFile
+    hortonworks/packer-plus:0.12.2-2 "$@" $packerFile
 }
 
 main() {
