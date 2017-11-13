@@ -132,3 +132,6 @@ push-to-metadata-repo: cleanup-metadata-repo
 	cp $(shell (ls -1 *_manifest.json | tail -1 | sed "s/_manifest//")) $(GITHUB_REPO)
 	cd $(GITHUB_REPO) && git add -A && git commit -am"Upload new metadata file" && git push
 	make cleanup-metadata-repo
+
+generate-last-metadata-url-file:
+	echo "METADATA_URL=$(shell (ls -1 *_manifest.json | tail -1 | sed "s/_manifest//"))" > last_md
