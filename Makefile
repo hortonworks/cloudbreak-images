@@ -134,4 +134,4 @@ push-to-metadata-repo: cleanup-metadata-repo
 	make cleanup-metadata-repo
 
 generate-last-metadata-url-file:
-	echo "METADATA_URL=$(shell (ls -1 *_manifest.json | tail -1 | sed "s/_manifest//"))" > last_md
+	echo "METADATA_URL=https://raw.githubusercontent.com/$(GITHUB_ORG)/$(GITHUB_REPO)/master/$(shell (ls -1 *_manifest.json | tail -1 | sed "s/_manifest//"))" > last_md
