@@ -10,6 +10,7 @@ cat  > ${image_name}.json <<EOF
 "git_tag": "${git_tag}",
 "os": "${os}",
 "os_user": "${os_user}",
+"os_type": "${os_type}",
 "orchestrator": "${orchestrator}",
 "image_name": "${image_name}",
 "description": "${description}",

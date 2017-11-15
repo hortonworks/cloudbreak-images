@@ -37,7 +37,7 @@ show-image-name:
 
 build-aws-amazonlinux:
 	$(ENVS) \
-	OS=centos6 \
+	OS=amazonlinux \
 	OS_TYPE=redhat6 \
 	ATLAS_ARTIFACT_TYPE=amazon \
 	SALT_INSTALL_OS=amazon \
