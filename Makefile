@@ -1,4 +1,4 @@
-BASE_NAME ?= hdc
+BASE_NAME ?= "hdc"
 DESCRIPTION ?= "Official Cloudbreak image"
 HDP_VERSION ?= ""
 ATLAS_PROJECT ?= "cloudbreak"
@@ -121,7 +121,7 @@ build-os-centos7:
 
 build-gc-centos7:
 	$(ENVS) \
-	GCP_STORAGE_BUNDLE=$(GCP_STORAGE_BUNDLE)
+	GCP_STORAGE_BUNDLE=$(GCP_STORAGE_BUNDLE) \
 	OS=centos7 \
 	OS_TYPE=redhat7 \
 	ATLAS_ARTIFACT_TYPE=googlecompute \
