@@ -45,11 +45,13 @@ docker_hub_check_start() {
 	echo "Start polling cloudbreak image."
 	test_docker_build_finished $cloudbreak_image
 
-	echo "Start polling cloudbreak web image."
-	test_docker_build_finished $cloudbreak_web_image
+	if [[ $CBD_VERSION == 1* ]]
+		echo "Start polling cloudbreak web image."
+		test_docker_build_finished $cloudbreak_web_image
 
-	echo "Start polling cloudbreak auth image."
-	test_docker_build_finished $cloudbreak_auth_image
+		echo "Start polling cloudbreak auth image."
+		test_docker_build_finished $cloudbreak_auth_image
+	fi
 
 	echo "Start polling cloudbreak periscope image."
 	test_docker_build_finished $periscope_image
