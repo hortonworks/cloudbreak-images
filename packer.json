@@ -3,6 +3,7 @@
     "mock": "{{ env `MOCK` }}",
     "description": "{{ env `DESCRIPTION` }}",
     "gcp_account_file": "{{env `GCP_ACCOUNT_FILE`}}",
+    "gcp_storage_bundle": "{{env `GCP_STORAGE_BUNDLE`}}",
     "os_auth_url": "{{ env `OS_AUTH_URL` }}",
     "os_username": "{{ env `OS_USERNAME` }}",
     "os_password": "{{ env `OS_PASSWORD` }}",
@@ -358,7 +359,8 @@
         "hdputil_baseurl={{ user `hdputil_baseurl` }}",
         "hdputil_repoid={{ user `hdputil_repoid` }}",
         "aws_ami_regions={{ user `aws_ami_regions` }}",
-        "azure_storage_accounts={{ user `azure_storage_accounts` }}"
+        "azure_storage_accounts={{ user `azure_storage_accounts` }}",
+        "gcp_storage_bundle={{ user `gcp_storage_bundle` }}"
       ]
     }
   ]
