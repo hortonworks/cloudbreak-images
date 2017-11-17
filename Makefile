@@ -29,14 +29,45 @@ else
 	PACKER_OPTS+=$(PACKER_VARS)
 endif
 
+define AWS_AMI_REGIONS
+ap-southeast-1,ap-southeast-2,eu-central-1,ap-northeast-1,ap-northeast-2,us-east-1,sa-east-1,us-west-1,us-west-2
+endef
+                         
+define AZURE_STORAGE_ACCOUNTS
+East Asia:sequenceiqeastasia2,\
+East US:sequenceiqeastus12,\
+Central US:sequenceiqcentralus2,\
+North Europe:sequenceiqnortheurope2,\
+South Central US:sequenceiqouthcentralus2,\
+North Central US:sequenceiqorthcentralus2,\
+East US 2:sequenceiqeastus22,\
+Japan East:sequenceiqjapaneast2,\
+Japan West:sequenceiqjapanwest2,\
+Southeast Asia:sequenceiqsoutheastasia2,\
+West US:sequenceiqwestus2,\
+West Europe:sequenceiqwesteurope2,\
+Brazil South:sequenceiqbrazilsouth2,\
+Canada East:sequenceiqcanadaeast,\
+Canada Central:sequenceiqcanadacentral,\
+Australia East:hwxaustraliaeast,\
+Australia South East:hwxaustralisoutheast,\
+Central India:hwxcentralindia,\
+Korea Central:hwxkoreacentral,\
+Korea South:hwxkoreasouth,\
+South India:hwxsouthindia,\
+UK South:hwxsouthuk,\
+West Central US:hwxwestcentralus,\
+UK West:hwxwestuk,\
+West US 2:hwxwestus2,\
+West India:hwxwestindia
+endef
+
 show-image-name:
 	@echo IMAGE_NAME=$(IMAGE_NAME)
 
-#deps:
-	# go get github.com/bronze1man/yaml2json
-
 build-aws-amazonlinux:
 	$(ENVS) \
+	AWS_AMI_REGIONS="$(AWS_AMI_REGIONS)" \
 	OS=amazonlinux \
 	OS_TYPE=redhat6 \
 	ATLAS_ARTIFACT_TYPE=amazon \
@@ -46,6 +77,7 @@ build-aws-amazonlinux:
 
 build-aws-centos6:
 	$(ENVS) \
+	AWS_AMI_REGIONS="$(AWS_AMI_REGIONS)" \
 	OS=centos6 \
 	OS_TYPE=redhat6 \
 	ATLAS_ARTIFACT_TYPE=amazon \
@@ -55,6 +87,7 @@ build-aws-centos6:
 
 build-aws-centos7:
 	$(ENVS) \
+	AWS_AMI_REGIONS="$(AWS_AMI_REGIONS)" \
 	OS=centos7 \
 	OS_TYPE=redhat7 \
 	ATLAS_ARTIFACT_TYPE=amazon \
@@ -64,6 +97,7 @@ build-aws-centos7:
 
 build-aws-rhel7:
 	$(ENVS) \
+	AWS_AMI_REGIONS="$(AWS_AMI_REGIONS)" \
 	OS=redhat7 \
 	OS_TYPE=redhat7 \
 	ATLAS_ARTIFACT_TYPE=amazon \
@@ -91,13 +125,14 @@ build-gc-centos7:
 
 build-azure-centos7:
 	$(ENVS) \
+	AZURE_STORAGE_ACCOUNTS="$(AZURE_STORAGE_ACCOUNTS)" \
 	OS=centos7 \
 	OS_TYPE=redhat7 \
 	ATLAS_ARTIFACT_TYPE=azure-arm \
 	SALT_INSTALL_OS=centos \
 	SALT_INSTALL_REPO="https://repo.saltstack.com/yum/redhat/salt-repo-2017.7-1.el7.noarch.rpm" \
 	./scripts/packer.sh build -only=arm-centos7 $(PACKER_OPTS)
-	./scripts/azure-copy.sh
+	AZURE_STORAGE_ACCOUNTS="$(AZURE_STORAGE_ACCOUNTS)" ./scripts/azure-copy.sh
 
 bundle-googlecompute:
 	$(ENVS) ./scripts/bundle-gcp-image.sh
