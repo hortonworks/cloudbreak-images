@@ -45,7 +45,7 @@ docker_hub_check_start() {
 	echo "Start polling cloudbreak image."
 	test_docker_build_finished $cloudbreak_image
 
-	if [[ $CBD_VERSION == 1* ]]
+	if [[ $CBD_VERSION == 1* ]]; then 
 		echo "Start polling cloudbreak web image."
 		test_docker_build_finished $cloudbreak_web_image
 
