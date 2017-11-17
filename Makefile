@@ -65,6 +65,8 @@ endef
 GCP_STORAGE_BUNDLE ?= "sequenceiqimage"
 GCP_STORAGE_BUNDLE_LOG ?= "sequenceiqimagelog"
 
+S3_TARGET ?= "s3://public-repo-1.hortonworks.com/HDP/cloudbreak"
+
 show-image-name:
 	@echo IMAGE_NAME=$(IMAGE_NAME)
 
@@ -144,7 +146,7 @@ bundle-googlecompute:
 	$(ENVS) GCP_STORAGE_BUNDLE=$(GCP_STORAGE_BUNDLE) GCP_STORAGE_BUNDLE_LOG=$(GCP_STORAGE_BUNDLE_LOG) ./scripts/bundle-gcp-image.sh
 
 upload-openstack-image:
-	ATLAS_PROJECT=${ATLAS_PROJECT} ./scripts/openstack-s3-upload.sh
+	ATLAS_PROJECT=${ATLAS_PROJECT} S3_TARGET=$(S3_TARGET) ./scripts/openstack-s3-upload.sh
 
 docker-build:
 	docker build -t images:build - < Dockerfile.build
