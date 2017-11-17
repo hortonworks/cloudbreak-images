@@ -28,6 +28,7 @@ cat  > ${image_name}.json <<EOF
 "hdputil_repoid": "${hdputil_repoid}",
 "aws_ami_regions": "${aws_ami_regions}",
 "azure_storage_accounts": "${azure_storage_accounts}",
+"gcp_storage_bundle": "${gcp_storage_bundle}",
 "manifest": $(if [ -f ${image_name}_manifest.json ]; then cat ${image_name}_manifest.json; else echo "{}"; fi)
 }
 EOF

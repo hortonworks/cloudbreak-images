@@ -1,4 +1,4 @@
-BASE_NAME ?= "hdc"
+BASE_NAME ?= hdc
 DESCRIPTION ?= "Official Cloudbreak image"
 HDP_VERSION ?= ""
 ATLAS_PROJECT ?= "cloudbreak"
@@ -62,6 +62,11 @@ West US 2:hwxwestus2,\
 West India:hwxwestindia
 endef
 
+GCP_STORAGE_BUNDLE ?= "sequenceiqimage"
+GCP_STORAGE_BUNDLE_LOG ?= "sequenceiqimagelog"
+
+S3_TARGET ?= "s3://public-repo-1.hortonworks.com/HDP/cloudbreak"
+
 show-image-name:
 	@echo IMAGE_NAME=$(IMAGE_NAME)
 
@@ -116,6 +121,7 @@ build-os-centos7:
 
 build-gc-centos7:
 	$(ENVS) \
+	GCP_STORAGE_BUNDLE=$(GCP_STORAGE_BUNDLE)
 	OS=centos7 \
 	OS_TYPE=redhat7 \
 	ATLAS_ARTIFACT_TYPE=googlecompute \
@@ -132,13 +138,15 @@ build-azure-centos7:
 	SALT_INSTALL_OS=centos \
 	SALT_INSTALL_REPO="https://repo.saltstack.com/yum/redhat/salt-repo-2017.7-1.el7.noarch.rpm" \
 	./scripts/packer.sh build -only=arm-centos7 $(PACKER_OPTS)
+
+copy-azure-images:
 	AZURE_STORAGE_ACCOUNTS="$(AZURE_STORAGE_ACCOUNTS)" ./scripts/azure-copy.sh
 
 bundle-googlecompute:
-	$(ENVS) ./scripts/bundle-gcp-image.sh
+	$(ENVS) GCP_STORAGE_BUNDLE=$(GCP_STORAGE_BUNDLE) GCP_STORAGE_BUNDLE_LOG=$(GCP_STORAGE_BUNDLE_LOG) ./scripts/bundle-gcp-image.sh
 
 upload-openstack-image:
-	ATLAS_PROJECT=${ATLAS_PROJECT} ./scripts/openstack-s3-upload.sh
+	ATLAS_PROJECT=${ATLAS_PROJECT} S3_TARGET=$(S3_TARGET) ./scripts/openstack-s3-upload.sh
 
 docker-build:
 	docker build -t images:build - < Dockerfile.build

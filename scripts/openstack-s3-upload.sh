@@ -1,7 +1,8 @@
 #!/bin/bash
 set -xe
 
-: ${S3_TARGET:=s3://public-repo-1.hortonworks.com/HDP/cloudbreak}
+: ${S3_TARGET?= required}
+
 : ${OS_IMAGE_ATLAS_VERSION:=latest}
 : ${ATLAS_PROJECT:=cloudbreak}
 OS_IMAGE_NAME=$(curl -sL https://atlas.hashicorp.com/api/v1/artifacts/hortonworks/$ATLAS_PROJECT/openstack.image/search?version=$OS_IMAGE_ATLAS_VERSION | jq '.versions[0].metadata.image_name' -r)

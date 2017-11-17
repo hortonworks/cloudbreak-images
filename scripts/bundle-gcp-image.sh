@@ -1,5 +1,14 @@
 #!/bin/bash
 
+: ${GCP_STORAGE_BUNDLE?= required}
+: ${GCP_STORAGE_BUNDLE_LOG?= required}
+: ${GCP_ACCOUNT_FILE?= required}
+
+if ! [[ -f $GCP_ACCOUNT_FILE ]]; then
+	echo "Account file is missing: $GCP_ACCOUNT_FILE"
+	exit 2
+fi
+
 set -eo pipefail
 set -x
 
@@ -21,12 +30,11 @@ main() {
 	: ${ZONE:=us-central1-b}
 	: ${INSTANCE_NAME:=$IMAGE_NAME}
 	: ${TEMP_DISK_NAME:=${IMAGE_NAME//-}disk}
-	: ${GCP_PROJECT:=}
-	: ${GCP_ACCOUNT_FILE:=}
+	: ${GCP_PROJECT:=$(cat $GCP_ACCOUNT_FILE | jq .project_id -r)}
 	: ${SERVICE_ACCOUNT_EMAIL:=$(cat $GCP_ACCOUNT_FILE | jq .client_email -r)}
 
     docker run --name gcloud-config-$IMAGE_NAME -v "${GCP_ACCOUNT_FILE}":/gcp.p12 google/cloud-sdk gcloud auth activate-service-account $SERVICE_ACCOUNT_EMAIL --key-file /gcp.p12 --project $GCP_PROJECT
-    if docker run --rm --name gcloud-pre-check-$IMAGE_NAME --volumes-from gcloud-config-$IMAGE_NAME google/cloud-sdk gsutil ls gs://sequenceiqimage/${IMAGE_NAME}.tar.gz 2>/dev/null; then
+    if docker run --rm --name gcloud-pre-check-$IMAGE_NAME --volumes-from gcloud-config-$IMAGE_NAME google/cloud-sdk gsutil ls gs://$GCP_STORAGE_BUNDLE/${IMAGE_NAME}.tar.gz 2>/dev/null; then
     	echo ${IMAGE_NAME}.tar.gz already exists, please delete it in order for this job to run
     	docker rm gcloud-config-$IMAGE_NAME
     	exit 1
@@ -44,7 +52,7 @@ mkdir -p /home/centos/image
 dd if=/dev/sdb of=/home/centos/image/disk.raw bs=4096
 cd /home/centos/image
 tar czvf myimage.tar.gz disk.raw
-gsutil cp -a public-read myimage.tar.gz gs://sequenceiqimage/$HOSTNAME.tar.gz
+gsutil cp -a public-read myimage.tar.gz gs://'$GCP_STORAGE_BUNDLE'/$HOSTNAME.tar.gz
 umount /mnt/packer
 gcloud compute instances detach-disk $HOSTNAME --disk ${HOSTNAME//-}disk --zone $ZONE
 gcloud compute disks delete ${HOSTNAME//-}disk --zone $ZONE -q
@@ -53,12 +61,12 @@ echo FINISHED
 EOF
 chmod +x /opt/img.sh
 /opt/img.sh &> /var/log/bundle-$HOSTNAME.log
-gsutil cp /var/log/bundle-$HOSTNAME.log gs://sequenceiqimagelog/bundle-$HOSTNAME.log
+gsutil cp /var/log/bundle-$HOSTNAME.log gs://'$GCP_STORAGE_BUNDLE_LOG'/bundle-$HOSTNAME.log
 gcloud compute instances delete $HOSTNAME --zone $ZONE -q'
 	docker run --rm --name gcloud-create-disk-$IMAGE_NAME --volumes-from gcloud-config-$IMAGE_NAME google/cloud-sdk gcloud compute disks create $TEMP_DISK_NAME --image $IMAGE_NAME --zone $ZONE
 	docker run --rm --name gcloud-attach-disk-$IMAGE_NAME --volumes-from gcloud-config-$IMAGE_NAME google/cloud-sdk gcloud compute instances attach-disk $INSTANCE_NAME --disk $TEMP_DISK_NAME --zone $ZONE
-	while ! docker run --rm --name gcloud-wait-$IMAGE_NAME --volumes-from gcloud-config-$IMAGE_NAME google/cloud-sdk gsutil ls gs://sequenceiqimagelog/bundle-${IMAGE_NAME}.log 2>/dev/null; do echo waiting for bundle log: ${IMAGE_NAME}.log; sleep 10; done
-	LOG=$(docker run --rm --name gcloud-get-log-$IMAGE_NAME --volumes-from gcloud-config-$IMAGE_NAME google/cloud-sdk gsutil cat gs://sequenceiqimagelog/bundle-${IMAGE_NAME}.log)
+	while ! docker run --rm --name gcloud-wait-$IMAGE_NAME --volumes-from gcloud-config-$IMAGE_NAME google/cloud-sdk gsutil ls gs://$GCP_STORAGE_BUNDLE_LOG/bundle-${IMAGE_NAME}.log 2>/dev/null; do echo waiting for bundle log: ${IMAGE_NAME}.log; sleep 10; done
+	LOG=$(docker run --rm --name gcloud-get-log-$IMAGE_NAME --volumes-from gcloud-config-$IMAGE_NAME google/cloud-sdk gsutil cat gs://$GCP_STORAGE_BUNDLE_LOG/bundle-${IMAGE_NAME}.log)
 	echo $LOG
 	if ! echo $LOG | grep FINISHED &>/dev/null; then
 		docker rm gcloud-config-$IMAGE_NAME
