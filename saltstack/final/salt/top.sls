@@ -1,0 +1,4 @@
+final:
+  '*':
+    - validate
+    - cleanup

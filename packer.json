@@ -43,7 +43,9 @@
     "salt_install_repo": "{{ env `SALT_INSTALL_REPO` }}",
     "aws_instance_type": "m3.2xlarge",
     "aws_ami_regions": "{{ env `AWS_AMI_REGIONS` }}",
-    "custom_image_type": "{{ env `CUSTOM_IMAGE_TYPE` }}"
+    "custom_image_type": "{{ env `CUSTOM_IMAGE_TYPE` }}",
+    "optional_states": "{{ env `OPTIONAL_STATES` }}",
+    "oracle_jdk8_url_rpm": "{{ env `ORACLE_JDK8_URL_RPM` }}"
   },
   "builders": [
     {
@@ -296,7 +298,9 @@
         "HDPUTIL_VERSION={{user `hdputil_version`}}",
         "HDPUTIL_REPOID={{user `hdputil_repoid`}}",
         "HDPUTIL_BASEURL={{user `hdputil_baseurl`}}",
-        "COPY_AWS_MARKETPLACE_EULA={{user `copy_aws_marketplace_eula`}}"
+        "COPY_AWS_MARKETPLACE_EULA={{user `copy_aws_marketplace_eula`}}",
+        "ORACLE_JDK8_URL_RPM={{user `oracle_jdk8_url_rpm`}}",
+        "OPTIONAL_STATES={{user `optional_states`}}"
       ]
     }
   ],

@@ -1,0 +1,1 @@
+os_user: {{ salt['environ.get']('OS_USER') }}

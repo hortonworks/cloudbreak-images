@@ -4,3 +4,4 @@ hortonworks:
     - eula
     - kerberos
     - java
+    - cleanup

@@ -21,21 +21,25 @@ install_openjdk:
       - java-1.8.0-openjdk-javadoc
       - java-1.8.0-openjdk-src
       {% elif grains['os_family'] == 'Debian' %}
-        - openjdk-7-jre-headless
-        - openjdk-7-doc
-        - openjdk-7-source
-        - openjdk-7-jdk
+        - openjdk-8-jre-headless
+        - openjdk-8-doc
+        - openjdk-8-source
+        - openjdk-8-jdk
       {% endif %}
 
-set_java_home:
-  environ.setenv:
-    - name: JAVA_HOME
-    {% if grains['os_family'] == 'RedHat' %}
-    - value: /usr/lib/jvm/java
-    {% elif grains['os_family'] == 'Debian' %}
-    - value: /usr/lib/jvm/java-7-openjdk-amd64
-    {% endif %}
-    - update_minion: True
+set_java_home_user:
+  file.managed:
+    - name: /etc/profile.d/java.sh
+    - source: salt://{{ slspath }}/etc/profile.d/java.sh
+    - mode: 755
+
+{% if grains['init'] == 'systemd' %}
+set_java_home_systemd:
+  file.replace:
+    - name: /etc/systemd/system.conf
+    - pattern: \#+DefaultEnvironment=.*
+    - repl: DefaultEnvironment=JAVA_HOME=/usr/lib/jvm/java
+{% endif %}
 
 add_openjdk_gplv2:
   file.managed:

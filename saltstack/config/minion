@@ -7,9 +7,15 @@ pillar_roots:
     - /srv/pillar/base
   hortonworks:
     - /srv/pillar/hortonworks
+  optional:
+    - /srv/pillar/optional
 
 file_roots:
   base:
     - /srv/salt/base
   hortonworks:
     - /srv/salt/hortonworks
+  optional:
+    - /srv/salt/optional
+  final:
+    - /srv/salt/final
