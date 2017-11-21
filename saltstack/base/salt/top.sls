@@ -14,7 +14,3 @@ base:
     - performance
     - waagent
     - custom
-    {% if pillar['CUSTOM_IMAGE_TYPE'] == 'base' %}
-    - validate
-    - cleanup
-    {% endif %}

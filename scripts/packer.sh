@@ -75,6 +75,8 @@ packer_in_container() {
     -e ATLAS_ARTIFACT_TYPE=$ATLAS_ARTIFACT_TYPE \
     -e COPY_AWS_MARKETPLACE_EULA=$COPY_AWS_MARKETPLACE_EULA \
     -e CUSTOM_IMAGE_TYPE=$CUSTOM_IMAGE_TYPE \
+    -e OPTIONAL_STATES=$OPTIONAL_STATES \
+    -e ORACLE_JDK8_URL_RPM=$ORACLE_JDK8_URL_RPM \
     -e DESCRIPTION="$DESCRIPTION" \
     -v $HOME/.aws:/root/.aws \
     -v /var/run/docker.sock:/var/run/docker.sock \

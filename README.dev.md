@@ -8,6 +8,7 @@ If you would like to start from a customized image, you could either:
 
 - Set Packer to start from your [own custom image](#custom_base)
 - Add your [custom logic](#custom_logic) - either as custom script or as custom [Salt]((https://docs.saltstack.com/en/latest/)) state
+- Use [Oracle JDK](#oracle-java) instead of OpenJDK
 
 ### <a name="custom_base"></a> Custom Base Image
 
@@ -61,6 +62,18 @@ The provisioning steps are implemented with [Salt state files](https://docs.salt
  
  > Warning: Please ensure that your script runs without any errors or mandatory user inputs
 
+### <a name="oracle-java"></a>Oracle JDK
+
+It's possible to use Oracle JDK instead of OpenJDK. It's implemented as an optional Salt state.
+
+To enable Oracle JDK installation you have edit the [Makefile](Makefile). In the top use `oracle-java` as an `OPTIONAL_STATE`:
+- `OPTIONAL_STATES ?= "oracle-java"`
+
+Default JDK URL is for 8u151, but you can choose another from  [Oracle JDK 8 download site](http://www.oracle.com/technetwork/java/javase/downloads/jdk8-downloads-2133151.html).
+> Please use Linux x64 RPM version
+
+If you choose other version you can set the url for the `ORACLE_JDK8_URL_RPM` variable as you can see with the default setting in the [Makefile](Makefile).
+ 
 
 ## Packer Postprocessors
 
