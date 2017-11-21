@@ -66,13 +66,18 @@ The provisioning steps are implemented with [Salt state files](https://docs.salt
 
 It's possible to use Oracle JDK instead of OpenJDK. It's implemented as an optional Salt state.
 
-To enable Oracle JDK installation you have edit the [Makefile](Makefile). In the top use `oracle-java` as an `OPTIONAL_STATE`:
-- `OPTIONAL_STATES ?= "oracle-java"`
+To enable Oracle JDK installation you have to set the `OPTIONAL_STATES` environment variable:
+
+`export OPTIONAL_STATES="oracle-java"`
 
 Default JDK URL is for 8u151, but you can choose another from  [Oracle JDK 8 download site](http://www.oracle.com/technetwork/java/javase/downloads/jdk8-downloads-2133151.html).
-> Please use Linux x64 RPM version
+> Warning: Please use Linux x64 RPM version
 
-If you choose other version you can set the url for the `ORACLE_JDK8_URL_RPM` variable as you can see with the default setting in the [Makefile](Makefile).
+If you choose other version use
+
+`export ORACLE_JDK8_URL_RPM="https://www.oracle.com/path-to-jdk-rpm-file"`
+
+to set the download url.
  
 
 ## Packer Postprocessors
