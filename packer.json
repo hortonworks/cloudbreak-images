@@ -45,7 +45,8 @@
     "aws_ami_regions": "{{ env `AWS_AMI_REGIONS` }}",
     "custom_image_type": "{{ env `CUSTOM_IMAGE_TYPE` }}",
     "optional_states": "{{ env `OPTIONAL_STATES` }}",
-    "oracle_jdk8_url_rpm": "{{ env `ORACLE_JDK8_URL_RPM` }}"
+    "oracle_jdk8_url_rpm": "{{ env `ORACLE_JDK8_URL_RPM` }}",
+    "preinstalled_java_home": "{{ env `PREINSTALLED_JAVA_HOME` }}"
   },
   "builders": [
     {
@@ -300,7 +301,8 @@
         "HDPUTIL_BASEURL={{user `hdputil_baseurl`}}",
         "COPY_AWS_MARKETPLACE_EULA={{user `copy_aws_marketplace_eula`}}",
         "ORACLE_JDK8_URL_RPM={{user `oracle_jdk8_url_rpm`}}",
-        "OPTIONAL_STATES={{user `optional_states`}}"
+        "OPTIONAL_STATES={{user `optional_states`}}",
+        "PREINSTALLED_JAVA_HOME={{user `preinstalled_java_home`}}"
       ]
     }
   ],

@@ -12,6 +12,31 @@ enable_redhat_rhui_repos:
 {% endif %}
 {% endif %}
 
+set_java_home_user:
+  file.managed:
+    - name: /etc/profile.d/java.sh
+    - source: salt://{{ slspath }}/etc/profile.d/java.sh
+    - mode: 755
+
+{% set preinstalled_java_home=salt['environ.get']('PREINSTALLED_JAVA_HOME') %}
+
+{% if preinstalled_java_home %}
+
+{% if grains['init'] == 'systemd' %}
+set_java_home_systemd:
+  file.replace:
+    - name: /etc/systemd/system.conf
+    - pattern: \#+DefaultEnvironment=.*
+    - repl: DefaultEnvironment=JAVA_HOME={{ preinstalled_java_home }}
+{% endif %}
+
+set_custom_java_home:
+  file.replace:
+    - name: /etc/profile.d/java.sh
+    - pattern: .*JAVA_HOME.*
+    - repl: export JAVA_HOME={{ preinstalled_java_home }}
+
+{% else %}
 install_openjdk:
   pkg.installed:
     - pkgs:
@@ -27,11 +52,6 @@ install_openjdk:
         - openjdk-8-jdk
       {% endif %}
 
-set_java_home_user:
-  file.managed:
-    - name: /etc/profile.d/java.sh
-    - source: salt://{{ slspath }}/etc/profile.d/java.sh
-    - mode: 755
 
 {% if grains['init'] == 'systemd' %}
 set_java_home_systemd:
@@ -50,3 +70,5 @@ add_openjdk_gplv2:
 
     {% endif %}
     - source: salt://java/usr/lib/jvm/OpenJDK_GPLv2_and_Classpath_Exception.pdf
+
+{% endif %}
