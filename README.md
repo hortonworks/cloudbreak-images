@@ -44,8 +44,6 @@ The following **Standard Default** images and Linux versions are available for e
 - GCP: CentOS 7.3
 - OpenStack: CentOS 7.3
 
-It is also possible to create CentOS 6.x, CentOS 7.x, RHEL 6.x, RHEL 7.x based images for every platform. 
-
 In some cases, these default images might not fit the requirements of users (e.g. they need custom OS hardening, libraries, tooling, etc) and
 instead, the user would like to start their clusters from their own **custom image**. The repository includes **instructions** and **scripts** to help build those **custom images**. Once you have an images, refer to the Cloudbreak documentation
 for information on how to register and use these images with Cloudbreak: http://hortonworks.github.io/cloudbreak-docs/

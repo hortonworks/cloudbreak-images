@@ -2,8 +2,6 @@
 
 : ${DEBUG:=1}
 : ${DRY_RUN:-1}
-: ${ORACLE_JDK8_URL_RPM:="http://download.oracle.com/otn-pub/java/jdk/8u151-b12/e758a0de34e24606bca991d704f6dcbf/jdk-8u151-linux-x64.rpm"}
-export ORACLE_JDK8_URL_RPM
 
 set -e -o pipefail -o errexit
 
@@ -39,11 +37,12 @@ function highstate {
 }
 
 function apply_optional_states {
+  echo "Running applying optional states: ${OPTIONAL_STATES}"
+
   if [ -n "${OPTIONAL_STATES}" ]
   then
     local saltenv="optional"
     copy_resources ${saltenv}
-    echo "Running applying optional states: ${OPTIONAL_STATES}"
     salt-call --local state.sls ${OPTIONAL_STATES} saltenv=${saltenv} --retcode-passthrough -l info --log-file=/tmp/salt-build-${saltenv}.log --config-dir=/tmp/saltstack/config
   fi
 }

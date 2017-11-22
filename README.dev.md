@@ -9,6 +9,7 @@ If you would like to start from a customized image, you could either:
 - Set Packer to start from your [own custom image](#custom_base)
 - Add your [custom logic](#custom_logic) - either as custom script or as custom [Salt]((https://docs.saltstack.com/en/latest/)) state
 - Use [Oracle JDK](#oracle-java) instead of OpenJDK
+- Using [preinstalled JDK](#preinstalled-java)
 
 ### <a name="custom_base"></a> Custom Base Image
 
@@ -64,21 +65,30 @@ The provisioning steps are implemented with [Salt state files](https://docs.salt
 
 ### <a name="oracle-java"></a>Oracle JDK
 
-It's possible to use Oracle JDK instead of OpenJDK. It's implemented as an optional Salt state.
+By default, OpenJDK is installed on the images. Alternatively, you can install Oracle JDK by using an optional Salt state.
 
 To enable Oracle JDK installation you have to set the `OPTIONAL_STATES` environment variable:
+```
+export OPTIONAL_STATES="oracle-java"
+```
+Also you have to set the Oracle JDK 8 download url, which can be copied from [Oracle JDK 8 download site](http://www.oracle.com/technetwork/java/javase/downloads/jdk8-downloads-2133151.html).
+> Warning: By using this JDK URL, Oracle JDK will be installed using this software and you will be agreeing to the Oracle Binary Code License agreement. 
 
-`export OPTIONAL_STATES="oracle-java"`
-
-Default JDK URL is for 8u151, but you can choose another from  [Oracle JDK 8 download site](http://www.oracle.com/technetwork/java/javase/downloads/jdk8-downloads-2133151.html).
 > Warning: Please use Linux x64 RPM version
 
-If you choose other version use
+To set the download url export `ORACLE_JDK8_URL_RPM` environment variable:
+```
+export ORACLE_JDK8_URL_RPM="https://www.oracle.com/path-to-jdk-rpm-file"
+```
+### <a name="preinstalled-java"></a>Using preinstalled JDK
 
-`export ORACLE_JDK8_URL_RPM="https://www.oracle.com/path-to-jdk-rpm-file"`
+By default, OpenJDK is installed on the images. Alternatively, if you have an image with preinstalled JDK you can pass it's JAVA_HOME variable which would disable installation of OpenJDK.
 
-to set the download url.
- 
+To set your custom JAVA_HOME export `PREINSTALLED_JAVA_HOME` environment variable:
+```
+export PREINSTALLED_JAVA_HOME=/path/to/installed/jdk
+```
+> Note: If you specify preinstalled JDK but also choose Oracle JDK installation, then Oracle JDK will be installed and JAVA_HOME will be set to it
 
 ## Packer Postprocessors
 
