@@ -41,12 +41,14 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
         :box => "centos/6",
         :ram => 1536,
         :cpu => 2,
+=begin
         :ambari_baseurl => "http://s3.amazonaws.com/dev.hortonworks.com/ambari/centos6/2.x/BUILDS/2.4.1.0-22/",
         :ambari_key => "http://s3.amazonaws.com/dev.hortonworks.com/ambari/centos6/RPM-GPG-KEY/RPM-GPG-KEY-Jenkins",
         :hdp_stack_version => "2.5",
         :hdp_version => "2.5.0.1-60",
         :hdp_baseurl => "http://s3.amazonaws.com/dev.hortonworks.com/HDP/centos6/2.x/BUILDS/2.5.0.1-60",
         :hdp_repoid => "HDP-2.5",
+=end
         :salt_repo_file => "salt-repo-2016.11-6.el6.repo"
       },
       {
