@@ -2,14 +2,18 @@
 Description=Unbound recursive Domain Name Server
 After=syslog.target network.target
 After=unbound-keygen.service
+Wants=network.target
 Wants=unbound-keygen.service
 Wants=unbound-anchor.timer
 Before=nss-lookup.target
 Wants=nss-lookup.target
+StartLimitInterval=3600
+StartLimitBurst=3500
 
 [Service]
 Type=simple
 Restart=always
+RestartSec=1
 EnvironmentFile=-/etc/sysconfig/unbound
 ExecStartPre=/usr/sbin/unbound-checkconf
 ExecStartPre=-/usr/sbin/unbound-anchor -a /var/lib/unbound/root.key -c /etc/unbound/icannbundle.pem

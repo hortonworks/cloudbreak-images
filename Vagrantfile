@@ -100,7 +100,7 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
 
         node.vm.provision :shell do |shell|
           #shell.inline = "salt-call --local state.highstate --file-root=/srv/salt --pillar-root=/srv/pillar --retcode-passthrough -l info --config-dir=/srv/config"
-          shell.inline = "/tmp/scripts/salt-setup.sh"
+          shell.inline = "/tmp/scripts/salt-setup.sh hortonworks"
           shell.keep_color = true
         end
 
