@@ -9,10 +9,8 @@ install_wheezy_backports_repository:
   - require_in:
   - pkg: install_cloud-init_packages
   - gpgcheck: 1
-  - unless: ls /etc/waagent.conf
 {% endif %}
 {% endif %}
-
 
 install_cloud-init_packages:
   pkg.installed:
@@ -23,8 +21,6 @@ install_cloud-init_packages:
     - fromrepo: wheezy-backports
     {% endif %}
     {% endif %}
-    - unless: ls /etc/waagent.conf
-
 
 preserve_hostname_false:
   file.replace:
@@ -32,7 +28,6 @@ preserve_hostname_false:
     - pattern: "^preserve_hostname.*"
     - repl: "preserve_hostname: true"
     - append_if_not_found: True
-    - unless: ls /etc/waagent.conf
 
 create_cloudbreak_files:
   file.managed:
@@ -40,7 +35,6 @@ create_cloudbreak_files:
     - group: root
     - name: /etc/cloud/cloud.cfg.d/50_cloudbreak.cfg
     - source: salt://{{ slspath }}/etc/cloud/cloud.cfg.d/50_cloudbreak.cfg
-    - unless: ls /etc/waagent.conf
 
 {% if grains['init'] == 'systemd' %}
 create_cloud-init_service_files:
@@ -49,5 +43,4 @@ create_cloud-init_service_files:
     - group: root
     - name: /etc/systemd/system/cloud-init.service
     - source: salt://{{ slspath }}/etc/systemd/system/cloud-init.service
-    - unless: ls /etc/waagent.conf
 {% endif %}

@@ -3,7 +3,11 @@ base:
     - prerequisites
     - simple-webserver
     - eula
+{% if salt['file.file_exists']('/etc/waagent.conf') %}
+    - waagent
+{% else %}
     - cloud-init
+{% endif %}
     - selinux
     - unbound
     - consul
@@ -17,8 +21,6 @@ base:
     - java
     - jdbc-drivers
     - unbound
-    - consul
-    - consul-template
     - node_exporter
     - jmx_exporter
 {% if grains['os_family'] == 'RedHat' %}
@@ -34,6 +36,7 @@ base:
     - prometheus
     - dhcp
     - performance
-    - waagent
     - custom
+{% if salt['file.directory_exists']('/vagrant') %}
     - cleanup
+{% endif %}
