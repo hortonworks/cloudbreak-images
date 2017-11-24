@@ -22,7 +22,7 @@ packages_install:
       - snappy
       - snappy-devel
       - bind-utils
-    {% if grains['osmajorrelease'] == 7 %}
+    {% if grains['osmajorrelease'] == '7' %}
       - iptables-services
     {% endif %}
     {% elif grains['os_family'] == 'Debian' %}
