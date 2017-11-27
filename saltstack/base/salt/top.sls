@@ -1,7 +1,11 @@
 base:
   '*':
     - prerequisites
+{% if not salt['file.file_exists']('/etc/waagent.conf') %}
+    - waagent
+{% else %}
     - cloud-init
+{% endif %}
     - unbound
     - nginx
     - salt-bootstrap
@@ -12,5 +16,4 @@ base:
     - monitoring
     - dhcp
     - performance
-    - waagent
-    - custom
+{   - custom
