@@ -43,11 +43,10 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
         :box => "centos/6",
         :ram => 1536,
         :cpu => 2,
-        :salt_repo => "salt-repo-2017.7-1.el.repo",
+        :salt_repo => "salt-repo-2016.11-6.el.repo",
         :optional_states => "oracle-java",
         :oracle_jdk8_url_rpm => "http://download.oracle.com/otn-pub/java/jdk/8u151-b12/e758a0de34e24606bca991d704f6dcbf/jdk-8u151-linux-x64.rpm"
 =begin
-
       #   :ambari_baseurl => "http://s3.amazonaws.com/dev.hortonworks.com/ambari/centos6/2.x/BUILDS/2.4.1.0-22/",
       #   :ambari_key => "http://s3.amazonaws.com/dev.hortonworks.com/ambari/centos6/RPM-GPG-KEY/RPM-GPG-KEY-Jenkins",
       #   :hdp_stack_version => "2.5",
