@@ -16,4 +16,4 @@ base:
     - monitoring
     - dhcp
     - performance
-{   - custom
+    - custom
