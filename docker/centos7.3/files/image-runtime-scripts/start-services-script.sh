@@ -16,6 +16,23 @@ cat <<EOF > /yarn-private/ambari/ycloud.json
 }
 EOF
 
+## Cloudbreak related setup
+if [[ -f "/etc/cloudbreak-config.props" ]]; then
+    cp /etc/resolv.conf.ycloud /etc/resolv.conf
+
+    source /etc/cloudbreak-config.props
+
+    mkdir -p /home/${sshUser}/.ssh
+    chmod 700 /home/${sshUser}/.ssh
+    echo "${sshPubKey}" >> /home/${sshUser}/.ssh/authorized_keys
+    chown -R ${sshUser}:${sshUser} /home/${sshUser}
+
+    echo "${userData}" | base64 -d > /usr/bin/cb-init.sh
+    chmod +x /usr/bin/cb-init.sh
+    /usr/bin/cb-init.sh
+fi
+
+
 ln -s /yarn-private/ambari /etc/resource_overrides
 ### End of generating input for Ambari ####################
 

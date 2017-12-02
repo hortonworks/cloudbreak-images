@@ -1,0 +1,5 @@
+search l42scl.hortonworks.com hortonworks.com
+
+nameserver 127.0.0.1
+nameserver 10.42.1.20
+nameserver 10.42.1.21

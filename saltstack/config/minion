@@ -1,6 +1,8 @@
 file_client: local
 requests_lib: True
 backend_requests: True
+providers:
+  service: systemd
 
 pillar_roots:
   base:

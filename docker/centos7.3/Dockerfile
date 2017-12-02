@@ -1,6 +1,14 @@
 FROM docker.io/centos:7.3.1611
+MAINTAINER Hortonworks
 
+ENV container docker
 ENV TERM linux
+ENV PS1 "[\u@cloudbreak \W]# "
+
+ENV SALT_REPO_URL=https://repo.saltstack.com/yum/redhat/salt-repo-2017.7-1.el7.noarch.rpm
+ENV SYSTEMCTL_REPLACEMENT=https://raw.githubusercontent.com/tibkiss/docker-systemctl-replacement/06367e13d96fed16447c2ed6dd1979d559e7f9a5/files/docker/systemctl.py
+
+RUN echo root:password | chpasswd
 
 # Fix the default shell from dash to bash
 # Do it one line. Otherwise, after doing rm, docker build cannot find a shell to
@@ -25,53 +33,31 @@ RUN (cd /lib/systemd/system/sysinit.target.wants/; for i in *; do [ $i == system
 # Setup yum repos
 #################################################################################
 
+# XXX: Disabled for public build
 # Disable fast-mirrors plugin and force everything through our internal repo
-RUN sed -i -e 's/^enabled=1/enabled=0/g' /etc/yum/pluginconf.d/fastestmirror.conf
+#RUN sed -i -e 's/^enabled=1/enabled=0/g' /etc/yum/pluginconf.d/fastestmirror.conf
 
 # Install epel repo files. epel-release has to go first before some of the other
 # packages can be installed
 RUN yum -y install epel-release
 
+# XXX: Disabled for public build
 # BUG-68936 Fixing the image to use the HWX internal repos to avoid massive
 # downloads due to cache-misses on the internal caching-proxy.
-RUN rm -rf /etc/yum.repos.d/*
-COPY files/hwx-internal.repo /etc/yum.repos.d/
+#RUN rm -rf /etc/yum.repos.d/*
+#COPY files/hwx-internal.repo /etc/yum.repos.d/
 
 # Give preference to our repos
 RUN yum -y install yum-priorities
 #################################################################################
 
 #################################################################################
-# Setup Ansible
+# Install basic OS packages + GCC (to build bootstrap)
 #################################################################################
-RUN mkdir -p /tmp/image-build-space/ansible
-RUN yum install -y ansible
+RUN yum install -y yum-utils yum-plugin-ovl tar git curl bind-utils unzip wget gcc net-tools sudo zip lsof strace redhat-lsb
 
-# Copy our file only after ansible is installed
-COPY files/ansible/hosts.txt /etc/ansible/hosts
-#################################################################################
-
-# Wire-encryption tests need this module. Only specific version. Other versions
-# beyond this, for e.g. 2.12.1 cause SSL related issues
-RUN yum install -y python-pip && \
-    pip install requests==2.11.1
-
-#################################################################################
-# Install all bits using ansible
-#################################################################################
-# Separately copy the layers to leverage docker caching
-COPY files/ansible/basic-tools.yml /tmp/image-build-space/ansible/
-RUN ansible-playbook -c local /tmp/image-build-space/ansible/basic-tools.yml
-
-COPY files/ansible/networking-tools.yml /tmp/image-build-space/ansible/
-RUN ansible-playbook -c local /tmp/image-build-space/ansible/networking-tools.yml
-
-COPY files/ansible/hwx-internal-dependencies.yml /tmp/image-build-space/ansible/
-RUN ansible-playbook -c local /tmp/image-build-space/ansible/hwx-internal-dependencies.yml
-
-COPY files/ansible/dev-tools.yml /tmp/image-build-space/ansible/
-RUN ansible-playbook -c local /tmp/image-build-space/ansible/dev-tools.yml
-#################################################################################
+RUN yum install -y openssh-server openssh-clients
+RUN systemctl enable sshd
 
 RUN mkdir -p /tmp/image-build-space/image-prep-scripts
 
@@ -80,14 +66,14 @@ RUN mkdir -p /tmp/image-build-space/image-prep-scripts
 #################################################################################
 RUN mkdir -p /tmp/image-build-space/access
 
-COPY files/access/* /tmp/image-build-space/access/
+COPY docker/centos7.3/files/access/* /tmp/image-build-space/access/
 
-COPY files/pam/* /tmp/image-build-space/access/
+COPY docker/centos7.3/files/pam/* /tmp/image-build-space/access/
 
-COPY files/image-prep-scripts/setup-access.sh /tmp/image-build-space/image-prep-scripts
+COPY docker/centos7.3/files/image-prep-scripts/setup-access.sh /tmp/image-build-space/image-prep-scripts
 RUN /tmp/image-build-space/image-prep-scripts/setup-access.sh
 
-COPY files/image-prep-scripts/hwx-internal-setup.sh /tmp/image-build-space/image-prep-scripts
+COPY docker/centos7.3/files/image-prep-scripts/hwx-internal-setup.sh /tmp/image-build-space/image-prep-scripts
 RUN /tmp/image-build-space/image-prep-scripts/hwx-internal-setup.sh
 #################################################################################
 
@@ -97,26 +83,75 @@ RUN yum -y install iproute
 # highly insecure hack to  start systemd
 RUN mkdir -p /bootstrap /bootstrap/logs
 
-COPY files/image-prep-scripts/privileged-start-services-script.c /tmp/image-build-space/image-prep-scripts/
+COPY docker/centos7.3/files/image-prep-scripts/privileged-start-services-script.c /tmp/image-build-space/image-prep-scripts/
 
 RUN gcc /tmp/image-build-space/image-prep-scripts/privileged-start-services-script.c -D COMMAND=\"/bootstrap/start-services-script.sh\" -o /bootstrap/start-systemd
 RUN chgrp -v nobody /bootstrap/start-systemd
 RUN chmod 4050 /bootstrap/start-systemd
 
-ADD files/image-runtime-scripts/start-services-script.sh /bootstrap/
+ADD docker/centos7.3/files/image-runtime-scripts/start-services-script.sh /bootstrap/
 
 #################################################################################
 # Operating system specific stuff
 #################################################################################
-COPY files/base-centos7.3-os-specific-build.sh /tmp/image-build-space/
+COPY docker/centos7.3/files/base-centos7.3-os-specific-build.sh /tmp/image-build-space/
 RUN /tmp/image-build-space/base-centos7.3-os-specific-build.sh
 
-ENV container docker
-
 # Get rid "Unable to get valid context .." message
-COPY files/autorelabel /.autorelabel
+COPY docker/centos7.3/files/autorelabel /.autorelabel
+
+############ TEMP ###########################
+#ENV JDK_ARTIFACT jdk-8u77-linux-x64.tar.gz
+#ENV JDK_VERSION jdk1.8.0_77
+
+# install Ambari specified 1.8 jdk
+#RUN mkdir /usr/jdk64 && cd /usr/jdk64 && wget http://public-repo-1.hortonworks.com/ARTIFACTS/$JDK_ARTIFACT && \
+#    tar -xf $JDK_ARTIFACT && rm -f $JDK_ARTIFACT
+#ENV JAVA_HOME /usr/jdk64/$JDK_VERSION
+#ENV PATH $PATH:$JAVA_HOME/bin
+#RUN mkdir -p /usr/lib/jvm/ && ln -s /usr/jdk64/$JDK_VERSION /usr/lib/jvm/java
+#RUN echo "export JAVA_HOME=$JAVA_HOME" >> /etc/profile
+#RUN echo "export PATH=\$PATH:$JAVA_HOME/bin" >> /etc/profile
+
+# jce
+#ADD http://public-repo-1.hortonworks.com/ARTIFACTS/jce_policy-8.zip $JAVA_HOME/jre/lib/security/
+#RUN cd $JAVA_HOME/jre/lib/security && unzip jce_policy-8.zip && rm -f jce_policy-8.zip && mv UnlimitedJCEPolicyJDK8/* . && rm -rf UnlimitedJCEPolicyJDK8
+#############################################
+
+
+#################################################################################
+# Install Cloudbreak dependencies
+#################################################################################
+# Use docker-systemctl-replacement during SaltStack provisioning:
+# `systemctl start xyz` commands are executed during highstate, which is not supported
+# by systemd. docker-systemctl-replacement overcomes this limitation.
+
+# Need to explicitly call yum update before linking systemctl-replacement to avoid
+# the later update (executed through Salt recipe) overwriting our fix.
+RUN yum -y update
+ADD ${SYSTEMCTL_REPLACEMENT} /usr/bin
+RUN chmod 755 /usr/bin/$(basename ${SYSTEMCTL_REPLACEMENT}) && \
+    mv /usr/bin/systemctl /usr/bin/systemctl.orig && \
+    ln -sf /usr/bin/systemctl.py /usr/bin/systemctl
+
+ADD /saltstack /tmp/saltstack
+ADD /scripts/salt-install.sh /tmp/saltstack/
+ADD /scripts/salt-setup.sh /tmp/saltstack/
+ADD docker/centos7.3/files/saltstack_grains /tmp/saltstack/base/salt/_grains
+ADD docker/centos7.3/files/saltstack_grains /tmp/saltstack/hortonworks/salt/_grains
+ADD ${SALT_REPO_URL} /tmp/saltstack
+RUN /tmp/saltstack/salt-install.sh centos /tmp/saltstack/$(basename ${SALT_REPO_URL})
+RUN /tmp/saltstack/salt-setup.sh hortonworks
+RUN rm -f /etc/salt/minion_id /etc/salt/pki/minion/minion.pem /etc/salt/pki/minion/minion.pub
+
+# Fix issue of `systemctl start xyz` yields 'Failed to get D-Bus connection: Operation not permitted' error
+ADD docker/centos7.3/files/workaround_systemd_start.service /usr/lib/systemd/system/workaround_systemd_start.service
+RUN systemctl enable workaround_systemd_start
+
+# restore systemctl to system default
+RUN ln -sf /usr/bin/systemctl.orig /usr/bin/systemctl
+#################################################################################
 
 VOLUME [ "/sys/fs/cgroup" ]
 
 CMD ["/bootstrap/start-systemd"]
-# CMD ["/usr/sbin/init"]
