@@ -157,7 +157,7 @@ upload-openstack-image:
 	ATLAS_PROJECT=${ATLAS_PROJECT} S3_TARGET=$(S3_TARGET) ./scripts/openstack-s3-upload.sh
 
 docker-build:
-	docker build -t images:build - < Dockerfile.build
+	docker build -t cloudbreak-centos7 -f docker/centos7.3/Dockerfile .
 
 build-in-docker:
 	docker run -it \
