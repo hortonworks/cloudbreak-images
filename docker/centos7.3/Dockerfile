@@ -54,7 +54,8 @@ RUN yum -y install yum-priorities
 #################################################################################
 # Install basic OS packages + GCC (to build bootstrap)
 #################################################################################
-RUN yum install -y yum-utils yum-plugin-ovl tar git curl bind-utils unzip wget gcc net-tools sudo zip lsof strace redhat-lsb
+RUN yum install -y yum-utils yum-plugin-ovl tar git curl bind-utils \
+                   unzip wget gcc net-tools sudo zip lsof strace redhat-lsb
 
 RUN yum install -y openssh-server openssh-clients
 RUN systemctl enable sshd
@@ -80,7 +81,9 @@ RUN /tmp/image-build-space/image-prep-scripts/hwx-internal-setup.sh
 # install iproute explicitly on centos7, it's present by default in centos6, debian7
 RUN yum -y install iproute
 
-# highly insecure hack to  start systemd
+#################################################################################
+# Setup access
+#################################################################################
 RUN mkdir -p /bootstrap /bootstrap/logs
 
 COPY docker/centos7.3/files/image-prep-scripts/privileged-start-services-script.c /tmp/image-build-space/image-prep-scripts/
@@ -100,25 +103,6 @@ RUN /tmp/image-build-space/base-centos7.3-os-specific-build.sh
 # Get rid "Unable to get valid context .." message
 COPY docker/centos7.3/files/autorelabel /.autorelabel
 
-############ TEMP ###########################
-#ENV JDK_ARTIFACT jdk-8u77-linux-x64.tar.gz
-#ENV JDK_VERSION jdk1.8.0_77
-
-# install Ambari specified 1.8 jdk
-#RUN mkdir /usr/jdk64 && cd /usr/jdk64 && wget http://public-repo-1.hortonworks.com/ARTIFACTS/$JDK_ARTIFACT && \
-#    tar -xf $JDK_ARTIFACT && rm -f $JDK_ARTIFACT
-#ENV JAVA_HOME /usr/jdk64/$JDK_VERSION
-#ENV PATH $PATH:$JAVA_HOME/bin
-#RUN mkdir -p /usr/lib/jvm/ && ln -s /usr/jdk64/$JDK_VERSION /usr/lib/jvm/java
-#RUN echo "export JAVA_HOME=$JAVA_HOME" >> /etc/profile
-#RUN echo "export PATH=\$PATH:$JAVA_HOME/bin" >> /etc/profile
-
-# jce
-#ADD http://public-repo-1.hortonworks.com/ARTIFACTS/jce_policy-8.zip $JAVA_HOME/jre/lib/security/
-#RUN cd $JAVA_HOME/jre/lib/security && unzip jce_policy-8.zip && rm -f jce_policy-8.zip && mv UnlimitedJCEPolicyJDK8/* . && rm -rf UnlimitedJCEPolicyJDK8
-#############################################
-
-
 #################################################################################
 # Install Cloudbreak dependencies
 #################################################################################
@@ -135,11 +119,20 @@ RUN chmod 755 /usr/bin/$(basename ${SYSTEMCTL_REPLACEMENT}) && \
     ln -sf /usr/bin/systemctl.py /usr/bin/systemctl
 
 ADD /saltstack /tmp/saltstack
+ADD ${SALT_REPO_URL} /tmp/saltstack/
 ADD /scripts/salt-install.sh /tmp/saltstack/
 ADD /scripts/salt-setup.sh /tmp/saltstack/
+
+# Workaround problem caused by sytemd not being pid-1:
+# Force the minions to use systemd on this host
+RUN echo $'\n\
+providers:\n\
+  service: systemd\n'\
+>>  /tmp/saltstack/config/minion
+
 ADD docker/centos7.3/files/saltstack_grains /tmp/saltstack/base/salt/_grains
 ADD docker/centos7.3/files/saltstack_grains /tmp/saltstack/hortonworks/salt/_grains
-ADD ${SALT_REPO_URL} /tmp/saltstack
+
 RUN /tmp/saltstack/salt-install.sh centos /tmp/saltstack/$(basename ${SALT_REPO_URL})
 RUN /tmp/saltstack/salt-setup.sh hortonworks
 RUN rm -f /etc/salt/minion_id /etc/salt/pki/minion/minion.pem /etc/salt/pki/minion/minion.pub
