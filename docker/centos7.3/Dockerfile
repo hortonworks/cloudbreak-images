@@ -8,8 +8,6 @@ ENV PS1 "[\u@cloudbreak \W]# "
 ENV SALT_REPO_URL=https://repo.saltstack.com/yum/redhat/salt-repo-2017.7-1.el7.noarch.rpm
 ENV SYSTEMCTL_REPLACEMENT=https://raw.githubusercontent.com/tibkiss/docker-systemctl-replacement/06367e13d96fed16447c2ed6dd1979d559e7f9a5/files/docker/systemctl.py
 
-RUN echo root:password | chpasswd
-
 # Fix the default shell from dash to bash
 # Do it one line. Otherwise, after doing rm, docker build cannot find a shell to
 # run more RUN commands :)
