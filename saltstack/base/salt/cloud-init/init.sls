@@ -43,22 +43,6 @@ set_datasource_to_fallback:
     - append_if_not_found: True
     - unless: ls /etc/waagent.conf
 
-enable_pasword_login:
-  file.replace:
-    - name: /etc/cloud/cloud.cfg
-    - pattern: "^ssh_pwauth:.*"
-    - repl: "ssh_pwauth: 1"
-    - append_if_not_found: True
-    - unless: ls /etc/waagent.conf
-
-enable_root_login:
-  file.replace:
-    - name: /etc/cloud/cloud.cfg
-    - pattern: "^disable_root:.*"
-    - repl: "disable_root: 0"
-    - append_if_not_found: True
-    - unless: ls /etc/waagent.conf
-
 disable_resolv_conf_update:
   file.replace:
     - name: /etc/cloud/cloud.cfg
