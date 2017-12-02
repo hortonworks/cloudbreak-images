@@ -1,0 +1,28 @@
+---
+- hosts: local
+  tasks:
+   - name: (N1) Install networking tools
+     package: name={{item}} state=installed
+     with_items:
+      - lsof
+      - net-tools
+
+   - name: (N2) Install ssh on centos6 / centos7
+     package: name={{item}} state=installed
+     with_items:
+      - openssh-server
+      - openssh-clients
+     when: ansible_distribution == 'CentOS' or ansible_distribution == 'Red Hat Enterprise Linux'
+
+   - name: (N2) Install ssh on debian/ubuntu
+     package: name={{item}} state=installed
+     with_items:
+      - openssh-server
+      - openssh-client
+     when: ansible_distribution == 'Debian' or ansible_distribution == 'Ubuntu'
+
+   - name: (N3) Install ssh on suse
+     package: name={{item}} state=installed
+     with_items:
+      - openssh
+     when: (ansible_distribution == 'Suse' or ansible_distribution == 'SLES')
