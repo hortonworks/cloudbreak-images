@@ -38,7 +38,7 @@ function install_with_apt() {
   cp /tmp/repos/$1 /etc/apt/sources.list.d/$1
   apt-get update
   apt-get -y install salt-minion
-  create_temp_monion_config
+  create_temp_minion_config
 }
 
 function install_with_yum() {
@@ -49,11 +49,12 @@ function install_with_yum() {
   cp /tmp/repos/$1 /etc/yum.repos.d/$1
   cp /tmp/repos/saltstack-gpg-key.pub /etc/pki/rpm-gpg/saltstack-gpg-key.pub
   yum clean metadata
-  yum install -y --disablerepo epel salt-minion
-  create_temp_monion_config
+  # TODO: install python27-pip package only for Centos6
+  yum install -y --disablerepo epel python27-pip salt-minion
+  create_temp_minion_config
 }
 
-function create_temp_monion_config() {
+function create_temp_minion_config() {
   echo "requests_lib: True" > /tmp/minion
   echo "backend_requests: True" >> /tmp/minion
 }
