@@ -5,17 +5,6 @@
 
 set -e -o pipefail -o errexit
 
-#run function
-function run {
-  debug "$@";
-  if [ "${DRY_RUN}" != "--dry-run" ]; then "$@"; fi;
-}
-
-#debug function
-function debug {
-  echo "[$(date +'%Y-%m-%dT%H:%M:%S%z')]: $@";
-}
-
 function setting_up_epel() {
   if grep -q -i "Red Hat Enterprise Linux Server release 6." /etc/redhat-release; then
     wget https://dl.fedoraproject.org/pub/epel/epel-release-latest-6.noarch.rpm
