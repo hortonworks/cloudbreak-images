@@ -50,7 +50,6 @@ disable_resolv_conf_update:
     - repl: "manage_resolv_conf: false"
     - append_if_not_found: True
     - unless: ls /etc/waagent.conf
-
 {% endif %}
 
 create_cloudbreak_files:

@@ -1,5 +1,5 @@
-# Docker images to install HDP on YARN Cloud using Cloudbreak 
-Collection of Dockerfiles, helper scripts and salt recipies to create base image for Cloudbreak deployable HDP installation 
+# Docker images to install HDP on YARN Cloud using Cloudbreak
+Collection of Dockerfiles, helper scripts and salt recipies to create base image for Cloudbreak deployable HDP installation
 on YARN Cloud (aka YInception or YCloud).
 
 ## Build requirements

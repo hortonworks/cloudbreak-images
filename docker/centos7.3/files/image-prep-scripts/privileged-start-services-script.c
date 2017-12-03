@@ -23,11 +23,11 @@ int main() {
     printf("Executing setup task: %s\n", SETUP_TASK);
     int exit_code = system(SETUP_TASK);
 
-    if (exit_code !=0) { 
+    if (exit_code !=0) {
       printf("Setup task failed! Exiting...\n");
       exit(-1);
     }
-  } 
+  }
 
   /** We should exec here so that our process can indeed be PID 1 */
   execl(COMMAND, COMMAND, (char*) NULL);

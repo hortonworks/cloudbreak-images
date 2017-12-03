@@ -62,7 +62,7 @@ function setup_non_init_ssh_and_syslog() {
       done
       if [ "$found_pid" == "no" ] ; then
         echo "sshd is dead!" 1>&2
-    	exit 1
+        exit 1
       fi
       sleep 1
     done
@@ -104,30 +104,30 @@ elif [[ ( x"$OS"x == x"CentOS"x && x"$OS_VERSION"x == x"7.2.1511"x ) || ( x"$OS"
     exec -l /usr/lib/systemd/systemd --system
     ############################### Centos7 #####################
 elif [[ ( x"$OS"x == x"CentOS"x && x"$OS_VERSION"x == x"6.8"x ) || ( x"$OS"x == x"CentOS"x && x"$OS_VERSION"x == x"6.9"x ) ]] ; then
-    ############################### Centos7 #####################
+    ############################### Centos6 #####################
     echo "waiting for network ..."
-    
+
     while : ; do
-    	ip addr ls dev eth0 | grep "inet " && break
-    	sleep 1
+        ip addr ls dev eth0 | grep "inet " && break
+        sleep 1
     done > /dev/null 2>&1
-    
+
     echo "dumping network state before starting ssh ... "
     ip addr show
-    
+
     echo "starting logging service.... "
     /etc/init.d/rsyslog start
-    
+
     echo "starting sshd service ... "
     /etc/init.d/sshd start
-    
+
     while : ; do
-    	PID=`pidof sshd`
-    	if [ "$PID" == "" ] ; then
-    		echo "sshd is dead!" 1>&2
-    		exit 1
-    	fi
-    	sleep 1
+        PID=`pidof sshd`
+        if [ "$PID" == "" ] ; then
+            echo "sshd is dead!" 1>&2
+            exit 1
+        fi
+        sleep 1
     done
-    ############################### Centos7 #####################
+    ############################### Centos6 #####################
 fi
