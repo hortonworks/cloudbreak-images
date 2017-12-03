@@ -15,7 +15,7 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
   # Every Vagrant development environment requires a box. You can search for
   # boxes at https://atlas.hashicorp.com/search.
 
-  config.vbguest.iso_path = File.expand_path("/Applications/VirtualBox.app/Contents/MacOS/VBoxGuestAdditions.iso", __FILE__)
+  config.vbguest.iso_path = "/Applications/VirtualBox.app/Contents/MacOS/VBoxGuestAdditions.iso"
   config.vbguest.no_remote = true
 
   if Vagrant.has_plugin?("vagrant-cachier")
@@ -34,7 +34,7 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
         :box => "centos/7",
         :ram => 1024,
         :cpu => 2,
-        :salt_repo => "salt-repo-2017.7-1.el.repo",
+        :salt_repo => "salt-repo-2017.7.el.repo",
         :optional_states => "oracle-java",
         :oracle_jdk8_url_rpm => "http://download.oracle.com/otn-pub/java/jdk/8u151-b12/e758a0de34e24606bca991d704f6dcbf/jdk-8u151-linux-x64.rpm"
       },
@@ -88,10 +88,10 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
         node.vm.hostname = machine[:hostname]
         node.vm.network "private_network", type: "dhcp"
         node.vm.provider :virtualbox do |vb|
-            vb.customize ["modifyvm", :id, "--memory", machine[:ram]]
-            vb.customize ["modifyvm", :id, "--cpus", machine[:cpu]]
-            vb.customize ["modifyvm", :id, "--natdnshostresolver1", "on"]
-            vb.customize ["modifyvm", :id, "--natdnsproxy1", "on"]
+          vb.customize ["modifyvm", :id, "--memory", machine[:ram]]
+          vb.customize ["modifyvm", :id, "--cpus", machine[:cpu]]
+          vb.customize ["modifyvm", :id, "--natdnshostresolver1", "on"]
+          vb.customize ["modifyvm", :id, "--natdnsproxy1", "on"]
         end
 
         node.vm.synced_folder "saltstack/", "/tmp/saltstack/"
@@ -106,7 +106,7 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
 
         node.vm.provision :shell do |shell|
           #shell.inline = "salt-call --local state.highstate --file-root=/srv/salt --pillar-root=/srv/pillar --retcode-passthrough -l info --config-dir=/srv/config"
-          shell.inline = "/tmp/scripts/salt-setup.sh"
+          shell.path = "scripts/salt-setup.sh"
           shell.keep_color = true
           shell.env = {
             "OPTIONAL_STATES" => "oracle-java",
@@ -138,6 +138,4 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
         # end
     end
   end
-
-
 end
