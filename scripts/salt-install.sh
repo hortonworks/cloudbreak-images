@@ -5,17 +5,6 @@
 
 set -e -o pipefail -o errexit
 
-#run function
-function run {
-  debug "$@";
-  if [ "${DRY_RUN}" != "--dry-run" ]; then "$@"; fi;
-}
-
-#debug function
-function debug {
-  echo "[$(date +'%Y-%m-%dT%H:%M:%S%z')]: $@";
-}
-
 function setting_up_epel() {
   if grep -q -i "Red Hat Enterprise Linux Server release 6." /etc/redhat-release; then
     wget https://dl.fedoraproject.org/pub/epel/epel-release-latest-6.noarch.rpm
@@ -38,7 +27,7 @@ function install_with_apt() {
   cp /tmp/repos/$1 /etc/apt/sources.list.d/$1
   apt-get update
   apt-get -y install salt-minion
-  create_temp_monion_config
+  create_temp_minion_config
 }
 
 function install_with_yum() {
@@ -49,11 +38,12 @@ function install_with_yum() {
   cp /tmp/repos/$1 /etc/yum.repos.d/$1
   cp /tmp/repos/saltstack-gpg-key.pub /etc/pki/rpm-gpg/saltstack-gpg-key.pub
   yum clean metadata
-  yum install -y --disablerepo epel salt-minion
-  create_temp_monion_config
+  # TODO: install python27-pip package only for Centos6
+  yum install -y --disablerepo epel python27-pip salt-minion
+  create_temp_minion_config
 }
 
-function create_temp_monion_config() {
+function create_temp_minion_config() {
   echo "requests_lib: True" > /tmp/minion
   echo "backend_requests: True" >> /tmp/minion
 }
