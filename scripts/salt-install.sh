@@ -49,14 +49,13 @@ function create_temp_minion_config() {
 }
 
 : ${SALT_INSTALL_OS:=$1}
-: ${SALT_REPO_FILE:="$2 $3"}
+: ${SALT_REPO_FILE:=$2}
 
 case ${SALT_INSTALL_OS} in
   amazon|centos|redhat)
     echo "Install with yum"
     echo ${SALT_REPO_FILE}
-    echo ${SALT_VERSION}
-    install_with_yum ${SALT_REPO_FILE} ${SALT_VERSION}
+    install_with_yum ${SALT_REPO_FILE}
     ;;
  debian|ubuntu)
    echo "Install with apt"

@@ -118,13 +118,22 @@ build-aws-rhel7:
 	SALT_REPO_FILE="salt-repo-2017.7-1.el.repo" \
 	./scripts/packer.sh build -only=aws-rhel7 $(PACKER_OPTS)
 
+build-os-centos6:
+	$(ENVS) \
+	ATLAS_ARTIFACT_TYPE=openstack \
+	ATLAS_META_OS_DISTRIBUTION_ID=CentOS \
+	ATLAS_META_OS_RELEASE=6 \
+	SALT_INSTALL_OS=centos \
+	SALT_REPO_FILE="salt-repo-2017.7.el.repo" \
+	./scripts/packer.sh build -only=os-centos6 $(PACKER_OPTS)
+
 build-os-centos7:
 	$(ENVS) \
 	OS=centos7 \
 	OS_TYPE=redhat7 \
 	ATLAS_ARTIFACT_TYPE=openstack \
 	SALT_INSTALL_OS=centos \
-	SALT_REPO_FILE="salt-repo-2017.7-1.el.repo" \
+	SALT_REPO_FILE="salt-repo-2017.7.el.repo" \
 	./scripts/packer.sh build -only=os-centos7 $(PACKER_OPTS)
 
 build-gc-centos7:
@@ -146,15 +155,6 @@ build-azure-centos7:
 	SALT_INSTALL_OS=centos \
 	SALT_REPO_FILE="salt-repo-2017.7-1.el.repo" \
 	./scripts/packer.sh build -only=arm-centos7 $(PACKER_OPTS)
-
-build-os-centos6:
-	$(ENVS) \
-	ATLAS_ARTIFACT_TYPE=openstack \
-    ATLAS_META_OS_DISTRIBUTION_ID=CentOS \
-	ATLAS_META_OS_RELEASE=6 \
-	SALT_INSTALL_OS=centos \
-	SALT_REPO_FILE="salt-repo-2017.7-1.el.repo" \
-	$(ENVS) ./scripts/packer.sh build -only=os-centos6 $(PACKER_OPTS)
 
 copy-azure-images:
 	AZURE_STORAGE_ACCOUNTS="$(AZURE_STORAGE_ACCOUNTS)" ./scripts/azure-copy.sh
