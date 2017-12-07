@@ -18,9 +18,4 @@ epel_repo_package_install:
     - pkgs:
       - epel-release
 
-enable_epel:
-  file.replace:
-    - name: /etc/yum.repos.d/epel.repo
-    - pattern: '^enabled=[0,1]'
-    - repl: 'enabled=1'
 {% endif %}
