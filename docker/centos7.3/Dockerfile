@@ -1,12 +1,12 @@
 FROM docker.io/centos:7.3.1611
-MAINTAINER Hortonworks
+LABEL maintainer=Hortonworks
 
 ENV container docker
 ENV TERM linux
 ENV PS1 "[\u@cloudbreak \W]# "
 
 ENV SALT_REPO_URL=https://repo.saltstack.com/yum/redhat/salt-repo-2017.7-1.el7.noarch.rpm
-ENV SYSTEMCTL_REPLACEMENT=https://raw.githubusercontent.com/tibkiss/docker-systemctl-replacement/06367e13d96fed16447c2ed6dd1979d559e7f9a5/files/docker/systemctl.py
+ENV SYSTEMCTL_REPLACEMENT=https://raw.githubusercontent.com/hortonworks/docker-systemctl-replacement/3a885817b377f0307bd03d82323fa5749136de8f/files/docker/systemctl.py
 
 # Fix the default shell from dash to bash
 # Do it one line. Otherwise, after doing rm, docker build cannot find a shell to
@@ -116,10 +116,10 @@ RUN chmod 755 /usr/bin/$(basename ${SYSTEMCTL_REPLACEMENT}) && \
     mv /usr/bin/systemctl /usr/bin/systemctl.orig && \
     ln -sf /usr/bin/systemctl.py /usr/bin/systemctl
 
-ADD /saltstack /tmp/saltstack
+COPY /saltstack /tmp/saltstack
 ADD ${SALT_REPO_URL} /tmp/saltstack/
-ADD /scripts/salt-install.sh /tmp/saltstack/
-ADD /scripts/salt-setup.sh /tmp/saltstack/
+COPY /scripts/salt-install.sh /tmp/saltstack/
+COPY /scripts/salt-setup.sh /tmp/saltstack/
 
 # Workaround problem caused by sytemd not being pid-1:
 # Force the minions to use systemd on this host
@@ -128,15 +128,15 @@ providers:\n\
   service: systemd\n'\
 >>  /tmp/saltstack/config/minion
 
-ADD docker/centos7.3/files/saltstack_grains /tmp/saltstack/base/salt/_grains
-ADD docker/centos7.3/files/saltstack_grains /tmp/saltstack/hortonworks/salt/_grains
+COPY docker/centos7.3/files/saltstack_grains /tmp/saltstack/base/salt/_grains
+COPY docker/centos7.3/files/saltstack_grains /tmp/saltstack/hortonworks/salt/_grains
 
 RUN /tmp/saltstack/salt-install.sh centos /tmp/saltstack/$(basename ${SALT_REPO_URL})
 RUN /tmp/saltstack/salt-setup.sh hortonworks
 RUN rm -f /etc/salt/minion_id /etc/salt/pki/minion/minion.pem /etc/salt/pki/minion/minion.pub
 
 # Fix issue of `systemctl start xyz` yields 'Failed to get D-Bus connection: Operation not permitted' error
-ADD docker/centos7.3/files/workaround_systemd_start.service /usr/lib/systemd/system/workaround_systemd_start.service
+COPY docker/centos7.3/files/workaround_systemd_start.service /usr/lib/systemd/system/workaround_systemd_start.service
 RUN systemctl enable workaround_systemd_start
 
 # restore systemctl to system default
