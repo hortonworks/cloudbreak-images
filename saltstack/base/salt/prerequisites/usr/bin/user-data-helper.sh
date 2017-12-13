@@ -95,7 +95,7 @@ main() {
     shift
     eval "$@"
   elif [ ! -f "/var/cb-init-executed" ]; then
-    format_disks
+    [[ $CLOUD_PLATFORM != "YARN" ]] && format_disks
     fix_hostname
     [[ "$IS_GATEWAY" == "true" ]] && setup_tmp_ssh
     echo $(date +%Y-%m-%d:%H:%M:%S) >> /var/cb-init-executed

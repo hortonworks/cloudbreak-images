@@ -34,6 +34,24 @@ preserve_hostname_false:
     - append_if_not_found: True
     - unless: ls /etc/waagent.conf
 
+{% if grains['virtual_subtype'] == 'Docker' %}
+set_datasource_to_fallback:
+  file.replace:
+    - name: /etc/cloud/cloud.cfg
+    - pattern: "^datasource_list.*"
+    - repl: "datasource_list: [ None ]"
+    - append_if_not_found: True
+    - unless: ls /etc/waagent.conf
+
+disable_resolv_conf_update:
+  file.replace:
+    - name: /etc/cloud/cloud.cfg
+    - pattern: "^manage_resolv_conf:.*"
+    - repl: "manage_resolv_conf: false"
+    - append_if_not_found: True
+    - unless: ls /etc/waagent.conf
+{% endif %}
+
 create_cloudbreak_files:
   file.managed:
     - user: root
