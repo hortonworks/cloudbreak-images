@@ -1,4 +1,4 @@
-BASE_NAME ?= "cloudbreak"
+BASE_NAME ?= "cb"
 DESCRIPTION ?= "Official Cloudbreak image"
 HDP_VERSION ?= ""
 ATLAS_PROJECT ?= "cloudbreak"
@@ -40,7 +40,7 @@ endif
 define AWS_AMI_REGIONS
 ap-southeast-1,ap-southeast-2,eu-central-1,ap-northeast-1,ap-northeast-2,us-east-1,sa-east-1,us-west-1,us-west-2
 endef
-                         
+
 define AZURE_STORAGE_ACCOUNTS
 East Asia:sequenceiqeastasia2,\
 East US:sequenceiqeastus12,\
