@@ -23,8 +23,15 @@ function install_with_yum() {
   cp /tmp/repos/$1 /etc/yum.repos.d/$1
   cp /tmp/repos/saltstack-gpg-key.pub /etc/pki/rpm-gpg/saltstack-gpg-key.pub
   yum clean metadata
+
   # TODO: install python27-pip package only for Centos6
-  yum install -y python27-pip salt-minion
+  # yum install -y python27-pip salt-minion
+  # Workaround with salt-2017.7.1
+  # if [ -f /usr/bin/pip2.7 ]; then
+  #  /usr/bin/pip2.7 install --upgrade urllib3 requests[security]
+  # fi
+  yum install -y salt-minion
+
   create_temp_minion_config
 }
 

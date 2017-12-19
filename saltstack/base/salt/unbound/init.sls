@@ -23,7 +23,7 @@ install_unbound_server:
   pkg.installed:
     {% if grains['os'] == 'Amazon' %}
     - fromrepo: centos-os
-    {% elif grains['os_family'] == 'Debian' and  grains['osmajorrelease'] == '7' %}
+    {% elif grains['os_family'] == 'Debian' and  grains['osmajorrelease'] | int == 7 %}
     - fromrepo: wheezy-backports
     {% endif %}
     - pkgs:
