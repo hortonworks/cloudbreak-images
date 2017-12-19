@@ -136,6 +136,15 @@ build-os-centos7:
 	SALT_REPO_FILE="salt-repo-2017.7.el.repo" \
 	./scripts/packer.sh build -only=os-centos7 $(PACKER_OPTS)
 
+build-os-debian7:
+	$(ENVS) \
+	OS=debian7 \
+	OS_TYPE=debian7 \
+	ATLAS_ARTIFACT_TYPE=openstack \
+	SALT_INSTALL_OS=debian \
+	SALT_REPO_FILE="salt-repo-2016.11-5.debian7.list" \
+	./scripts/packer.sh build -only=os-debian7 $(PACKER_OPTS)
+
 build-gc-centos7:
 	$(ENVS) \
 	GCP_STORAGE_BUNDLE=$(GCP_STORAGE_BUNDLE) \

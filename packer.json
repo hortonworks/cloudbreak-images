@@ -199,6 +199,22 @@
       ]
     },
     {
+      "name": "os-debian7",
+      "type": "openstack",
+      "username": "{{user `os_username`}}",
+      "password": "{{user `os_password`}}",
+      "tenant_name": "{{user `os_tenant_name`}}",
+      "ssh_username": "root",
+      "ssh_pty": "true",
+      "image_name": "{{user `image_name`}}",
+      "source_image": "8feebc96-811c-4aa3-bcc3-5a0504aed785",
+      "flavor": "m1.medium",
+      "endpoint_type": "internalURL",
+      "networks": [
+        "a5ad7a1d-d3a6-4180-8d61-07a23f6fb449"
+      ]
+    },
+    {
       "name": "os-centos7",
       "type": "openstack",
       "username": "{{user `os_username`}}",
