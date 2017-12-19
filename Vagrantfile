@@ -34,7 +34,7 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
         :box => "centos/7",
         :ram => 1024,
         :cpu => 2,
-        :salt_repo => "salt-repo-2017.7.el.repo",
+        :salt_repo => "salt-repo-2017.7-1.el.repo",
         :optional_states => "oracle-java",
         :custom_image_type => "hortonworks",
         :oracle_jdk8_url_rpm => "http://download.oracle.com/otn-pub/java/jdk/8u151-b12/e758a0de34e24606bca991d704f6dcbf/jdk-8u151-linux-x64.rpm"
@@ -53,7 +53,8 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
         :box => "debian/wheezy64",
         :ram => 1536,
         :cpu => 2,
-        :salt_repo => "salt-repo-2016.11-5.debian7.list"
+        :salt_repo => "salt-repo-2016.11-5.debian7.list",
+        :custom_image_type => "hortonworks"
       }
       # {
       #   :hostname => "xenial-vagrant",
