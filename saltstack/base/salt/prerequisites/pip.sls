@@ -17,8 +17,7 @@ install_python_pip:
 
 update_python_pip:
   cmd.run:
-    - name: pip install --upgrade pip==8.1.2
-    - unless: which pip2.7
+    - name: pip install --upgrade --index=https://pypi.python.org/simple/ pip==8.1.2
 
 pip_install_requests_security:
   pip.installed:
