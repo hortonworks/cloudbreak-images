@@ -4,9 +4,15 @@ install_salt_components:
       - salt-master
       - salt-api
 
-ensure_salt-master_is_dead:
-  service.dead:
-    - name: salt-master
+# TODO (leki75): Debian7 checks service status right after stopping it
+# which failes as stopping the service requires some time. Salt from
+# 2017.7 has init_delay parameter but Debian7 uses 2016.5 version. As
+# the service is disabled it is not necessary to stop services as they
+# will not start.
+
+#ensure_salt-master_is_dead:
+#  service.dead:
+#    - name: salt-master
 
 ensure_salt-master_is_disabled:
   service.disabled:

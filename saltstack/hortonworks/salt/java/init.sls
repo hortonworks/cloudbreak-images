@@ -33,13 +33,34 @@ install_openjdk:
 
 {% elif grains['os_family'] == 'Debian' %}
 
+{% if grains['os'] == 'Debian' and grains['osmajorrelease'] | int == 7 %}
 install_openjdk:
- pkg.installed:
-  - pkgs:
-    - openjdk-8-jre-headless
-    - openjdk-8-doc
-    - openjdk-8-source
-    - openjdk-8-jdk
+  pkg.installed:
+    - pkgs:
+      - openjdk-7-jre-headless
+      - openjdk-7-doc
+      - openjdk-7-source
+      - openjdk-7-jdk
+
+create_jvm_symlink:
+  file.symlink:
+    - name: /usr/lib/jvm/java
+    - target: /usr/lib/jvm/java-7-openjdk-amd64
+
+{% else %}
+install_openjdk:
+  pkg.installed:
+    - pkgs:
+      - openjdk-8-jre-headless
+      - openjdk-8-doc
+      - openjdk-8-source
+      - openjdk-8-jdk
+
+create_jvm_symlink:
+  file.symlink:
+    - name: /usr/lib/jvm/java
+    - target: /usr/lib/jvm/java-8-openjdk-amd64
+{% endif %}
 
 {% endif %}
 
