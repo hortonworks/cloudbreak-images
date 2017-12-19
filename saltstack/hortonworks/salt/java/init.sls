@@ -10,12 +10,12 @@ set_java_home_systemd:
   file.replace:
     - name: /etc/systemd/system.conf
     - pattern: \#+DefaultEnvironment=.*
-    - repl: DefaultEnvironment=JAVA_HOME={{ JAVA_HOME }}
+    - repl: DefaultEnvironment=JAVA_HOME={{ pillar['JAVA_HOME'] }}
 {% endif %}
 
 {% if grains['os_family'] == 'RedHat' %}
 
-{% if grains['osmajorrelease'] | int == 7 %}
+{% if grains['os'] == 'RedHat' and grains['osmajorrelease'] | int == 7 %}
 enable_redhat_rhui_repos:
   file.replace:
     - name: /etc/yum.repos.d/redhat-rhui.repo

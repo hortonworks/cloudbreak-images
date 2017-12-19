@@ -1,9 +1,8 @@
-{% if grains['os_family'] != 'RedHat' and grains['osmajorrelease'] == 6 %}
+{% if grains['os_family'] == 'RedHat' and grains['osmajorrelease'] | int == 7 %}
 
 remove_openjdk:
   pkg.removed:
     - pkgs: 
-    {% if grains['os_family'] == 'RedHat' %}
       - java-1.7.0-openjdk
       - java-1.7.0-openjdk-headless
       - java-1.7.0-openjdk-devel
@@ -23,7 +22,6 @@ download_oracle_jdk:
   cmd.run:
     - name: {{ download_jdk_cmd | join('') }}
 
-
 install_oracle_jdk:
   pkg.installed:
     - sources:
@@ -42,6 +40,6 @@ set_java_home_systemd:
     - pattern: \#*DefaultEnvironment=.*
     - repl: DefaultEnvironment=JAVA_HOME=/usr/java/default
 
-{% else  %}
+{% else %}
     {{ salt.test.exception("Doesn't support oracle-java state.") }}
 {% endif %}
