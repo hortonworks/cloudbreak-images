@@ -81,10 +81,11 @@ packer_in_container() {
     -e DESCRIPTION="$DESCRIPTION" \
     -v $HOME/.aws:/root/.aws \
     -v /var/run/docker.sock:/var/run/docker.sock \
+    -v $(PWD)/ca-certs:/usr/local/share/ca-certificates \
     -v $PWD:$PWD \
     -w $PWD \
     $dockerOpts \
-    hashicorp/packer:0.12.2 "$@" $packerFile
+    --entrypoint /bin/bash hashicorp/packer:0.12.2 -c "update-ca-certificates;packer $@ $packerFile"
 }
 
 main() {
