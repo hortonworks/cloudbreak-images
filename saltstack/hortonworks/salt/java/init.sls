@@ -10,7 +10,7 @@ set_java_home_systemd:
   file.replace:
     - name: /etc/systemd/system.conf
     - pattern: \#+DefaultEnvironment=.*
-    - repl: DefaultEnvironment=JAVA_HOME={{ JAVA_HOME }}
+    - repl: DefaultEnvironment=JAVA_HOME={{ pillar['JAVA_HOME'] }}
 {% endif %}
 
 {% if grains['os_family'] == 'RedHat' %}
