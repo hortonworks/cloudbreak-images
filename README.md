@@ -217,6 +217,17 @@ Use the following commands to build OpenStack images based on the following base
 > If you want to start from **your own base image**, follow the instructions in [Advanced topics](#advanced-topics) to
 modify the `package.json` to start from your own base image. Then use the commands above to build that image.
 
+#### Importing OpenStack CA certificate
+If self-signed certificate is used for OpenStack API, then you will get the following error during the build process, since Packer validates the certificate:
+```
+os-centos7 output will be in this color.
+
+1 error(s) occurred:
+
+* Post https://openstack.somedomain.com/v2.0/tokens: x509: certificate signed by unknown authority
+make: *** [build-os-centos7] Error 1
+```
+In order to be able to validate the certificate, please download the CA certificate from your OpenStack and put it into the ca-certs folder with .crt extension. Every .crt file under ca-cert directory is automatically imported and shall be accepted by Packer.
 
 ### Running packer in debug mode
 
