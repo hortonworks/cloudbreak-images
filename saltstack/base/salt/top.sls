@@ -1,7 +1,7 @@
 base:
   '*':
     - prerequisites
-{% if not salt['file.file_exists']('/etc/waagent.conf') %}
+{% if salt['file.file_exists']('/etc/waagent.conf') %}
     - waagent
 {% else %}
     - cloud-init
