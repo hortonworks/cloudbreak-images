@@ -1,5 +1,5 @@
 [saltstack-repo]
-name=SaltStack 2016.11.6 Release Channel for RHEL/CentOS $releasever
+name=SaltStack 2017.7.1 Release Channel for RHEL/CentOS $releasever
 baseurl=https://repo.saltstack.com/yum/redhat/$releasever/$basearch/archive/2017.7.1/
 failovermethod=priority
 priority=10

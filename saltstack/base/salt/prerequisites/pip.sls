@@ -6,9 +6,9 @@ install_python_pip:
       {% if grains['os'] == 'Amazon' %}
       - python27-devel
       - python27-pip
-      {% elif grains['osmajorrelease'] == 6 %}
+      {% elif grains['osmajorrelease'] | int == 6 %}
       - python-pip
-      {% elif grains['osmajorrelease'] == 7 %}
+      {% elif grains['osmajorrelease'] | int == 7 %}
       - python2-pip
       {% endif%}
     {% elif grains['os_family'] == 'Debian' %}

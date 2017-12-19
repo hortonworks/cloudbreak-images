@@ -124,7 +124,7 @@ build-os-centos6:
 	ATLAS_META_OS_DISTRIBUTION_ID=CentOS \
 	ATLAS_META_OS_RELEASE=6 \
 	SALT_INSTALL_OS=centos \
-	SALT_REPO_FILE="salt-repo-2017.7.el.repo" \
+	SALT_REPO_FILE="salt-repo-2016.11-6.el.repo" \
 	./scripts/packer.sh build -only=os-centos6 $(PACKER_OPTS)
 
 build-os-centos7:

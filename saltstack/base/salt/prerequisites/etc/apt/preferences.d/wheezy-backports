@@ -1,0 +1,7 @@
+Package: *
+Pin: release n=wheezy-backports
+Pin-Priority: -10
+
+Package: isc-dhcp-common, isc-dhcp-client
+Pin: Version 4.2.2.dfsg.1-5+deb70u6
+Pin-Priority: 999

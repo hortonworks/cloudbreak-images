@@ -36,6 +36,7 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
         :cpu => 2,
         :salt_repo => "salt-repo-2017.7.el.repo",
         :optional_states => "oracle-java",
+        :custom_image_type => "hortonworks",
         :oracle_jdk8_url_rpm => "http://download.oracle.com/otn-pub/java/jdk/8u151-b12/e758a0de34e24606bca991d704f6dcbf/jdk-8u151-linux-x64.rpm"
       },
       {
@@ -43,27 +44,17 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
         :box => "centos/6",
         :ram => 1536,
         :cpu => 2,
-        :salt_repo => "salt-repo-2017.7.el.repo",
-        :optional_states => "oracle-java",
+        :salt_repo => "salt-repo-2016.11-6.el.repo",
+        :custom_image_type => "hortonworks",
         :oracle_jdk8_url_rpm => "http://download.oracle.com/otn-pub/java/jdk/8u151-b12/e758a0de34e24606bca991d704f6dcbf/jdk-8u151-linux-x64.rpm"
-=begin
-      #   :ambari_baseurl => "http://s3.amazonaws.com/dev.hortonworks.com/ambari/centos6/2.x/BUILDS/2.4.1.0-22/",
-      #   :ambari_key => "http://s3.amazonaws.com/dev.hortonworks.com/ambari/centos6/RPM-GPG-KEY/RPM-GPG-KEY-Jenkins",
-      #   :hdp_stack_version => "2.5",
-      #   :hdp_version => "2.5.0.1-60",
-      #   :hdp_baseurl => "http://s3.amazonaws.com/dev.hortonworks.com/HDP/centos6/2.x/BUILDS/2.5.0.1-60",
-      #   :hdp_repoid => "HDP-2.5",
-=end
       },
-      # {
-      #   :hostname => "wheezy-vagrant",
-      #   :box => "debian/wheezy64",
-      #   :ram => 1536,
-      #   :cpu => 2,
-      #   :ambari_baseurl => "http://s3.amazonaws.com/dev.hortonworks.com/ambari/debian7/2.x/BUILDS/2.4.1.0-22/",
-      #   :ambari_key => "B9733A7A07513CAD",
-      #   :salt_repo => "http://repo.saltstack.com/apt/debian/7/amd64/latest"
-      # },
+      {
+        :hostname => "wheezy-vagrant",
+        :box => "debian/wheezy64",
+        :ram => 1536,
+        :cpu => 2,
+        :salt_repo => "salt-repo-2016.11-5.debian7.list"
+      }
       # {
       #   :hostname => "xenial-vagrant",
       #   :box => "ubuntu/xenial64",
@@ -109,8 +100,10 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
           shell.path = "scripts/salt-setup.sh"
           shell.keep_color = true
           shell.env = {
-            "OPTIONAL_STATES" => "oracle-java",
+            "OPTIONAL_STATES" => machine[:optional_states],
+            "CUSTOM_IMAGE_TYPE" => machine[:custom_image_type],
             "ORACLE_JDK8_URL_RPM" => machine[:oracle_jdk8_url_rpm],
+            "PREINSTALLED_JAVA_HOME" => "",
             "os_user" => "vagrant"
           }
         end
