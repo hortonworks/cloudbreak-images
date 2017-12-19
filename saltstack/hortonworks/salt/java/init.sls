@@ -15,7 +15,7 @@ set_java_home_systemd:
 
 {% if grains['os_family'] == 'RedHat' %}
 
-{% if grains['osmajorrelease'] | int == 7 %}
+{% if grains['os'] == 'RedHat' and grains['osmajorrelease'] | int == 7 %}
 enable_redhat_rhui_repos:
   file.replace:
     - name: /etc/yum.repos.d/redhat-rhui.repo
