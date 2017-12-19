@@ -9,6 +9,8 @@ include:
   - {{ slspath }}.cert-tool
   - {{ slspath }}.dnsmasq
   - {{ slspath }}.selinux
+  - {{ slspath }}.firewall
+
 
 /usr/bin/:
   file.recurse:

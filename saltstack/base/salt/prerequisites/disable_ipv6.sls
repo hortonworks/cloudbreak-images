@@ -29,10 +29,4 @@ net.ipv6.conf.eth0.disable_ipv6:
     - repl: "IPV6INIT=\"no\""
     - append_if_not_found: True
 
-ip6tables_uninstall:
-  service.dead:
-    - name: ip6tables
-    - enable: False
-  pkg.purged:
-    - name: ip6tables
 {% endif %}
