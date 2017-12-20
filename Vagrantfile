@@ -55,25 +55,31 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
         :cpu => 2,
         :salt_repo => "salt-repo-2016.11-5.debian7.list",
         :custom_image_type => "hortonworks"
+      },
+      {
+        :hostname => "precise-vagrant",
+        :box => "ubuntu/precise64",
+        :ram => 1536,
+        :cpu => 2,
+        :salt_repo => "salt-repo-2016.11-3.ubuntu12.list",
+        :custom_image_type => "hortonworks"
+      },
+      {
+        :hostname => "trusty-vagrant",
+        :box => "ubuntu/trusty64",
+        :ram => 1536,
+        :cpu => 2,
+        :salt_repo => "salt-repo-2017.7-1.ubuntu14.list",
+        :custom_image_type => "hortonworks"
+      },
+      {
+        :hostname => "xenial-vagrant",
+        :box => "ubuntu/xenial64",
+        :ram => 1536,
+        :cpu => 2,
+        :salt_repo => "salt-repo-2017.7-1.ubuntu16.list",
+        :custom_image_type => "hortonworks"
       }
-      # {
-      #   :hostname => "xenial-vagrant",
-      #   :box => "ubuntu/xenial64",
-      #   :ram => 1536,
-      #   :cpu => 2,
-      #   :ambari_baseurl => "http://s3.amazonaws.com/dev.hortonworks.com/ambari/ubuntu12/2.x/BUILDS/2.4.1.0-22/",
-      #   :ambari_key => "B9733A7A07513CAD",
-      #   :salt_repo => "http://repo.saltstack.com/apt/ubuntu/12.04/amd64/latest"
-      # },
-      # {
-      #   :hostname => "trusty-vagrant",
-      #   :box => "ubuntu/trusty64",
-      #   :ram => 1536,
-      #   :cpu => 2,
-      #   :ambari_baseurl => "http://s3.amazonaws.com/dev.hortonworks.com/ambari/ubuntu14/2.x/BUILDS/2.4.1.0-22/",
-      #   :ambari_key => "B9733A7A07513CAD",
-      #   :salt_repo => "http://repo.saltstack.com/apt/ubuntu/14.04/amd64/latest"
-      # },
   ].each do |machine|
     config.vm.define machine[:hostname] do |node|
         node.vm.box = machine[:box]
