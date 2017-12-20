@@ -33,7 +33,9 @@ install_openjdk:
 
 {% elif grains['os_family'] == 'Debian' %}
 
-{% if grains['os'] == 'Debian' and grains['osmajorrelease'] | int == 7 %}
+{% if (grains['os'] == 'Debian' and grains['osmajorrelease'] | int == 7) or
+      (grains['os'] == 'Ubuntu' and grains['osmajorrelease'] | int <= 14)
+%}
 install_openjdk:
   pkg.installed:
     - pkgs:
@@ -66,9 +68,5 @@ create_jvm_symlink:
 
 add_openjdk_gplv2:
   file.managed:
-    {% if grains['os_family'] == 'RedHat' %}
     - name: /usr/lib/jvm/OpenJDK_GPLv2_and_Classpath_Exception.pdf
-    {% elif grains['os_family'] == 'Debian' %}
-    - name: /usr/lib/jvm/java-7-openjdk-amd64/OpenJDK_GPLv2_and_Classpath_Exception.pdf
-    {% endif %}
     - source: salt://java/usr/lib/jvm/OpenJDK_GPLv2_and_Classpath_Exception.pdf

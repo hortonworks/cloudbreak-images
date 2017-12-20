@@ -10,9 +10,12 @@ net.ipv6.conf.lo.disable_ipv6:
   sysctl.present:
     - value: 1
 
-net.ipv6.conf.eth0.disable_ipv6:
-  sysctl.present:
-    - value: 1
+# On newer OSes (like Ubuntu Xenial) the naming of devices
+# is consistent and do not use ethX.
+# https://www.freedesktop.org/wiki/Software/systemd/PredictableNetworkInterfaceNames/
+#net.ipv6.conf.eth0.disable_ipv6:
+#  sysctl.present:
+#    - value: 1
 
 {% if grains['os_family'] == 'RedHat' %}
 /etc/sysconfig/network:

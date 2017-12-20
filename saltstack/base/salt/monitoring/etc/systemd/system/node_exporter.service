@@ -2,10 +2,9 @@
 Description=Node Exporter
 
 [Service]
-User=root
-ExecStartPre=/usr/bin/rm -f /var/run/node_exporter.pid
-ExecStart=/usr/local/bin/node_exporter.sh
-PIDFile=/var/run/node_exporter.pid
+Type=simple
+EnvironmentFile=/etc/default/node_exporter
+ExecStart=/usr/local/bin/node_exporter $DAEMON_ARGS
 Restart=on-failure
 
 [Install]
