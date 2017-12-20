@@ -180,9 +180,9 @@ cleanup-metadata-repo:
 
 push-to-metadata-repo: cleanup-metadata-repo
 	git clone git@github.com:$(GITHUB_ORG)/$(GITHUB_REPO).git
-	cp $(shell (ls -1 *_manifest.json | tail -1 | sed "s/_manifest//")) $(GITHUB_REPO)
+	cp $(shell (ls -1tr *_manifest.json | tail -1 | sed "s/_manifest//")) $(GITHUB_REPO)
 	cd $(GITHUB_REPO) && git add -A && git commit -am"Upload new metadata file" && git push
 	make cleanup-metadata-repo
 
 generate-last-metadata-url-file:
-	echo "METADATA_URL=https://raw.githubusercontent.com/$(GITHUB_ORG)/$(GITHUB_REPO)/master/$(shell (ls -1 *_manifest.json | tail -1 | sed "s/_manifest//"))" > last_md
+	echo "METADATA_URL=https://raw.githubusercontent.com/$(GITHUB_ORG)/$(GITHUB_REPO)/master/$(shell (ls -1tr *_manifest.json | tail -1 | sed "s/_manifest//"))" > last_md
