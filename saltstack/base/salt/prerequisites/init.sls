@@ -2,7 +2,8 @@ include:
   - {{ slspath }}.repository
   - {{ slspath }}.packages
   - {{ slspath }}.sudo
-{% if grains['virtual_subtype'] != 'Docker' %}
+{% set subtype = grains['virtual_subtype'] |default('', true) %}
+{% if subtype != 'Docker' %}
   - {{ slspath }}.sysctl
   - {{ slspath }}.disable_ipv6
   - {{ slspath }}.selinux
