@@ -34,7 +34,8 @@ preserve_hostname_false:
     - append_if_not_found: True
     - unless: ls /etc/waagent.conf
 
-{% if grains['virtual_subtype'] == 'Docker' %}
+{% set subtype = grains['virtual_subtype'] |default('', true) %}
+{% if subtype == 'Docker' %}
 set_datasource_to_fallback:
   file.replace:
     - name: /etc/cloud/cloud.cfg

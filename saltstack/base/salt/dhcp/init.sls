@@ -10,7 +10,8 @@
     - file_mode: 755
     - include_empty: True
 
-{% if grains['virtual_subtype'] == 'Docker' %}
+{% set subtype = grains['virtual_subtype'] |default('', true) %}
+{% if subtype == 'Docker' %}
 /etc/resolv.conf:
   file.managed:
     - name: /etc/resolv.conf.ycloud
