@@ -15,7 +15,7 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
   # Every Vagrant development environment requires a box. You can search for
   # boxes at https://atlas.hashicorp.com/search.
 
-  config.vbguest.iso_path = File.expand_path("/Applications/VirtualBox.app/Contents/MacOS/VBoxGuestAdditions.iso", __FILE__)
+  config.vbguest.iso_path = "/Applications/VirtualBox.app/Contents/MacOS/VBoxGuestAdditions.iso"
   config.vbguest.no_remote = true
 
   if Vagrant.has_plugin?("vagrant-cachier")
@@ -34,63 +34,64 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
         :box => "centos/7",
         :ram => 1024,
         :cpu => 2,
-        :salt_repo => "https://repo.saltstack.com/yum/redhat/salt-repo-latest-2.el7.noarch.rpm"
+        :salt_repo => "salt-repo-2017.7-1.el.repo",
+        :custom_image_type => "hortonworks",
       },
-      # {
-      #   :hostname => "centos6-vagrant",
-      #   :box => "centos/6",
-      #   :ram => 1536,
-      #   :cpu => 2,
-      #   :ambari_baseurl => "http://s3.amazonaws.com/dev.hortonworks.com/ambari/centos6/2.x/BUILDS/2.4.1.0-22/",
-      #   :ambari_key => "http://s3.amazonaws.com/dev.hortonworks.com/ambari/centos6/RPM-GPG-KEY/RPM-GPG-KEY-Jenkins",
-      #   :hdp_stack_version => "2.5",
-      #   :hdp_version => "2.5.0.1-60",
-      #   :hdp_baseurl => "http://s3.amazonaws.com/dev.hortonworks.com/HDP/centos6/2.x/BUILDS/2.5.0.1-60",
-      #   :hdp_repoid => "HDP-2.5",
-      #   :salt_repo => "https://repo.saltstack.com/yum/redhat/salt-repo-latest-2.el6.noarch.rpm"
-      # },
-      # {
-      #   :hostname => "wheezy-vagrant",
-      #   :box => "debian/wheezy64",
-      #   :ram => 1536,
-      #   :cpu => 2,
-      #   :ambari_baseurl => "http://s3.amazonaws.com/dev.hortonworks.com/ambari/debian7/2.x/BUILDS/2.4.1.0-22/",
-      #   :ambari_key => "B9733A7A07513CAD",
-      #   :salt_repo => "http://repo.saltstack.com/apt/debian/7/amd64/latest"
-      # },
-      # {
-      #   :hostname => "xenial-vagrant",
-      #   :box => "ubuntu/xenial64",
-      #   :ram => 1536,
-      #   :cpu => 2,
-      #   :ambari_baseurl => "http://s3.amazonaws.com/dev.hortonworks.com/ambari/ubuntu12/2.x/BUILDS/2.4.1.0-22/",
-      #   :ambari_key => "B9733A7A07513CAD",
-      #   :salt_repo => "http://repo.saltstack.com/apt/ubuntu/12.04/amd64/latest"
-      # },
-      # {
-      #   :hostname => "trusty-vagrant",
-      #   :box => "ubuntu/trusty64",
-      #   :ram => 1536,
-      #   :cpu => 2,
-      #   :ambari_baseurl => "http://s3.amazonaws.com/dev.hortonworks.com/ambari/ubuntu14/2.x/BUILDS/2.4.1.0-22/",
-      #   :ambari_key => "B9733A7A07513CAD",
-      #   :salt_repo => "http://repo.saltstack.com/apt/ubuntu/14.04/amd64/latest"
-      # },
+      {
+        :hostname => "centos6-vagrant",
+        :box => "centos/6",
+        :ram => 1536,
+        :cpu => 2,
+        :salt_repo => "salt-repo-2016.11-6.el.repo",
+        :custom_image_type => "hortonworks",
+      },
+      {
+        :hostname => "wheezy-vagrant",
+        :box => "debian/wheezy64",
+        :ram => 1536,
+        :cpu => 2,
+        :salt_repo => "salt-repo-2016.11-5.debian7.list",
+        :custom_image_type => "hortonworks"
+      },
+      {
+        :hostname => "precise-vagrant",
+        :box => "ubuntu/precise64",
+        :ram => 1536,
+        :cpu => 2,
+        :salt_repo => "salt-repo-2016.11-3.ubuntu12.list",
+        :custom_image_type => "hortonworks"
+      },
+      {
+        :hostname => "trusty-vagrant",
+        :box => "ubuntu/trusty64",
+        :ram => 1536,
+        :cpu => 2,
+        :salt_repo => "salt-repo-2017.7-1.ubuntu14.list",
+        :custom_image_type => "hortonworks"
+      },
+      {
+        :hostname => "xenial-vagrant",
+        :box => "ubuntu/xenial64",
+        :ram => 1536,
+        :cpu => 2,
+        :salt_repo => "salt-repo-2017.7-1.ubuntu16.list",
+        :custom_image_type => "hortonworks"
+      }
   ].each do |machine|
     config.vm.define machine[:hostname] do |node|
         node.vm.box = machine[:box]
         node.vm.hostname = machine[:hostname]
         node.vm.network "private_network", type: "dhcp"
         node.vm.provider :virtualbox do |vb|
-            vb.customize ["modifyvm", :id, "--memory", machine[:ram]]
-            vb.customize ["modifyvm", :id, "--cpus", machine[:cpu]]
-            vb.customize ["modifyvm", :id, "--natdnshostresolver1", "on"]
-            vb.customize ["modifyvm", :id, "--natdnsproxy1", "on"]
+          vb.customize ["modifyvm", :id, "--memory", machine[:ram]]
+          vb.customize ["modifyvm", :id, "--cpus", machine[:cpu]]
+          vb.customize ["modifyvm", :id, "--natdnshostresolver1", "on"]
+          vb.customize ["modifyvm", :id, "--natdnsproxy1", "on"]
         end
 
         node.vm.synced_folder "saltstack/", "/tmp/saltstack/"
         node.vm.synced_folder "scripts/", "/tmp/scripts/"
-        node.vm.synced_folder "saltstack/config", "/srv/config"
+        node.vm.synced_folder "repos/", "/tmp/repos/"
 
         node.vm.provision :shell do |shell|
           shell.path = "scripts/salt-install.sh"
@@ -100,14 +101,19 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
 
         node.vm.provision :shell do |shell|
           #shell.inline = "salt-call --local state.highstate --file-root=/srv/salt --pillar-root=/srv/pillar --retcode-passthrough -l info --config-dir=/srv/config"
-          shell.inline = "/tmp/scripts/salt-setup.sh hortonworks"
+          shell.path = "scripts/salt-setup.sh"
           shell.keep_color = true
+          shell.env = {
+            "OPTIONAL_STATES" => machine[:optional_states],
+            "CUSTOM_IMAGE_TYPE" => machine[:custom_image_type],
+            "os_user" => "vagrant"
+          }
         end
 
         # node.vm.provision :salt do |salt|
         #   salt.install_type = "stable"
         #   salt.pillar({
-        #     "os_user" => "vagrant",
+        #
         #     "AMBARI_VERSION" => "2.4",
         #     "AMBARI_BASEURL" => machine[:ambari_baseurl],
         #     "AMBARI_GPGKEY" => machine[:ambari_key],
@@ -127,6 +133,4 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
         # end
     end
   end
-
-
 end
