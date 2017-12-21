@@ -35,7 +35,9 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
         :ram => 1024,
         :cpu => 2,
         :salt_repo => "salt-repo-2017.7-1.el.repo",
+        :optional_states => "oracle-java",
         :custom_image_type => "hortonworks",
+        :oracle_jdk8_url_rpm => "http://download.oracle.com/otn-pub/java/jdk/8u151-b12/e758a0de34e24606bca991d704f6dcbf/jdk-8u151-linux-x64.rpm"
       },
       {
         :hostname => "centos6-vagrant",
@@ -44,6 +46,7 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
         :cpu => 2,
         :salt_repo => "salt-repo-2016.11-6.el.repo",
         :custom_image_type => "hortonworks",
+        :oracle_jdk8_url_rpm => "http://download.oracle.com/otn-pub/java/jdk/8u151-b12/e758a0de34e24606bca991d704f6dcbf/jdk-8u151-linux-x64.rpm"
       },
       {
         :hostname => "wheezy-vagrant",
@@ -106,6 +109,8 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
           shell.env = {
             "OPTIONAL_STATES" => machine[:optional_states],
             "CUSTOM_IMAGE_TYPE" => machine[:custom_image_type],
+            "ORACLE_JDK8_URL_RPM" => machine[:oracle_jdk8_url_rpm],
+            "PREINSTALLED_JAVA_HOME" => "",
             "os_user" => "vagrant"
           }
         end

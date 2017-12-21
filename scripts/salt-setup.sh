@@ -5,17 +5,6 @@
 
 set -e -o pipefail -o errexit
 
-#run function
-function run {
-  debug "$@";
-  if [ "${DRY_RUN}" != "--dry-run" ]; then "$@"; fi;
-}
-
-#debug function
-function debug {
-  echo "[$(date +'%Y-%m-%dT%H:%M:%S%z')]: $@";
-}
-
 function prepare {
   sudo chown -R root:root /tmp/saltstack
 }
