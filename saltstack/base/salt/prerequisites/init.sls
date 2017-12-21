@@ -13,6 +13,8 @@ include:
   - {{ slspath }}.cert-tool
   - {{ slspath }}.dnsmasq
   - {{ slspath }}.user
+  - {{ slspath }}.selinux
+  - {{ slspath }}.firewall
 
 /usr/bin/:
   file.recurse:

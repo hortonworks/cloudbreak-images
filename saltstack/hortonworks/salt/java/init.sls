@@ -23,12 +23,6 @@ enable_redhat_rhui_repos:
     - repl: 'enabled=1'
 {% endif %}
 
-set_java_home_user:
-  file.managed:
-    - name: /etc/profile.d/java.sh
-    - source: salt://{{ slspath }}/etc/profile.d/java.sh
-    - mode: 755
-
 {% set preinstalled_java_home=salt['environ.get']('PREINSTALLED_JAVA_HOME') %}
 
 {% if preinstalled_java_home %}
@@ -47,7 +41,7 @@ set_custom_java_home:
     - pattern: .*JAVA_HOME.*
     - repl: export JAVA_HOME={{ preinstalled_java_home }}
 
-{% else %}
+{% endif %}
 install_openjdk:
   pkg.installed:
     - pkgs:
@@ -95,5 +89,3 @@ add_openjdk_gplv2:
   file.managed:
     - name: /usr/lib/jvm/OpenJDK_GPLv2_and_Classpath_Exception.pdf
     - source: salt://java/usr/lib/jvm/OpenJDK_GPLv2_and_Classpath_Exception.pdf
-
-{% endif %}
