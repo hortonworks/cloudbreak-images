@@ -12,7 +12,6 @@ preserve_hostname_false:
     - pattern: "^preserve_hostname.*"
     - repl: "preserve_hostname: true"
     - append_if_not_found: True
-    - unless: ls /etc/waagent.conf
 
 {% set subtype = grains['virtual_subtype'] |default('', true) %}
 {% if subtype == 'Docker' %}
@@ -22,7 +21,6 @@ set_datasource_to_fallback:
     - pattern: "^datasource_list.*"
     - repl: "datasource_list: [ None ]"
     - append_if_not_found: True
-    - unless: ls /etc/waagent.conf
 
 disable_resolv_conf_update:
   file.replace:
@@ -30,7 +28,6 @@ disable_resolv_conf_update:
     - pattern: "^manage_resolv_conf:.*"
     - repl: "manage_resolv_conf: false"
     - append_if_not_found: True
-    - unless: ls /etc/waagent.conf
 {% endif %}
 
 create_cloudbreak_files:
@@ -47,5 +44,4 @@ create_cloud-init_service_files:
     - group: root
     - name: /etc/systemd/system/cloud-init.service
     - source: salt://{{ slspath }}/etc/systemd/system/cloud-init.service
-    - unless: ls /etc/waagent.conf
 {% endif %}
