@@ -133,7 +133,7 @@ build-os-centos7:
 	OS_TYPE=redhat7 \
 	ATLAS_ARTIFACT_TYPE=openstack \
 	SALT_INSTALL_OS=centos \
-	SALT_REPO_FILE="salt-repo-2017.7.el.repo" \
+	SALT_REPO_FILE="salt-repo-2017.7-1.el.repo" \
 	./scripts/packer.sh build -only=os-centos7 $(PACKER_OPTS)
 
 build-os-debian7:
