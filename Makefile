@@ -145,6 +145,15 @@ build-os-debian7:
 	SALT_REPO_FILE="salt-repo-2016.11-5.debian7.list" \
 	./scripts/packer.sh build -only=os-debian7 $(PACKER_OPTS)
 
+build-os-ubuntu12:
+	$(ENVS) \
+	OS=ubuntu12 \
+	OS_TYPE=ubuntu12 \
+	ATLAS_ARTIFACT_TYPE=openstack \
+	SALT_INSTALL_OS=ubuntu \
+	SALT_REPO_FILE="salt-repo-2016.11-3.ubuntu12.list" \
+	./scripts/packer.sh build -only=os-ubuntu12 $(PACKER_OPTS)
+
 build-os-ubuntu14:
 	$(ENVS) \
 	OS=ubuntu14 \

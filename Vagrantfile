@@ -57,6 +57,14 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
         :custom_image_type => "hortonworks"
       },
       {
+        :hostname => "precise-vagrant",
+        :box => "ubuntu/precise64",
+        :ram => 1536,
+        :cpu => 2,
+        :salt_repo => "salt-repo-2016.11-3.ubuntu12.list",
+        :custom_image_type => "hortonworks"
+      },
+      {
         :hostname => "trusty-vagrant",
         :box => "ubuntu/trusty64",
         :ram => 1536,
