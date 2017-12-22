@@ -12,6 +12,7 @@ preserve_hostname_false:
     - pattern: "^preserve_hostname.*"
     - repl: "preserve_hostname: true"
     - append_if_not_found: True
+    - unless: ls /etc/waagent.conf
 
 {% set subtype = grains['virtual_subtype'] |default('', true) %}
 {% if subtype == 'Docker' %}

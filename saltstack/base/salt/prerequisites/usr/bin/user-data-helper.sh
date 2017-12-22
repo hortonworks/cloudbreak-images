@@ -27,16 +27,6 @@ wait_for_authorized_keys() {
 }
 
 setup_tmp_ssh() {
-
-  if ! id ${SSH_USER}; then
-    adduser --disabled-password --gecos "Cloudbreak temp ssh user" ${SSH_USER};
-    mkdir -p /home/${SSH_USER}/.ssh/
-    touch /home/${SSH_USER}/.ssh/authorized_keys
-    chown -R ${SSH_USER}:${SSH_USER}  /home/${SSH_USER}/.ssh/
-    echo "${SSH_USER} ALL=(ALL) NOPASSWD: ALL" > /etc/sudoers.d/${SSH_USER}
-    chmod 0440 /etc/sudoers.d/${SSH_USER}
-  fi
-
   wait_for_authorized_keys
   echo "#tmpssh_start" >> /home/${SSH_USER}/.ssh/authorized_keys
   echo "$TMP_SSH_KEY" >> /home/${SSH_USER}/.ssh/authorized_keys
