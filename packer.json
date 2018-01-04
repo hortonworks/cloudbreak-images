@@ -34,8 +34,6 @@
     "ssh_password": "S3cr3t",
     "atlas_artifact": "cloudbreak",
     "atlas_artifact_type": "{{ env `ATLAS_ARTIFACT_TYPE` }}",
-    "atlas_meta_os_distribution_id": "{{ env `ATLAS_META_OS_DISTRIBUTION_ID` }}",
-    "atlas_meta_os_release": "{{ env `ATLAS_META_OS_RELEASE` }}",
     "image_name": "{{ env `IMAGE_NAME` }}",
     "azure_image_publisher": "{{ env `AZURE_IMAGE_PUBLISHER` }}",
     "azure_image_offer": "{{ env `AZURE_IMAGE_OFFER` }}",
@@ -419,8 +417,6 @@
         "hdputil_version": "{{user `hdputil_version`}}",
         "hdputil_baseurl": "{{ user `hdputil_baseurl` }}",
         "hdputil_repoid": "{{ user `hdputil_repoid` }}",
-        "os_distribution_id": "{{ user `atlas_meta_os_distribution_id` }}",
-        "os_release": "{{ user `atlas_meta_os_release` }}"
       }
     },
     {
