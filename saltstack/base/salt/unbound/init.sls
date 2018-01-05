@@ -56,28 +56,28 @@ config_unbound_server:
 
 {% if grains['os_family'] == 'Debian' %}
 
-create_unbound_example_local_d:
+create_unbound_local_d:
   file.directory:
     - name: /etc/unbound/local.d/
 
-create_unbound_example_conf_d:
+create_unbound_conf_d:
   file.directory:
     - name: /etc/unbound/conf.d/
 
-config_unbound_example_local_d:
+config_example_unbound_local_d:
   file.managed:
     - user: root
     - group: root
-    - name: /etc/unbound/local.d/block-example.com.conf
-    - source: salt://{{ slspath }}/etc/unbound/local.d/block-example.com.conf
+    - name: /etc/unbound/local.d/block.conf.example
+    - source: salt://{{ slspath }}/etc/unbound/local.d/block.conf.example
     - mode: 644
 
-config_unbound_example_conf_d:
+config_example_unbound_conf_d:
   file.managed:
     - user: root
     - group: root
-    - name: /etc/unbound/conf.d/example.com.conf
-    - source: salt://{{ slspath }}/etc/unbound/conf.d/example.com.conf
+    - name: /etc/unbound/conf.d/zone.conf.example
+    - source: salt://{{ slspath }}/etc/unbound/conf.d/zone.conf.example
     - mode: 644
 {% endif %}
 
