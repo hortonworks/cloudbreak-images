@@ -13,8 +13,7 @@ preserve_hostname_false:
     - repl: "preserve_hostname: true"
     - append_if_not_found: True
 
-{% set subtype = grains['virtual_subtype'] |default('', true) %}
-{% if subtype == 'Docker' %}
+{% if pillar['subtype'] == 'Docker' %}
 set_datasource_to_fallback:
   file.replace:
     - name: /etc/cloud/cloud.cfg
