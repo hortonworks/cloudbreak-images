@@ -30,7 +30,7 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
 
   servers=[
       {
-        :hostname => "centos7-vagrant",
+        :hostname => "centos7",
         :box => "centos/7",
         :ram => 1024,
         :cpu => 2,
@@ -40,16 +40,15 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
         :oracle_jdk8_url_rpm => "http://download.oracle.com/otn-pub/java/jdk/8u151-b12/e758a0de34e24606bca991d704f6dcbf/jdk-8u151-linux-x64.rpm"
       },
       {
-        :hostname => "centos6-vagrant",
+        :hostname => "centos6",
         :box => "centos/6",
         :ram => 1536,
         :cpu => 2,
         :salt_repo => "salt-repo-2016.11-6.el.repo",
         :custom_image_type => "hortonworks",
-        :oracle_jdk8_url_rpm => "http://download.oracle.com/otn-pub/java/jdk/8u151-b12/e758a0de34e24606bca991d704f6dcbf/jdk-8u151-linux-x64.rpm"
       },
       {
-        :hostname => "wheezy-vagrant",
+        :hostname => "debian7",
         :box => "debian/wheezy64",
         :ram => 1536,
         :cpu => 2,
@@ -57,7 +56,7 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
         :custom_image_type => "hortonworks"
       },
       {
-        :hostname => "precise-vagrant",
+        :hostname => "ubuntu12",
         :box => "ubuntu/precise64",
         :ram => 1536,
         :cpu => 2,
@@ -65,7 +64,7 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
         :custom_image_type => "hortonworks"
       },
       {
-        :hostname => "trusty-vagrant",
+        :hostname => "ubuntu14",
         :box => "ubuntu/trusty64",
         :ram => 1536,
         :cpu => 2,
@@ -73,7 +72,7 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
         :custom_image_type => "hortonworks"
       },
       {
-        :hostname => "xenial-vagrant",
+        :hostname => "ubuntu16",
         :box => "ubuntu/xenial64",
         :ram => 1536,
         :cpu => 2,
