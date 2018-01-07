@@ -1,4 +1,3 @@
 optional:
   '*':
-    - dummy
     - oracle-java
