@@ -15,7 +15,7 @@ create_saltbootstrap_service_files:
     - name: /etc/init.d/salt-bootstrap
     - source:
       - salt://{{ slspath }}/etc/init.d/salt-bootstrap.{{ grains['os_family'] | lower }}
-      -  salt://{{ slspath }}/etc/init.d/salt-bootstrap
+      - salt://{{ slspath }}/etc/init.d/salt-bootstrap
     - mode: 755
 {% elif grains['init'] == 'systemd' %}
     - name: /etc/systemd/system/salt-bootstrap.service

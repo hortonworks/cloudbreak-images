@@ -416,7 +416,7 @@
         "hdp_repoid": "{{ user `hdp_repoid` }}",
         "hdputil_version": "{{user `hdputil_version`}}",
         "hdputil_baseurl": "{{ user `hdputil_baseurl` }}",
-        "hdputil_repoid": "{{ user `hdputil_repoid` }}",
+        "hdputil_repoid": "{{ user `hdputil_repoid` }}"
       }
     },
     {
