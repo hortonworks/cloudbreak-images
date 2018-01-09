@@ -5,7 +5,7 @@ ENV container docker
 ENV TERM linux
 ENV PS1 "[\u@cloudbreak \W]# "
 
-ENV SALT_REPO_URL=https://repo.saltstack.com/yum/redhat/salt-repo-2017.7-1.el7.noarch.rpm
+ENV SALT_REPO=salt-repo-2017.7-1.el.repo
 ENV SYSTEMCTL_REPLACEMENT=https://raw.githubusercontent.com/hortonworks/docker-systemctl-replacement/3a885817b377f0307bd03d82323fa5749136de8f/files/docker/systemctl.py
 
 # Fix the default shell from dash to bash
@@ -117,7 +117,7 @@ RUN chmod 755 /usr/bin/$(basename ${SYSTEMCTL_REPLACEMENT}) && \
     ln -sf /usr/bin/systemctl.py /usr/bin/systemctl
 
 COPY /saltstack /tmp/saltstack
-ADD ${SALT_REPO_URL} /tmp/saltstack/
+COPY /repos /tmp/repos
 COPY /scripts/salt-install.sh /tmp/saltstack/
 COPY /scripts/salt-setup.sh /tmp/saltstack/
 
@@ -131,7 +131,7 @@ providers:\n\
 COPY docker/centos7.3/files/saltstack_grains /tmp/saltstack/base/salt/_grains
 COPY docker/centos7.3/files/saltstack_grains /tmp/saltstack/hortonworks/salt/_grains
 
-RUN /tmp/saltstack/salt-install.sh centos /tmp/saltstack/$(basename ${SALT_REPO_URL})
+RUN /tmp/saltstack/salt-install.sh centos ${SALT_REPO}
 RUN /tmp/saltstack/salt-setup.sh hortonworks
 RUN rm -f /etc/salt/minion_id /etc/salt/pki/minion/minion.pem /etc/salt/pki/minion/minion.pub
 
