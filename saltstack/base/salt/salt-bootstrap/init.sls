@@ -19,6 +19,7 @@ create_saltbootstrap_service_files:
     - mode: 755
 {% elif grains['init'] == 'systemd' %}
     - name: /etc/systemd/system/salt-bootstrap.service
+    - template: jinja
     - source: salt://{{ slspath }}/etc/systemd/system/salt-bootstrap.service
 {% endif %}
 

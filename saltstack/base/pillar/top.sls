@@ -4,3 +4,5 @@ base:
     - prerequisites
     - hdp
     - custom-image-type
+    - nginx
+    - salt-bootstrap
