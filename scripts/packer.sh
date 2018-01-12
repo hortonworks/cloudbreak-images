@@ -62,6 +62,8 @@ packer_in_container() {
     -e HDP_STACK_VERSION=$HDP_STACK_VERSION \
     -e HDP_BASEURL=$HDP_BASEURL \
     -e HDP_REPOID=$HDP_REPOID \
+    -e REPOSITORY_VERSION=$REPOSITORY_VERSION \
+    -e VDF=$VDF \
     -e IMAGE_NAME=$IMAGE_NAME \
     -e HDPUTIL_VERSION=$HDPUTIL_VERSION \
     -e HDPUTIL_BASEURL=$HDPUTIL_BASEURL \
@@ -85,7 +87,7 @@ packer_in_container() {
     -v $PWD:$PWD \
     -w $PWD \
     $dockerOpts \
-    hashicorp/packer:0.12.2 "$@" $packerFile
+    hashicorp/packer:1.1.3 "$@" $packerFile
 }
 
 main() {

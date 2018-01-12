@@ -14,7 +14,9 @@ packages_install:
       - git
       - ntp
       - tmux
+    {% if grains['os'] != 'Amazon' %}
       - bash-completion
+    {% endif %}
       - iptables
       - mc
       - ruby
@@ -29,6 +31,15 @@ packages_install:
       - iptables-persistent
       - dnsutils
     {% endif %}
+
+{% if grains['os'] == 'Amazon' %}
+install_bash_completion:
+  pkg.installed:
+    - refresh: False
+    - fromrepo: epel
+    - pkgs:
+      - bash-completion
+{% endif %}
 
 install_jq:
   file.managed:

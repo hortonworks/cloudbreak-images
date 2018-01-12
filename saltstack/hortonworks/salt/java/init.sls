@@ -36,3 +36,7 @@ add_openjdk_gplv2:
   file.managed:
     - name: /usr/lib/jvm/OpenJDK_GPLv2_and_Classpath_Exception.pdf
     - source: salt://java/usr/lib/jvm/OpenJDK_GPLv2_and_Classpath_Exception.pdf
+
+run_java_sh:
+  cmd.run:
+    - name: source /etc/profile.d/java.sh

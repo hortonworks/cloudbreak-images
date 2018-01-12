@@ -100,5 +100,6 @@ config_unbound_upstart:
 {% endif %}
 
 enable_unbound:
-  service.enabled:
+  service.running:
     - name: unbound
+    - enable: True

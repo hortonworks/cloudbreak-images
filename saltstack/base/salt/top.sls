@@ -12,7 +12,6 @@ base:
     - salt
     - postgres-jdbc-driver
     - unbound
-    - pre-warm
     - monitoring
     - dhcp
     - performance

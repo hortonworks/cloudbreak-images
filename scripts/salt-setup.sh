@@ -22,7 +22,7 @@ function copy_resources {
 function highstate {
   local saltenv=${1}
   copy_resources ${saltenv}
-  salt-call --local state.highstate saltenv=${saltenv} --retcode-passthrough -l info --log-file=/tmp/salt-build-${saltenv}.log --config-dir=/tmp/saltstack/config
+  salt-call --local state.highstate saltenv=${saltenv} --retcode-passthrough -l info --log-file=/tmp/salt-build-${saltenv}.log --log-file-level=info --config-dir=/tmp/saltstack/config
 }
 
 function apply_optional_states {

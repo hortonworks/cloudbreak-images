@@ -1,7 +1,10 @@
 install_haveged_packages:
   pkg.installed:
-    - pkgs: 
+    - pkgs:
       - haveged
+{% if grains['os'] == 'Amazon' %}
+    - fromrepo: epel
+{% endif %}    
 
 service_haveged:
   service.enabled:

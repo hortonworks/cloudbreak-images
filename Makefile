@@ -85,7 +85,7 @@ build-aws-amazonlinux:
 	OS_TYPE=redhat6 \
 	ATLAS_ARTIFACT_TYPE=amazon \
 	SALT_INSTALL_OS=amazon \
-	SALT_REPO_FILE="salt-repo-el7.repo" \
+	SALT_REPO_FILE="salt-repo-amzn.repo" \
 	./scripts/packer.sh build -only=aws-amazonlinux $(PACKER_OPTS)
 
 build-aws-centos6:
@@ -180,6 +180,19 @@ build-gc-centos7:
 	SALT_REPO_FILE="salt-repo-el7.repo" \
 	./scripts/packer.sh build -only=gc-centos7 $(PACKER_OPTS)
 
+build-azure-rhel6:
+	$(ENVS) \
+	AZURE_STORAGE_ACCOUNTS="$(AZURE_STORAGE_ACCOUNTS)" \
+	OS=redhat6 \
+	OS_TYPE=redhat6 \
+	ATLAS_ARTIFACT_TYPE=azure-arm \
+	SALT_INSTALL_OS=redhat \
+	SALT_REPO_FILE="salt-repo-el6.repo" \
+	AZURE_IMAGE_PUBLISHER=RedHat \
+	AZURE_IMAGE_OFFER=RHEL \
+	AZURE_IMAGE_SKU=6.8 \
+	./scripts/packer.sh build -only=arm-rhel6 $(PACKER_OPTS)
+
 build-azure-centos7:
 	$(ENVS) \
 	AZURE_STORAGE_ACCOUNTS="$(AZURE_STORAGE_ACCOUNTS)" \
@@ -188,6 +201,9 @@ build-azure-centos7:
 	ATLAS_ARTIFACT_TYPE=azure-arm \
 	SALT_INSTALL_OS=centos \
 	SALT_REPO_FILE="salt-repo-el7.repo" \
+	AZURE_IMAGE_PUBLISHER=OpenLogic \
+	AZURE_IMAGE_OFFER=CentOS \
+	AZURE_IMAGE_SKU=7.4 \
 	./scripts/packer.sh build -only=arm-centos7 $(PACKER_OPTS)
 
 copy-azure-images:
