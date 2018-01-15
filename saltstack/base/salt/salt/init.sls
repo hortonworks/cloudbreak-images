@@ -29,4 +29,5 @@ ensure_salt-minion_is_disabled:
 /etc/salt:
   file.recurse:
     - source: salt://{{ slspath }}/etc/salt
+    - template: jinja
     - include_empty: True

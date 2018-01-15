@@ -2,6 +2,7 @@ add_install_hdp_sh:
   file.managed:
     - name: /tmp/install_hdp.sh
     - source: salt://{{ slspath }}/tmp/install_hdp.sh
+    - template: jinja
     - skip_verify: True
     - makedirs: True
     - mode: 755

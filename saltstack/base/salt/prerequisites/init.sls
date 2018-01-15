@@ -17,6 +17,7 @@ include:
 /usr/bin/:
   file.recurse:
     - source: salt://{{ slspath }}/usr/bin/
+    - template: jinja
     - include_empty: True
     - file_mode: 755
 

@@ -22,7 +22,7 @@ install_hdp() {
     generate_hdp_script
     #yum -y install $(yum list available | awk '$3~/HDP-[1-9]/ && $1~/^(accumulo|atlas|datafu|falcon|flume|hadoop|hadooplzo|hbase|hive|kafka|knox|livy|mahout|oozie|phoenix|pig|ranger|slider|spark|sqoop|storm|tez|zeppelin|zookeeper)_[0-9]_[0-9]/ {print $1}')
 
-    IP=$(ip addr show eth0 | grep "inet\b" | awk '{print $2}' | cut -d/ -f1)
+    IP=$(ip addr show {{ pillar['network_interface'] }} | grep "inet\b" | awk '{print $2}' | cut -d/ -f1)
     echo "$IP $(hostname).mydomain $(hostname)" >> /etc/hosts
 
     ambari-server setup --silent --java-home ${JAVA_HOME}
