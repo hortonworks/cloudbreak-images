@@ -1,0 +1,77 @@
+- defaults:
+    name: global
+    descrtiption: |
+      <p><b>Do not edit this job through the web.</b></p>
+      <p>If you would like to make changes, please see:
+        <a href="https://github.com/hortonworks/cloudbreak-images/jenkins/">
+        https://github.com/hortonworks/cloudbreak-images/jenkins/
+        </a>
+      </p>
+    concurrent: true
+    project-type: freestyle
+    wrappers:
+      - timestamps
+      - workspace-cleanup
+    properties:
+      - build-discarder:
+          days-to-keep: 7
+
+
+- scm:
+    name: github-scm
+    scm:
+      - git:
+          url: 'git@github.com:hortonworks/{project}.git'
+          branches: '{branch}'
+          skip-tag: True
+
+
+- wrapper:
+    name: build-timeout
+    wrappers:
+      - timeout:
+          timeout: '{timeout}'
+          timeout-var: 'BUILD_TIMEOUT'
+          fail: true
+
+
+- job-template:
+    name: 'docker-build-{name}-{os}'
+    os: ''
+    node: ycloud_centos6_images
+    scm:
+      - github-scm:
+          project: cloudbreak-images
+          branch:
+            - master
+    wrappers:
+      - build-name:
+          name: cloudreak-{os}-${{BUILD_ID}}
+      - build-timeout:
+          timeout: 30
+      - credentials-binding:
+          - username-password-separated:
+              username: DOCKER_USER
+              password: DOCKER_PASS
+              credential-id: cloudbreak-portus
+    builders:
+      - shell: |
+          export DOCKER_HOST=unix:///docker-mount/run/docker.sock
+          docker build --tag=registry.eng.hortonworks.com/${{DOCKER_USER}}/cloudbreak-{os}:${{BUILD_ID}} \
+                       --file=docker/{os}.3/Dockerfile \
+                       --rm=true .
+          docker login --username=${{DOCKER_USER}} \
+                       --password=${{DOCKER_PASS}} \
+                       --email=${{DOCKER_USER}}@hortonworks.com \
+                       registry.eng.hortonworks.com
+          docker push registry.eng.hortonworks.com/${{DOCKER_USER}}/cloudbreak-{os}:${{BUILD_ID}}
+          docker rmi  registry.eng.hortonworks.com/${{DOCKER_USER}}/cloudbreak-{os}:${{BUILD_ID}}
+          docker logout registry.eng.hortonworks.com
+
+
+- project:
+    name: cloudbreak-images
+    os:
+      - centos7
+    jobs:
+      - 'docker-build-{name}-{os}'
