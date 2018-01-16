@@ -1,17 +1,14 @@
 - defaults:
     name: global
-    descrtiption: |
+    description: |
       <p><b>Do not edit this job through the web.</b></p>
       <p>If you would like to make changes, please see:
-        <a href="https://github.com/hortonworks/cloudbreak-images/jenkins/">
-        https://github.com/hortonworks/cloudbreak-images/jenkins/
+        <a href="https://github.com/hortonworks/cloudbreak-images/tree/master/jenkins/">
+        https://github.com/hortonworks/cloudbreak-images/tree/master/jenkins/
         </a>
       </p>
     concurrent: true
     project-type: freestyle
-    wrappers:
-      - timestamps
-      - workspace-cleanup
     properties:
       - build-discarder:
           days-to-keep: 7
@@ -41,12 +38,12 @@
     node: ycloud_centos6_images
     scm:
       - github-scm:
-          project: cloudbreak-images
+          project: '{name}'
           branch:
             - master
     wrappers:
       - build-name:
-          name: cloudreak-{os}-${{BUILD_ID}}
+          name: cloudbreak-{os}-${{BUILD_ID}}
       - build-timeout:
           timeout: 30
       - credentials-binding:
@@ -54,6 +51,8 @@
               username: DOCKER_USER
               password: DOCKER_PASS
               credential-id: cloudbreak-portus
+      - timestamps
+      - workspace-cleanup
     builders:
       - shell: |
           export DOCKER_HOST=unix:///docker-mount/run/docker.sock

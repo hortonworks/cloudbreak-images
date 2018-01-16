@@ -1,7 +1,6 @@
-Jenkins jobs for cloudbreak-images
-==================================
+# Jenkins jobs for cloudbreak-images
 
-* Edit jenkins_jobs.ini and add jenkins parameters
+* Edit `jenkins_jobs.ini` and add jenkins parameters
 
 * Install jenkins-job-builder
   ```shell
