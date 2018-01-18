@@ -34,17 +34,17 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
         :box => "centos/7",
         :ram => 1024,
         :cpu => 2,
-        :salt_repo => "salt-repo-2017.7-1.el.repo",
+        :salt_repo => "salt-repo-el7.repo",
         :optional_states => "oracle-java",
         :custom_image_type => "hortonworks",
-        :oracle_jdk8_url_rpm => "http://download.oracle.com/otn-pub/java/jdk/8u151-b12/e758a0de34e24606bca991d704f6dcbf/jdk-8u151-linux-x64.rpm"
+        :oracle_jdk8_url_rpm => "http://download.oracle.com/otn-pub/java/jdk/8u161-b12/2f38c3b165be4555a1fa6e98c45e0808/jdk-8u161-linux-x64.rpm"
       },
       {
         :hostname => "centos6",
         :box => "centos/6",
         :ram => 1536,
         :cpu => 2,
-        :salt_repo => "salt-repo-2016.11-6.el.repo",
+        :salt_repo => "salt-repo-el6.repo",
         :custom_image_type => "hortonworks",
       },
       {
@@ -52,7 +52,7 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
         :box => "debian/wheezy64",
         :ram => 1536,
         :cpu => 2,
-        :salt_repo => "salt-repo-2016.11-5.debian7.list",
+        :salt_repo => "salt-repo-debian7.list",
         :custom_image_type => "hortonworks"
       },
       {
@@ -60,7 +60,7 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
         :box => "ubuntu/precise64",
         :ram => 1536,
         :cpu => 2,
-        :salt_repo => "salt-repo-2016.11-3.ubuntu12.list",
+        :salt_repo => "salt-repo-ubuntu12.list",
         :custom_image_type => "hortonworks"
       },
       {
@@ -68,7 +68,7 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
         :box => "ubuntu/trusty64",
         :ram => 1536,
         :cpu => 2,
-        :salt_repo => "salt-repo-2017.7-1.ubuntu14.list",
+        :salt_repo => "salt-repo-ubuntu14.list",
         :custom_image_type => "hortonworks"
       },
       {
@@ -76,7 +76,7 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
         :box => "ubuntu/xenial64",
         :ram => 1536,
         :cpu => 2,
-        :salt_repo => "salt-repo-2017.7-1.ubuntu16.list",
+        :salt_repo => "salt-repo-ubuntu16.list",
         :custom_image_type => "hortonworks"
       }
   ].each do |machine|
