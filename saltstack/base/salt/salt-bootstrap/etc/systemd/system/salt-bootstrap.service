@@ -1,10 +1,16 @@
 [Install]
-WantedBy=multi-user.target
+WantedBy={{ pillar['salt_bootstrap_target'] }}.target
 
 [Unit]
 Description=Salt Bootstrap Service
-After=network.target network.service cloud-final.service waagent.service google-startup-scripts.service
-Wants=cloud-final.service waagent.service google-startup-scripts.service
+After=network.target
+After=network.service
+After=cloud-final.service
+After=waagent.service
+After=google-startup-scripts.service
+Wants=cloud-final.service
+Wants=waagent.service
+Wants=google-startup-scripts.service
 
 [Service]
 Restart=on-failure

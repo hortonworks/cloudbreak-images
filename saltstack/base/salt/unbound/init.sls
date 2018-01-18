@@ -23,6 +23,8 @@ install_unbound_server:
   pkg.installed:
     {% if grains['os'] == 'Amazon' %}
     - fromrepo: centos-os
+    {% elif grains['os_family'] == 'Debian' and  grains['osmajorrelease'] | int == 7 %}
+    - fromrepo: wheezy-backports
     {% endif %}
     - pkgs:
       {% if grains['os_family'] == 'RedHat' %}
@@ -52,6 +54,33 @@ config_unbound_server:
     - source: salt://{{ slspath }}/etc/unbound/unbound.conf
     - mode: 644
 
+{% if grains['os_family'] == 'Debian' %}
+
+create_unbound_local_d:
+  file.directory:
+    - name: /etc/unbound/local.d/
+
+create_unbound_conf_d:
+  file.directory:
+    - name: /etc/unbound/conf.d/
+
+config_example_unbound_local_d:
+  file.managed:
+    - user: root
+    - group: root
+    - name: /etc/unbound/local.d/block.conf.example
+    - source: salt://{{ slspath }}/etc/unbound/local.d/block.conf.example
+    - mode: 644
+
+config_example_unbound_conf_d:
+  file.managed:
+    - user: root
+    - group: root
+    - name: /etc/unbound/conf.d/zone.conf.example
+    - source: salt://{{ slspath }}/etc/unbound/conf.d/zone.conf.example
+    - mode: 644
+{% endif %}
+
 {% if grains['init'] == 'systemd' %}
 
 unbound_service:
@@ -59,9 +88,7 @@ unbound_service:
     - name: /etc/systemd/system/unbound.service
     - source: salt://{{ slspath }}/etc/systemd/system/unbound.service
 
-{% endif %}
-
-{% if grains['init'] == 'upstart' %}
+{% elif grains['init'] == 'upstart' %}
 
 config_unbound_upstart:
   file.managed:

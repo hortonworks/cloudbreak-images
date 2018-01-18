@@ -7,6 +7,7 @@ install_nginx:
 /etc/nginx:
   file.managed:
     - name: /etc/nginx/nginx.conf
+    - template: jinja
     - source: salt://{{ slspath }}/etc/nginx/nginx.conf
 
 enable_nginx:

@@ -5,17 +5,6 @@
 
 set -e -o pipefail -o errexit
 
-#run function
-function run {
-  debug "$@";
-  if [ "${DRY_RUN}" != "--dry-run" ]; then "$@"; fi;
-}
-
-#debug function
-function debug {
-  echo "[$(date +'%Y-%m-%dT%H:%M:%S%z')]: $@";
-}
-
 function prepare {
   sudo chown -R root:root /tmp/saltstack
 }
@@ -43,7 +32,7 @@ function apply_optional_states {
   then
     local saltenv="optional"
     copy_resources ${saltenv}
-    salt-call --local state.sls ${OPTIONAL_STATES} saltenv=${saltenv} --retcode-passthrough -l info --log-file=/tmp/salt-build-${saltenv}.log --config-dir=/tmp/saltstack/config
+    salt-call --local state.sls ${OPTIONAL_STATES} saltenv=${saltenv} pillarenv=${saltenv} --retcode-passthrough -l info --log-file=/tmp/salt-build-${saltenv}.log --config-dir=/tmp/saltstack/config
   fi
 }
 
@@ -51,19 +40,19 @@ function apply_optional_states {
 
 case ${CUSTOM_IMAGE_TYPE} in
   base|"")
-   echo "Running highstate for Base.."
-   prepare
-   highstate "base"
-   ;;
- hortonworks)
-   echo "Running highstate for Base and Hortonworks.."
-   prepare
-   highstate "base"
-   highstate "hortonworks"
-   ;;
- *)
-  echo "Unsupported CUSTOM_IMAGE_TYPE:" ${CUSTOM_IMAGE_TYPE}
-  exit 1
+    echo "Running highstate for Base.."
+    prepare
+    highstate "base"
+  ;;
+  hortonworks)
+    echo "Running highstate for Base and Hortonworks.."
+    prepare
+    highstate "base"
+    highstate "hortonworks"
+  ;;
+  *)
+    echo "Unsupported CUSTOM_IMAGE_TYPE:" ${CUSTOM_IMAGE_TYPE}
+    exit 1
   ;;
 esac
 

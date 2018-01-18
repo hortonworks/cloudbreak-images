@@ -6,6 +6,6 @@ install_kerberos_packages:
       - krb5-libs
       - krb5-workstation
       {% elif grains['os_family'] == 'Debian' %}
-        - krb5-admin-server
-        - krb5-kdc
+      - krb5-admin-server
+      - krb5-kdc
       {% endif %}

@@ -14,7 +14,7 @@ create_node_exporter_service_files:
 {% if grains['init'] in [ 'upstart', 'sysvinit'] %}
     - name: /etc/init.d/node_exporter
     - source: 
-      - salt://{{ slspath }}/etc/init.d/node_exporter.{{ grains['os'] | lower }}
+      - salt://{{ slspath }}/etc/init.d/node_exporter.{{ grains['os_family'] | lower }}
       - salt://{{ slspath }}/etc/init.d/node_exporter
     - mode: 755
 {% elif grains['init'] == 'systemd' %}
@@ -29,16 +29,6 @@ config_node_exporter_default:
     - name: /etc/default/node_exporter
     - source: salt://{{ slspath }}/etc/default/node_exporter
     - mode: 644
-
-{% if grains['init'] == 'systemd' %}
-wrapper_script_node_exporter:
-  file.managed:
-    - user: root
-    - group: root
-    - name: /usr/local/bin/node_exporter.sh
-    - source: salt://{{ slspath }}/usr/local/bin/node_exporter.sh
-    - mode: 755
-{% endif %}
 
 config_consul_node_exporter:
   file.managed:

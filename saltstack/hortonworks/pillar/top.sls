@@ -1,3 +1,4 @@
 hortonworks:
   '*':
     - eula
+    - java

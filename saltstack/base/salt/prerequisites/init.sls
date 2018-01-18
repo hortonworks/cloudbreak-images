@@ -2,8 +2,7 @@ include:
   - {{ slspath }}.repository
   - {{ slspath }}.packages
   - {{ slspath }}.sudo
-{% set subtype = grains['virtual_subtype'] |default('', true) %}
-{% if subtype != 'Docker' %}
+{% if pillar['subtype'] != 'Docker' %}
   - {{ slspath }}.sysctl
   - {{ slspath }}.disable_ipv6
   - {{ slspath }}.selinux
@@ -13,6 +12,7 @@ include:
   - {{ slspath }}.cert-tool
   - {{ slspath }}.dnsmasq
   - {{ slspath }}.user
+  - {{ slspath }}.firewall
 
 /usr/bin/:
   file.recurse:
