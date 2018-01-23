@@ -1,6 +1,7 @@
 /etc/dhcp:
   file.recurse:
     - source: salt://{{ slspath }}/etc/dhcp/
+    - template: jinja
     - include_empty: True
     - file_mode: 755
 

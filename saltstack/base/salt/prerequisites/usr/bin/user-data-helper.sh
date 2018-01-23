@@ -34,7 +34,7 @@ setup_tmp_ssh() {
 }
 
 get_ip() {
-  ifconfig eth0 | sed -En 's/.*inet (addr:)?(([0-9]*\.){3}[0-9]*).*/\2/p'
+  ifconfig {{ pillar['network_interface'] }} | sed -En 's/.*inet (addr:)?(([0-9]*\.){3}[0-9]*).*/\2/p'
 }
 
 fix_hostname() {

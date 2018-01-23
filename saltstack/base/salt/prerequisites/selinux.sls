@@ -1,5 +1,4 @@
 {% if grains['os_family'] == 'RedHat' %}
-
 install_selinux_module_dependecies:
   pkg.installed:
     - pkgs:
