@@ -30,7 +30,7 @@ test_docker_build_finished() {
 	        echo "Test $1 build progress ${test_code}..."
 	        sleep 15;
 	    done
-	    if [[ $count -gt 119 ]]; then
+	    if [[ $count -gt 480 ]]; then
 	    	echo "Image tag $1 failed to create."
 	    	exit -1
 	    fi
