@@ -62,6 +62,9 @@
       "instance_type": "{{ user `aws_instance_type` }}",
       "ssh_username": "ec2-user",
       "ena_support": true,
+      "tags": {
+        "Owner": "{{ user `image_owner` }}"
+      },
       "ami_block_device_mappings": [
         {
           "device_name": "/dev/xvda",
@@ -95,6 +98,9 @@
       "instance_type": "{{ user `aws_instance_type` }}",
       "ssh_username": "centos",
       "ena_support": false,
+      "tags": {
+        "Owner": "{{ user `image_owner` }}"
+      },
       "ami_block_device_mappings": [
         {
           "device_name": "/dev/xvda",
@@ -128,6 +134,9 @@
       "instance_type": "{{ user `aws_instance_type` }}",
       "ssh_username": "centos",
       "ena_support": false,
+      "tags": {
+        "Owner": "{{ user `image_owner` }}"
+      },
       "ami_block_device_mappings": [
         {
           "device_name": "/dev/xvda",
@@ -160,6 +169,9 @@
       "instance_type": "{{ user `aws_instance_type` }}",
       "ssh_username": "ec2-user",
       "ena_support": false,
+      "tags": {
+        "Owner": "{{ user `image_owner` }}"
+      },
       "ami_block_device_mappings": [
         {
           "device_name": "/dev/xvda",
@@ -288,6 +300,9 @@
       "instance_type": "{{ user `aws_instance_type` }}",
       "ssh_username": "admin",
       "ena_support": true,
+      "tags": {
+        "Owner": "{{ user `image_owner` }}"
+      },
       "ami_block_device_mappings": [
         {
           "device_name": "/dev/xvda",
@@ -324,7 +339,7 @@
       "image_name": "{{user `image_name`}}",
       "disk_size": "10",
       "tags": [
-        "packer"
+        "packer", "imagebuild-hortonworks"
       ]
     },
     {
@@ -347,7 +362,10 @@
       "ssh_username": "centos",
       "ssh_password": "{{user `ssh_password`}}",
       "location": "northeurope",
-      "vm_size": "Standard_D4"
+      "vm_size": "Standard_D4",
+      "azure_tags": {
+        "Owner": "{{ user `image_owner` }}"
+      }
     },
     {
       "name": "arm-centos7",
@@ -369,7 +387,10 @@
       "ssh_username": "centos",
       "ssh_password": "{{user `ssh_password`}}",
       "location": "northeurope",
-      "vm_size": "Standard_D4"
+      "vm_size": "Standard_D4",
+      "azure_tags": {
+        "Owner": "{{ user `image_owner` }}"
+      }
     }
   ],
   "provisioners": [
