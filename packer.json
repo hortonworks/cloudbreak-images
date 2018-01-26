@@ -422,31 +422,6 @@
   ],
   "post-processors": [
     {
-      "type": "atlas",
-      "artifact": "hortonworks/{{ user `atlas_artifact` }}",
-      "artifact_type": "{{ user `atlas_artifact_type` }}.image",
-      "metadata": {
-        "created_at": "{{timestamp}}",
-        "prometheus": "true",
-        "created": "{{ isotime \"2006-01-02 15:04:05 -0700\" }}",
-        "git_rev": "{{user `git_rev`}}",
-        "git_branch": "{{user `git_branch`}}",
-        "git_tag": "{{user `git_tag`}}",
-        "os_user": "{{user `os_user` }}",
-        "orchestrator": "salt",
-        "image_name": "{{ user `image_name` }}",
-        "ambari_version": "{{ user `ambari_version` }}",
-        "ambari_baseurl": "{{ user `ambari_baseurl` }}",
-        "ambari_gpgkey": "{{ user `ambari_gpgkey` }}",
-        "hdp_version": "{{user `hdp_version`}}",
-        "hdp_baseurl": "{{ user `hdp_baseurl` }}",
-        "hdp_repoid": "{{ user `hdp_repoid` }}",
-        "hdputil_version": "{{user `hdputil_version`}}",
-        "hdputil_baseurl": "{{ user `hdputil_baseurl` }}",
-        "hdputil_repoid": "{{ user `hdputil_repoid` }}"
-      }
-    },
-    {
       "type": "manifest",
       "output": "{{ user `image_name` }}_manifest.json"
     },
