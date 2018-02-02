@@ -13,8 +13,6 @@ init() {
 
 extend_rootfs() {
   if [[ $PACKER_BUILDER_TYPE == "googlecompute" ]]; then
-      yum -y install cloud-utils-growpart
-
       root_fs_device=$(mount | grep ' / ' | cut -d' ' -f 1 | sed s/1//g)
       growpart $root_fs_device 1 || :
       xfs_growfs / || :
