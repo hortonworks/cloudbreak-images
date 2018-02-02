@@ -124,8 +124,7 @@
   {
       "type": "shell",
       "inline": [
-          "sudo yum install -y rsync docker",
-          "sudo systemctl enable docker",
+          "sudo yum install -y rsync unzip",
           "sudo rsync -a /tmp/shared/ /"
       ]
   },

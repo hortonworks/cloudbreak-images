@@ -9,6 +9,16 @@ debug() {
 
 init() {
   : ${DEBUG:=1}
+  if [[ $PACKER_BUILDER_TYPE == "googlecompute" ]]; then
+    setenforce 0
+    sed -i 's/SELINUX=enforcing/SELINUX=disabled/g' /etc/selinux/config
+    yum clean all
+    yum update -y
+    yum install -y docker-engine bash-completion-extras
+    systemctl enable docker
+    getent passwd $OS_USER || adduser $OS_USER
+    usermod -a -G docker $OS_USER
+  fi
 }
 
 extend_rootfs() {
