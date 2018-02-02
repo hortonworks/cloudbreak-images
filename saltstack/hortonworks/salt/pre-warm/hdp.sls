@@ -1,3 +1,11 @@
+# to create var/run/knox directory for Knox
+{% if grains['init'] == 'systemd' %}
+/usr/lib/tmpfiles.d/knox.conf:
+  file.managed:
+    - source: salt://pre-warm/gateway/systemd/knox.conf
+{% endif %}
+
+
 install_hdp:
   cmd.script:
     - name: salt://pre-warm/tmp/install_hdp.sh
