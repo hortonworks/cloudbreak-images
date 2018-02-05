@@ -61,7 +61,7 @@
       "source_ami": "ami-1a962263",
       "instance_type": "{{ user `aws_instance_type` }}",
       "ssh_username": "ec2-user",
-      "ena_support": true,
+      "enhanced_networking": true,
       "tags": {
         "Owner": "{{ user `image_owner` }}"
       },
@@ -97,7 +97,7 @@
       "source_ami": "ami-edb9069e",
       "instance_type": "{{ user `aws_instance_type` }}",
       "ssh_username": "centos",
-      "ena_support": false,
+      "enhanced_networking": false,
       "tags": {
         "Owner": "{{ user `image_owner` }}"
       },
@@ -133,7 +133,7 @@
       "source_ami": "ami-061b1560",
       "instance_type": "{{ user `aws_instance_type` }}",
       "ssh_username": "centos",
-      "ena_support": false,
+      "enhanced_networking": false,
       "tags": {
         "Owner": "{{ user `image_owner` }}"
       },
@@ -168,7 +168,7 @@
       "ami_regions": "{{ user `aws_ami_regions` }}",
       "instance_type": "{{ user `aws_instance_type` }}",
       "ssh_username": "ec2-user",
-      "ena_support": false,
+      "enhanced_networking": false,
       "tags": {
         "Owner": "{{ user `image_owner` }}"
       },
@@ -299,7 +299,7 @@
       "source_ami": "ami-61e56916",
       "instance_type": "{{ user `aws_instance_type` }}",
       "ssh_username": "admin",
-      "ena_support": true,
+      "enhanced_networking": true,
       "tags": {
         "Owner": "{{ user `image_owner` }}"
       },

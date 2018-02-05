@@ -18,6 +18,6 @@ install_hdp:
       - VDF: {{ pillar['VDF'] }}
       - REPOSITORY_VERSION: {{ pillar['REPOSITORY_VERSION'] }}
     - output_loglevel: DEBUG
-    - timeout: 4800
+    - timeout: 9000
     - unless: ls /tmp/install_hdp.status
     - failhard: True
