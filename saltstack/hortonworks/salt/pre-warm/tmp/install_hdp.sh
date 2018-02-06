@@ -96,7 +96,8 @@ install_hdp() {
 }
 
 reset_ambari() {
-  ambari-agent stop
+  #ambari-agent stop || true
+  pkill -f ambari_agent || true
   ambari-server stop
   pkill -f ambari-server || true
   ambari-server reset --verbose --silent
