@@ -337,7 +337,7 @@
       "ssh_pty": "true",
       "machine_type": "n1-standard-2",
       "image_name": "{{user `image_name`}}",
-      "disk_size": "10",
+      "disk_size": "15",
       "tags": [
         "packer", "imagebuild-hortonworks"
       ]
