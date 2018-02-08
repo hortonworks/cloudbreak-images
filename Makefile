@@ -208,7 +208,7 @@ build-azure-centos7:
 	./scripts/packer.sh build -only=arm-centos7 $(PACKER_OPTS)
 
 copy-azure-images:
-	AZURE_STORAGE_ACCOUNTS="$(AZURE_STORAGE_ACCOUNTS)" ./scripts/azure-copy.sh
+	AZURE_STORAGE_ACCOUNTS="$(AZURE_STORAGE_ACCOUNTS)" AZURE_IMAGE_NAME="$(AZURE_IMAGE_NAME)" ./scripts/azure-copy.sh 
 
 bundle-googlecompute:
 	$(ENVS) GCP_STORAGE_BUNDLE=$(GCP_STORAGE_BUNDLE) GCP_STORAGE_BUNDLE_LOG=$(GCP_STORAGE_BUNDLE_LOG) ./scripts/bundle-gcp-image.sh
