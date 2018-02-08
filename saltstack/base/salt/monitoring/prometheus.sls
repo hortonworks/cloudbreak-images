@@ -11,8 +11,8 @@ install_prometheus:
 install_jmx_javaagent_exporter:
   file.managed:
     - name: /opt/jmx_javaagent.jar
-    - source: https://sequenceiq.s3.amazonaws.com/jmx_prometheus_javaagent-0.8-SNAPSHOT.jar
-    - source_hash: md5=09f61e70f8800535e42746a85c898c72
+    - source: https://s3.eu-central-1.amazonaws.com/hortonworks-prometheus/jmx_prometheus_javaagent-0.10.jar
+    - skip_verify: True
     - if_missing: /opt/jmx_javaagent.jar
 
 create_prometheus_service_files:
