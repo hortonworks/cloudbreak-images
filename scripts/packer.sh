@@ -3,6 +3,12 @@
 packer_in_container() {
   local dockerOpts=""
   local packerFile="packer.json"
+  PACKER_VERSION="1.1.3"
+
+# https://github.com/hashicorp/packer/issues/5825
+  if [[ "$2" == "-only=gc-centos7" ]]; then
+    PACKER_VERSION="0.12.3"
+  fi
 
   if [[ "$GCP_ACCOUNT_FILE" ]]; then
     dockerOpts="$dockerOpts -v $GCP_ACCOUNT_FILE:$GCP_ACCOUNT_FILE"
