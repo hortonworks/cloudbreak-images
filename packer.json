@@ -62,6 +62,7 @@
       "instance_type": "{{ user `aws_instance_type` }}",
       "ssh_username": "ec2-user",
       "ena_support": true,
+      "skip_region_validation": true,
       "tags": {
         "Owner": "{{ user `image_owner` }}"
       },
@@ -98,6 +99,7 @@
       "instance_type": "{{ user `aws_instance_type` }}",
       "ssh_username": "centos",
       "ena_support": false,
+      "skip_region_validation": true,
       "tags": {
         "Owner": "{{ user `image_owner` }}"
       },
@@ -134,6 +136,7 @@
       "instance_type": "{{ user `aws_instance_type` }}",
       "ssh_username": "centos",
       "ena_support": false,
+      "skip_region_validation": true,
       "tags": {
         "Owner": "{{ user `image_owner` }}"
       },
@@ -169,6 +172,7 @@
       "instance_type": "{{ user `aws_instance_type` }}",
       "ssh_username": "ec2-user",
       "ena_support": false,
+      "skip_region_validation": true,
       "tags": {
         "Owner": "{{ user `image_owner` }}"
       },
@@ -300,6 +304,7 @@
       "instance_type": "{{ user `aws_instance_type` }}",
       "ssh_username": "admin",
       "ena_support": true,
+      "skip_region_validation": true,
       "tags": {
         "Owner": "{{ user `image_owner` }}"
       },
