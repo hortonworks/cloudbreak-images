@@ -57,7 +57,7 @@
       "type": "amazon-ebs",
       "region": "eu-west-1",
       "ami_regions": "{{ user `aws_ami_regions` }}",
-      "ssh_pty": false,
+      "ssh_pty": true,
       "source_ami": "ami-1a962263",
       "instance_type": "{{ user `aws_instance_type` }}",
       "ssh_username": "ec2-user",
