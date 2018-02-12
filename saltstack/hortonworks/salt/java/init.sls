@@ -13,6 +13,12 @@ set_java_home_systemd:
     - repl: DefaultEnvironment=JAVA_HOME={{ pillar['JAVA_HOME'] }}
 {% endif %}
 
+{% if grains['os_family'] == 'RedHat' %}
+remove_openjdk17:
+  pkg.removed:
+    - name: java-1.7.0-openjdk
+{% endif %}
+
 {% if grains['os'] == 'RedHat' and grains['osmajorrelease'] | int == 7 %}
 enable_redhat_rhui_repos:
   file.replace:
