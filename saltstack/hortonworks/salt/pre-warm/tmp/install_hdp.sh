@@ -24,8 +24,8 @@ EOF
 }
 
 install_hdp() {
-    exec 3>&1 4>&2
-    exec 1>/var/log/install_hdp.log 2>&1
+    #exec 3>&1 4>&2
+    #exec 1>/var/log/install_hdp.log 2>&1
     if [[ -z "$JAVA_HOME" ]]; then
       source /etc/profile.d/java.sh
     fi
@@ -91,8 +91,8 @@ install_hdp() {
     reset_ambari
     cleanup_configs
     echo "Installation successful" >> /tmp/install_hdp.status
-    exec 1>&3 2>&4
-    exit 0
+    #exec 1>&3 2>&4
+    #exit 0
 }
 
 reset_ambari() {
