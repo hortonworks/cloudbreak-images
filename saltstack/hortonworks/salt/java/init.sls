@@ -12,12 +12,12 @@ set_java_home_systemd:
     - pattern: \#+DefaultEnvironment=.*
     - repl: DefaultEnvironment=JAVA_HOME={{ pillar['JAVA_HOME'] }}
 {% endif %}
-# BUG-96693 Workaround Hive metastore could not be started if only JDK8 is installed
-#{% if grains['os_family'] == 'RedHat' %}
-#remove_openjdk17:
-#  pkg.removed:
-#    - name: java-1.7.0-openjdk
-#{% endif %}
+
+{% if grains['os_family'] == 'RedHat' %}
+remove_openjdk17:
+  pkg.removed:
+    - name: java-1.7.0-openjdk
+{% endif %}
 
 {% if grains['os'] == 'RedHat' and grains['osmajorrelease'] | int == 7 %}
 enable_redhat_rhui_repos:
