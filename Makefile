@@ -214,7 +214,7 @@ bundle-googlecompute:
 	$(ENVS) GCP_STORAGE_BUNDLE=$(GCP_STORAGE_BUNDLE) GCP_STORAGE_BUNDLE_LOG=$(GCP_STORAGE_BUNDLE_LOG) ./scripts/bundle-gcp-image.sh
 
 upload-openstack-image:
-	S3_TARGET=$(S3_TARGET) ./scripts/openstack-s3-upload.sh
+	S3_TARGET=$(S3_TARGET) ./scripts/openstack-upload.sh
 
 docker-build:
 	docker build -t cloudbreak-centos7 -f docker/centos7.3/Dockerfile .
