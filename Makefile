@@ -1,4 +1,4 @@
-BASE_NAME ?= "cb"
+BASE_NAME ?= cb
 DESCRIPTION ?= "Official Cloudbreak image"
 HDP_VERSION ?= ""
 ATLAS_PROJECT ?= "cloudbreak"
@@ -246,3 +246,6 @@ push-to-metadata-repo: cleanup-metadata-repo
 
 generate-last-metadata-url-file:
 	echo "METADATA_URL=https://raw.githubusercontent.com/$(GITHUB_ORG)/$(GITHUB_REPO)/master/$(shell (ls -1tr *_manifest.json | tail -1 | sed "s/_manifest//"))" > last_md
+ifdef IMAGE_NAME
+	echo "IMAGE_NAME=$(IMAGE_NAME)" >> last_md
+endif
