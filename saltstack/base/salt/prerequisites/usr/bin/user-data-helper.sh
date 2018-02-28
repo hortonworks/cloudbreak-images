@@ -88,6 +88,46 @@ EOF
   chmod 600 /etc/salt-bootstrap/security-config.yml
 }
 
+create_certificates_cert_tool() {
+  echo n | cert-tool -d=/etc/certs -o=gateway -s localhost -s 127.0.0.1
+  rm /etc/certs/client-key.pem /etc/certs/client.pem /etc/certs/ca-key.pem
+  mv /etc/certs/server.pem /etc/certs/cluster.pem
+  cp /etc/certs/cluster.pem /tmp/cluster.pem
+  mv /etc/certs/server-key.pem /etc/certs/cluster-key.pem
+}
+
+create_certificates_certm() {
+  CERT_ROOT_PATH=/etc/certs
+  certm -d $CERT_ROOT_PATH ca generate -o=gateway --overwrite
+  certm -d $CERT_ROOT_PATH server generate -o=gateway --host localhost --host 127.0.0.1
+  mv $CERT_ROOT_PATH/server.pem $CERT_ROOT_PATH/cluster.pem
+  cp $CERT_ROOT_PATH/cluster.pem /tmp/cluster.pem
+  mv $CERT_ROOT_PATH/server-key.pem $CERT_ROOT_PATH/cluster-key.pem
+  rm $CERT_ROOT_PATH/ca-key.pem
+}
+
+start_nginx() {
+  mv /etc/nginx/sites-enabled/ssl-template /etc/nginx/sites-enabled/ssl.conf
+  mkdir -p /usr/share/nginx/json/
+  if [[ -d /yarn-private ]]; then
+      pkill -1 -P 1 nginx
+  else
+      service nginx restart
+  fi
+  chkconfig nginx on
+}
+
+setup_tls() {
+  if [[ -f /sbin/certm ]]
+  then
+    echo "certm exists on the fs"
+    create_certificates_certm
+  else
+    echo "cert-tool exists on the fs (backward compatibility)"
+    create_certificates_cert_tool
+  fi
+}
+
 main() {
   configure-salt-bootstrap
   reload_sysconf
