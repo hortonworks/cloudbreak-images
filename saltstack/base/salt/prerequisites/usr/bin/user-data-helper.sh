@@ -118,6 +118,8 @@ start_nginx() {
 }
 
 setup_tls() {
+  mkdir -p /etc/certs
+  echo $CB_CERT | base64 --decode > /etc/certs/cb-client.pem
   if [[ -f /sbin/certm ]]
   then
     echo "certm exists on the fs"
@@ -137,7 +139,13 @@ main() {
   elif [ ! -f "/var/cb-init-executed" ]; then
     [[ $CLOUD_PLATFORM != "YARN" ]] && format_disks
     fix_hostname
-    [[ "$IS_GATEWAY" == "true" ]] && setup_tmp_ssh
+    if [[ "$IS_GATEWAY" == "true" ]]; then
+      setup_tmp_ssh
+      if [[ -n "$CB_CERT" ]]; then
+        setup_tls
+        start_nginx
+      fi
+    fi
     echo $(date +%Y-%m-%d:%H:%M:%S) >> /var/cb-init-executed
   fi
   [ -e /usr/bin/ssh-aliases ] && /usr/bin/ssh-aliases create
