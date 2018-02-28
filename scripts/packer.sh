@@ -3,6 +3,12 @@
 packer_in_container() {
   local dockerOpts=""
   local packerFile="packer.json"
+  PACKER_VERSION="1.1.3"
+
+# https://github.com/hashicorp/packer/issues/5825
+  if [[ "$2" == "-only=gc-centos7" ]]; then
+    PACKER_VERSION="0.12.3"
+  fi
 
   if [[ "$GCP_ACCOUNT_FILE" ]]; then
     dockerOpts="$dockerOpts -v $GCP_ACCOUNT_FILE:$GCP_ACCOUNT_FILE"
@@ -62,6 +68,8 @@ packer_in_container() {
     -e HDP_STACK_VERSION=$HDP_STACK_VERSION \
     -e HDP_BASEURL=$HDP_BASEURL \
     -e HDP_REPOID=$HDP_REPOID \
+    -e REPOSITORY_VERSION=$REPOSITORY_VERSION \
+    -e VDF=$VDF \
     -e IMAGE_NAME=$IMAGE_NAME \
     -e HDPUTIL_VERSION=$HDPUTIL_VERSION \
     -e HDPUTIL_BASEURL=$HDPUTIL_BASEURL \
@@ -76,6 +84,7 @@ packer_in_container() {
     -e ATLAS_ARTIFACT_TYPE=$ATLAS_ARTIFACT_TYPE \
     -e COPY_AWS_MARKETPLACE_EULA=$COPY_AWS_MARKETPLACE_EULA \
     -e CUSTOM_IMAGE_TYPE=$CUSTOM_IMAGE_TYPE \
+    -e IMAGE_OWNER=$IMAGE_OWNER \
     -e OPTIONAL_STATES=$OPTIONAL_STATES \
     -e ORACLE_JDK8_URL_RPM=$ORACLE_JDK8_URL_RPM \
     -e PREINSTALLED_JAVA_HOME=$PREINSTALLED_JAVA_HOME \
@@ -85,7 +94,7 @@ packer_in_container() {
     -v $PWD:$PWD \
     -w $PWD \
     $dockerOpts \
-    hashicorp/packer:0.12.2 "$@" $packerFile
+    hashicorp/packer:$PACKER_VERSION "$@" $packerFile
 }
 
 main() {

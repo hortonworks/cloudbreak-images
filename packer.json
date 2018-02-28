@@ -21,6 +21,8 @@
     "hdp_stack_version": "{{ env `HDP_STACK_VERSION` }}",
     "hdp_repoid": "{{ env `HDP_REPOID` }}",
     "hdp_baseurl": "{{ env `HDP_BASEURL` }}",
+    "vdf": "{{ env `VDF` }}",
+    "repository_version": "{{ env `REPOSITORY_VERSION` }}",
     "hdputil_version": "{{ env `HDPUTIL_VERSION` }}",
     "hdputil_repoid": "{{ env `HDPUTIL_REPOID` }}",
     "hdputil_baseurl": "{{ env `HDPUTIL_BASEURL` }}",
@@ -56,10 +58,14 @@
       "region": "eu-west-1",
       "ami_regions": "{{ user `aws_ami_regions` }}",
       "ssh_pty": true,
-      "source_ami": "ami-9398d3e0",
+      "source_ami": "ami-1a962263",
       "instance_type": "{{ user `aws_instance_type` }}",
       "ssh_username": "ec2-user",
-      "enhanced_networking": true,
+      "ena_support": true,
+      "skip_region_validation": true,
+      "tags": {
+        "Owner": "{{ user `image_owner` }}"
+      },
       "ami_block_device_mappings": [
         {
           "device_name": "/dev/xvda",
@@ -92,7 +98,11 @@
       "source_ami": "ami-edb9069e",
       "instance_type": "{{ user `aws_instance_type` }}",
       "ssh_username": "centos",
-      "enhanced_networking": false,
+      "ena_support": false,
+      "skip_region_validation": true,
+      "tags": {
+        "Owner": "{{ user `image_owner` }}"
+      },
       "ami_block_device_mappings": [
         {
           "device_name": "/dev/xvda",
@@ -125,7 +135,11 @@
       "source_ami": "ami-061b1560",
       "instance_type": "{{ user `aws_instance_type` }}",
       "ssh_username": "centos",
-      "enhanced_networking": false,
+      "ena_support": false,
+      "skip_region_validation": true,
+      "tags": {
+        "Owner": "{{ user `image_owner` }}"
+      },
       "ami_block_device_mappings": [
         {
           "device_name": "/dev/xvda",
@@ -157,7 +171,11 @@
       "ami_regions": "{{ user `aws_ami_regions` }}",
       "instance_type": "{{ user `aws_instance_type` }}",
       "ssh_username": "ec2-user",
-      "enhanced_networking": false,
+      "ena_support": false,
+      "skip_region_validation": true,
+      "tags": {
+        "Owner": "{{ user `image_owner` }}"
+      },
       "ami_block_device_mappings": [
         {
           "device_name": "/dev/xvda",
@@ -285,7 +303,11 @@
       "source_ami": "ami-61e56916",
       "instance_type": "{{ user `aws_instance_type` }}",
       "ssh_username": "admin",
-      "enhanced_networking": true,
+      "ena_support": true,
+      "skip_region_validation": true,
+      "tags": {
+        "Owner": "{{ user `image_owner` }}"
+      },
       "ami_block_device_mappings": [
         {
           "device_name": "/dev/xvda",
@@ -320,10 +342,35 @@
       "ssh_pty": "true",
       "machine_type": "n1-standard-2",
       "image_name": "{{user `image_name`}}",
-      "disk_size": "10",
+      "disk_size": "15",
       "tags": [
-        "packer"
+        "packer", "imagebuild-hortonworks"
       ]
+    },
+    {
+      "name": "arm-rhel6",
+      "type": "azure-arm",
+      "client_id": "{{user `client_id`}}",
+      "client_secret": "{{user `client_secret`}}",
+      "subscription_id": "{{user `subscription_id`}}",
+      "tenant_id": "{{user `tenant_id`}}",
+      "resource_group_name": "{{user `resource_group_name`}}",
+      "storage_account": "{{user `storage_account`}}",
+      "capture_container_name": "packer",
+      "capture_name_prefix": "{{user `image_name`}}",
+      "image_publisher": "{{user `azure_image_publisher`}}",
+      "image_offer": "{{user `azure_image_offer`}}",
+      "image_sku": "{{user `azure_image_sku`}}",
+      "ssh_pty": "true",
+      "username": "{{user `os_user`}}",
+      "os_type": "Linux",
+      "ssh_username": "centos",
+      "ssh_password": "{{user `ssh_password`}}",
+      "location": "northeurope",
+      "vm_size": "Standard_D4",
+      "azure_tags": {
+        "Owner": "{{ user `image_owner` }}"
+      }
     },
     {
       "name": "arm-centos7",
@@ -345,7 +392,10 @@
       "ssh_username": "centos",
       "ssh_password": "{{user `ssh_password`}}",
       "location": "northeurope",
-      "vm_size": "Standard_D4"
+      "vm_size": "Standard_D4",
+      "azure_tags": {
+        "Owner": "{{ user `image_owner` }}"
+      }
     }
   ],
   "provisioners": [
@@ -372,6 +422,7 @@
     {
       "type": "shell",
       "script": "scripts/salt-setup.sh",
+      "expect_disconnect": true,
       "execute_command": "chmod +x {{ .Path }}; sudo {{ .Vars }} {{ .Path }} ",
       "environment_vars": [
         "CUSTOM_IMAGE_TYPE={{user `custom_image_type`}}",
@@ -386,6 +437,8 @@
         "HDPUTIL_VERSION={{user `hdputil_version`}}",
         "HDPUTIL_REPOID={{user `hdputil_repoid`}}",
         "HDPUTIL_BASEURL={{user `hdputil_baseurl`}}",
+        "VDF={{user `vdf`}}",
+        "REPOSITORY_VERSION={{user `repository_version`}}",
         "COPY_AWS_MARKETPLACE_EULA={{user `copy_aws_marketplace_eula`}}",
         "ORACLE_JDK8_URL_RPM={{user `oracle_jdk8_url_rpm`}}",
         "OPTIONAL_STATES={{user `optional_states`}}",
@@ -394,31 +447,6 @@
     }
   ],
   "post-processors": [
-    {
-      "type": "atlas",
-      "artifact": "hortonworks/{{ user `atlas_artifact` }}",
-      "artifact_type": "{{ user `atlas_artifact_type` }}.image",
-      "metadata": {
-        "created_at": "{{timestamp}}",
-        "prometheus": "true",
-        "created": "{{ isotime \"2006-01-02 15:04:05 -0700\" }}",
-        "git_rev": "{{user `git_rev`}}",
-        "git_branch": "{{user `git_branch`}}",
-        "git_tag": "{{user `git_tag`}}",
-        "os_user": "{{user `os_user` }}",
-        "orchestrator": "salt",
-        "image_name": "{{ user `image_name` }}",
-        "ambari_version": "{{ user `ambari_version` }}",
-        "ambari_baseurl": "{{ user `ambari_baseurl` }}",
-        "ambari_gpgkey": "{{ user `ambari_gpgkey` }}",
-        "hdp_version": "{{user `hdp_version`}}",
-        "hdp_baseurl": "{{ user `hdp_baseurl` }}",
-        "hdp_repoid": "{{ user `hdp_repoid` }}",
-        "hdputil_version": "{{user `hdputil_version`}}",
-        "hdputil_baseurl": "{{ user `hdputil_baseurl` }}",
-        "hdputil_repoid": "{{ user `hdputil_repoid` }}"
-      }
-    },
     {
       "type": "manifest",
       "output": "{{ user `image_name` }}_manifest.json"
@@ -447,6 +475,8 @@
         "hdp_version={{user `hdp_version`}}",
         "hdp_baseurl={{ user `hdp_baseurl` }}",
         "hdp_repoid={{ user `hdp_repoid` }}",
+        "hdp_vdf={{ user `vdf`}}",
+        "hdp_repository_version={{ user `repository_version`}}",
         "hdputil_version={{user `hdputil_version`}}",
         "hdputil_os_type={{user `os_type`}}",
         "hdputil_baseurl={{ user `hdputil_baseurl` }}",

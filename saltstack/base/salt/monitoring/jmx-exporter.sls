@@ -1,10 +1,10 @@
 /opt/jmx_javaagent.jar:
   file.managed:
-    - source: https://sequenceiq.s3.amazonaws.com/jmx_prometheus_javaagent-0.8-SNAPSHOT.jar
+    - source: http://central.maven.org/maven2/io/prometheus/jmx/jmx_prometheus_javaagent/0.2.0/jmx_prometheus_javaagent-0.2.0.jar
+    - source_hash: md5=5aed7dd0f6ed8bdf62a303db5d18410d
     - user: root
     - group: root
     - mode: 644
-    - source_hash: md5=09f61e70f8800535e42746a85c898c72
 
 /etc/jmx_exporter:
   file.recurse:

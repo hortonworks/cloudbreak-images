@@ -6,3 +6,4 @@ hortonworks:
 {% if not pillar['oracle_java'] %}
     - java
 {% endif %}
+    - pre-warm

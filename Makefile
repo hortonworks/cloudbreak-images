@@ -1,9 +1,10 @@
-BASE_NAME ?= "cb"
+BASE_NAME ?= cb
 DESCRIPTION ?= "Official Cloudbreak image"
 HDP_VERSION ?= ""
 ATLAS_PROJECT ?= "cloudbreak"
 ENABLE_POSTPROCESSORS ?= ""
 CUSTOM_IMAGE_TYPE ?= "hortonworks"
+IMAGE_OWNER ?= "imagebuild@hortonworks.com"
 #for oracle JDK use oracle-java
 OPTIONAL_STATES ?= ""
 # only for oracle JDK
@@ -16,7 +17,7 @@ ORACLE_JDK8_URL_RPM ?= ""
 HDP_VERSION_SHORT=hdp-$(shell echo $(HDP_VERSION) | tr -d . | cut -c1-2 )
 IMAGE_NAME ?= $(BASE_NAME)-$(HDP_VERSION_SHORT)-$(shell date +%y%m%d%H%M)$(IMAGE_NAME_SUFFIX)
 
-ENVS=DESCRIPTION=$(DESCRIPTION) HDP_VERSION=$(HDP_VERSION) BASE_NAME=$(BASE_NAME) IMAGE_NAME=$(IMAGE_NAME) ENABLE_POSTPROCESSORS=$(ENABLE_POSTPROCESSORS) CUSTOM_IMAGE_TYPE=$(CUSTOM_IMAGE_TYPE) OPTIONAL_STATES=$(OPTIONAL_STATES) ORACLE_JDK8_URL_RPM=$(ORACLE_JDK8_URL_RPM) PREINSTALLED_JAVA_HOME=${PREINSTALLED_JAVA_HOME} TRACE=1
+ENVS=DESCRIPTION=$(DESCRIPTION) HDP_VERSION=$(HDP_VERSION) BASE_NAME=$(BASE_NAME) IMAGE_NAME=$(IMAGE_NAME) ENABLE_POSTPROCESSORS=$(ENABLE_POSTPROCESSORS) CUSTOM_IMAGE_TYPE=$(CUSTOM_IMAGE_TYPE) OPTIONAL_STATES=$(OPTIONAL_STATES) ORACLE_JDK8_URL_RPM=$(ORACLE_JDK8_URL_RPM) PREINSTALLED_JAVA_HOME=${PREINSTALLED_JAVA_HOME} IMAGE_OWNER=${IMAGE_OWNER} TRACE=1
 
 GITHUB_ORG ?= hortonworks
 GITHUB_REPO ?= cloudbreak-images-metadata
@@ -38,7 +39,7 @@ else
 endif
 
 define AWS_AMI_REGIONS
-ap-southeast-1,ap-southeast-2,eu-central-1,ap-northeast-1,ap-northeast-2,us-east-1,sa-east-1,us-west-1,us-west-2
+ap-northeast-1,ap-northeast-2,ap-south-1,ap-southeast-1,ap-southeast-2,ca-central-1,eu-central-1,eu-west-1,eu-west-2,eu-west-3,sa-east-1,us-east-1,us-east-2,us-west-1,us-west-2
 endef
 
 define AZURE_STORAGE_ACCOUNTS
@@ -51,7 +52,7 @@ North Central US:sequenceiqorthcentralus2,\
 East US 2:sequenceiqeastus22,\
 Japan East:sequenceiqjapaneast2,\
 Japan West:sequenceiqjapanwest2,\
-Southeast Asia:sequenceiqsoutheastasia2,\
+South East Asia:sequenceiqsoutheastasia2,\
 West US:sequenceiqwestus2,\
 West Europe:sequenceiqwesteurope2,\
 Brazil South:sequenceiqbrazilsouth2,\
@@ -85,7 +86,7 @@ build-aws-amazonlinux:
 	OS_TYPE=redhat6 \
 	ATLAS_ARTIFACT_TYPE=amazon \
 	SALT_INSTALL_OS=amazon \
-	SALT_REPO_FILE="salt-repo-el7.repo" \
+	SALT_REPO_FILE="salt-repo-amzn.repo" \
 	./scripts/packer.sh build -only=aws-amazonlinux $(PACKER_OPTS)
 
 build-aws-centos6:
@@ -180,6 +181,19 @@ build-gc-centos7:
 	SALT_REPO_FILE="salt-repo-el7.repo" \
 	./scripts/packer.sh build -only=gc-centos7 $(PACKER_OPTS)
 
+build-azure-rhel6:
+	$(ENVS) \
+	AZURE_STORAGE_ACCOUNTS="$(AZURE_STORAGE_ACCOUNTS)" \
+	OS=redhat6 \
+	OS_TYPE=redhat6 \
+	ATLAS_ARTIFACT_TYPE=azure-arm \
+	SALT_INSTALL_OS=redhat \
+	SALT_REPO_FILE="salt-repo-el6.repo" \
+	AZURE_IMAGE_PUBLISHER=RedHat \
+	AZURE_IMAGE_OFFER=RHEL \
+	AZURE_IMAGE_SKU=6.8 \
+	./scripts/packer.sh build -only=arm-rhel6 $(PACKER_OPTS)
+
 build-azure-centos7:
 	$(ENVS) \
 	AZURE_STORAGE_ACCOUNTS="$(AZURE_STORAGE_ACCOUNTS)" \
@@ -188,16 +202,19 @@ build-azure-centos7:
 	ATLAS_ARTIFACT_TYPE=azure-arm \
 	SALT_INSTALL_OS=centos \
 	SALT_REPO_FILE="salt-repo-el7.repo" \
+	AZURE_IMAGE_PUBLISHER=OpenLogic \
+	AZURE_IMAGE_OFFER=CentOS \
+	AZURE_IMAGE_SKU=7.4 \
 	./scripts/packer.sh build -only=arm-centos7 $(PACKER_OPTS)
 
 copy-azure-images:
-	AZURE_STORAGE_ACCOUNTS="$(AZURE_STORAGE_ACCOUNTS)" ./scripts/azure-copy.sh
+	AZURE_STORAGE_ACCOUNTS="$(AZURE_STORAGE_ACCOUNTS)" AZURE_IMAGE_NAME="$(AZURE_IMAGE_NAME)" ./scripts/azure-copy.sh
 
 bundle-googlecompute:
 	$(ENVS) GCP_STORAGE_BUNDLE=$(GCP_STORAGE_BUNDLE) GCP_STORAGE_BUNDLE_LOG=$(GCP_STORAGE_BUNDLE_LOG) ./scripts/bundle-gcp-image.sh
 
 upload-openstack-image:
-	S3_TARGET=$(S3_TARGET) ./scripts/openstack-s3-upload.sh
+	S3_TARGET=$(S3_TARGET) ./scripts/openstack-upload.sh
 
 docker-build:
 	docker build -t cloudbreak-centos7 -f docker/centos7.3/Dockerfile .
@@ -229,3 +246,6 @@ push-to-metadata-repo: cleanup-metadata-repo
 
 generate-last-metadata-url-file:
 	echo "METADATA_URL=https://raw.githubusercontent.com/$(GITHUB_ORG)/$(GITHUB_REPO)/master/$(shell (ls -1tr *_manifest.json | tail -1 | sed "s/_manifest//"))" > last_md
+ifdef IMAGE_NAME
+	echo "IMAGE_NAME=$(IMAGE_NAME)" >> last_md
+endif

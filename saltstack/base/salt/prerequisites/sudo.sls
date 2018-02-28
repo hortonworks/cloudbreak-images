@@ -1,5 +1,5 @@
 # No need to grant sudo to OS_USER on Amazon Linux
-{% if grains['os_family'] != 'Amazon' %}
+{% if grains['os'] != 'Amazon' %}
 os_user_sudoers:
   file.managed:
     - name: "/etc/sudoers.d/{{ pillar['os_user'] }}"

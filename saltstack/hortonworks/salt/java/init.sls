@@ -13,6 +13,12 @@ set_java_home_systemd:
     - repl: DefaultEnvironment=JAVA_HOME={{ pillar['JAVA_HOME'] }}
 {% endif %}
 
+{% if grains['os_family'] == 'RedHat' %}
+remove_openjdk17:
+  pkg.removed:
+    - name: java-1.7.0-openjdk
+{% endif %}
+
 {% if grains['os'] == 'RedHat' and grains['osmajorrelease'] | int == 7 %}
 enable_redhat_rhui_repos:
   file.replace:
@@ -36,3 +42,7 @@ add_openjdk_gplv2:
   file.managed:
     - name: /usr/lib/jvm/OpenJDK_GPLv2_and_Classpath_Exception.pdf
     - source: salt://java/usr/lib/jvm/OpenJDK_GPLv2_and_Classpath_Exception.pdf
+
+run_java_sh:
+  cmd.run:
+    - name: source /etc/profile.d/java.sh

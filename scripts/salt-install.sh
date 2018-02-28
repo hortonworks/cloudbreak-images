@@ -44,7 +44,7 @@ function create_temp_minion_config() {
 : ${SALT_REPO_FILE:=$2}
 
 case ${SALT_INSTALL_OS} in
-  amazon|centos|redhat)
+  centos|redhat)
     echo "Install with yum"
     echo ${SALT_REPO_FILE}
     install_with_yum ${SALT_REPO_FILE}
@@ -53,6 +53,14 @@ case ${SALT_INSTALL_OS} in
    echo "Install with apt"
    echo ${SALT_REPO_FILE}
    install_with_apt ${SALT_REPO_FILE}
+   ;;
+  amazon)
+    echo "Install for Amazon linux"
+    pip install --upgrade boto3
+    echo "Return code: $?"
+    echo "Install with yum"
+    echo ${SALT_REPO_FILE}
+    install_with_yum ${SALT_REPO_FILE}
    ;;
  *)
   echo "Unsupported platform:" $1

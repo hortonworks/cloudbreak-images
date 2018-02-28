@@ -1,9 +1,7 @@
 base:
   '*':
     - prerequisites
-{% if salt['file.file_exists']('/etc/waagent.conf') %}
-    - waagent
-{% else %}
+{% if not salt['file.file_exists']('/etc/waagent.conf') %}
     - cloud-init
 {% endif %}
     - unbound
@@ -12,7 +10,6 @@ base:
     - salt
     - postgres-jdbc-driver
     - unbound
-    - pre-warm
     - monitoring
     - dhcp
     - performance

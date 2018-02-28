@@ -43,6 +43,13 @@ disable_ambari_agent:
     - include_empty: True
 {% endif %}
 
+set_tlsv1_2:
+  file.replace:
+    - name: /etc/ambari-agent/conf/ambari-agent.ini
+    - pattern: "\\[security\\]"
+    - repl: "[security]\nforce_https_protocol=PROTOCOL_TLSv1_2"
+    - unless: cat /etc/ambari-agent/conf/ambari-agent.ini | grep force_https_protocol
+
 add_amazon2017_patch_script:
   file.managed:
     - name: /tmp/amazon2017.sh
