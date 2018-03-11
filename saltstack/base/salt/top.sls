@@ -8,7 +8,7 @@ base:
     - nginx
     - salt-bootstrap
     - salt
-    - postgres-jdbc-driver
+    - postgresql
     - unbound
     - monitoring
     - dhcp

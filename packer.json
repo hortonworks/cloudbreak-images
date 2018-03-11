@@ -37,6 +37,7 @@
     "atlas_artifact": "cloudbreak",
     "atlas_artifact_type": "{{ env `ATLAS_ARTIFACT_TYPE` }}",
     "image_name": "{{ env `IMAGE_NAME` }}",
+    "image_size": "{{ env `IMAGE_SIZE` }}",
     "azure_image_publisher": "{{ env `AZURE_IMAGE_PUBLISHER` }}",
     "azure_image_offer": "{{ env `AZURE_IMAGE_OFFER` }}",
     "azure_image_sku": "{{ env `AZURE_IMAGE_SKU` }}",
@@ -44,12 +45,16 @@
     "salt_install_os": "{{ env `SALT_INSTALL_OS` }}",
     "salt_install_repo": "{{ env `SALT_INSTALL_REPO` }}",
     "salt_repo_file": "{{ env `SALT_REPO_FILE` }}",
-    "aws_instance_type": "m3.2xlarge",
+    "aws_instance_type": "m4.large",
     "aws_ami_regions": "{{ env `AWS_AMI_REGIONS` }}",
     "custom_image_type": "{{ env `CUSTOM_IMAGE_TYPE` }}",
     "optional_states": "{{ env `OPTIONAL_STATES` }}",
     "oracle_jdk8_url_rpm": "{{ env `ORACLE_JDK8_URL_RPM` }}",
-    "preinstalled_java_home": "{{ env `PREINSTALLED_JAVA_HOME` }}"
+    "preinstalled_java_home": "{{ env `PREINSTALLED_JAVA_HOME` }}",
+    "local_url_ambari": "{{ env `LOCAL_URL_AMBARI` }}",
+    "local_url_hdp": "{{ env `LOCAL_URL_HDP` }}",
+    "local_url_hdp_utils": "{{ env `LOCAL_URL_HDP_UTILS` }}",
+    "local_url_vdf": "{{ env `LOCAL_URL_VDF` }}"
   },
   "builders": [
     {
@@ -71,7 +76,7 @@
           "device_name": "/dev/xvda",
           "volume_type": "gp2",
           "delete_on_termination": true,
-          "volume_size": 15
+          "volume_size": "{{user `image_size`}}"
         }
       ],
       "launch_block_device_mappings": [
@@ -79,7 +84,7 @@
           "device_name": "/dev/xvda",
           "volume_type": "gp2",
           "delete_on_termination": true,
-          "volume_size": 15
+          "volume_size": "{{user `image_size`}}"
         }
       ],
       "tags": {
@@ -108,7 +113,7 @@
           "device_name": "/dev/xvda",
           "volume_type": "gp2",
           "delete_on_termination": true,
-          "volume_size": 15
+          "volume_size": "{{user `image_size`}}"
         }
       ],
       "launch_block_device_mappings": [
@@ -116,7 +121,7 @@
           "device_name": "/dev/xvda",
           "volume_type": "gp2",
           "delete_on_termination": true,
-          "volume_size": 15
+          "volume_size": "{{user `image_size`}}"
         }
       ],
       "tags": {
@@ -145,7 +150,7 @@
           "device_name": "/dev/xvda",
           "volume_type": "gp2",
           "delete_on_termination": true,
-          "volume_size": 15
+          "volume_size": "{{user `image_size`}}"
         }
       ],
       "launch_block_device_mappings": [
@@ -153,7 +158,7 @@
           "device_name": "/dev/xvda",
           "volume_type": "gp2",
           "delete_on_termination": true,
-          "volume_size": 15
+          "volume_size": "{{user `image_size`}}"
         }
       ],
       "tags": {
@@ -181,7 +186,7 @@
           "device_name": "/dev/xvda",
           "volume_type": "gp2",
           "delete_on_termination": true,
-          "volume_size": 15
+          "volume_size": "{{user `image_size`}}"
         }
       ],
       "launch_block_device_mappings": [
@@ -189,7 +194,7 @@
           "device_name": "/dev/xvda",
           "volume_type": "gp2",
           "delete_on_termination": true,
-          "volume_size": 15
+          "volume_size": "{{user `image_size`}}"
         }
       ],
       "tags": {
@@ -313,7 +318,7 @@
           "device_name": "/dev/xvda",
           "volume_type": "gp2",
           "delete_on_termination": true,
-          "volume_size": 15
+          "volume_size": "{{user `image_size`}}"
         }
       ],
       "launch_block_device_mappings": [
@@ -321,7 +326,7 @@
           "device_name": "/dev/xvda",
           "volume_type": "gp2",
           "delete_on_termination": true,
-          "volume_size": 15
+          "volume_size": "{{user `image_size`}}"
         }
       ],
       "tags": {
@@ -342,7 +347,7 @@
       "ssh_pty": "true",
       "machine_type": "n1-standard-2",
       "image_name": "{{user `image_name`}}",
-      "disk_size": "15",
+      "disk_size": "{{user `image_size`}}",
       "tags": [
         "packer", "imagebuild-hortonworks"
       ]
@@ -368,6 +373,7 @@
       "ssh_password": "{{user `ssh_password`}}",
       "location": "northeurope",
       "vm_size": "Standard_D4",
+      "os_disk_size_gb": "{{user `image_size`}}",
       "azure_tags": {
         "Owner": "{{ user `image_owner` }}"
       }
@@ -393,6 +399,7 @@
       "ssh_password": "{{user `ssh_password`}}",
       "location": "northeurope",
       "vm_size": "Standard_D4",
+      "os_disk_size_gb": "{{user `image_size`}}",
       "azure_tags": {
         "Owner": "{{ user `image_owner` }}"
       }
@@ -438,11 +445,16 @@
         "HDPUTIL_REPOID={{user `hdputil_repoid`}}",
         "HDPUTIL_BASEURL={{user `hdputil_baseurl`}}",
         "VDF={{user `vdf`}}",
+        "OS={{user `os`}}",
         "REPOSITORY_VERSION={{user `repository_version`}}",
         "COPY_AWS_MARKETPLACE_EULA={{user `copy_aws_marketplace_eula`}}",
         "ORACLE_JDK8_URL_RPM={{user `oracle_jdk8_url_rpm`}}",
         "OPTIONAL_STATES={{user `optional_states`}}",
-        "PREINSTALLED_JAVA_HOME={{user `preinstalled_java_home`}}"
+        "PREINSTALLED_JAVA_HOME={{user `preinstalled_java_home`}}",
+        "LOCAL_URL_AMBARI={{user `local_url_ambari`}}",
+        "LOCAL_URL_HDP={{user `local_url_hdp`}}",
+        "LOCAL_URL_HDP_UTILS={{user `local_url_hdp_utils`}}",
+        "LOCAL_URL_VDF={{user `local_url_vdf`}}"
       ]
     }
   ],
@@ -483,7 +495,11 @@
         "hdputil_repoid={{ user `hdputil_repoid` }}",
         "aws_ami_regions={{ user `aws_ami_regions` }}",
         "azure_storage_accounts={{ user `azure_storage_accounts` }}",
-        "gcp_storage_bundle={{ user `gcp_storage_bundle` }}"
+        "gcp_storage_bundle={{ user `gcp_storage_bundle` }}",
+        "local_url_ambari={{user `local_url_ambari`}}",
+        "local_url_hdp={{user `local_url_hdp`}}",
+        "local_url_hdp_utils={{user `local_url_hdp_utils`}}",
+        "local_url_vdf={{user `local_url_vdf`}}"
       ]
     }
   ]
