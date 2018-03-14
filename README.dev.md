@@ -29,7 +29,7 @@ The following table lists the property to be modified to be able to start from a
  OpenStack | os-centos7 | `source_image: "d619e553-6a78-4b86-8b03-39b8a06df35e"`
 
 > Note: For Azure, you can list popular images as written in [documentation](https://docs.microsoft.com/en-us/azure/virtual-machines/linux/cli-ps-findimage#list-popular-images), but please note that only RHEL and CentOS is supported.
- 
+
 #### AWS Example
 
 1. For this example, suppose you have your own RHEL 7 AMI `ami-XXXXXXXX` in region `us-east-1` in your AWS account.
@@ -39,6 +39,16 @@ The following table lists the property to be modified to be able to start from a
 5. Save the [packer.json](packer.json) file.
 6. Proceed to [AWS](README.md#aws) and run the **Build Command** for RHEL 7.
 
+### Custom repositories
+
+There is the possibility in Cloudbreak to use custom repositories to install Ambari and the HDP cluster, the easiest way to configure these is to place the necessary repo files (ambari.repo and hdp.repo files are necessary for installing the cluster) to your image and start the custom image creation by setting that image [as base image](#customizing-the-base-image). <br/>
+For more information on how to set up a local repository please refer to the [documentation](https://docs.hortonworks.com/HDPDocuments/Ambari-2.6.1.0/bk_ambari-installation/content/setting_up_a_local_repository.html). 
+
+### No internet install
+
+Cloudbreak supports cluster installation in a secured subnet with no internet access, to be able to do so you have to [set custom repositories](#custom-repositories), create and host a custom VDF file and update the Base URL-s of the repositories in the VDF file as well. All these resouces should be accessible by the cluster.<br/>
+For more information on the VDF file refer to the [documentation](https://docs.hortonworks.com/HDPDocuments/Ambari-2.6.1.0/bk_ambari-installation/content/hdp_26_repositories.html).  
+
 ### <a name="custom_logic"></a> Custom Script
 
 Cloudbreak uses [SaltStack](https://docs.saltstack.com/en/latest/) for image provisioninig. You have an option to extend the factory scripts based on custom requirements.
@@ -46,21 +56,21 @@ Cloudbreak uses [SaltStack](https://docs.saltstack.com/en/latest/) for image pro
 > Warning: This is very advanced option. Understanding the following content requires a basic understanding of the concepts of [SaltStack](https://docs.saltstack.com/en/latest/). Please read the relevant sections of the documentation.
 
 The provisioning steps are implemented with [Salt state files](https://docs.saltstack.com/en/latest/topics/tutorials/states_pt1.html), there is a placeholder state file called `custom`. The following section describes the steps required to extend this `custom` state with either your own script or Salt state file.
- 
+
  1. Check the contents of the following directory:  `saltstack/salt/custom`, it provides extension points for implementing custom logic. The contents of the directory are the following:
- 
-| Filename | Description | 
+
+| Filename | Description |
 | ---- | ---- |
 | `init.sls` |  Top level descriptor for state, it references other state files |
 | `custom.sls` | Example for custom state file, by default it contains the example of copying and running `custom.sh` with some basic logging configured |
-| `/tmp/custom.sh` | Placeholder for custom logic |
- 
+| `/usr/local/bin/custom.sh` | Placeholder for custom logic |
+
  2. You have the following options to extend this state:
  - You can place your scripts inside `custom.sh`  
- - You can copy and reference your scripts like `custom.sh` is referred from `custom.sls`. 
- For each new file, a `file.managed` state is needed to copy the script to the VM and a `cmd.run` state is needed to actually run and log the script. 
+ - You can copy and reference your scripts like `custom.sh` is referred from `custom.sls`.
+ For each new file, a `file.managed` state is needed to copy the script to the VM and a `cmd.run` state is needed to actually run and log the script.
  - You can create and reference your state file like `custom.sls` is referred from `init.sls`. You can include any custom Salt states, if your new sls files are included in `init.sls`, they will be applied automatically  
- 
+
  > Warning: Please ensure that your script runs without any errors or mandatory user inputs
 
 ### <a name="oracle-java"></a>Oracle JDK
@@ -72,7 +82,7 @@ To enable Oracle JDK installation you have to set the `OPTIONAL_STATES` environm
 export OPTIONAL_STATES="oracle-java"
 ```
 Also you have to set the Oracle JDK 8 download url, which can be copied from [Oracle JDK 8 download site](http://www.oracle.com/technetwork/java/javase/downloads/jdk8-downloads-2133151.html).
-> Warning: By using this JDK URL, Oracle JDK will be installed using this software and you will be agreeing to the Oracle Binary Code License agreement. 
+> Warning: By using this JDK URL, Oracle JDK will be installed using this software and you will be agreeing to the Oracle Binary Code License agreement.
 
 > Warning: Please use Linux x64 RPM version
 
@@ -92,12 +102,11 @@ export PREINSTALLED_JAVA_HOME=/path/to/installed/jdk
 
 ## Packer Postprocessors
 
-By default all Packer postprocessors are removed before build. This behaviour can be changed by setting the: 
+By default all Packer postprocessors are removed before build. This behaviour can be changed by setting the:
 ```
 export ENABLE_POSTPROCESSORS=1
 ```
- 
-For example a postprocessor could be used to store image metadata into  [HashiCorp Atlas](https://www.hashicorp.com/blog/atlas-announcement/) for further processing. 
+
+For example a postprocessor could be used to store image metadata into  [HashiCorp Atlas](https://www.hashicorp.com/blog/atlas-announcement/) for further processing.
 
 If you don't know how postprocessors are working then you can safely ignore this section and please do NOT set ENABLE_POSTPROCESSORS=1 unless you know what you are doing.
-

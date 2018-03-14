@@ -130,9 +130,6 @@ Set the following environment variables to build Azure images:
 * ARM_TENANT_ID
 * ARM_GROUP_NAME
 * ARM_STORAGE_ACCOUNT
-* AZURE_IMAGE_PUBLISHER (OpenLogic|RedHat)
-* AZURE_IMAGE_OFFER (CentOS|RHEL)
-* AZURE_IMAGE_SKU (6.8|7.2)
 
 Example for environment variables:
 ```
@@ -142,9 +139,6 @@ export ARM_SUBSCRIPTION_ID=a9d4456e-349f-*****-****-**********
 export ARM_TENANT_ID=b60c9401-2154-*****-****-**********
 export ARM_GROUP_NAME=resourcegroupname
 export ARM_STORAGE_ACCOUNT=storageaccountname
-export AZURE_IMAGE_PUBLISHER=OpenLogic
-export AZURE_IMAGE_OFFER=CentOS
-export AZURE_IMAGE_SKU=7.2
 ```
 
 > Note: Since Packer is the underlaying technology used to build the Azure images, you can learn more 
@@ -155,6 +149,7 @@ Use the following commands to build Azure images based on the following base ope
 | OS | Build Command |
 |---|---|
 | CentOS 7 | `make build-azure-centos7` |
+| RHEL 6 | `make build-azure-rhel6` |
 
 > If you want to start from **your own base image**, follow the instructions in [Advanced topics](#advanced-topics) to
 modify the `package.json` to start from your own base image. Then use the commands above to build that image.

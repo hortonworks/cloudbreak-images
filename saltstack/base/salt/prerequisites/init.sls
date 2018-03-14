@@ -13,6 +13,8 @@ include:
   - {{ slspath }}.dnsmasq
   - {{ slspath }}.user
   - {{ slspath }}.firewall
+  - {{ slspath }}.noexec-tmp
+  - {{ slspath }}.umask
 
 /usr/bin/:
   file.recurse:

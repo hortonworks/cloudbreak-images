@@ -5,6 +5,28 @@
     - source: salt://pre-warm/gateway/systemd/knox.conf
 {% endif %}
 
+install_hdp_prerequisite_packages:
+  pkg.installed:
+    - pkgs:
+      - yum-utils
+      - createrepo
+      - httpd
+
+configure_httpd:
+  file.replace:
+    - name:  /etc/httpd/conf/httpd.conf
+    - pattern: "^Listen .*"
+    - repl: "Listen 127.0.0.1:28080"
+    - append_if_not_found: True
+    - require:
+      - install_hdp_prerequisite_packages
+
+enable_httpd:
+  service.running:
+    - name: httpd
+    - enable: True
+    - require:
+      - configure_httpd
 
 install_hdp:
   cmd.script:
@@ -17,6 +39,12 @@ install_hdp:
       - HDP_REPOID: {{ pillar['HDP_REPOID'] }}
       - VDF: {{ pillar['VDF'] }}
       - REPOSITORY_VERSION: {{ pillar['REPOSITORY_VERSION'] }}
+      - AMBARI_VERSION: {{ pillar['AMBARI_VERSION'] }}
+      - OS: {{ pillar['OS'] }}
+      - LOCAL_URL_AMBARI: {{ pillar['LOCAL_URL_AMBARI'] }}
+      - LOCAL_URL_HDP: {{ pillar['LOCAL_URL_HDP'] }}
+      - LOCAL_URL_HDP_UTILS: {{ pillar['LOCAL_URL_HDP_UTILS'] }}
+      - LOCAL_URL_VDF: {{ pillar['LOCAL_URL_VDF'] }}
     - output_loglevel: DEBUG
     - timeout: 9000
     - unless: ls /tmp/install_hdp.status
