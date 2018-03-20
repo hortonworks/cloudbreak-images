@@ -39,7 +39,7 @@ main() {
     	docker rm gcloud-config-$IMAGE_NAME
     	exit 1
     fi
-	docker run --rm --name gcloud-create-instance-$IMAGE_NAME --volumes-from gcloud-config-$IMAGE_NAME google/cloud-sdk gcloud compute instances create $INSTANCE_NAME --image centos-7-v20160921 --machine-type n1-standard-2 --zone $ZONE --boot-disk-size 200GB --image-project centos-cloud --scopes $SERVICE_ACCOUNT_EMAIL=storage-full,$SERVICE_ACCOUNT_EMAIL=compute-rw,$SERVICE_ACCOUNT_EMAIL=cloud-platform --metadata startup-script='#! /bin/bash
+	docker run --rm --name gcloud-create-instance-$IMAGE_NAME --volumes-from gcloud-config-$IMAGE_NAME google/cloud-sdk gcloud compute instances create $INSTANCE_NAME --image centos-7-v20160921 --machine-type n1-standard-2 --zone $ZONE --boot-disk-size 200GB --image-project centos-cloud --service-account $SERVICE_ACCOUNT_EMAIL --metadata startup-script='#! /bin/bash
 export ZONE_PROJECT=$(curl 169.254.169.254/0.1/meta-data/zone)
 export ZONE=${ZONE_PROJECT##*/}
 export HOSTNAME=$(hostname)
