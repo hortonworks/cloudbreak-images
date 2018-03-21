@@ -1,11 +1,11 @@
-{% if grains['init'] in [ 'upstart', 'sysvinit'] %}
 /etc/init.d/disable-thp:
   file.managed:
     - source:
-      - salt://{{ slspath }}/etc/init.d/disable-thp.{{ grains['os'] | lower }}
+      - salt://{{ slspath }}/etc/init.d/disable-thp.{{ grains['os_family'] | lower }}
       - salt://{{ slspath }}/etc/init.d/disable-thp
     - mode: 755
-{% elif grains['init'] == 'systemd' %}
+
+{% if grains['init'] == 'systemd' %}
 
 disable_thp_service:
   file.managed:

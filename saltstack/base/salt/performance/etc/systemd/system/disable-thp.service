@@ -6,6 +6,6 @@ Description=Disable THP Service
 After=network.target network.service
 
 [Service]
-Type=forking
+Type=oneshot
 ExecStart=/etc/init.d/disable-thp start
 ExecStop=/etc/init.d/disable-thp stop
