@@ -135,14 +135,14 @@ build-os-centos7:
 	SALT_REPO_FILE="salt-repo-el7.repo" \
 	./scripts/packer.sh build -only=os-centos7 $(PACKER_OPTS)
 
-build-os-debian7:
+build-os-debian9:
 	$(ENVS) \
-	OS=debian7 \
-	OS_TYPE=debian7 \
+	OS=debian9 \
+	OS_TYPE=debian9 \
 	ATLAS_ARTIFACT_TYPE=openstack \
 	SALT_INSTALL_OS=debian \
-	SALT_REPO_FILE="salt-repo-debian7.list" \
-	./scripts/packer.sh build -only=os-debian7 $(PACKER_OPTS)
+	SALT_REPO_FILE="salt-repo-debian9.list" \
+	./scripts/packer.sh build -only=os-debian9 $(PACKER_OPTS)
 
 build-os-ubuntu12:
 	$(ENVS) \

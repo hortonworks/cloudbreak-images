@@ -263,15 +263,15 @@
       ]
     },
     {
-      "name": "os-debian7",
+      "name": "os-debian9",
       "type": "openstack",
       "username": "{{user `os_username`}}",
       "password": "{{user `os_password`}}",
       "tenant_name": "{{user `os_tenant_name`}}",
-      "ssh_username": "root",
+      "ssh_username": "debian",
       "ssh_pty": "true",
       "image_name": "{{user `image_name`}}",
-      "source_image": "8feebc96-811c-4aa3-bcc3-5a0504aed785",
+      "source_image": "ce160c81-eb9a-4916-a6dc-18fe0b10cd65",
       "flavor": "m1.medium",
       "endpoint_type": "internalURL",
       "networks": [

@@ -23,7 +23,6 @@ The following table lists the property to be modified to be able to start from a
  AWS | aws-centos6 | `source_ami: "ami-edb9069e"` and `"region": "..."`
  AWS | aws-centos7 | `source_ami: "ami-061b1560"` and `"region": "..."`
  AWS | aws-rhel7 | `source_ami: "ami-b22961c1"` and `"region": "..."`
- AWS | aws-debian7 | `source_ami: "ami-61e56916"` and `"region": "..."`
  Azure | arm-centos7 |  driven by input parameters:`image_publisher`, ` image_offer` and `image_sku`
  Google Cloud | gc-centos7 | `source_image: "centos-7-v20160921"`
  OpenStack | os-centos7 | `source_image: "d619e553-6a78-4b86-8b03-39b8a06df35e"`
