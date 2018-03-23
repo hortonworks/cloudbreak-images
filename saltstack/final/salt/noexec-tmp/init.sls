@@ -7,6 +7,17 @@ tmp_mount_fstab:
     - append_if_not_found: True
 
 {% elif grains['init'] == 'systemd' %}
+
+{% if grains['os_family'] == 'Debian' %}
+/lib/systemd/system/tmp.mount:
+  file.symlink:
+    - target: /usr/share/systemd/tmp.mount
+    - force: True
+
+service.systemctl_reload:
+  module.run: []
+{% endif %}
+
 /etc/systemd/system/tmp.mount:
   file.absent: []
 
@@ -21,7 +32,7 @@ tmp_mount_fstab:
 
 enable_tmp_mount:
   service.enabled:
-    - name:  tmp.mount
+    - name: tmp.mount
     - require:
       - /etc/systemd/system/tmp.mount.d/options.conf
 

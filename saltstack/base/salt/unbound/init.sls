@@ -32,9 +32,6 @@ install_unbound_server:
       - unbound-libs
       - unbound
       {% elif grains['os_family'] == 'Debian' %}
-      - libldns1
-      - libpython2.7
-      - libunbound2
       - unbound-anchor
       - unbound
       {% endif %}

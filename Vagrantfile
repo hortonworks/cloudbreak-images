@@ -48,19 +48,11 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
         :custom_image_type => "hortonworks",
       },
       {
-        :hostname => "debian7",
-        :box => "debian/wheezy64",
+        :hostname => "debian9",
+        :box => "debian/stretch64",
         :ram => 1536,
         :cpu => 2,
-        :salt_repo => "salt-repo-debian7.list",
-        :custom_image_type => "hortonworks"
-      },
-      {
-        :hostname => "ubuntu12",
-        :box => "ubuntu/precise64",
-        :ram => 1536,
-        :cpu => 2,
-        :salt_repo => "salt-repo-ubuntu12.list",
+        :salt_repo => "salt-repo-debian9.list",
         :custom_image_type => "hortonworks"
       },
       {
