@@ -5,10 +5,10 @@ read_java_home:
 
 check_java_javahome:
   cmd.run:
-    - name: 'source /etc/profile.d/java.sh && $JAVA_HOME/bin/java -version'
+    - name: '. /etc/profile.d/java.sh && $JAVA_HOME/bin/java -version'
     - failhard: True
 
 check_javac_javahome:
   cmd.run:
-    - name: 'source /etc/profile.d/java.sh && $JAVA_HOME/bin/javac -version'
+    - name: '. /etc/profile.d/java.sh && $JAVA_HOME/bin/javac -version'
     - failhard: True
