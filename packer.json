@@ -260,7 +260,7 @@
       "ssh_username": "ubuntu",
       "ssh_pty": "true",
       "image_name": "{{user `image_name`}}",
-      "source_image": "b43b1e51-ecf2-4120-aa4f-a7fdd26c173a",
+      "source_image": "e406f795-c0f7-42b2-b939-63d5a20441fb",
       "flavor": "m1.medium",
       "endpoint_type": "internalURL",
       "networks": [
@@ -276,7 +276,7 @@
       "ssh_username": "debian",
       "ssh_pty": "true",
       "image_name": "{{user `image_name`}}",
-      "source_image": "ce160c81-eb9a-4916-a6dc-18fe0b10cd65",
+      "source_image": "1499a98f-e965-40bd-a71f-3c75c56faa01",
       "flavor": "m1.medium",
       "endpoint_type": "internalURL",
       "networks": [
@@ -292,7 +292,7 @@
       "ssh_username": "centos",
       "ssh_pty": "true",
       "image_name": "{{user `image_name`}}",
-      "source_image": "d619e553-6a78-4b86-8b03-39b8a06df35e",
+      "source_image": "7f9af29f-489a-4ba2-837b-70f708be7bc7",
       "flavor": "m1.medium",
       "endpoint_type": "internalURL",
       "networks": [
