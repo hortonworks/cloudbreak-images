@@ -16,7 +16,11 @@ preserve_hostname_false:
 {% if pillar['subtype'] == 'Docker' %}
 set_datasource_to_fallback:
   file.replace:
+{% if grains['os_family'] == 'Debian' %}
+    - name: /etc/cloud/cloud.cfg.d/90_dpkg.cfg
+{% else %}
     - name: /etc/cloud/cloud.cfg
+{% endif %}
     - pattern: "^datasource_list.*"
     - repl: "datasource_list: [ None ]"
     - append_if_not_found: True

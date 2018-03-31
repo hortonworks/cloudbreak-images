@@ -45,4 +45,4 @@ add_openjdk_gplv2:
 
 run_java_sh:
   cmd.run:
-    - name: source /etc/profile.d/java.sh
+    - name: . /etc/profile.d/java.sh
