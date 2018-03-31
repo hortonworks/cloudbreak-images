@@ -1,0 +1,35 @@
+#!/bin/sh -e
+
+PATH=/usr/sbin:/usr/bin:/sbin:/bin
+
+if [ ! -x /usr/sbin/unbound ]; then
+    exit 0
+fi
+
+if [ ! -x /lib/resolvconf/list-records ]; then
+    exit 1
+fi
+
+RESOLVCONF_FILES="$(/lib/resolvconf/list-records)"
+
+if [ -n "$RESOLVCONF_FILES" ]; then
+    NS_IPS="$(sed -rne 's/^[[:space:]]*nameserver[[:space:]]+//p' $RESOLVCONF_FILES \
+        | egrep -v '^(127\.|::1)' | sort -u)"
+else
+    NS_IPS=""
+fi
+
+if [ -n "$NS_IPS" ]; then
+    :> /etc/unbound/conf.d/99-resolvconf.conf
+    for zone in . in-addr.arpa.; do
+        echo "forward-zone:"     >>/etc/unbound/conf.d/99-resolvconf.conf
+        echo "  name: \"$zone\"" >>/etc/unbound/conf.d/99-resolvconf.conf
+        for nameserver in $NS_IPS; do
+            echo "  forward-addr: ${nameserver}" >>/etc/unbound/conf.d/99-resolvconf.conf
+        done
+    done
+else
+    rm -f /etc/unbound/conf.d/99-resolvconf.conf 1>/dev/null 2>&1 || true
+fi
+
+pkill -SIGHUP unbound

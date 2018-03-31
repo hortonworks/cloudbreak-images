@@ -11,6 +11,10 @@ base:
     - postgres-jdbc-driver
     - unbound
     - monitoring
+{% if grains['os_family'] == 'Debian' %}
+    - resolvconf
+{% else %}
     - dhcp
+{% endif %}
     - performance
     - custom
