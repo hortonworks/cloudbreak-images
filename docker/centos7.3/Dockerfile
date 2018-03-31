@@ -1,9 +1,10 @@
 FROM docker.io/centos:7.3.1611
+
 LABEL maintainer=Hortonworks
 
 ENV container docker
 ENV TERM linux
-ENV PS1 "[\u@cloudbreak \W]# "
+ENV PS1 "[\u@cloudbreak \W]\$ "
 
 ENV SALT_REPO=salt-repo-el7.repo
 ENV SYSTEMCTL_REPLACEMENT=https://raw.githubusercontent.com/hortonworks/docker-systemctl-replacement/3a885817b377f0307bd03d82323fa5749136de8f/files/docker/systemctl.py
@@ -128,8 +129,8 @@ providers:\n\
   service: systemd\n'\
 >>  /tmp/saltstack/config/minion
 
-COPY docker/centos7.3/files/saltstack_grains /tmp/saltstack/base/salt/_grains
-COPY docker/centos7.3/files/saltstack_grains /tmp/saltstack/hortonworks/salt/_grains
+COPY docker/common/_grains/ /tmp/saltstack/base/salt/_grains/
+COPY docker/common/_grains/ /tmp/saltstack/hortonworks/salt/_grains/
 
 RUN /tmp/saltstack/salt-install.sh centos ${SALT_REPO}
 RUN /tmp/saltstack/salt-setup.sh hortonworks
