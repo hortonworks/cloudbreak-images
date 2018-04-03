@@ -148,20 +148,5 @@
     "execute_command": "chmod +x {{ .Path }}; {{ .Vars }} sudo -E bash '{{ .Path }}'"
   }
   ]
-  ,"post-processors": [
-    {
-      "type": "atlas",
-      "artifact": "hortonworks/{{ user `atlas_artifact` }}",
-      "artifact_type": "{{ build_name }}.image",
-      "metadata": {
-        "created_at": "{{timestamp}}",
-        "created" :"{{ isotime \"2006-01-02 15:04:05 -0700\" }}",
-        "cbd_version": "{{ user `cbd_version` }}",
-        "os_user": "{{user `os_user` }}",
-        "image_name": "{{ user `image_name` }}",
-        "yum_version_docker": "{{ user `yum_version_docker` }}"
-      }
-    }
-  ]
 
 }
