@@ -17,6 +17,8 @@
     "ambari_version": "{{ env `AMBARI_VERSION` }}",
     "ambari_baseurl": "{{ env `AMBARI_BASEURL` }}",
     "ambari_gpgkey": "{{ env `AMBARI_GPGKEY` }}",
+    "stack_type": "{{ env `STACK_TYPE` }}",
+    "mpack_urls": "{{ env `MPACK_URLS` }}",
     "hdp_version": "{{ env `HDP_VERSION` }}",
     "hdp_stack_version": "{{ env `HDP_STACK_VERSION` }}",
     "hdp_repoid": "{{ env `HDP_REPOID` }}",
@@ -54,7 +56,8 @@
     "local_url_ambari": "{{ env `LOCAL_URL_AMBARI` }}",
     "local_url_hdp": "{{ env `LOCAL_URL_HDP` }}",
     "local_url_hdp_utils": "{{ env `LOCAL_URL_HDP_UTILS` }}",
-    "local_url_vdf": "{{ env `LOCAL_URL_VDF` }}"
+    "local_url_vdf": "{{ env `LOCAL_URL_VDF` }}",
+    "repository_type": "{{ env `REPOSITORY_TYPE` }}"
   },
   "builders": [
     {
@@ -400,6 +403,8 @@
         "AMBARI_VERSION={{user `ambari_version`}}",
         "AMBARI_BASEURL={{user `ambari_baseurl`}}",
         "AMBARI_GPGKEY={{user `ambari_gpgkey`}}",
+        "STACK_TYPE={{user `stack_type`}}",
+        "MPACK_URLS={{user `mpack_urls`}}",
         "HDP_VERSION={{user `hdp_version`}}",
         "HDP_STACK_VERSION={{user `hdp_stack_version`}}",
         "HDP_REPOID={{user `hdp_repoid`}}",
@@ -417,7 +422,8 @@
         "LOCAL_URL_AMBARI={{user `local_url_ambari`}}",
         "LOCAL_URL_HDP={{user `local_url_hdp`}}",
         "LOCAL_URL_HDP_UTILS={{user `local_url_hdp_utils`}}",
-        "LOCAL_URL_VDF={{user `local_url_vdf`}}"
+        "LOCAL_URL_VDF={{user `local_url_vdf`}}",
+        "REPOSITORY_TYPE={{user `repository_type`}}"
       ]
     }
   ],
@@ -446,6 +452,7 @@
         "ambari_os_type={{user `os_type`}}",
         "ambari_baseurl={{ user `ambari_baseurl` }}",
         "ambari_gpgkey={{ user `ambari_gpgkey` }}",
+        "stack_type={{ user `stack_type` }}",
         "hdp_os_type={{user `os_type`}}",
         "hdp_version={{user `hdp_version`}}",
         "hdp_baseurl={{ user `hdp_baseurl` }}",
@@ -456,13 +463,15 @@
         "hdputil_os_type={{user `os_type`}}",
         "hdputil_baseurl={{ user `hdputil_baseurl` }}",
         "hdputil_repoid={{ user `hdputil_repoid` }}",
+        "mpack_urls={{ user `mpack_urls` }}",
         "aws_ami_regions={{ user `aws_ami_regions` }}",
         "azure_storage_accounts={{ user `azure_storage_accounts` }}",
         "gcp_storage_bundle={{ user `gcp_storage_bundle` }}",
         "local_url_ambari={{user `local_url_ambari`}}",
         "local_url_hdp={{user `local_url_hdp`}}",
         "local_url_hdp_utils={{user `local_url_hdp_utils`}}",
-        "local_url_vdf={{user `local_url_vdf`}}"
+        "local_url_vdf={{user `local_url_vdf`}}",
+        "repository_type={{user `repository_type`}}"
       ]
     }
   ]

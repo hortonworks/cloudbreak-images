@@ -24,12 +24,21 @@ packer_in_container() {
     TTY_OPTS=""
   fi
 
+  : ${STACK_TYPE:=HDP}
+  if [[ "$STACK_TYPE" = "HDP" ]]
+  then
+    REPOSITORY_NAME="hdp"
+  elif [[ "$STACK_TYPE" = "HDF" ]]
+  then
+    REPOSITORY_NAME="hdf"
+  fi
+
   if [[ -n "$HDP_VERSION" ]]; then
     BASEURL=http://127.0.0.1:28080
     LOCAL_URL_AMBARI=${BASEURL}/ambari/${OS}/ambari-${AMBARI_VERSION}
-    LOCAL_URL_HDP=${BASEURL}/hdp/${OS}/HDP-${HDP_VERSION}
-    LOCAL_URL_HDP_UTILS=${BASEURL}/hdp/${OS}/HDP-UTILS-${HDPUTIL_VERSION}
-    LOCAL_URL_VDF=${BASEURL}/HDP-${HDP_VERSION}.xml
+    LOCAL_URL_HDP=${BASEURL}/${REPOSITORY_NAME}/${OS}/${STACK_TYPE}-${HDP_VERSION}
+    LOCAL_URL_HDP_UTILS=${BASEURL}/${REPOSITORY_NAME}/${OS}/HDP-UTILS-${HDPUTIL_VERSION}
+    LOCAL_URL_VDF=${BASEURL}/${STACK_TYPE}-${HDP_VERSION}.xml
   fi
 
   if [[ "$ENABLE_POSTPROCESSORS" ]]; then
@@ -72,6 +81,8 @@ packer_in_container() {
     -e OS_TENANT_NAME="$OS_TENANT_NAME" \
     -e OS_USERNAME=$OS_USERNAME \
     -e IMAGE_NAME_SUFFIX=$IMAGE_NAME_SUFFIX \
+    -e STACK_TYPE=$STACK_TYPE \
+    -e MPACK_URLS=$MPACK_URLS \
     -e HDP_VERSION=$HDP_VERSION \
     -e HDP_STACK_VERSION=$HDP_STACK_VERSION \
     -e HDP_BASEURL=$HDP_BASEURL \
@@ -102,6 +113,7 @@ packer_in_container() {
     -e ORACLE_JDK8_URL_RPM=$ORACLE_JDK8_URL_RPM \
     -e PREINSTALLED_JAVA_HOME=$PREINSTALLED_JAVA_HOME \
     -e DESCRIPTION="$DESCRIPTION" \
+    -e REPOSITORY_TYPE="$REPOSITORY_TYPE" \
     -v $HOME/.aws:/root/.aws \
     -v /var/run/docker.sock:/var/run/docker.sock \
     -v $PWD:$PWD \
