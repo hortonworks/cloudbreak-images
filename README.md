@@ -226,7 +226,7 @@ This is how to start a build in debug mode:
 ```
 PACKER_OPTS=--debug make build-aws-rhel7
 ```
-In debug mode, you need to hit enter before each step is executed by Packer. Once the VM is launched by Packer you can login and do additional debug steps:
+In debug mode, you need to hit enter before each step is executed by Packer. Once the VM is launched by Packer, it places a temporary SSH key in the launch directory with which you can login and do additional debug steps:
 
 ```
 ssh -i ec2_aws-rhel7.pem ec2-user@<address of the machine displayed by Packer>

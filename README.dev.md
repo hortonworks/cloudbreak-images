@@ -1,17 +1,60 @@
+**Table of Contents**
+
+- [Custom Images for Cloudbreak](#custom-images-for-cloudbreak)
+  * [Customizing the burning process](#customizing-the-burning-process)
+    + [Setting the disk size](#setting-the-disk-size)
+    + [Customizing the regions](#customizing-the-regions)
+  * [Customizing the Base Image](#customizing-the-base-image)
+    + [Custom Base Image](#custom-base-image)
+      - [AWS Example](#aws-example)
+    + [Custom repositories](#custom-repositories)
+    + [No internet install](#no-internet-install)
+    + [Custom Script](#custom-script)
+    + [Oracle JDK](#oracle-jdk)
+    + [Using preinstalled JDK](#using-preinstalled-jdk)
+  * [Packer Postprocessors](#packer-postprocessors)
+
+
 # Custom Images for Cloudbreak
 
 This section covers advanced topics for building Custom Images.
+
+## Customizing the burning process
+
+This section presents the customizing possibilities of the image burning process.
+
+### Setting the disk size
+
+You can override the disk size (in GB-s, by default 25GB) of the VM used for Packer burning by modifying the `IMAGE_SIZE` parameter in the `Makefile`.
+
+For example:
+```
+IMAGE_SIZE = 50
+```
+
+After saving the Makefile the modified value is applied to all subsequent image burns.
+
+### Customizing the regions
+
+You can set the cloud provider regions for the image to be copied over by editing the value of the following parameter in the `Makefile`. By default, burnt images are copied over to all the available regions.
+
+ Cloud Provider | Parameter Name | Default value
+ ---- | ---- | ---- |
+ AWS | AWS_AMI_REGIONS | ap-northeast-1,ap-northeast-2,ap-south-1,ap-southeast-1,ap-southeast-2,ca-central-1,eu-central-1,eu-west-1,eu-west-2,eu-west-3,sa-east-1,us-east-1,us-east-2,us-west-1,us-west-2
+ Azure | AZURE_STORAGE_ACCOUNTS | East Asia, East US, Central US, North Europe, South Central US, North Central US, East US 2, Japan East, Japan West, South East Asia, West US, West Europe, Brazil South, Canada East, Canada Central, Australia East, Australia South East, Central India, Korea Central, Korea South, South India, UK South, West Central US, UK West, West US 2, West India
+
+ After saving the `Makefile` the modified values are applied to all subsequent image burns.
 
 ## Customizing the Base Image
 
 If you would like to start from a customized image, you could either:
 
-- Set Packer to start from your [own custom image](#custom_base)
-- Add your [custom logic](#custom_logic) - either as custom script or as custom [Salt]((https://docs.saltstack.com/en/latest/)) state
-- Use [Oracle JDK](#oracle-java) instead of OpenJDK
-- Using [preinstalled JDK](#preinstalled-java)
+- Set Packer to start from your [own custom image](#custom-base-image)
+- Add your [custom logic](#custom-script) - either as custom script or as custom [Salt]((https://docs.saltstack.com/en/latest/)) state
+- Use [Oracle JDK](#oracle-jdk) instead of OpenJDK
+- Using [preinstalled JDK](#using-preinstalled-jdk)
 
-### <a name="custom_base"></a> Custom Base Image
+### Custom Base Image
 
 You have the option to start from your own pre-created source image, you have to modify the relevant section in the `builders` in the [packer.json](packer.json) file.
 
@@ -38,6 +81,16 @@ The following table lists the property to be modified to be able to start from a
 5. Save the [packer.json](packer.json) file.
 6. Proceed to [AWS](README.md#aws) and run the **Build Command** for RHEL 7.
 
+### Custom repositories
+
+There is the possibility in Cloudbreak to use custom repositories to install Ambari and the HDP cluster, the easiest way to configure these is to place the necessary repo files (ambari.repo and hdp.repo files are necessary for installing the cluster) to your image and start the custom image creation by setting that image [as base image](#customizing-the-base-image). <br/>
+For more information on how to set up a local repository please refer to the [documentation](https://docs.hortonworks.com/HDPDocuments/Ambari-2.6.1.0/bk_ambari-installation/content/setting_up_a_local_repository.html). 
+
+### No internet install
+
+Cloudbreak supports cluster installation in a secured subnet with no internet access, to be able to do so you have to [set custom repositories](#custom-repositories), create and host a custom VDF file and update the Base URL-s of the repositories in the VDF file as well. All these resouces should be accessible by the cluster.<br/>
+For more information on the VDF file refer to the [documentation](https://docs.hortonworks.com/HDPDocuments/Ambari-2.6.1.0/bk_ambari-installation/content/hdp_26_repositories.html).  
+
 ### <a name="custom_logic"></a> Custom Script
 
 Cloudbreak uses [SaltStack](https://docs.saltstack.com/en/latest/) for image provisioninig. You have an option to extend the factory scripts based on custom requirements.
@@ -62,7 +115,7 @@ The provisioning steps are implemented with [Salt state files](https://docs.salt
  
  > Warning: Please ensure that your script runs without any errors or mandatory user inputs
 
-### <a name="oracle-java"></a>Oracle JDK
+### Oracle JDK
 
 By default, OpenJDK is installed on the images. Alternatively, you can install Oracle JDK by using an optional Salt state.
 
@@ -79,7 +132,7 @@ To set the download url export `ORACLE_JDK8_URL_RPM` environment variable:
 ```
 export ORACLE_JDK8_URL_RPM="https://www.oracle.com/path-to-jdk-rpm-file"
 ```
-### <a name="preinstalled-java"></a>Using preinstalled JDK
+### Using preinstalled JDK
 
 By default, OpenJDK is installed on the images. Alternatively, if you have an image with preinstalled JDK you can pass it's JAVA_HOME variable which would disable installation of OpenJDK.
 
