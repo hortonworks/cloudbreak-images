@@ -2,7 +2,6 @@
 name=SaltStack repo for Amazon Linux
 baseurl=https://repo.saltstack.com/yum/amazon/latest/$basearch/archive/2017.7.2
 failovermethod=priority
-priority=10
 enabled=1
 gpgcheck=1
 gpgkey=https://repo.saltstack.com/yum/amazon/latest/$basearch/archive/2017.7.2/SALTSTACK-GPG-KEY.pub
