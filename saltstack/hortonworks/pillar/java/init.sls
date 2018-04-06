@@ -1,4 +1,10 @@
-JAVA_HOME: {{ salt['environ.get']('PREINSTALLED_JAVA_HOME') | default('/usr/lib/jvm/java', True) }}
+{% if grains['os_family'] == 'Suse' %}
+    {% set default_java_home = '/usr/lib64/jvm/java-openjdk' %}
+{% else %}
+    {% set default_java_home = '/usr/lib/jvm/java' %}
+{% endif %}
+
+JAVA_HOME: {{ salt['environ.get']('PREINSTALLED_JAVA_HOME') | default(default_java_home, True) }}
 oracle_java: {{ salt['environ.get']('OPTIONAL_STATES', '') == 'oracle-java' }}
 
 {% if (grains['os'] == 'Debian' and grains['osmajorrelease'] | int == 7) or
@@ -16,6 +22,10 @@ openjdk_packages:
   - openjdk-{{ openjdk_version }}-doc
   - openjdk-{{ openjdk_version }}-source
   - openjdk-{{ openjdk_version }}-jdk
+{% elif grains['os_family'] == 'Suse' %}
+  - java-1_8_0-openjdk
+  - java-1_8_0-openjdk-devel
+  - java-1_8_0-openjdk-headless
 {% else %}
   - java-1.8.0-openjdk-headless
   - java-1.8.0-openjdk-devel

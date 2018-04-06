@@ -7,30 +7,49 @@ packages_install:
     - refresh: False
     - pkgs:
       - wget
-      - net-tools
       - tar
       - unzip
       - curl
+      - net-tools
+  {% if grains['os_family'] == 'Suse' %}
+      - git-core
+      - man
+  {% else %}
       - git
-      - ntp
       - tmux
-    {% if grains['os'] != 'Amazon' %}
+  {% endif %}
+      - ntp
+  {% if grains['os'] != 'Amazon' %}
       - bash-completion
-    {% endif %}
+  {% endif %}
       - iptables
       - mc
       - ruby
-    {% if grains['os_family'] == 'RedHat' %}
+  {% if grains['os_family'] == 'RedHat' %}
       - snappy
       - snappy-devel
       - bind-utils
     {% if grains['osmajorrelease'] | int == 7 %}
       - iptables-services
     {% endif %}
-    {% elif grains['os_family'] == 'Debian' %}
+  {% elif grains['os_family'] == 'Debian' %}
       - iptables-persistent
       - dnsutils
-    {% endif %}
+  {% endif %}
+
+
+
+{% if grains['os_family'] == 'Suse' %}
+remove_snappy:
+  pkg.removed:
+    - pkgs:
+      - libsnappy1
+      - snappy-devel
+
+install_hostname:
+  cmd.run:
+    - name: zypper in --replacefiles -y hostname
+{% endif %}
 
 {% if grains['os'] == 'Amazon' %}
 install_bash_completion:
@@ -41,9 +60,3 @@ install_bash_completion:
       - bash-completion
 {% endif %}
 
-install_jq:
-  file.managed:
-    - name: /usr/bin/jq
-    - source: http://stedolan.github.io/jq/download/linux64/jq
-    - skip_verify: True
-    - mode: 755

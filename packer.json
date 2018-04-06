@@ -57,7 +57,8 @@
     "local_url_hdp": "{{ env `LOCAL_URL_HDP` }}",
     "local_url_hdp_utils": "{{ env `LOCAL_URL_HDP_UTILS` }}",
     "local_url_vdf": "{{ env `LOCAL_URL_VDF` }}",
-    "repository_type": "{{ env `REPOSITORY_TYPE` }}"
+    "repository_type": "{{ env `REPOSITORY_TYPE` }}",
+    "sles_registration_code": "{{ env `SLES_REGISTRATION_CODE` }}"
   },
   "builders": [
     {
@@ -207,6 +208,42 @@
       "ami_name": "{{ user `image_name`}}"
     },
     {
+      "name": "aws-sles12sp3",
+      "type": "amazon-ebs",
+      "region": "eu-west-1",
+      "ssh_pty": true,
+      "source_ami": "ami-9c4a39e5",
+      "ami_regions": "{{ user `aws_ami_regions` }}",
+      "instance_type": "{{ user `aws_instance_type` }}",
+      "ssh_username": "ec2-user",
+      "ena_support": false,
+      "skip_region_validation": true,
+      "tags": {
+        "Owner": "{{ user `image_owner` }}"
+      },
+      "ami_block_device_mappings": [
+        {
+          "device_name": "/dev/xvda",
+          "volume_type": "gp2",
+          "delete_on_termination": true,
+          "volume_size": "{{user `image_size`}}"
+        }
+      ],
+      "launch_block_device_mappings": [
+        {
+          "device_name": "/dev/xvda",
+          "volume_type": "gp2",
+          "delete_on_termination": true,
+          "volume_size": "{{user `image_size`}}"
+        }
+      ],
+      "tags": {
+        "builder": "packer",
+        "version": "{{user `version`}}"
+      },
+      "ami_name": "{{ user `image_name`}}"
+    },
+    {
       "name": "os-centos6",
       "type": "openstack",
       "username": "{{user `os_username`}}",
@@ -303,6 +340,22 @@
       ]
     },
     {
+      "name": "os-sles12sp3",
+      "type": "openstack",
+      "username": "{{user `os_username`}}",
+      "password": "{{user `os_password`}}",
+      "tenant_name": "{{user `os_tenant_name`}}",
+      "ssh_username": "root",
+      "ssh_pty": "true",
+      "image_name": "{{user `image_name`}}",
+      "source_image": "82a163d6-7632-4b9c-a609-e42db3fb9590",
+      "flavor": "m1.medium",
+      "endpoint_type": "internalURL",
+      "networks": [ 
+        "a5ad7a1d-d3a6-4180-8d61-07a23f6fb449"
+      ]
+    },
+    {
       "name": "gc-centos7",
       "type": "googlecompute",
       "account_file": "{{user `gcp_account_file`}}",
@@ -310,6 +363,22 @@
       "zone": "us-central1-b",
       "project_id": "siq-haas",
       "ssh_username": "centos",
+      "ssh_pty": "true",
+      "machine_type": "n1-standard-2",
+      "image_name": "{{user `image_name`}}",
+      "disk_size": "{{user `image_size`}}",
+      "tags": [
+        "packer", "imagebuild-hortonworks"
+      ]
+    },
+    {
+      "name": "gc-sles12sp3",
+      "type": "googlecompute",
+      "account_file": "{{user `gcp_account_file`}}",
+      "source_image": "sles-12-sp3-v20180214",
+      "zone": "us-central1-b",
+      "project_id": "siq-haas",
+      "ssh_username": "root",
       "ssh_pty": "true",
       "machine_type": "n1-standard-2",
       "image_name": "{{user `image_name`}}",
@@ -362,6 +431,32 @@
       "username": "{{user `os_user`}}",
       "os_type": "Linux",
       "ssh_username": "centos",
+      "ssh_password": "{{user `ssh_password`}}",
+      "location": "northeurope",
+      "vm_size": "Standard_D4",
+      "os_disk_size_gb": "{{user `image_size`}}",
+      "azure_tags": {
+        "Owner": "{{ user `image_owner` }}"
+      }
+    },
+    {
+      "name": "arm-sles12sp3",
+      "type": "azure-arm",
+      "client_id": "{{user `client_id`}}",
+      "client_secret": "{{user `client_secret`}}",
+      "subscription_id": "{{user `subscription_id`}}",
+      "tenant_id": "{{user `tenant_id`}}",
+      "resource_group_name": "{{user `resource_group_name`}}",
+      "storage_account": "{{user `storage_account`}}",
+      "capture_container_name": "packer",
+      "capture_name_prefix": "{{user `image_name`}}",
+      "image_publisher": "{{user `azure_image_publisher`}}",
+      "image_offer": "{{user `azure_image_offer`}}",
+      "image_sku": "{{user `azure_image_sku`}}",
+      "ssh_pty": "true",
+      "username": "{{user `os_user`}}",
+      "os_type": "Linux",
+      "ssh_username": "suse",
       "ssh_password": "{{user `ssh_password`}}",
       "location": "northeurope",
       "vm_size": "Standard_D4",
@@ -423,7 +518,8 @@
         "LOCAL_URL_HDP={{user `local_url_hdp`}}",
         "LOCAL_URL_HDP_UTILS={{user `local_url_hdp_utils`}}",
         "LOCAL_URL_VDF={{user `local_url_vdf`}}",
-        "REPOSITORY_TYPE={{user `repository_type`}}"
+        "REPOSITORY_TYPE={{user `repository_type`}}",
+        "SLES_REGISTRATION_CODE={{user `sles_registration_code`}}"
       ]
     }
   ],

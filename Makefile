@@ -9,6 +9,7 @@ IMAGE_OWNER ?= "imagebuild@hortonworks.com"
 OPTIONAL_STATES ?= ""
 # only for oracle JDK
 ORACLE_JDK8_URL_RPM ?= ""
+SLES_REGISTRATION_CODE ?= ""
 
 ###############################
 # DO NOT EDIT BELOW THIS LINE #
@@ -130,6 +131,16 @@ build-aws-rhel7:
 	SALT_REPO_FILE="salt-repo-el7.repo" \
 	./scripts/packer.sh build -only=aws-rhel7 $(PACKER_OPTS)
 
+build-aws-sles12sp3:
+	$(ENVS) \
+	AWS_AMI_REGIONS="$(AWS_AMI_REGIONS)" \
+	OS=sles12sp3 \
+	OS_TYPE=sles12 \
+	ATLAS_ARTIFACT_TYPE=amazon \
+	SALT_INSTALL_OS=suse \
+	SALT_REPO_FILE="salt-repo-sles12.repo" \
+	./scripts/packer.sh build -only=aws-sles12sp3 $(PACKER_OPTS)
+
 build-os-centos6:
 	$(ENVS) \
 	ATLAS_ARTIFACT_TYPE=openstack \
@@ -182,6 +193,15 @@ build-os-ubuntu16:
 	SALT_REPO_FILE="salt-repo-ubuntu16.list" \
 	./scripts/packer.sh build -only=os-ubuntu16 $(PACKER_OPTS)
 
+build-os-sles12sp3:
+	$(ENVS) \
+	OS=sles12sp3 \
+	OS_TYPE=sles12 \
+	ATLAS_ARTIFACT_TYPE=openstack \
+	SALT_INSTALL_OS=suse \
+	SALT_REPO_FILE="salt-repo-sles12.repo" \
+	./scripts/packer.sh build -only=os-sles12sp3 $(PACKER_OPTS)
+
 build-gc-centos7:
 	$(ENVS) \
 	GCP_STORAGE_BUNDLE=$(GCP_STORAGE_BUNDLE) \
@@ -191,6 +211,16 @@ build-gc-centos7:
 	SALT_INSTALL_OS=centos \
 	SALT_REPO_FILE="salt-repo-el7.repo" \
 	./scripts/packer.sh build -only=gc-centos7 $(PACKER_OPTS)
+
+build-gc-sles12sp3:
+	$(ENVS) \
+	GCP_STORAGE_BUNDLE=$(GCP_STORAGE_BUNDLE) \
+	OS=sles12sp3 \
+	OS_TYPE=sles12 \
+	ATLAS_ARTIFACT_TYPE=googlecompute \
+	SALT_INSTALL_OS=suse \
+	SALT_REPO_FILE="salt-repo-sles12.repo" \
+	./scripts/packer.sh build -only=gc-sles12sp3 $(PACKER_OPTS)
 
 build-azure-rhel6:
 	$(ENVS) \
@@ -217,6 +247,20 @@ build-azure-centos7:
 	AZURE_IMAGE_OFFER=CentOS \
 	AZURE_IMAGE_SKU=7.4 \
 	./scripts/packer.sh build -only=arm-centos7 $(PACKER_OPTS)
+
+build-azure-sles12sp3:
+	$(ENVS) \
+	AZURE_STORAGE_ACCOUNTS="$(AZURE_STORAGE_ACCOUNTS)" \
+	OS=sles12sp3 \
+	OS_TYPE=sles12 \
+	ATLAS_ARTIFACT_TYPE=azure-arm \
+	SALT_INSTALL_OS=suse \
+	SALT_REPO_FILE="salt-repo-sles12.repo" \
+	AZURE_IMAGE_PUBLISHER=SUSE \
+	AZURE_IMAGE_OFFER=SLES \
+	AZURE_IMAGE_SKU=12-SP3 \
+	./scripts/packer.sh build -only=arm-sles12sp3 $(PACKER_OPTS)
+	
 
 copy-azure-images:
 	AZURE_STORAGE_ACCOUNTS="$(AZURE_STORAGE_ACCOUNTS)" AZURE_IMAGE_NAME="$(AZURE_IMAGE_NAME)" ./scripts/azure-copy.sh

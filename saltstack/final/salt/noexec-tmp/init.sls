@@ -19,7 +19,8 @@ service.systemctl_reload:
 {% endif %}
 
 /etc/systemd/system/tmp.mount:
-  file.absent: []
+  file.managed:
+    - contents: ''
 
 /etc/systemd/system/tmp.mount.d/options.conf:
   file.managed:
