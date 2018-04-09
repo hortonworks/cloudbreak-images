@@ -1,4 +1,4 @@
-STACK_TYPE: {{ salt['environ.get']('STACK_TYPE', HDP) }}
+STACK_TYPE: {{ salt['environ.get']('STACK_TYPE', "HDP") }}
 HDP_STACK_VERSION: {{ salt['environ.get']('HDP_STACK_VERSION', False) }}
 HDP_VERSION: {{ salt['environ.get']('HDP_VERSION', False) }}
 HDP_BASEURL: {{ salt['environ.get']('HDP_BASEURL', False) }}
@@ -12,4 +12,4 @@ LOCAL_URL_AMBARI: {{ salt['environ.get']('LOCAL_URL_AMBARI', False) }}
 LOCAL_URL_HDP: {{ salt['environ.get']('LOCAL_URL_HDP', False) }}
 LOCAL_URL_HDP_UTILS: {{ salt['environ.get']('LOCAL_URL_HDP_UTILS', False) }}
 LOCAL_URL_VDF: {{ salt['environ.get']('LOCAL_URL_VDF', False) }}
-REPOSITORY_TYPE : {{ salt['environ.get']('REPOSITORY_TYPE', remote) }}
+REPOSITORY_TYPE : {{ salt['environ.get']('REPOSITORY_TYPE', "remote") }}
