@@ -91,7 +91,7 @@ For more information on how to set up a local repository please refer to the [do
 Cloudbreak supports cluster installation in a secured subnet with no internet access, to be able to do so you have to [set custom repositories](#custom-repositories), create and host a custom VDF file and update the Base URL-s of the repositories in the VDF file as well. All these resouces should be accessible by the cluster.<br/>
 For more information on the VDF file refer to the [documentation](https://docs.hortonworks.com/HDPDocuments/Ambari-2.6.1.0/bk_ambari-installation/content/hdp_26_repositories.html).  
 
-### <a name="custom_logic"></a> Custom Script
+### Custom Script
 
 Cloudbreak uses [SaltStack](https://docs.saltstack.com/en/latest/) for image provisioninig. You have an option to extend the factory scripts based on custom requirements.
 
