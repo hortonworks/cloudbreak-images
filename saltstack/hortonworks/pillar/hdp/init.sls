@@ -3,7 +3,7 @@ HDP_STACK_VERSION: {{ salt['environ.get']('HDP_STACK_VERSION', False) }}
 HDP_VERSION: {{ salt['environ.get']('HDP_VERSION', False) }}
 HDP_BASEURL: {{ salt['environ.get']('HDP_BASEURL', False) }}
 HDP_REPOID: {{ salt['environ.get']('HDP_REPOID', False) }}
-MPACK_URLS: {{ salt['environ.get']('MPACK_URLS') }}
+MPACK_URLS: {{ salt['environ.get']('MPACK_URLS', "") }}
 REPOSITORY_VERSION: {{ salt['environ.get']('REPOSITORY_VERSION', False) }}
 VDF: {{ salt['environ.get']('VDF', False) }}
 AMBARI_VERSION: {{ salt['environ.get']('AMBARI_VERSION', False) }}
