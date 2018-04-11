@@ -94,7 +94,7 @@ install_hdp() {
 
     ambari-server setup --silent --java-home ${JAVA_HOME}
 
-    if [[ ! -z ${MPACK_URLS} ]]; then
+    if [[ -n "$MPACK_URLS" && "$MPACK_URLS" != 'None' ]]; then
       IFS=, read -ra mpacks <<< "$MPACK_URLS"
       for mpack in "${mpacks[@]}"; do
         echo yes | ambari-server install-mpack --mpack=${mpack} --verbose
