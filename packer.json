@@ -208,6 +208,43 @@
       "ami_name": "{{ user `image_name`}}"
     },
     {
+      "name": "aws-amazonlinux",
+      "type": "amazon-ebs",
+      "region": "eu-west-1",
+      "ami_regions": "{{ user `aws_ami_regions` }}",
+      "ssh_pty": true,
+      "source_ami": "ami-1a962263",
+      "instance_type": "{{ user `aws_instance_type` }}",
+      "ssh_username": "ec2-user",
+      "ena_support": true,
+      "skip_region_validation": true,
+      "tags": {
+        "Owner": "{{ user `image_owner` }}"
+      },
+      "ami_block_device_mappings": [
+        {
+          "device_name": "/dev/xvda",
+          "volume_type": "gp2",
+          "delete_on_termination": true,
+          "volume_size": "{{user `image_size`}}"
+        }
+      ],
+      "launch_block_device_mappings": [
+        {
+          "device_name": "/dev/xvda",
+          "volume_type": "gp2",
+          "delete_on_termination": true,
+          "volume_size": "{{user `image_size`}}"
+        }
+      ],
+      "tags": {
+        "builder": "packer",
+        "version": "{{user `version`}}"
+      },
+      "ami_groups": "all",
+      "ami_name": "{{ user `image_name`}}"
+    },
+    {
       "name": "aws-sles12sp3",
       "type": "amazon-ebs",
       "region": "eu-west-1",

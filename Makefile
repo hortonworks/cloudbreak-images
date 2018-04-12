@@ -101,6 +101,16 @@ build-aws-amazonlinux:
 	SALT_REPO_FILE="salt-repo-amzn.repo" \
 	./scripts/packer.sh build -only=aws-amazonlinux $(PACKER_OPTS)
 
+build-aws-amazonlinux2:
+	$(ENVS) \
+	AWS_AMI_REGIONS="$(AWS_AMI_REGIONS)" \
+	OS=amazonlinux2 \
+	OS_TYPE=redhat7 \
+	ATLAS_ARTIFACT_TYPE=amazon \
+	SALT_INSTALL_OS=amazon \
+	SALT_REPO_FILE="salt-repo-amazonlinux2.repo" \
+	./scripts/packer.sh build -only=aws-amazonlinux2 $(PACKER_OPTS)
+
 build-aws-centos6:
 	$(ENVS) \
 	AWS_AMI_REGIONS="$(AWS_AMI_REGIONS)" \

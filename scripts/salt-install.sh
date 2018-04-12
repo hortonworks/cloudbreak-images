@@ -72,7 +72,7 @@ case ${SALT_INSTALL_OS} in
    ;;
   amazon)
     echo "Install for Amazon linux"
-    pip install --upgrade boto3
+    #pip install --upgrade boto3
     echo "Return code: $?"
     echo "Install with yum"
     echo ${SALT_REPO_FILE}

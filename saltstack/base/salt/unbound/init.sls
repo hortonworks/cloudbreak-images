@@ -1,15 +1,20 @@
 {% if grains['os'] == 'Amazon' %}
+  {% if grains['osmajorrelease'] | int == 2 %}
+    {% set repo_version = 7 %}
+  {% else %}
+    {% set repo_version = 6 %}
+  {% endif %}
+
 create_centos_os_repo:
   pkgrepo.managed:
     - name: centos-os
     - enabled: True
-    - humanname: "CentOS-6 - OS"
-    - mirrorlist: http://mirrorlist.centos.org/?release=6&arch=$basearch&repo=os&infra=$infra
+    - humanname: "CentOS-{{ repo_version }} - OS"
+    - mirrorlist: http://mirrorlist.centos.org/?release={{ repo_version }}&arch=$basearch&repo=os&infra=$infra
     - gpgcheck: 1
-    - gpgkey: "http://mirror.centos.org/centos/RPM-GPG-KEY-CentOS-6"
-{% endif %}
+    - gpgkey: "http://mirror.centos.org/centos/RPM-GPG-KEY-CentOS-{{ repo_version }}"
 
-{% if grains['os'] == 'Amazon' %}
+  {% if grains['osmajorrelease'] | int != 2 %}
 install_pyhton26:
   pkg.installed:
     - pkgs:
@@ -17,6 +22,7 @@ install_pyhton26:
       - libpcap
       - python26
       - python26-libs
+  {% endif %}      
 {% endif %}
 
 install_unbound_server:

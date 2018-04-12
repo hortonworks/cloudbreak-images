@@ -1,0 +1,7 @@
+[saltstack-repo]
+name=SaltStack 2017.7.2 Release Channel for RHEL/CentOS $releasever
+baseurl=https://repo.saltstack.com/yum/redhat/7/x86_64/archive/2017.7.5/
+failovermethod=priority
+enabled=1
+gpgcheck=1
+gpgkey=https://repo.saltstack.com/yum/redhat/7/x86_64/archive/2017.7.5/SALTSTACK-GPG-KEY.pub
