@@ -14,4 +14,21 @@ remove_ip6tables:
   pkg.purged:
     - name: ip6tables
 
+{% elif grains['os_family'] == 'Suse' %}
+
+disable_susefirewall_setup_service:
+  service.dead:
+    - name: SuSEfirewall2_setup
+    - enable: False
+
+disable_susefirewall_init_service:
+  service.dead:
+    - name: SuSEfirewall2_init
+    - enable: False
+
+disable_susefirewall_service:
+  service.dead:
+    - name: SuSEfirewall2
+    - enable: False
+
 {% endif %}

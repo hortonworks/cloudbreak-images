@@ -35,6 +35,22 @@ function install_with_yum() {
   create_temp_minion_config
 }
 
+function install_with_zypper() {
+  cp /tmp/repos/$1 /etc/zypp/repos.d/$1
+  cp /tmp/repos/sles12sp3/* /etc/zypp/repos.d/
+  while [[ $(pgrep -f -c zypper) != 0 ]]; do
+    echo "Zypper is running, waiting 5 sec to continue"
+    sleep 5
+  done
+  zypper --gpg-auto-import-keys refresh
+  zypper install -y python-simplejson python-pip zypp-plugin-python
+  zypper rm -y salt || :
+  zypper install -y -r saltstack-repo -f salt-minion
+  pip install requests
+
+  create_temp_minion_config
+}
+
 function create_temp_minion_config() {
   echo "requests_lib: True" > /tmp/minion
   echo "backend_requests: True" >> /tmp/minion
@@ -62,6 +78,11 @@ case ${SALT_INSTALL_OS} in
     echo ${SALT_REPO_FILE}
     install_with_yum ${SALT_REPO_FILE}
    ;;
+  suse)
+    echo "Install with zypper"
+    echo ${SALT_REPO_FILE}
+    install_with_zypper ${SALT_REPO_FILE}
+    ;;
  *)
   echo "Unsupported platform:" $1
   exit 1

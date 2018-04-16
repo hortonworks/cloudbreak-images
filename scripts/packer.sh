@@ -6,7 +6,7 @@ packer_in_container() {
   PACKER_VERSION="1.1.3"
 
 # https://github.com/hashicorp/packer/issues/5825
-  if [[ "$2" == "-only=gc-centos7" ]]; then
+  if [[ "$2" == "-only=gc-centos7" ]] || [[ "$2" == "-only=gc-sles12sp3" ]]; then
     PACKER_VERSION="0.12.3"
   fi
 
@@ -114,6 +114,7 @@ packer_in_container() {
     -e PREINSTALLED_JAVA_HOME=$PREINSTALLED_JAVA_HOME \
     -e DESCRIPTION="$DESCRIPTION" \
     -e REPOSITORY_TYPE="$REPOSITORY_TYPE" \
+    -e SLES_REGISTRATION_CODE="$SLES_REGISTRATION_CODE" \
     -v $HOME/.aws:/root/.aws \
     -v /var/run/docker.sock:/var/run/docker.sock \
     -v $PWD:$PWD \

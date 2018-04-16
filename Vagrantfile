@@ -17,6 +17,8 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
 
   config.vbguest.iso_path = "/Applications/VirtualBox.app/Contents/MacOS/VBoxGuestAdditions.iso"
   config.vbguest.no_remote = true
+  config.vbguest.auto_update = false
+  #config.ssh.insert_key = false
 
   if Vagrant.has_plugin?("vagrant-cachier")
     config.cache.scope = :box
@@ -37,7 +39,8 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
         :salt_repo => "salt-repo-el7.repo",
         :optional_states => "oracle-java",
         :custom_image_type => "hortonworks",
-        :oracle_jdk8_url_rpm => "http://download.oracle.com/otn-pub/java/jdk/8u161-b12/2f38c3b165be4555a1fa6e98c45e0808/jdk-8u161-linux-x64.rpm"
+        :oracle_jdk8_url_rpm => "http://download.oracle.com/otn-pub/java/jdk/8u161-b12/2f38c3b165be4555a1fa6e98c45e0808/jdk-8u161-linux-x64.rpm",
+        :salt_install_os => "centos" 
       },
       {
         :hostname => "centos6",
@@ -46,6 +49,7 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
         :cpu => 2,
         :salt_repo => "salt-repo-el6.repo",
         :custom_image_type => "hortonworks",
+        :salt_install_os => "centos"
       },
       {
         :hostname => "debian9",
@@ -53,7 +57,8 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
         :ram => 1536,
         :cpu => 2,
         :salt_repo => "salt-repo-debian9.list",
-        :custom_image_type => "hortonworks"
+        :custom_image_type => "hortonworks",
+        :salt_install_os => "debian"
       },
       {
         :hostname => "ubuntu14",
@@ -61,7 +66,8 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
         :ram => 1536,
         :cpu => 2,
         :salt_repo => "salt-repo-ubuntu14.list",
-        :custom_image_type => "hortonworks"
+        :custom_image_type => "hortonworks",
+        :salt_install_os => "ubuntu"
       },
       {
         :hostname => "ubuntu16",
@@ -69,7 +75,17 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
         :ram => 1536,
         :cpu => 2,
         :salt_repo => "salt-repo-ubuntu16.list",
-        :custom_image_type => "hortonworks"
+        :custom_image_type => "hortonworks",
+        :salt_install_os => "ubuntu"
+      },
+      {
+        :hostname => "sles12sp3",
+        :box => "mmolnar/sles12sp3",
+        :ram => 1536,
+        :cpu => 4,
+        :salt_repo => "salt-repo-sles12.repo",
+        :custom_image_type => "hortonworks",
+        :salt_install_os => "suse" 
       }
   ].each do |machine|
     config.vm.define machine[:hostname] do |node|
@@ -89,7 +105,7 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
 
         node.vm.provision :shell do |shell|
           shell.path = "scripts/salt-install.sh"
-          shell.args = machine[:box].split('/',-1)[0] + " " + machine[:salt_repo] + " " + machine[:box].split('/',-1)[1].gsub(/ *\d+$/, '')
+          shell.args = machine[:salt_install_os] + " " + machine[:salt_repo] + " " + machine[:box].split('/',-1)[1].gsub(/ *\d+$/, '')
           shell.keep_color = false
         end
 
@@ -102,6 +118,7 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
             "CUSTOM_IMAGE_TYPE" => machine[:custom_image_type],
             "ORACLE_JDK8_URL_RPM" => machine[:oracle_jdk8_url_rpm],
             "PREINSTALLED_JAVA_HOME" => "",
+            "SLES_REGISTRATION_CODE" => ENV['SLES_REGISTRATION_CODE'],
             "os_user" => "vagrant"
           }
         end

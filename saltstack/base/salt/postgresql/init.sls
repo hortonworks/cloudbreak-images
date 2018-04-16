@@ -28,6 +28,14 @@ install-postgres:
       - postgresql
       - postgresql-client
       - libpostgresql-jdbc-java
+{% elif grains['os_family'] == 'Suse' %}
+install-postgres:
+  pkg.installed:
+    - pkgs:
+      - postgresql96
+      - postgresql-init
+      - postgresql96-server
+      - postgresql-jdbc
 {% else %}
 remove-old-postgres:
   pkg.removed:

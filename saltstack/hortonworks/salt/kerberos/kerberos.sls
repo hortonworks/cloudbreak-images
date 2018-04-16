@@ -8,4 +8,8 @@ install_kerberos_packages:
       {% elif grains['os_family'] == 'Debian' %}
       - krb5-admin-server
       - krb5-kdc
+      {% elif grains['os_family'] == 'Suse' %}
+      - krb5
+      - krb5-client
+      - krb5-server
       {% endif %}

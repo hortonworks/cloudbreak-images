@@ -1,0 +1,6 @@
+[nginx]
+enabled=1
+autorefresh=0
+baseurl=http://nginx.org/packages/sles/12
+type=rpm-md
+gpgcheck=0
