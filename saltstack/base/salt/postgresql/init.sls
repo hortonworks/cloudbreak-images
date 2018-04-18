@@ -72,12 +72,19 @@ install-postgres:
       - postgresql-jdbc
       - postgresql95
 
+{% if  pillar['OS'] != 'amazonlinux2' %}
 /etc/init.d/postgresql:
   file.symlink:
       - target: /etc/init.d/postgresql-9.5
       - force: True
+{% endif %}
 
 {% if  pillar['OS'] == 'amazonlinux2' %}
+/var/lib/pgsql/data:
+  file.symlink:
+      - target: /var/lib/pgsql/9.5/data
+      - force: True
+
 init-pg-database:
   cmd.run:
     - name: find /var/lib/pgsql/ -name PG_VERSION | grep -q "data/PG_VERSION" || /usr/pgsql-9.5/bin/postgresql95-setup initdb

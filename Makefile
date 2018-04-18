@@ -105,7 +105,7 @@ build-aws-amazonlinux2:
 	$(ENVS) \
 	AWS_AMI_REGIONS="$(AWS_AMI_REGIONS)" \
 	OS=amazonlinux2 \
-	OS_TYPE=redhat7 \
+	OS_TYPE=amazonlinux2 \
 	ATLAS_ARTIFACT_TYPE=amazon \
 	SALT_INSTALL_OS=amazon \
 	SALT_REPO_FILE="salt-repo-amazonlinux2.repo" \
