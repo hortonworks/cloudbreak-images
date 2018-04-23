@@ -1,6 +1,12 @@
 /etc/hostname:
   file.absent
 
+{% if pillar['OS'] == 'amazonlinux2' %}
+hostnamectl_reset:
+  cmd.run:
+    - name: hostnamectl set-hostname ""
+{% endif %}
+
 {% if grains['os_family'] == 'RedHat' %}
 hostname_remove:
   file.line:

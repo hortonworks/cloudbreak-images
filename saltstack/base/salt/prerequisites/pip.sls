@@ -3,7 +3,9 @@ install_python_pip:
     - pkgs:
     {% if grains['os_family'] == 'RedHat' %}
       - openssl-devel
-      {% if grains['os'] == 'Amazon' %}
+      {% if pillar['OS'] == 'amazonlinux2' %}
+      - python2-pip
+      {% elif grains['os'] == 'Amazon' %}
       - python27-devel
       - python27-pip
       {% elif grains['osmajorrelease'] | int == 6 %}

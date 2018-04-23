@@ -1,5 +1,5 @@
-pkg.upgrade:
-  module.run:
+update-packages:
+  pkg.uptodate:
     - refresh: True
 
 packages_install:
@@ -36,8 +36,7 @@ packages_install:
       - iptables-persistent
       - dnsutils
   {% endif %}
-
-
+      - deltarpm
 
 {% if grains['os_family'] == 'Suse' %}
 remove_snappy:
