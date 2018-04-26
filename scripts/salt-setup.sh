@@ -7,6 +7,7 @@ set -e -o pipefail -o errexit
 
 function prepare {
   sudo chown -R root:root /tmp/saltstack
+  apply_amazonlinux_salt_patch
 }
 
 function copy_resources {
@@ -16,6 +17,16 @@ function copy_resources {
   if [ -d "/tmp/saltstack/${saltenv}/pillar" ]
   then
     sudo cp -R /tmp/saltstack/${saltenv}/pillar/* /srv/pillar/${saltenv}
+  fi
+}
+  #Needed because of https://github.com/saltstack/salt/issues/47258
+function apply_amazonlinux_salt_patch {
+  if [ "${OS}" == "amazonlinux" ] && [ -f /tmp/saltstack/config/minion ] && ! grep -q "rh_service" /tmp/saltstack/config/minion ; then
+    tee -a /tmp/saltstack/config/minion << EOF
+    
+providers:
+  service: rh_service
+EOF
   fi
 }
 
