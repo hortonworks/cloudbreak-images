@@ -30,13 +30,7 @@ set_repos() {
   sed -i "s;${AMBARI_BASEURL};${LOCAL_URL_AMBARI};g" /etc/yum.repos.d/ambari.repo
   cp /etc/yum.repos.d/ambari.repo /var/www/html/
 
-  if [[ "$STACK_TYPE" = "HDP" ]]
-  then
-    REPOSITORY_NAME="hdp"
-  elif [[ "$STACK_TYPE" = "HDF" ]]
-  then
-    REPOSITORY_NAME="hdf"
-  fi
+  REPOSITORY_NAME=$(tr '[:upper:]' '[:lower:]' <<< ${STACK_TYPE})
 
   cd ../..
   mkdir -p ${REPOSITORY_NAME}/${OS}
@@ -159,6 +153,16 @@ install_hdp() {
 #    exit 0
 }
 
+install_hdp_without_ambari() {
+  REPOSITORY_NAME=$(tr '[:upper:]' '[:lower:]' <<< ${STACK_TYPE})
+  #yum install -y mysql-server mysql
+  curl ${HDP_BASEURL}/${REPOSITORY_NAME}.repo -o /etc/yum.repos.d/${REPOSITORY_NAME}.repo
+  yum repo-pkgs ambari -y install
+  yum repo-pkgs ${STACK_TYPE}-${HDP_VERSION} -y install --skip-broken
+  yum repo-pkgs HDP-UTILS-${HDPUTIL_VERSION} -y install --skip-broken
+  echo "Installation successful" >> /tmp/install_hdp.status
+}
+
 reset_ambari() {
   #ambari-agent stop || true
   pkill -f ambari_agent || true
@@ -184,7 +188,7 @@ main() {
       set_repos
       download_vdf
     fi
-    install_hdp
+    install_hdp_without_ambari
   fi
 #  set +x
 }
