@@ -16,9 +16,11 @@ install_python_pip:
       - python-pip
     {% endif %}
 
+{% if grains['os'] != 'Amazon' and grains['os_family'] != 'Suse' %}
 upgrade_python_pip:
   cmd.run:
-    - name: pip install --index-url=https://pypi.python.org/simple/ --upgrade pip==8.1.2
+    - name: pip install --upgrade index-url=https://pypi.python.org/simple/ pip==8.1.2
+{% endif %}
 
 pip_install_requests_security:
   pip.installed:
