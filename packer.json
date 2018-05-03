@@ -438,6 +438,7 @@
         "HDPUTIL_REPOID={{user `hdputil_repoid`}}",
         "HDPUTIL_BASEURL={{user `hdputil_baseurl`}}",
         "VDF={{user `vdf`}}",
+        "OS={{user `os`}}",
         "REPOSITORY_VERSION={{user `repository_version`}}",
         "COPY_AWS_MARKETPLACE_EULA={{user `copy_aws_marketplace_eula`}}",
         "ORACLE_JDK8_URL_RPM={{user `oracle_jdk8_url_rpm`}}",
