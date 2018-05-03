@@ -12,6 +12,7 @@
     + [Custom Script](#custom-script)
     + [Oracle JDK](#oracle-jdk)
     + [Using preinstalled JDK](#using-preinstalled-jdk)
+    + [JDBC connector's JAR for MySQL or Oracle External Database](#jdbc-connectors-jar-for-mysql-or-oracle-external-database)
   * [Packer Postprocessors](#packer-postprocessors)
 
 
@@ -84,7 +85,7 @@ The following table lists the property to be modified to be able to start from a
 ### Custom repositories
 
 There is the possibility in Cloudbreak to use custom repositories to install Ambari and the HDP cluster, the easiest way to configure these is to place the necessary repo files (ambari.repo and hdp.repo files are necessary for installing the cluster) to your image and start the custom image creation by setting that image [as base image](#customizing-the-base-image). <br/>
-For more information on how to set up a local repository please refer to the [documentation](https://docs.hortonworks.com/HDPDocuments/Ambari-2.6.1.0/bk_ambari-installation/content/setting_up_a_local_repository.html). 
+For more information on how to set up a local repository please refer to the [documentation](https://docs.hortonworks.com/HDPDocuments/Ambari-2.6.1.0/bk_ambari-installation/content/setting_up_a_local_repository.html).
 
 ### No internet install
 
@@ -141,6 +142,12 @@ To set your custom JAVA_HOME export `PREINSTALLED_JAVA_HOME` environment variabl
 export PREINSTALLED_JAVA_HOME=/path/to/installed/jdk
 ```
 > Note: If you specify preinstalled JDK but also choose Oracle JDK installation, then Oracle JDK will be installed and JAVA_HOME will be set to it
+
+### JDBC connector's JAR for MySQL or Oracle External Database
+
+Cloudbreak allows you to register an existing database instance to be used for a database for some supported cluster components. If you are planning to use an external database, specifically MySQL or Oracle, you must download the JDBC connector's JAR file and provide it to Cloudbreak. Typically, this is done when registering the database with Cloudbreak by providing the "Connector's JAR URL".
+
+However, if you are burning your own custom image, you can simply place the JDBC driver in the `/opt/jdbc-drivers` directory. If you do this, you do not need to provide the "Connector's JAR URL" when registering an external database.  
 
 ## Packer Postprocessors
 
