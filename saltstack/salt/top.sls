@@ -37,6 +37,4 @@ base:
     - dhcp
     - performance
     - custom
-{% if salt['file.directory_exists']('/vagrant') %}
     - cleanup
-{% endif %}
