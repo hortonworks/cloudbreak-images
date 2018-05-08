@@ -18,6 +18,15 @@ service.systemctl_reload:
   module.run: []
 {% endif %}
 
+{% if grains['os_family'] == 'Suse' %}
+/usr/lib/systemd/system/tmp.mount:
+  file.managed:
+    - source: salt://{{ slspath }}/usr/lib/systemd/system/tmp.mount
+    - user: root
+    - group: root
+    - mode: 755
+{% endif %}
+
 /etc/systemd/system/tmp.mount:
   file.absent: []
 
