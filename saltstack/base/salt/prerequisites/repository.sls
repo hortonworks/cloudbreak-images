@@ -1,8 +1,8 @@
 {% if grains['os_family'] == 'RedHat' %}
-  {% if pillar['OS'] == 'amazonlinux2' %}
+  {% if pillar['OS'] == 'amazonlinux2' or pillar['OS'] == 'redhat7' %}
   epel_repo_package_install:
     cmd.run:
-      - name: wget https://dl.fedoraproject.org/pub/epel/epel-release-latest-7.noarch.rpm && yum install -y ./epel-release-latest-7.noarch.rpm
+      - name: curl https://dl.fedoraproject.org/pub/epel/epel-release-latest-7.noarch.rpm -o epel-release-latest-7.noarch.rpm && yum install -y ./epel-release-latest-7.noarch.rpm
       - shell: /bin/bash
       - failhard: True
 

@@ -27,7 +27,9 @@ packages_install:
       - ruby
   {% if grains['os_family'] == 'RedHat' %}
       - snappy
+    {% if pillar['OS'] != 'redhat7' %}
       - snappy-devel
+    {% endif %}
       - bind-utils
     {% if grains['osmajorrelease'] | int == 7 %}
       - iptables-services
