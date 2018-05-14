@@ -4,6 +4,13 @@ packer_in_container() {
   local dockerOpts=""
   local packerFile="packer.json"
 
+  PACKER_VERSION="1.1.3"
+
+# https://github.com/hashicorp/packer/issues/5825
+if [[ "$2" == "-only=gc-centos7" ]] || [[ "$2" == "-only=gc-sles12sp3" ]]; then
+  PACKER_VERSION="0.12.3"
+fi
+
   if [[ "$GCP_ACCOUNT_FILE" ]]; then
     dockerOpts="$dockerOpts -v $GCP_ACCOUNT_FILE:$GCP_ACCOUNT_FILE"
   fi
@@ -77,7 +84,7 @@ packer_in_container() {
     -v $PWD:$PWD \
     -w $PWD \
     $dockerOpts \
-    hashicorp/packer:0.12.2 "$@" $packerFile
+    hashicorp/packer:$PACKER_VERSION "$@" $packerFile
 }
 
 main() {

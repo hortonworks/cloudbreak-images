@@ -10,7 +10,15 @@ unpack_service_registration:
     - name: cd /tmp && tar -zxf service-registration.tgz && chmod +x service-registration && mv service-registration /usr/local/bin/
     - unless: ls -1 /usr/local/bin/service-registration
 
-{% if grains['init'] in [ 'upstart', 'sysvinit'] %}
+{% if grains['init'] == 'systemd' %}
+
+/etc/systemd/system/service-registration.service:
+  file.managed:
+    - name: /etc/systemd/system/service-registration.service
+    - source: salt://{{ slspath }}/etc/systemd/system/service-registration.service
+
+{% endif %}
+
 /etc/init.d/service-registration:
   file.managed:
     - makedirs: True
@@ -18,12 +26,6 @@ unpack_service_registration:
     - source:
       - salt://{{ slspath }}/etc/init.d/service-registration.{{ grains['os_family'] | lower }}
       - salt://{{ slspath }}/etc/init.d/service-registration
-{% elif grains['init'] == 'systemd' %}
-/etc/systemd/system/service-registration.service:
-  file.managed:
-    - name: /etc/systemd/system/service-registration.service
-    - source: salt://{{ slspath }}/etc/systemd/system/service-registration.service
-{% endif %}
 
 ensure_service_registration_enabled:
   service.enabled:

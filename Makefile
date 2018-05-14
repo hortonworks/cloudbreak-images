@@ -41,21 +41,21 @@ build-aws-centos6:
 	$(ENVS) \
 	ATLAS_ARTIFACT_TYPE=amazon \
 	SALT_INSTALL_OS=centos \
-	SALT_REPO_FILE="salt-repo-2016.11-6.el.repo" \
+	SALT_REPO_FILE="salt-repo-2016.11-6.el6.repo" \
 	$(ENVS) ./scripts/packer.sh build -only=aws-centos6 $(PACKER_OPTS)
 
 build-aws-centos7:
 	$(ENVS) \
 	ATLAS_ARTIFACT_TYPE=amazon \
 	SALT_INSTALL_OS=centos \
-	SALT_REPO_FILE="salt-repo-2016.11-6.el.repo" \
+	SALT_REPO_FILE="salt-repo-2016.11-6.el7.repo" \
 	$(ENVS) ./scripts/packer.sh build -only=aws-centos7 $(PACKER_OPTS)
 
 build-aws-rhel7:
 	$(ENVS) \
 	ATLAS_ARTIFACT_TYPE=amazon \
 	SALT_INSTALL_OS=redhat \
-	SALT_REPO_FILE="salt-repo-2016.11-6.el.repo" \
+	SALT_REPO_FILE="salt-repo-2016.11-6.el7.repo" \
 	$(ENVS) ./scripts/packer.sh build -only=aws-rhel7 $(PACKER_OPTS)
 
 build-os-centos7:
@@ -64,7 +64,7 @@ build-os-centos7:
 	ATLAS_META_OS_DISTRIBUTION_ID=CentOS \
 	ATLAS_META_OS_RELEASE=7 \
     SALT_INSTALL_OS=centos \
-	SALT_REPO_FILE="salt-repo-2016.11-6.el.repo" \
+	SALT_REPO_FILE="salt-repo-2016.11-6.el7.repo" \
 	$(ENVS) ./scripts/packer.sh build -only=os-centos7 $(PACKER_OPTS)
 
 build-os-centos6:
@@ -73,7 +73,7 @@ build-os-centos6:
 	ATLAS_META_OS_DISTRIBUTION_ID=CentOS \
 	ATLAS_META_OS_RELEASE=6 \
     SALT_INSTALL_OS=centos \
-	SALT_REPO_FILE="salt-repo-2016.11-6.el.repo" \
+	SALT_REPO_FILE="salt-repo-2016.11-6.el6.repo" \
 	$(ENVS) ./scripts/packer.sh build -only=os-centos6 $(PACKER_OPTS)
 
 build-os-ubuntu14:
@@ -107,14 +107,14 @@ build-gc-centos7:
 	$(ENVS) \
 	ATLAS_ARTIFACT_TYPE=googlecompute \
 	SALT_INSTALL_OS=centos \
-	SALT_REPO_FILE="salt-repo-2016.11-6.el.repo" \
+	SALT_REPO_FILE="salt-repo-2016.11-6.el7.repo" \
 	$(ENVS) ./scripts/packer.sh build -only=gc-centos7 $(PACKER_OPTS)
 
 build-azure-centos7:
 	$(ENVS) \
 	ATLAS_ARTIFACT_TYPE=azure-arm \
 	SALT_INSTALL_OS=centos \
-	SALT_REPO_FILE="salt-repo-2016.11-6.el.repo" \
+	SALT_REPO_FILE="salt-repo-2016.11-6.el7.repo" \
 	./scripts/packer.sh build -only=arm-centos7 $(PACKER_OPTS)
 	$(ENVS) ./scripts/azure-copy.sh
 
