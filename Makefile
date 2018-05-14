@@ -144,7 +144,7 @@ build-aws-rhel7:
 build-aws-sles12sp3:
 	$(ENVS) \
 	AWS_AMI_REGIONS="$(AWS_AMI_REGIONS)" \
-	OS=sles12sp3 \
+	OS=sles12 \
 	OS_TYPE=sles12 \
 	ATLAS_ARTIFACT_TYPE=amazon \
 	SALT_INSTALL_OS=suse \
@@ -205,7 +205,7 @@ build-os-ubuntu16:
 
 build-os-sles12sp3:
 	$(ENVS) \
-	OS=sles12sp3 \
+	OS=sles12 \
 	OS_TYPE=sles12 \
 	ATLAS_ARTIFACT_TYPE=openstack \
 	SALT_INSTALL_OS=suse \
@@ -225,7 +225,7 @@ build-gc-centos7:
 build-gc-sles12sp3:
 	$(ENVS) \
 	GCP_STORAGE_BUNDLE=$(GCP_STORAGE_BUNDLE) \
-	OS=sles12sp3 \
+	OS=sles12 \
 	OS_TYPE=sles12 \
 	ATLAS_ARTIFACT_TYPE=googlecompute \
 	SALT_INSTALL_OS=suse \
@@ -261,7 +261,7 @@ build-azure-centos7:
 build-azure-sles12sp3:
 	$(ENVS) \
 	AZURE_STORAGE_ACCOUNTS="$(AZURE_STORAGE_ACCOUNTS)" \
-	OS=sles12sp3 \
+	OS=sles12 \
 	OS_TYPE=sles12 \
 	ATLAS_ARTIFACT_TYPE=azure-arm \
 	SALT_INSTALL_OS=suse \
