@@ -169,6 +169,7 @@
         "builder": "packer",
         "version": "{{user `version`}}"
       },
+      "ami_groups": "all",
       "ami_name": "{{ user `image_name`}}"
     },
     {
@@ -205,6 +206,7 @@
         "builder": "packer",
         "version": "{{user `version`}}"
       },
+      "ami_groups": "all",
       "ami_name": "{{ user `image_name`}}"
     },
     {
@@ -241,6 +243,7 @@
         "builder": "packer",
         "version": "{{user `version`}}"
       },
+      "ami_groups": "all",
       "ami_name": "{{ user `image_name`}}"
     },
     {
@@ -277,6 +280,7 @@
         "builder": "packer",
         "version": "{{user `version`}}"
       },
+      "ami_groups": "all",
       "ami_name": "{{ user `image_name`}}"
     },
     {
@@ -387,7 +391,7 @@
       "source_image": "82a163d6-7632-4b9c-a609-e42db3fb9590",
       "flavor": "m1.medium",
       "endpoint_type": "internalURL",
-      "networks": [ 
+      "networks": [
         "a5ad7a1d-d3a6-4180-8d61-07a23f6fb449"
       ]
     },
