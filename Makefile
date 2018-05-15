@@ -115,6 +115,9 @@ build-azure-centos7:
 	ATLAS_ARTIFACT_TYPE=azure-arm \
 	SALT_INSTALL_OS=centos \
 	SALT_REPO_FILE="salt-repo-2016.11-6.el7.repo" \
+	AZURE_IMAGE_PUBLISHER=OpenLogic \
+	AZURE_IMAGE_OFFER=CentOS \
+	AZURE_IMAGE_SKU=7.4 \
 	./scripts/packer.sh build -only=arm-centos7 $(PACKER_OPTS)
 	$(ENVS) ./scripts/azure-copy.sh
 
