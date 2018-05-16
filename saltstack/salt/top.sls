@@ -3,9 +3,7 @@ base:
     - prerequisites
     - simple-webserver
     - eula
-{% if salt['file.file_exists']('/etc/waagent.conf') %}
-    - waagent
-{% else %}
+{% if not salt['file.file_exists']('/etc/waagent.conf') %}
     - cloud-init
 {% endif %}
     - selinux
@@ -37,4 +35,7 @@ base:
     - dhcp
     - performance
     - custom
+{% if salt['file.file_exists']('/etc/waagent.conf') %}
+    - waagent
+{% endif %}
     - cleanup
