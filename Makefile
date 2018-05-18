@@ -282,10 +282,7 @@ upload-openstack-image:
 	S3_TARGET=$(S3_TARGET) ./scripts/openstack-upload.sh
 
 docker-build:
-ifndef REGISTRY_USER
-	$(error 'REGISTRY_USER' must be specified!)
-endif
-	docker build -t registry.eng.hortonworks.com/${REGISTRY_USER}/cloudbreak-centos-7-$(shell date +%Y-%m-%d) -f docker/centos7.3/Dockerfile .
+	docker build -t registry.eng.hortonworks.com/cloudbreak/centos-7:$(shell date +%Y-%m-%d) -f docker/centos7.3/Dockerfile .
 
 build-in-docker:
 	docker run -it \
