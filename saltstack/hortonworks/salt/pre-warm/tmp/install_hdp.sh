@@ -159,8 +159,19 @@ install_hdp_without_ambari() {
   curl ${HDP_BASEURL}/${REPOSITORY_NAME}.repo -o /etc/yum.repos.d/${REPOSITORY_NAME}.repo
   yum repo-pkgs ambari -y install
   yum repo-pkgs ${STACK_TYPE}-${HDP_VERSION} -y install --skip-broken
-  yum repo-pkgs HDP-UTILS-${HDPUTIL_VERSION} -y install --skip-broken
+  if [[ "$STACK_TYPE" == "HDP" ]]; then
+    yum repo-pkgs HDP-UTILS-${HDPUTIL_VERSION} -y install --skip-broken
+  fi
   echo "Installation successful" >> /tmp/install_hdp.status
+}
+
+install_mpacks() {
+    if [[ -n "$MPACK_URLS" && "$MPACK_URLS" != 'None' ]]; then
+      IFS=, read -ra mpacks <<< "$MPACK_URLS"
+      for mpack in "${mpacks[@]}"; do
+        echo yes | ambari-server install-mpack --mpack=${mpack} --verbose
+      done
+    fi
 }
 
 reset_ambari() {
@@ -189,6 +200,9 @@ main() {
       download_vdf
     fi
     install_hdp_without_ambari
+    if [[ "$STACK_TYPE" == "HDF" ]]; then
+      install_mpacks
+    fi
   fi
 #  set +x
 }
