@@ -97,7 +97,7 @@ elif [[ x"$OS"x =~ "SUSE" && x"$OS_VERSION"x =~ "12" ]]; then
     # SLES12 has systemd
     exec -l /bin/systemd --system
     ############################### SLES12 #####################
-elif [[ ( x"$OS"x == x"CentOS"x && x"$OS_VERSION"x == x"7.2.1511"x ) || ( x"$OS"x == x"CentOS"x && x"$OS_VERSION"x == x"7.3.1611"x ) || ( x"$OS"x == x"CentOS"x && x"$OS_VERSION"x == x"7.4.1708"x ) ]] ; then
+elif [[ ( x"$OS"x == x"CentOS"x && x"$OS_VERSION"x == x"7.2.1511"x ) || ( x"$OS"x == x"CentOS"x && x"$OS_VERSION"x == x"7.3.1611"x ) || ( x"$OS"x == x"CentOS"x && x"$OS_VERSION"x == x"7.4.1708"x ) || ( x"$OS"x == x"CentOS"x && x"$OS_VERSION"x == x"7.5.1804"x ) ]] ; then
     ############################### Centos7 #####################
     # Centos7 has systemd
     systemctl enable sshd
