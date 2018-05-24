@@ -106,3 +106,20 @@ init-pg-database:
     - name: find /var/lib/pgsql/ -name PG_VERSION | grep -q "data/PG_VERSION" || service postgresql initdb
 {% endif %}
 {% endif %}
+
+start-postgresql:
+  service.running:
+    - name: postgresql
+
+/opt/salt/scripts/conf_pgsql_listen_address.sh:
+  file.managed:
+    - makedirs: True
+    - mode: 755
+    - source: salt://postgresql/scripts/conf_pgsql_listen_address.sh
+
+configure-listen-address:
+  cmd.run:
+    - name: runuser -l postgres -c '/opt/salt/scripts/conf_pgsql_listen_address.sh' && echo $(date +%Y-%m-%d:%H:%M:%S) >> /var/log/pgsql_listen_address_configured
+    - require:
+      - file: /opt/salt/scripts/conf_pgsql_listen_address.sh
+      - service: start-postgresql
