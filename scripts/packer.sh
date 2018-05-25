@@ -6,7 +6,7 @@ packer_in_container() {
   PACKER_VERSION="1.1.3"
 
 # https://github.com/hashicorp/packer/issues/5825
-  if [[ "$2" == "-only=gc-centos7" ]] || [[ "$2" == "-only=gc-sles12sp3" ]]; then
+  if [[ "$2" == -only=gc-* ]]; then
     PACKER_VERSION="0.12.3"
   fi
 

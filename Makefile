@@ -151,6 +151,16 @@ build-aws-sles12sp3:
 	SALT_REPO_FILE="salt-repo-sles12.repo" \
 	./scripts/packer.sh build -only=aws-sles12sp3 $(PACKER_OPTS)
 
+build-aws-ubuntu16:
+	$(ENVS) \
+	AWS_AMI_REGIONS="$(AWS_AMI_REGIONS)" \
+	OS=ubuntu16 \
+	OS_TYPE=ubuntu16 \
+	ATLAS_ARTIFACT_TYPE=amazon \
+	SALT_INSTALL_OS=ubuntu \
+	SALT_REPO_FILE="salt-repo-ubuntu16.list" \
+	./scripts/packer.sh build -only=aws-ubuntu16 $(PACKER_OPTS)
+
 build-os-centos6:
 	$(ENVS) \
 	ATLAS_ARTIFACT_TYPE=openstack \
@@ -232,6 +242,16 @@ build-gc-sles12sp3:
 	SALT_REPO_FILE="salt-repo-sles12.repo" \
 	./scripts/packer.sh build -only=gc-sles12sp3 $(PACKER_OPTS)
 
+build-gc-ubuntu16:
+	$(ENVS) \
+	GCP_STORAGE_BUNDLE=$(GCP_STORAGE_BUNDLE) \
+	OS=ubuntu16 \
+	OS_TYPE=ubuntu16 \
+	ATLAS_ARTIFACT_TYPE=googlecompute \
+	SALT_INSTALL_OS=ubuntu \
+	SALT_REPO_FILE="salt-repo-ubuntu16.list" \
+	./scripts/packer.sh build -only=gc-ubuntu16 $(PACKER_OPTS)
+
 build-azure-rhel6:
 	$(ENVS) \
 	AZURE_STORAGE_ACCOUNTS="$(AZURE_STORAGE_ACCOUNTS)" \
@@ -270,7 +290,19 @@ build-azure-sles12sp3:
 	AZURE_IMAGE_OFFER=SLES \
 	AZURE_IMAGE_SKU=12-SP3 \
 	./scripts/packer.sh build -only=arm-sles12sp3 $(PACKER_OPTS)
-	
+
+build-azure-ubuntu16:
+	$(ENVS) \
+	AZURE_STORAGE_ACCOUNTS="$(AZURE_STORAGE_ACCOUNTS)" \
+	OS=ubuntu16 \
+	OS_TYPE=ubuntu16 \
+	ATLAS_ARTIFACT_TYPE=azure-arm \
+	SALT_INSTALL_OS=ubuntu \
+	SALT_REPO_FILE="salt-repo-ubuntu16.list" \
+	AZURE_IMAGE_PUBLISHER=Canonical \
+	AZURE_IMAGE_OFFER=UbuntuServer \
+	AZURE_IMAGE_SKU=16.04-LTS \
+	./scripts/packer.sh build -only=arm-ubuntu16 $(PACKER_OPTS)
 
 copy-azure-images:
 	AZURE_STORAGE_ACCOUNTS="$(AZURE_STORAGE_ACCOUNTS)" AZURE_IMAGE_NAME="$(AZURE_IMAGE_NAME)" ./scripts/azure-copy.sh
