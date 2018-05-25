@@ -1,7 +1,12 @@
 #!/usr/bin/env bash
 
-CONFIG_FILE=$(psql -c "show config_file;" -t | xargs)
-echo "Config file: $CONFIG_FILE"
+if grep -q :/docker/ /proc/1/cgroup; then
+    # inside docker container
+    CONFIG_FILE=$(find /etc/postgresql /var/lib/pgsql -type f -name postgresql.conf 2>/dev/null | head -1)
+else
+    CONFIG_FILE=$(psql -c "show config_file;" -t | xargs)
+    echo "Config file: $CONFIG_FILE"
+fi
 
 set -e
 if grep -qR "^listen_addresses =" $CONFIG_FILE; then
