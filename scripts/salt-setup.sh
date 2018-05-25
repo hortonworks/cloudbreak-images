@@ -8,6 +8,7 @@ set -e -o pipefail -o errexit
 function prepare {
   sudo chown -R root:root /tmp/saltstack
   apply_amazonlinux_salt_patch
+  set_shell
 }
 
 function copy_resources {
@@ -26,6 +27,12 @@ function apply_amazonlinux_salt_patch {
 providers:
   service: rh_service
 EOF
+  fi
+}
+
+function set_shell() {
+  if [ "${OS}" == "ubuntu16" ]; then
+    sed -i '/\[Service\]/a Environment="SHELL=/bin/bash"' /lib/systemd/system/salt-minion.service
   fi
 }
 
