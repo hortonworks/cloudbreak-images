@@ -12,3 +12,6 @@
 
 /srv/pillar:
   file.absent
+
+/var/cache/salt/minion:
+  file.absent

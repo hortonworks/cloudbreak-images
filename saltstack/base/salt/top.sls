@@ -9,12 +9,13 @@ base:
     - salt-bootstrap
     - salt
     - postgresql
-    - unbound
     - monitoring
+{% if pillar['subtype'] != 'Docker' %}
 {% if grains['os_family'] == 'Debian' %}
     - resolvconf
 {% else %}
     - dhcp
+{% endif %}
 {% endif %}
     - performance
     - custom

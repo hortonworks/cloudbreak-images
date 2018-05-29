@@ -7,7 +7,7 @@ RUN apt-get update && \
 
 COPY /docker/common/src /src
 
-RUN gcc -Wall -DCOMMAND='"/bin/systemd"' -o /systemd-wrapper /src/start-setuid.c
+RUN gcc -Wall -DCOMMAND='"/bootstrap/start-systemd.sh"' -o /systemd-wrapper /src/start-setuid.c
 
 #####
 
@@ -23,6 +23,7 @@ ENV PS1 "[\u@cloudbreak \W]\$ "
 # Set default shell to bash
 SHELL ["/bin/bash", "-c"]
 
+# Install packages
 RUN apt-get update && \
     apt-get install -y --no-install-recommends \
         apt-transport-https \
@@ -56,12 +57,19 @@ RUN dpkg-divert --add --rename /bin/systemctl && \
 COPY /saltstack/ /tmp/saltstack/
 COPY /repos/     /tmp/repos/
 COPY /scripts/   /tmp/scripts/
-
 COPY docker/common/_grains/ /tmp/saltstack/base/salt/_grains/
 COPY docker/common/_grains/ /tmp/saltstack/hortonworks/salt/_grains/
 RUN printf '\n\nproviders:\n  service: systemd\n' >>/tmp/saltstack/config/minion
-RUN /tmp/scripts/salt-install.sh ubuntu salt-repo-ubuntu16.list
+RUN /tmp/scripts/salt-install.sh debian salt-repo-debian9.list
 RUN /tmp/scripts/salt-setup.sh hortonworks
+
+# Fix SaltStack init autodiscovery
+RUN printf '\n\nproviders:\n  service: systemd\n' >>/etc/salt/minion
+COPY docker/common/_grains/ /srv/salt/_grains/
+
+# Fix startup problems for Type=notify systemd services
+COPY docker/common/systemd-fix.service /etc/systemd/system/
+RUN systemctl enable systemd-fix
 
 # Undo systemctl replacement
 RUN rm /bin/systemctl && \
@@ -71,12 +79,14 @@ RUN rm /bin/systemctl && \
 RUN groupmod -g 99 nogroup && \
     usermod -u 99 -g nogroup nobody
 
-COPY --from=builder /systemd-wrapper /systemd-wrapper
-RUN chown root:nogroup /systemd-wrapper && \
-    chmod 4750 /systemd-wrapper
+# CloudBreak expects /bootstrap/start-systemd as an entrypoint
+COPY docker/common/start-systemd.sh /bootstrap/start-systemd.sh
+COPY --from=builder /systemd-wrapper /bootstrap/start-systemd
+RUN chown root:nogroup /bootstrap/start-systemd && \
+    chmod 4750 /bootstrap/start-systemd
 
 RUN systemctl enable ssh cron
 
 EXPOSE 22
 
-CMD ["/systemd-wrapper", "--system"]
+CMD ["/bootstrap/start-systemd"]
