@@ -56,10 +56,4 @@ if [ -f "/etc/cloudbreak-config.props" ]; then
     /usr/bin/cb-init.sh
 fi
 
-###
-# Fix ssh login problem.
-# "System is booting up. See pam_nologin(8)"
-###
-sed -i '/pam_nologin/s/\(.*\)/#\1/g' /etc/pam.d/sshd
-
 exec /bin/systemd --system

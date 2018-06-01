@@ -75,6 +75,10 @@ RUN systemctl enable systemd-fix
 RUN rm /bin/systemctl && \
     dpkg-divert --remove --rename /bin/systemctl
 
+# Fix ssh login and salt-api auth problems
+RUN sed -i '/pam_nologin/s/\(.*\)/#\1/g' /etc/pam.d/sshd
+RUN sed -i '/pam_nologin/s/\(.*\)/#\1/g' /etc/pam.d/login
+
 # Ycloud integration
 RUN groupmod -g 99 nogroup && \
     usermod -u 99 -g nogroup nobody
