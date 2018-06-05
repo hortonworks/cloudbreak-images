@@ -2,7 +2,7 @@ install_cloud-init_packages:
   pkg.installed:
     - pkgs:
       - cloud-init
-    {% if grains['os_family'] == 'Debian' and  grains['osmajorrelease'] | int == 7 %}
+    {% if grains['os'] == 'Debian' and  grains['osmajorrelease'] | int == 7 %}
     - fromrepo: wheezy-backports
     {% endif %}
 

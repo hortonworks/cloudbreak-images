@@ -13,7 +13,7 @@
         - epel-release
 
   {% endif %}
-{% elif grains['os_family'] == 'Debian' and grains['osmajorrelease'] | int == 7 %}
+{% elif grains['os'] == 'Debian' and grains['osmajorrelease'] | int == 7 %}
 
 install_wheezy_backports_repository:
   pkgrepo.managed:
