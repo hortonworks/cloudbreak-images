@@ -1,5 +1,25 @@
 #!/bin/bash
 
+###
+# CloudBreak uses unbound as a caching name server. Docker bind-mounts
+# /etc/resolv.conf file that is why resolvconf package cannot be used
+# as it tries to replace it with a symlink. A workaround is to tranform
+# resolv.conf into unbound configuration and set unbound as a nameserver.
+###
+echo 'forward-zone:' >/etc/unbound/conf.d/99-default.conf
+echo '  name: "."' >>/etc/unbound/conf.d/99-default.conf
+for nameserver in $(awk '/^nameserver/{print $2}' /etc/resolv.conf); do
+  echo "  forward-addr: ${nameserver}" >>/etc/unbound/conf.d/99-default.conf
+done
+
+echo 'forward-zone:' >>/etc/unbound/conf.d/99-default.conf
+echo '  name: "in-addr.arpa."' >>/etc/unbound/conf.d/99-default.conf
+for nameserver in $(awk '/^nameserver/{print $2}' /etc/resolv.conf); do
+  echo "  forward-addr: ${nameserver}" >>/etc/unbound/conf.d/99-default.conf
+done
+
+echo "nameserver 127.0.0.1" >/etc/resolv.conf
+
 #### Generate input for Ambari from container_limits generated dynamically by YARN
 echo "using container_limits to create system resource overrides for ambari"
 memoryMb=`cat container_limits | grep memory= | awk -F= '{print $2}'`
