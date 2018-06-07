@@ -29,10 +29,3 @@ enable_dhcp_set_hostname:
     - include_empty: True
 
 {% endif %}
-
-{% if pillar['subtype'] == 'Docker' %}
-/etc/resolv.conf:
-  file.managed:
-    - name: /etc/resolv.conf.ycloud
-    - source: salt://{{ slspath }}/etc/resolv.conf.ycloud
-{% endif %}
