@@ -98,7 +98,7 @@ systemd-link:
 
 reenable-postgres:
   cmd.run:
-    - name: systemctl reenable postgresql-9.5.service    
+    - name: systemctl reenable postgresql-9.5.service
 
 {% else %}
 init-pg-database:
@@ -107,9 +107,11 @@ init-pg-database:
 {% endif %}
 {% endif %}
 
+{% if pillar['subtype'] != 'Docker' %}
 start-postgresql:
   service.running:
     - name: postgresql
+{% endif %}
 
 /opt/salt/scripts/conf_pgsql_listen_address.sh:
   file.managed:
@@ -122,4 +124,6 @@ configure-listen-address:
     - name: runuser -l postgres -c '/opt/salt/scripts/conf_pgsql_listen_address.sh' && echo $(date +%Y-%m-%d:%H:%M:%S) >> /var/log/pgsql_listen_address_configured
     - require:
       - file: /opt/salt/scripts/conf_pgsql_listen_address.sh
+{% if pillar['subtype'] != 'Docker' %}
       - service: start-postgresql
+{% endif %}
