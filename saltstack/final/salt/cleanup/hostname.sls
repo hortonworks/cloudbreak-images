@@ -1,6 +1,9 @@
 /etc/hostname:
   file.absent
 
+/var/dhcp-hook.run:
+  file.absent
+
 {% if pillar['OS'] == 'amazonlinux2' %}
 hostnamectl_reset:
   cmd.run:
