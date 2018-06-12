@@ -8,9 +8,36 @@ LOG_ID="dhcp-hook"
 # set to "true" if logging enabled
 LOG_ENABLED="true"
 
+USE_SYSTEMD_CAT=$(command -v systemd-cat && echo "true" || echo "false")
+LOGFILE=/var/log/dhcp-hook.log
+
+RUN_FILE=/var/dhcp-hook.run
+
 log() {
     if [[ "${LOG_ENABLED}" == "true" ]]; then
-        echo ${1} | systemd-cat -t "${LOG_ID}"
+        if [[ "${USE_SYSTEMD_CAT}" == "true" ]]; then
+            echo ${1} | systemd-cat -t "${LOG_ID}"
+        else
+            DATE=`date '+%Y-%m-%d %H:%M:%S'`
+            echo "${DATE} ${1}" >> $LOGFILE
+        fi
+    fi
+}
+
+set_hostname_from_dns() {
+    log "set hostname method: $@"
+    REVERSE_DNS=$1
+    IP=$2
+    search=$3
+    log "Reverse DNS for $IP: $REVERSE_DNS"
+    FQDN=$(echo $REVERSE_DNS | grep -Eo "([A-Za-z0-9-]+\.)+${search}")
+    HOSTNAME=$(echo $FQDN | sed "s/\.${search}//g")
+    if [[ -n "${HOSTNAME// }" ]]; then
+        log "Setting hostname to: $HOSTNAME"
+        echo $HOSTNAME > /etc/hostname
+        hostname -F /etc/hostname
+    else
+        log "No hostname was found from DNS server for domain ${search}"
     fi
 }
 
@@ -32,17 +59,29 @@ make_resolv_conf() {
         fi
     fi
 
-    IP=$(ip addr show dev ${interface} | grep  -Po 'inet \K[\d.]+')
-    REVERSE_DNS=$(host $IP)
-    if [[ $? -eq 0 ]]; then
-        log "Reverse DNS for $IP: $REVERSE_DNS"
-	    FQDN=$(echo $REVERSE_DNS | awk '{ print $5 }' | sed 's/\.$//g')
-        HOSTNAME=$(echo $FQDN | sed "s/\.${search}//g")
-	    log "Setting hostname to: $HOSTNAME"
-	    echo $HOSTNAME > /etc/hostname
-        hostname -F /etc/hostname
+    if [ ! -f "$RUN_FILE" ]; then 
+        IP=$(ip addr show dev ${interface} | grep  -Po 'inet \K[\d.]+')
+        REVERSE_DNS=$(host $IP)
+        if [[ $? -eq 0 ]]; then
+            set_hostname_from_dns "$REVERSE_DNS" "$IP" "$search"
+        else
+            log "Failed to get reverse DNS name for $IP, trying directly with DNS servers: ${new_domain_name_servers}"
+            for nameserver in ${new_domain_name_servers} ; do
+                REVERSE_DNS=$(dig @${nameserver} -x $IP)
+                log "Reverse DNS by ${nameserver}: ${REVERSE_DNS}"
+                echo "$REVERSE_DNS" | grep -qc "${search}"
+                if [[ $? -eq 0 ]]; then
+                    set_hostname_from_dns "$REVERSE_DNS" "$IP" "$search"
+                    break
+                else
+                    log "$nameserver DNS server didn't return valid result for $IP"
+                fi
+            done
+        fi
+        echo "DO NOT DELETE" >> $RUN_FILE
+        echo "Run at $(date '+%Y-%m-%d %H:%M:%S')" >> $RUN_FILE
     else
-        log "Failed to get reverse DNS name for $IP"
+        log "Run file exists, skipping DNS host name setup"
     fi
 
     log "Cleaning /etc/resolv.conf"
