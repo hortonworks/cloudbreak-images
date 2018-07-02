@@ -43,7 +43,6 @@ set_hostname_from_dns() {
 
 make_resolv_conf() {
     log "Starting make_resolv_conf on interface: ${interface}"
-    [ "${interface}" != "{{ pillar['network_interface'] }}" ] && return 0
 
     if [ -n "${SEARCH}" ]; then
         search="${SEARCH}"
@@ -58,6 +57,8 @@ make_resolv_conf() {
             search="${new_domain_name}"
         fi
     fi
+
+    log "Search set to: ${search}"
 
     if [ ! -f "$RUN_FILE" ]; then 
         IP=$(ip addr show dev ${interface} | grep  -Po 'inet \K[\d.]+')
