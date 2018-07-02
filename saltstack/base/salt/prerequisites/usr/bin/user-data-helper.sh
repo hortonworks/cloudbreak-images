@@ -33,18 +33,6 @@ setup_tmp_ssh() {
   echo "#tmpssh_end" >> /home/${SSH_USER}/.ssh/authorized_keys
 }
 
-get_ip() {
-  ifconfig {{ pillar['network_interface'] }} | sed -En 's/.*inet (addr:)?(([0-9]*\.){3}[0-9]*).*/\2/p'
-}
-
-fix_hostname() {
-  if grep -q $(get_ip) /etc/hosts ;then
-    sed -i "/$(get_ip)/d" /etc/hosts
-  else
-    echo OK
-  fi
-}
-
 format_disks() {
   lazy_format_disks
   cd /hadoopfs/fs1 && mkdir logs logs/ambari-server logs/ambari-agent logs/consul-watch logs/kerberos
@@ -138,7 +126,6 @@ main() {
     eval "$@"
   elif [ ! -f "/var/cb-init-executed" ]; then
     [[ $CLOUD_PLATFORM != "YARN" ]] && format_disks
-    fix_hostname
     if [[ "$IS_GATEWAY" == "true" ]]; then
       setup_tmp_ssh
       if [[ -n "$CB_CERT" ]]; then
