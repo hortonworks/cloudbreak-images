@@ -80,7 +80,8 @@ UK South:hwxsouthuk,\
 West Central US:hwxwestcentralus,\
 UK West:hwxwestuk,\
 West US 2:hwxwestus2,\
-West India:hwxwestindia
+West India:hwxwestindia,\
+France Central:hwxfrancecentral
 endef
 
 GCP_STORAGE_BUNDLE ?= "sequenceiqimage"

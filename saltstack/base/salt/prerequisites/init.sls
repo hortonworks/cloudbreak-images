@@ -21,8 +21,3 @@ include:
     - template: jinja
     - include_empty: True
     - file_mode: 755
-
-/usr/lib/jvm:
-  file.recurse:
-    - source: salt://{{ slspath }}/usr/lib/jvm/
-    - include_empty: True

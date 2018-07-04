@@ -40,6 +40,7 @@
     "atlas_artifact_type": "{{ env `ATLAS_ARTIFACT_TYPE` }}",
     "image_name": "{{ env `IMAGE_NAME` }}",
     "image_size": "{{ env `IMAGE_SIZE` }}",
+    "image_owner": "{{ env `IMAGE_OWNER` }}",
     "azure_image_publisher": "{{ env `AZURE_IMAGE_PUBLISHER` }}",
     "azure_image_offer": "{{ env `AZURE_IMAGE_OFFER` }}",
     "azure_image_sku": "{{ env `AZURE_IMAGE_SKU` }}",
@@ -73,7 +74,8 @@
       "ena_support": true,
       "skip_region_validation": true,
       "tags": {
-        "Owner": "{{ user `image_owner` }}"
+        "Owner": "{{ user `image_owner` }}",
+        "cb-creation-timestamp": "{{timestamp}}"
       },
       "ami_block_device_mappings": [
         {
@@ -110,7 +112,8 @@
       "ena_support": false,
       "skip_region_validation": true,
       "tags": {
-        "Owner": "{{ user `image_owner` }}"
+        "Owner": "{{ user `image_owner` }}",
+        "cb-creation-timestamp": "{{timestamp}}"
       },
       "ami_block_device_mappings": [
         {
@@ -147,7 +150,8 @@
       "ena_support": false,
       "skip_region_validation": true,
       "tags": {
-        "Owner": "{{ user `image_owner` }}"
+        "Owner": "{{ user `image_owner` }}",
+        "cb-creation-timestamp": "{{timestamp}}"
       },
       "ami_block_device_mappings": [
         {
@@ -184,7 +188,8 @@
       "ena_support": false,
       "skip_region_validation": true,
       "tags": {
-        "Owner": "{{ user `image_owner` }}"
+        "Owner": "{{ user `image_owner` }}",
+        "cb-creation-timestamp": "{{timestamp}}"
       },
       "ami_block_device_mappings": [
         {
@@ -221,7 +226,8 @@
       "ena_support": false,
       "skip_region_validation": true,
       "tags": {
-        "Owner": "{{ user `image_owner` }}"
+        "Owner": "{{ user `image_owner` }}",
+        "cb-creation-timestamp": "{{timestamp}}"
       },
       "ami_block_device_mappings": [
         {
@@ -258,7 +264,8 @@
       "ena_support": false,
       "skip_region_validation": true,
       "tags": {
-        "Owner": "{{ user `image_owner` }}"
+        "Owner": "{{ user `image_owner` }}",
+        "cb-creation-timestamp": "{{timestamp}}"
       },
       "ami_block_device_mappings": [
         {
@@ -295,7 +302,8 @@
       "ena_support": false,
       "skip_region_validation": true,
       "tags": {
-        "Owner": "{{ user `image_owner` }}"
+        "Owner": "{{ user `image_owner` }}",
+        "cb-creation-timestamp": "{{timestamp}}"
       },
       "ami_block_device_mappings": [
         {
@@ -435,6 +443,7 @@
     {
       "name": "gc-centos7",
       "type": "googlecompute",
+      "disable_default_service_account" : true,
       "account_file": "{{user `gcp_account_file`}}",
       "source_image": "centos-7-v20160921",
       "zone": "us-central1-b",
@@ -446,11 +455,16 @@
       "disk_size": "{{user `image_size`}}",
       "tags": [
         "packer", "imagebuild-hortonworks"
-      ]
+      ],
+      "labels": {
+        "owner": "{{ user `image_owner` | clean_image_name }}",
+        "cb-creation-timestamp": "{{timestamp}}"
+      }
     },
     {
       "name": "gc-sles12sp3",
       "type": "googlecompute",
+      "disable_default_service_account" : true,
       "account_file": "{{user `gcp_account_file`}}",
       "source_image": "sles-12-sp3-v20180214",
       "zone": "us-central1-b",
@@ -462,12 +476,17 @@
       "disk_size": "{{user `image_size`}}",
       "tags": [
         "packer", "imagebuild-hortonworks"
-      ]
+      ],
+      "labels": {
+        "owner": "{{ user `image_owner` | clean_image_name }}",
+        "cb-creation-timestamp": "{{timestamp}}"
+      }
     },
 
     {
       "name": "gc-ubuntu16",
       "type": "googlecompute",
+      "disable_default_service_account" : true,
       "account_file": "{{user `gcp_account_file`}}",
       "source_image": "ubuntu-1604-xenial-v20180522",
       "zone": "us-central1-b",
@@ -479,7 +498,11 @@
       "disk_size": "{{user `image_size`}}",
       "tags": [
         "packer", "imagebuild-hortonworks"
-      ]
+      ],
+      "labels": {
+        "owner": "{{ user `image_owner` | clean_image_name }}",
+        "cb-creation-timestamp": "{{timestamp}}"
+      }
     },
     {
       "name": "arm-rhel6",
@@ -504,7 +527,8 @@
       "vm_size": "Standard_D4",
       "os_disk_size_gb": "{{user `image_size`}}",
       "azure_tags": {
-        "Owner": "{{ user `image_owner` }}"
+        "Owner": "{{ user `image_owner` }}",
+        "cb-creation-timestamp": "{{timestamp}}"
       }
     },
     {
@@ -530,7 +554,8 @@
       "vm_size": "Standard_D4",
       "os_disk_size_gb": "{{user `image_size`}}",
       "azure_tags": {
-        "Owner": "{{ user `image_owner` }}"
+        "Owner": "{{ user `image_owner` }}",
+        "cb-creation-timestamp": "{{timestamp}}"
       }
     },
     {
@@ -556,7 +581,8 @@
       "vm_size": "Standard_D4",
       "os_disk_size_gb": "{{user `image_size`}}",
       "azure_tags": {
-        "Owner": "{{ user `image_owner` }}"
+        "Owner": "{{ user `image_owner` }}",
+        "cb-creation-timestamp": "{{timestamp}}"
       }
     },
     {
@@ -582,7 +608,8 @@
       "vm_size": "Standard_D4",
       "os_disk_size_gb": "{{user `image_size`}}",
       "azure_tags": {
-        "Owner": "{{ user `image_owner` }}"
+        "Owner": "{{ user `image_owner` }}",
+        "cb-creation-timestamp": "{{timestamp}}"
       }
     }
   ],

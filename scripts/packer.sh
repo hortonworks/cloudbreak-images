@@ -7,7 +7,7 @@ packer_in_container() {
 
 # https://github.com/hashicorp/packer/issues/5825
   if [[ "$2" == -only=gc-* ]]; then
-    PACKER_VERSION="0.12.3"
+    PACKER_VERSION="1.2.4"
   fi
 
   if [[ "$GCP_ACCOUNT_FILE" ]]; then
