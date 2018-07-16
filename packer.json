@@ -59,7 +59,8 @@
     "local_url_hdp_utils": "{{ env `LOCAL_URL_HDP_UTILS` }}",
     "local_url_vdf": "{{ env `LOCAL_URL_VDF` }}",
     "repository_type": "{{ env `REPOSITORY_TYPE` }}",
-    "sles_registration_code": "{{ env `SLES_REGISTRATION_CODE` }}"
+    "sles_registration_code": "{{ env `SLES_REGISTRATION_CODE` }}",
+    "package_versions" :  "{{ env `PACKAGE_VERSIONS` }}"
   },
   "builders": [
     {
@@ -668,6 +669,21 @@
         "REPOSITORY_TYPE={{user `repository_type`}}",
         "SLES_REGISTRATION_CODE={{user `sles_registration_code`}}"
       ]
+    },
+    {
+      "type": "shell",
+      "script": "scripts/generate-package-versions.sh",
+      "expect_disconnect": true,
+      "remote_path" : " /tmp/generate-package-versions.sh",
+      "execute_command": "whoami; chmod +x {{ .Path }}; sudo {{ .Vars }} {{ .Path }} {{ user `package_versions` }} ",
+      "skip_clean": true,
+      "start_retry_timeout" : "0.5m"
+    },
+    {
+      "type": "file",
+      "source": "/tmp/package-versions.json",
+      "destination": "package-versions.json",
+      "direction" : "download"
     }
   ],
   "post-processors": [
