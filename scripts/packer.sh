@@ -115,6 +115,7 @@ packer_in_container() {
     -e DESCRIPTION="$DESCRIPTION" \
     -e REPOSITORY_TYPE="$REPOSITORY_TYPE" \
     -e SLES_REGISTRATION_CODE="$SLES_REGISTRATION_CODE" \
+    -e PACKAGE_VERSIONS="$PACKAGE_VERSIONS" \
     -v $HOME/.aws:/root/.aws \
     -v /var/run/docker.sock:/var/run/docker.sock \
     -v $PWD:$PWD \

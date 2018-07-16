@@ -33,7 +33,8 @@ cat  > ${image_name}.json <<EOF
 "gcp_storage_bundle": "${gcp_storage_bundle}",
 "hdp_vdf": "$([ "$repository_type" == "local" ] && echo "${local_url_vdf}" || echo "${hdp_vdf}")",
 "hdp_repository_version": "${hdp_repository_version}",
-"manifest": $(if [ -f ${image_name}_manifest.json ]; then cat ${image_name}_manifest.json; else echo "{}"; fi)
+"manifest": $(if [ -f ${image_name}_manifest.json ]; then cat ${image_name}_manifest.json; else echo "{}"; fi),
+"package_versions": $(if [ -f package-versions.json ]; then cat package-versions.json; else echo "{}"; fi)
 }
 EOF
 
