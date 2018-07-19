@@ -667,17 +667,9 @@
         "LOCAL_URL_HDP_UTILS={{user `local_url_hdp_utils`}}",
         "LOCAL_URL_VDF={{user `local_url_vdf`}}",
         "REPOSITORY_TYPE={{user `repository_type`}}",
-        "SLES_REGISTRATION_CODE={{user `sles_registration_code`}}"
+        "SLES_REGISTRATION_CODE={{user `sles_registration_code`}}",
+        "PACKAGE_VERSIONS={{user `package_versions`}}"
       ]
-    },
-    {
-      "type": "shell",
-      "script": "scripts/generate-package-versions.sh",
-      "expect_disconnect": true,
-      "remote_path" : " /tmp/generate-package-versions.sh",
-      "execute_command": "whoami; chmod +x {{ .Path }}; sudo {{ .Vars }} {{ .Path }} {{ user `package_versions` }} ",
-      "skip_clean": true,
-      "start_retry_timeout" : "0.5m"
     },
     {
       "type": "file",
