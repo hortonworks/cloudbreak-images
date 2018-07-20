@@ -17,4 +17,5 @@ done)
 }
 EOF
 chmod 744 /tmp/package-versions.json
+
 exit 0

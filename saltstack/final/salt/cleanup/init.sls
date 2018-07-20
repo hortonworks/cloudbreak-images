@@ -1,4 +1,5 @@
 include:
+  - {{ slspath }}.generate-package-versions
   - {{ slspath }}.set-skip-repo-if-unavailable
   - {{ slspath }}.authorized_keys
   - {{ slspath }}.fstab

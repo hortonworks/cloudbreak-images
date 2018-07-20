@@ -10,6 +10,8 @@ pillar_roots:
     - /srv/pillar/hortonworks
   optional:
     - /srv/pillar/optional
+  final:
+    - /srv/pillar/final
 
 file_roots:
   base:
