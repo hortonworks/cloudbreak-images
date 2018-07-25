@@ -1,10 +1,7 @@
 #!/bin/bash
 
 #Determine salt-bootstrap version
-IFS=' '
-arr=($(salt-bootstrap --version))
-SALT_BOOTSTRAP_VERSION=${arr[1]}
-unset IFS
+SALT_BOOTSTRAP_VERSION=$(salt-bootstrap --version | awk '{print $2}')
 
 #Determine other package versions
 cat  > /tmp/package-versions.json <<EOF
