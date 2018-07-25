@@ -15,7 +15,7 @@ SLES_REGISTRATION_CODE ?= ""
 # DO NOT EDIT BELOW THIS LINE #
 ###############################
 
-PACKAGE_VERSIONS ?= "python"
+PACKAGE_VERSIONS ?= ""
 HDP_VERSION_SHORT=hdp-$(shell echo $(HDP_VERSION) | tr -d . | cut -c1-2 )
 IMAGE_NAME ?= $(BASE_NAME)-$(HDP_VERSION_SHORT)-$(shell date +%y%m%d%H%M)$(IMAGE_NAME_SUFFIX)
 
