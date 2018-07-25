@@ -98,6 +98,9 @@
         "builder": "packer",
         "version": "{{user `version`}}"
       },
+      "run_tags": {
+        "Owner": "{{ user `image_owner` }}"
+      },
       "snapshot_groups": "all",
       "ami_groups": "all",
       "ami_name": "{{ user `image_name`}}"
@@ -116,6 +119,9 @@
       "tags": {
         "Owner": "{{ user `image_owner` }}",
         "cb-creation-timestamp": "{{timestamp}}"
+      },
+      "run_tags": {
+        "Owner": "{{ user `image_owner` }}"
       },
       "ami_block_device_mappings": [
         {
@@ -156,6 +162,9 @@
         "Owner": "{{ user `image_owner` }}",
         "cb-creation-timestamp": "{{timestamp}}"
       },
+      "run_tags": {
+        "Owner": "{{ user `image_owner` }}"
+      },
       "ami_block_device_mappings": [
         {
           "device_name": "/dev/xvda",
@@ -194,6 +203,9 @@
       "tags": {
         "Owner": "{{ user `image_owner` }}",
         "cb-creation-timestamp": "{{timestamp}}"
+      },
+      "run_tags": {
+        "Owner": "{{ user `image_owner` }}"
       },
       "ami_block_device_mappings": [
         {
@@ -234,6 +246,9 @@
         "Owner": "{{ user `image_owner` }}",
         "cb-creation-timestamp": "{{timestamp}}"
       },
+      "run_tags": {
+        "Owner": "{{ user `image_owner` }}"
+      },
       "ami_block_device_mappings": [
         {
           "device_name": "/dev/xvda",
@@ -273,6 +288,9 @@
         "Owner": "{{ user `image_owner` }}",
         "cb-creation-timestamp": "{{timestamp}}"
       },
+      "run_tags": {
+        "Owner": "{{ user `image_owner` }}"
+      },
       "ami_block_device_mappings": [
         {
           "device_name": "/dev/xvda",
@@ -311,6 +329,9 @@
       "tags": {
         "Owner": "{{ user `image_owner` }}",
         "cb-creation-timestamp": "{{timestamp}}"
+      },
+      "run_tags": {
+        "Owner": "{{ user `image_owner` }}"
       },
       "ami_block_device_mappings": [
         {
