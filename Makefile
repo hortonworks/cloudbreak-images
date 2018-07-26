@@ -55,6 +55,14 @@ define AWS_AMI_REGIONS
 ap-northeast-1,ap-northeast-2,ap-south-1,ap-southeast-1,ap-southeast-2,ca-central-1,eu-central-1,eu-west-1,eu-west-2,eu-west-3,sa-east-1,us-east-1,us-east-2,us-west-1,us-west-2
 endef
 
+define AWS_GOV_AMI_REGIONS
+us-gov-west-1
+endef
+
+define AWS_GOV_INSTANCE_PROFILE
+packer
+endef
+
 define AZURE_STORAGE_ACCOUNTS
 East Asia:sequenceiqeastasia2,\
 East US:sequenceiqeastus12,\
@@ -96,12 +104,23 @@ show-image-name:
 build-aws-amazonlinux:
 	$(ENVS) \
 	AWS_AMI_REGIONS="$(AWS_AMI_REGIONS)" \
+	AWS_INSTANCE_PROFILE="$(AWS_GOV_INSTANCE_PROFILE)" \
 	OS=amazonlinux \
 	OS_TYPE=redhat6 \
 	ATLAS_ARTIFACT_TYPE=amazon \
 	SALT_INSTALL_OS=amazon \
 	SALT_REPO_FILE="salt-repo-amzn.repo" \
 	./scripts/packer.sh build -only=aws-amazonlinux $(PACKER_OPTS)
+
+build-gov-aws-amazonlinux:
+	$(ENVS) \
+	AWS_AMI_REGIONS="$(AWS_GOV_AMI_REGIONS)" \
+	OS=amazonlinux \
+	OS_TYPE=redhat6 \
+	ATLAS_ARTIFACT_TYPE=amazon \
+	SALT_INSTALL_OS=amazon \
+	SALT_REPO_FILE="salt-repo-amzn.repo" \
+	./scripts/packer.sh build -only=gov-aws-amazonlinux $(PACKER_OPTS)
 
 build-aws-amazonlinux2:
 	$(ENVS) \
