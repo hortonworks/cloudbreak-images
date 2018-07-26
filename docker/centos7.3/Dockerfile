@@ -6,7 +6,6 @@ ENV container docker
 ENV TERM linux
 ENV PS1 "[\u@cloudbreak \W]\$ "
 
-ENV SALT_REPO=salt-repo-el7.repo
 ENV SYSTEMCTL_REPLACEMENT=https://raw.githubusercontent.com/hortonworks/docker-systemctl-replacement/3a885817b377f0307bd03d82323fa5749136de8f/files/docker/systemctl.py
 
 # Fix the default shell from dash to bash

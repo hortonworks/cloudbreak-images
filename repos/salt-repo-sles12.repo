@@ -1,8 +1,0 @@
-[saltstack-repo]
-name=Salt releases for SLE-based SUSE products (SLE_12_SP2)
-enabled=1
-autorefresh=0
-baseurl=http://repo.saltstack.com/opensuse/SLE_12_SP2/
-type=rpm-md
-gpgcheck=1
-gpgkey=http://repo.saltstack.com/opensuse/SLE_12_SP2/repodata/repomd.xml.key

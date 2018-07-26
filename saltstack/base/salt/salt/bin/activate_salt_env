@@ -1,0 +1,2 @@
+#!/bin/bash
+. {{ pillar['salt_path'] }}/bin/activate

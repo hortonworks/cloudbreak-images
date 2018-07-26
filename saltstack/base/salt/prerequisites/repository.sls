@@ -1,19 +1,4 @@
-{% if grains['os_family'] == 'RedHat' %}
-  {% if pillar['OS'] == 'amazonlinux2' or pillar['OS'] == 'redhat7' %}
-  epel_repo_package_install:
-    cmd.run:
-      - name: curl https://dl.fedoraproject.org/pub/epel/epel-release-latest-7.noarch.rpm -o epel-release-latest-7.noarch.rpm && yum install -y ./epel-release-latest-7.noarch.rpm
-      - shell: /bin/bash
-      - failhard: True
-
-  {% else %}
-  epel_repo_package_install:
-    pkg.installed:
-      - pkgs:
-        - epel-release
-
-  {% endif %}
-{% elif grains['os'] == 'Debian' and grains['osmajorrelease'] | int == 7 %}
+{% if grains['os'] == 'Debian' and grains['osmajorrelease'] | int == 7 %}
 
 install_wheezy_backports_repository:
   pkgrepo.managed:
