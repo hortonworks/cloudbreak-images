@@ -1,18 +1,15 @@
 #!/bin/bash
 
-#Determine salt-bootstrap version
-SALT_BOOTSTRAP_VERSION=$(salt-bootstrap --version | awk '{print $2}')
+set -x
 
-#Determine other package versions
-cat  > /tmp/package-versions.json <<EOF
-{
-$(for package in "$@"
+echo '{}' | jq --arg sb "$(salt-bootstrap --version | awk '{print $2}')" '. + {"salt-bootstrap": $sb}' > /tmp/package-versions.json
+cat /tmp/package-versions.json | jq --arg sv "$(salt-call --local grains.get saltversion --out json | jq -r .local)" '. + {"salt": $sv}' > /tmp/package-versions.json
+
+for package in "$@"
 do
-    echo "  \"$package\" : \"$(salt-call --local pkg.version $package --out json | jq -r .local)\"",
-done)
-  "salt-bootstrap" : "$SALT_BOOTSTRAP_VERSION"
-}
-EOF
+	cat /tmp/package-versions.json | jq --arg p "$package" --arg v "$(salt-call --local pkg.version $package --out json | jq -r .local)" '. + {($p): $v}' > /tmp/package-versions.json
+done
+
 chmod 744 /tmp/package-versions.json
 
 exit 0
