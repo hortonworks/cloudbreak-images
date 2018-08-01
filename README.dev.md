@@ -13,6 +13,7 @@
     + [Oracle JDK](#oracle-jdk)
     + [Using preinstalled JDK](#using-preinstalled-jdk)
     + [JDBC connector's JAR for MySQL or Oracle External Database](#jdbc-connectors-jar-for-mysql-or-oracle-external-database)
+    + [Secure /tmp with noexec option](#secure-tmp-with-noexec-option)
   * [Packer Postprocessors](#packer-postprocessors)
 
 
@@ -147,7 +148,15 @@ export PREINSTALLED_JAVA_HOME=/path/to/installed/jdk
 
 Cloudbreak allows you to register an existing database instance to be used for a database for some supported cluster components. If you are planning to use an external database, specifically MySQL or Oracle, you must download the JDBC connector's JAR file and provide it to Cloudbreak. Typically, this is done when registering the database with Cloudbreak by providing the "Connector's JAR URL".
 
-However, if you are burning your own custom image, you can simply place the JDBC driver in the `/opt/jdbc-drivers` directory. If you do this, you do not need to provide the "Connector's JAR URL" when registering an external database.  
+However, if you are burning your own custom image, you can simply place the JDBC driver in the `/opt/jdbc-drivers` directory. If you do this, you do not need to provide the "Connector's JAR URL" when registering an external database.
+
+### Secure /tmp with noexec option
+
+To set an additional level of security, you can enable noexec setting for /tmp partition, which does not allow execution of any binaries on /tmp folder.
+By default it is turned off, to enable it you have to set the `OPTIONAL_STATES` environment variable as following:
+```
+export OPTIONAL_STATES="noexec-tmp"
+```
 
 ## Packer Postprocessors
 
