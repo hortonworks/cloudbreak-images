@@ -54,7 +54,7 @@ function install_with_yum() {
 }
 
 function enable_epel_repository() {
-  if [ "${OS_TYPE}" == "amazonlinux2" ] || [ "${OS_TYPE}" == "redhat7" ] ; then
+  if [ "${OS}" == "amazonlinux2" ] ; then
     curl https://dl.fedoraproject.org/pub/epel/epel-release-latest-7.noarch.rpm -o epel-release-latest-7.noarch.rpm && yum install -y ./epel-release-latest-7.noarch.rpm
   elif [ "${OS}" == "amazonlinux" ] ; then
     yum-config-manager --enable epel
