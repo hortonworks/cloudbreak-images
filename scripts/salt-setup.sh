@@ -8,7 +8,6 @@ set -e -o pipefail -o errexit
 function prepare {
   sudo chown -R root:root /tmp/saltstack
   apply_amazonlinux_salt_patch
-  set_shell
 }
 
 function copy_resources {
@@ -30,16 +29,10 @@ EOF
   fi
 }
 
-function set_shell() {
-  if [ "${OS}" == "ubuntu16" ]; then
-    sed -i '/\[Service\]/a Environment="SHELL=/bin/bash"' /lib/systemd/system/salt-minion.service
-  fi
-}
-
 function highstate {
   local saltenv=${1}
   copy_resources ${saltenv}
-  salt-call --local state.highstate saltenv=${saltenv} --retcode-passthrough -l info --log-file=/tmp/salt-build-${saltenv}.log --log-file-level=info --config-dir=/tmp/saltstack/config
+  ${SALT_PATH}/bin/salt-call --local state.highstate saltenv=${saltenv} --retcode-passthrough -l info --log-file=/tmp/salt-build-${saltenv}.log --log-file-level=info --config-dir=/tmp/saltstack/config
 }
 
 function apply_optional_states {
@@ -49,7 +42,7 @@ function apply_optional_states {
   then
     local saltenv="optional"
     copy_resources ${saltenv}
-    salt-call --local state.sls ${OPTIONAL_STATES} saltenv=${saltenv} pillarenv=${saltenv} --retcode-passthrough -l info --log-file=/tmp/salt-build-${saltenv}.log --config-dir=/tmp/saltstack/config
+    ${SALT_PATH}/bin/salt-call --local state.sls ${OPTIONAL_STATES} saltenv=${saltenv} pillarenv=${saltenv} --retcode-passthrough -l info --log-file=/tmp/salt-build-${saltenv}.log --config-dir=/tmp/saltstack/config
   fi
 }
 

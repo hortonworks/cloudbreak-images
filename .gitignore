@@ -4,6 +4,7 @@ googlecompute.yml
 openstack.yml
 vars-versions.json
 vars-docker-images.json
+package-versions.json
 *.img
 execute.sh
 *.image.json

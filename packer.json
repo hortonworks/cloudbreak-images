@@ -47,8 +47,10 @@
     "azure_storage_accounts": "{{ env `AZURE_STORAGE_ACCOUNTS` }}",
     "salt_install_os": "{{ env `SALT_INSTALL_OS` }}",
     "salt_install_repo": "{{ env `SALT_INSTALL_REPO` }}",
-    "salt_repo_file": "{{ env `SALT_REPO_FILE` }}",
-    "aws_instance_type": "m4.large",
+    "salt_version": "{{ env `SALT_VERSION` }}",
+    "salt_path": "{{ env `SALT_PATH` }}",
+    "pyzmq_version": "{{ env `PYZMQ_VERSION` }}",
+    "aws_instance_type": "m5.large",
     "aws_ami_regions": "{{ env `AWS_AMI_REGIONS` }}",
     "aws_instance_profile": "{{ env `AWS_INSTANCE_PROFILE` }}",
     "custom_image_type": "{{ env `CUSTOM_IMAGE_TYPE` }}",
@@ -61,7 +63,9 @@
     "local_url_vdf": "{{ env `LOCAL_URL_VDF` }}",
     "repository_type": "{{ env `REPOSITORY_TYPE` }}",
     "sles_registration_code": "{{ env `SLES_REGISTRATION_CODE` }}",
-    "package_versions" :  "{{ env `PACKAGE_VERSIONS` }}"
+    "package_versions" :  "{{ env `PACKAGE_VERSIONS` }}",
+    "python_apt_version" : "{{ env `PYTHON_APT_VERSION` }}",
+    "salt_repo_file": "{{ env `SALT_REPO_FILE` }}"
   },
   "builders": [
     {
@@ -693,11 +697,23 @@
       "destination": "/tmp/repos"
     },
     {
+      "type": "file",
+      "source": "scripts/salt_requirements.txt",
+      "destination": "/tmp/salt_requirements.txt"
+    },
+    {
       "type": "shell",
       "script": "scripts/salt-install.sh",
       "environment_vars": [
         "SALT_INSTALL_OS={{ user `salt_install_os` }}",
         "SALT_INSTALL_REPO={{user `salt_install_repo` }}",
+        "SALT_VERSION={{user `salt_version`}}",
+        "PYZMQ_VERSION={{user `pyzmq_version`}}",
+        "SLES_REGISTRATION_CODE={{user `sles_registration_code`}}",
+        "OS_TYPE={{user `os_type`}}",
+        "OS={{user `os`}}",
+        "PYTHON_APT_VERSION={{user `python_apt_version`}}",
+        "SALT_PATH={{user `salt_path`}}",
         "SALT_REPO_FILE={{user `salt_repo_file` }}"
       ],
       "execute_command": "chmod +x {{ .Path }}; sudo {{ .Vars }} {{ .Path }}"
@@ -735,7 +751,9 @@
         "LOCAL_URL_VDF={{user `local_url_vdf`}}",
         "REPOSITORY_TYPE={{user `repository_type`}}",
         "SLES_REGISTRATION_CODE={{user `sles_registration_code`}}",
-        "PACKAGE_VERSIONS={{user `package_versions`}}"
+        "PACKAGE_VERSIONS={{user `package_versions`}}",
+        "SALT_VERSION={{user `salt_version`}}",
+        "SALT_PATH={{user `salt_path`}}"
       ]
     },
     {

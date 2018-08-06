@@ -1,0 +1,5 @@
+requests
+virtualenvwrapper
+CherryPy
+pyzmq==${PYZMQ_VERSION}
+salt==${SALT_VERSION}

@@ -5,3 +5,4 @@ base:
     - custom-image-type
     - nginx
     - salt-bootstrap
+    - salt
