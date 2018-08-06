@@ -322,8 +322,19 @@ bundle-googlecompute:
 upload-openstack-image:
 	S3_TARGET=$(S3_TARGET) ./scripts/openstack-upload.sh
 
+docker-build-centos7:
+	@ OS=centos7 OS_TYPE=redhat7 make docker-build
+
+docker-build-debian9:
+	@ OS=debian9 OS_TYPE=debian9 make docker-build
+
+docker-build-ubuntu16:
+	@ OS=ubuntu16 OS_TYPE=ubuntu16 make docker-build
+
 docker-build:
-	docker build -t registry.eng.hortonworks.com/cloudbreak/centos-7:$(shell date +%Y-%m-%d) -f docker/centos7.3/Dockerfile .
+	$(eval DOCKER_ENVS="OS=$(OS) OS_TYPE=$(OS_TYPE) SALT_VERSION=$(SALT_VERSION) SALT_PATH=$(SALT_PATH) PYZMQ_VERSION=$(PYZMQ_VERSION) PYTHON_APT_VERSION=$(PYTHON_APT_VERSION) TRACE=1")
+	$(eval DOCKER_BUILD_ARGS=$(shell echo ${DOCKER_ENVS} | xargs -n 1 -I@ echo "--build-arg '@'" | xargs))
+	docker build $(DOCKER_BUILD_ARGS) -t registry.eng.hortonworks.com/cloudbreak/centos-7:$(shell date +%Y-%m-%d) -f docker/centos7.3/Dockerfile .
 
 build-in-docker:
 	docker run -it \
