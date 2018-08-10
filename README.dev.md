@@ -189,7 +189,11 @@ Or you can use the predefined binary to activate the environment.
 source activate_salt_env
 ```
 
-If you are finished with your work with salt, you have to **deactivate the environment**: `deactivate`
+If you are finished with your work with salt, you have to **deactivate the environment**:
+
+```
+deactivate
+```
 
 ## Saltstack upgrade
 
@@ -199,7 +203,11 @@ If you want to upgrade salt installation, you have to **activate the environment
 pip install salt=={DESIRED_SALT_VERSION} --upgrade
 ```
 
-Do not forget to **deactivate** the environment: `deactivate`
+Do not forget to **deactivate** the environment:
+
+```
+deactivate
+```
 
 Be aware that the ZMQ versions should match on every instance within a cluster, so if they differ, you have to install manually ZMQ using package manager. 
 To do so, package manager should contain a repository which can provide the desired ZMQ package.
