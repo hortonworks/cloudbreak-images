@@ -1,6 +1,8 @@
+{% if pillar['subtype'] != 'Docker' %}
 update-packages:
   pkg.uptodate:
     - refresh: True
+{% endif %}
 
 packages_install:
   pkg.installed:
