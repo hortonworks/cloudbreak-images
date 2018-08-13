@@ -186,8 +186,6 @@
         "builder": "packer",
         "version": "{{user `version`}}"
       },
-      "snapshot_groups": "all",
-      "ami_groups": "all",
       "ami_name": "{{ user `image_name`}}"
     },
     {
@@ -196,7 +194,7 @@
       "region": "eu-west-1",
       "ami_regions": "{{ user `aws_ami_regions` }}",
       "ssh_pty": true,
-      "source_ami": "ami-061b1560",
+      "source_ami": "ami-3548444c",
       "instance_type": "{{ user `aws_instance_type` }}",
       "ssh_username": "centos",
       "ena_support": false,
@@ -228,8 +226,6 @@
         "builder": "packer",
         "version": "{{user `version`}}"
       },
-      "snapshot_groups": "all",
-      "ami_groups": "all",
       "ami_name": "{{ user `image_name`}}"
     },
     {
