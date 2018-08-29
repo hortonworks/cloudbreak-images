@@ -17,10 +17,9 @@ log() {
     if [[ "${LOG_ENABLED}" == "true" ]]; then
         if [[ "${USE_SYSTEMD_CAT}" == "true" ]]; then
             echo ${1} | systemd-cat -t "${LOG_ID}"
-        else
-            DATE=`date '+%Y-%m-%d %H:%M:%S'`
-            echo "${DATE} ${1}" >> $LOGFILE
         fi
+        DATE=`date '+%Y-%m-%d %H:%M:%S'`
+        echo "${DATE} ${1}" >> $LOGFILE
     fi
 }
 
@@ -30,8 +29,8 @@ set_hostname_from_dns() {
     IP=$2
     search=$3
     log "Reverse DNS for $IP: $REVERSE_DNS"
-    FQDN=$(echo $REVERSE_DNS | grep -Eo "([A-Za-z0-9-]+\.)+${search}")
-    HOSTNAME=$(echo $FQDN | sed "s/\.${search}//g")
+    FQDN=$(echo "$REVERSE_DNS" | grep -E "(pointer|PTR)" | grep -Eo "([A-Za-z0-9-]+\.)+${search}")
+    HOSTNAME=$(echo "$FQDN" | sed "s/\.${search}//g" | sort | head -1)
     if [[ -n "${HOSTNAME// }" ]]; then
         log "Setting hostname to: $HOSTNAME"
         echo $HOSTNAME > /etc/hostname
