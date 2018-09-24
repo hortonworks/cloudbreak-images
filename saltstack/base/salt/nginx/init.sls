@@ -1,8 +1,10 @@
 install_nginx:
   pkg.installed:
     - refresh: False
-    - pkgs:
-      - nginx
+    - name: nginx
+    - fromrepo: nginx
+    - skip_verify: True
+    - skip_suggestions: True
 
 /etc/nginx:
   file.managed:

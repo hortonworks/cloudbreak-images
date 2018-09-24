@@ -1,6 +1,6 @@
 [pgdg95]
 name=PostgreSQL 9.5
-baseurl=https://download.postgresql.org/pub/repos/yum/9.5/redhat/rhel-7-x86_64
+baseurl=https://download.postgresql.org/pub/repos/yum/9.5/redhat/rhel-7-ppc64le
 enabled=1
 priority=1
 gpgcheck=1

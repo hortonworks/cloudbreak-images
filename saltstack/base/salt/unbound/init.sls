@@ -26,31 +26,33 @@ install_pyhton26:
 {% endif %}
 
 install_unbound_server:
-  pkg.installed:
-    {% if grains['os'] == 'Amazon' %}
-    - fromrepo: centos-os
-    {% elif grains['os'] == 'Debian' and  grains['osmajorrelease'] | int == 7 %}
-    - fromrepo: wheezy-backports
-    {% endif %}
-    {% if grains['os_family'] == 'Suse' %}
-    - skip_verify: True
-    - sources:
-      - libldns1: http://download.opensuse.org/repositories/openSUSE:/Leap:/42.3/standard/x86_64/libldns1-1.6.17-9.13.x86_64.rpm
-      - ldns: http://download.opensuse.org/repositories/openSUSE:/Leap:/42.3/standard/x86_64/ldns-1.6.17-9.13.x86_64.rpm
-      - unbound-anchor: http://download.opensuse.org/repositories/openSUSE:/Leap:/42.3/standard/x86_64/unbound-anchor-1.5.10-3.1.x86_64.rpm
-      - libunbound2: http://download.opensuse.org/repositories/openSUSE:/Leap:/42.3/standard/x86_64/libunbound2-1.5.10-3.1.x86_64.rpm
-      - unbound: http://download.opensuse.org/repositories/openSUSE:/Leap:/42.3/standard/x86_64/unbound-1.5.10-3.1.x86_64.rpm
-    {% else %}
-    - pkgs:
-      {% if grains['os_family'] == 'RedHat' %}
-      - ldns
-      - unbound-libs
-      - unbound
-      {% elif grains['os_family'] == 'Debian' %}
-      - unbound-anchor
-      - unbound
-      {% endif %}
-    {% endif %}
+  test.succeed_without_changes:
+    - pkg.installed:
+        {% if grains['os'] == 'Amazon' %}
+        - fromrepo: centos-os
+        {% elif grains['os'] == 'Debian' and  grains['osmajorrelease'] | int == 7 %}
+        - fromrepo: wheezy-backports
+        {% endif %}
+        {% if grains['os_family'] == 'Suse' %}
+        - skip_verify: True
+        - sources:
+          - libldns1: http://download.opensuse.org/repositories/openSUSE:/Leap:/42.3/standard/x86_64/libldns1-1.6.17-9.13.x86_64.rpm
+          - ldns: http://download.opensuse.org/repositories/openSUSE:/Leap:/42.3/standard/x86_64/ldns-1.6.17-9.13.x86_64.rpm
+          - unbound-anchor: http://download.opensuse.org/repositories/openSUSE:/Leap:/42.3/standard/x86_64/unbound-anchor-1.5.10-3.1.x86_64.rpm
+          - libunbound2: http://download.opensuse.org/repositories/openSUSE:/Leap:/42.3/standard/x86_64/libunbound2-1.5.10-3.1.x86_64.rpm
+          - unbound: http://download.opensuse.org/repositories/openSUSE:/Leap:/42.3/standard/x86_64/unbound-1.5.10-3.1.x86_64.rpm
+        {% else %}
+        test.succeed_without_changes:
+          - pkgs:
+            {% if grains['os_family'] == 'RedHat' %}
+            - ldns
+            - unbound-libs
+            - unbound
+            {% elif grains['os_family'] == 'Debian' %}
+            - unbound-anchor
+            - unbound
+            {% endif %}
+        {% endif %}
 
 
 {% if grains['os'] == 'Amazon' %}

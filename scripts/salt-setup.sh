@@ -1,5 +1,7 @@
 #!/bin/bash
 
+#sudo() { $@; }
+
 : ${DEBUG:=1}
 : ${DRY_RUN:-1}
 

@@ -1,7 +1,7 @@
 {% if grains['os_family'] == 'Suse' %}
     {% set default_java_home = '/usr/lib64/jvm/java-openjdk' %}
 {% else %}
-    {% set default_java_home = '/usr/lib/jvm/java' %}
+    {% set default_java_home = '/usr/lib/jvm/java-1.8.0-openjdk' %}
 {% endif %}
 
 JAVA_HOME: {{ salt['environ.get']('PREINSTALLED_JAVA_HOME') | default(default_java_home, True) }}

@@ -20,15 +20,18 @@
 {% if grains['os_family'] == 'RedHat' and grains['osmajorrelease'] | int == 7  %}
 install-postgres:
   pkg.installed:
+    - name: postgresql95-server
+    - fromrepo: pgdg95
+
+install-postgres-jdbc:
+  pkg.installed:
     - pkgs:
-      - postgresql-server
       - postgresql-jdbc
-      - postgresql
 
 init-pg-database:
   cmd.run:
-    - name: find /var/lib/pgsql/ -name PG_VERSION | grep -q "data/PG_VERSION" || postgresql-setup initdb
-    - runas: postgres
+    - name: find /var/lib/pgsql/ -name PG_VERSION | grep -q "data/PG_VERSION" || /usr/pgsql-9.5/bin/postgresql95-setup initdb
+    - runas: root
 {% elif grains['os_family'] == 'Debian' %}
 install-postgres:
   pkg.installed:
@@ -110,7 +113,7 @@ init-pg-database:
 {% if pillar['subtype'] != 'Docker' %}
 start-postgresql:
   service.running:
-    - name: postgresql
+    - name: postgresql-9.5
 {% endif %}
 
 /opt/salt/scripts/conf_pgsql_listen_address.sh:

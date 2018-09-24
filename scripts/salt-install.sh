@@ -47,6 +47,7 @@ function install_with_yum() {
     cp /tmp/repos/saltstack-gpg-key.pub /etc/pki/rpm-gpg/saltstack-gpg-key.pub
     yum install -y zeromq zeromq-devel
   fi
+  yum install -y zeromq zeromq-devel gcc iptables iptables-services unzip mc tar ntp tmux deltarpm bind-utils net-tools wget git curl snappy ruby openssl-devel cloud-init unbound-libs unbound ldns policycoreutils policycoreutils-python haveged java-1.8.0-openjdk-devel java-1.8.0-openjdk-src java-1.8.0-openjdk-headless jq krb5-server krb5-libs krb5-workstation
   install_python_pip
   echo "exclude=salt" >> /etc/yum.conf
   install_salt_with_pip

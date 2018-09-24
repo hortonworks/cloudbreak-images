@@ -1,8 +1,9 @@
 {% if grains['os_family'] == 'RedHat' %}
 install_openssl_devel:
-  pkg.installed:
-    - pkgs:
-      - openssl-devel
+  test.succeed_without_changes:
+    - pkg.installed:
+      - pkgs:
+        - openssl-devel
 {% endif %}
 
 {% if grains['os'] | upper == 'SUSE' %}
@@ -32,6 +33,4 @@ update_python_pip3:
 install_jq:
   file.managed:
     - name: /usr/bin/jq
-    - source: http://stedolan.github.io/jq/download/linux64/jq
-    - skip_verify: True
     - mode: 755

@@ -8,6 +8,7 @@
     "os_username": "{{ env `OS_USERNAME` }}",
     "os_password": "{{ env `OS_PASSWORD` }}",
     "os_tenant_name": "{{ env `OS_TENANT_NAME` }}",
+    "os_domain_name": "{{env `OS_DOMAIN_NAME` }}",
     "client_id": "{{ env `ARM_CLIENT_ID` }}",
     "client_secret": "{{ env `ARM_CLIENT_SECRET` }}",
     "subscription_id": "{{ env `ARM_SUBSCRIPTION_ID` }}",
@@ -481,15 +482,18 @@
       "type": "openstack",
       "username": "{{user `os_username`}}",
       "password": "{{user `os_password`}}",
+      "domain_name": "default",
       "tenant_name": "{{user `os_tenant_name`}}",
-      "ssh_username": "centos",
+      "region": "RegionOne",
+      "insecure": "true",
+      "ssh_username": "root",
       "ssh_pty": "true",
       "image_name": "{{user `image_name`}}",
-      "source_image": "7f9af29f-489a-4ba2-837b-70f708be7bc7",
-      "flavor": "m1.medium",
-      "endpoint_type": "internalURL",
+      "source_image": "a2106a85-f820-4a83-9ab7-77e994ae6c91",
+      "flavor": "Hortonworks Template",
+      "endpoint_type": "public",
       "networks": [
-        "a5ad7a1d-d3a6-4180-8d61-07a23f6fb449"
+        "1aa77549-33db-4e0d-8506-21dc02ac7e16"
       ]
     },
     {

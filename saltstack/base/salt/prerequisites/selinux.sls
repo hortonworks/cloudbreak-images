@@ -1,15 +1,14 @@
 {% if grains['os_family'] == 'RedHat' %}
 install_selinux_module_dependecies:
-  pkg.installed:
-    - pkgs:
-      - policycoreutils
-      - policycoreutils-python
+  test.succeed_without_changes:
+    - pkg.installed:
+      - pkgs:
+        - policycoreutils
+        - policycoreutils-python
 
 selinux.setenforce:
   module.run:
     - mode: Disabled
-    - require:
-      - pkg: install_selinux_module_dependecies
 
 disable_selinux:
   file.replace:
@@ -17,6 +16,4 @@ disable_selinux:
     - pattern: "^SELINUX.*"
     - repl: "SELINUX=Disabled"
     - append_if_not_found: True
-    - require:
-      - pkg: install_selinux_module_dependecies
 {% endif %}

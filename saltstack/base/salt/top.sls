@@ -5,10 +5,8 @@ base:
     - cloud-init
 {% endif %}
     - unbound
-    - nginx
     - salt-bootstrap
     - salt
-    - postgresql
     - monitoring
 {% if pillar['subtype'] != 'Docker' %}
 {% if grains['os_family'] == 'Debian' %}
