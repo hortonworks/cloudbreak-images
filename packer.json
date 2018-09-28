@@ -65,7 +65,11 @@
     "sles_registration_code": "{{ env `SLES_REGISTRATION_CODE` }}",
     "package_versions" :  "{{ env `PACKAGE_VERSIONS` }}",
     "python_apt_version" : "{{ env `PYTHON_APT_VERSION` }}",
-    "salt_repo_file": "{{ env `SALT_REPO_FILE` }}"
+    "salt_repo_file": "{{ env `SALT_REPO_FILE` }}",
+    "aws_snapshot_groups": "{{ env `AWS_SNAPSHOT_GROUPS` }}",
+    "aws_ami_groups": "{{ env `AWS_AMI_GROUPS` }}",
+    "tag_customer_delivered": "{{ env `TAG_CUSTOMER_DELIVERED` }}",
+    "version": "{{ env `VERSION` }}"
   },
   "builders": [
     {
@@ -81,8 +85,11 @@
       "iam_instance_profile": "{{ user `aws_instance_profile` }}",
       "skip_region_validation": true,
       "tags": {
+        "builder": "packer",
+        "version": "{{user `version`}}",
+        "cb-creation-timestamp": "{{timestamp}}",
         "Owner": "{{ user `image_owner` }}",
-        "cb-creation-timestamp": "{{timestamp}}"
+        "Customer Delivered": "{{user `tag_customer_delivered`}}"
       },
       "ami_block_device_mappings": [
         {
@@ -100,10 +107,6 @@
           "volume_size": "{{user `image_size`}}"
         }
       ],
-      "tags": {
-        "builder": "packer",
-        "version": "{{user `version`}}"
-      },
       "ami_name": "{{ user `image_name`}}"
     },
     {
@@ -118,8 +121,11 @@
       "ena_support": true,
       "skip_region_validation": true,
       "tags": {
+        "builder": "packer",
+        "version": "{{user `version`}}",
+        "cb-creation-timestamp": "{{timestamp}}",
         "Owner": "{{ user `image_owner` }}",
-        "cb-creation-timestamp": "{{timestamp}}"
+        "Customer Delivered": "{{user `tag_customer_delivered`}}"
       },
       "ami_block_device_mappings": [
         {
@@ -137,15 +143,11 @@
           "volume_size": "{{user `image_size`}}"
         }
       ],
-      "tags": {
-        "builder": "packer",
-        "version": "{{user `version`}}"
-      },
       "run_tags": {
         "Owner": "{{ user `image_owner` }}"
       },
-      "snapshot_groups": "all",
-      "ami_groups": "all",
+      "snapshot_groups": "{{ user `aws_snapshot_groups`}}",
+      "ami_groups": "{{ user `aws_ami_groups` }}",
       "ami_name": "{{ user `image_name`}}"
     },
     {
@@ -160,8 +162,11 @@
       "ena_support": false,
       "skip_region_validation": true,
       "tags": {
+        "builder": "packer",
+        "version": "{{user `version`}}",
+        "cb-creation-timestamp": "{{timestamp}}",
         "Owner": "{{ user `image_owner` }}",
-        "cb-creation-timestamp": "{{timestamp}}"
+        "Customer Delivered": "{{user `tag_customer_delivered`}}"
       },
       "run_tags": {
         "Owner": "{{ user `image_owner` }}"
@@ -182,10 +187,6 @@
           "volume_size": "{{user `image_size`}}"
         }
       ],
-      "tags": {
-        "builder": "packer",
-        "version": "{{user `version`}}"
-      },
       "ami_name": "{{ user `image_name`}}"
     },
     {
@@ -200,8 +201,11 @@
       "ena_support": false,
       "skip_region_validation": true,
       "tags": {
+        "builder": "packer",
+        "version": "{{user `version`}}",
+        "cb-creation-timestamp": "{{timestamp}}",
         "Owner": "{{ user `image_owner` }}",
-        "cb-creation-timestamp": "{{timestamp}}"
+        "Customer Delivered": "{{user `tag_customer_delivered`}}"
       },
       "run_tags": {
         "Owner": "{{ user `image_owner` }}"
@@ -222,10 +226,6 @@
           "volume_size": "{{user `image_size`}}"
         }
       ],
-      "tags": {
-        "builder": "packer",
-        "version": "{{user `version`}}"
-      },
       "ami_name": "{{ user `image_name`}}"
     },
     {
@@ -240,8 +240,11 @@
       "ena_support": false,
       "skip_region_validation": true,
       "tags": {
+        "builder": "packer",
+        "version": "{{user `version`}}",
+        "cb-creation-timestamp": "{{timestamp}}",
         "Owner": "{{ user `image_owner` }}",
-        "cb-creation-timestamp": "{{timestamp}}"
+        "Customer Delivered": "{{user `tag_customer_delivered`}}"
       },
       "run_tags": {
         "Owner": "{{ user `image_owner` }}"
@@ -262,12 +265,8 @@
           "volume_size": "{{user `image_size`}}"
         }
       ],
-      "tags": {
-        "builder": "packer",
-        "version": "{{user `version`}}"
-      },
-      "snapshot_groups": "all",
-      "ami_groups": "all",
+      "snapshot_groups": "{{ user `aws_snapshot_groups` }}",
+      "ami_groups": "{{ user `aws_ami_groups` }}",
       "ami_name": "{{ user `image_name`}}"
     },
     {
@@ -282,8 +281,11 @@
       "ena_support": false,
       "skip_region_validation": true,
       "tags": {
+        "builder": "packer",
+        "version": "{{user `version`}}",
+        "cb-creation-timestamp": "{{timestamp}}",
         "Owner": "{{ user `image_owner` }}",
-        "cb-creation-timestamp": "{{timestamp}}"
+        "Customer Delivered": "{{user `tag_customer_delivered`}}"
       },
       "run_tags": {
         "Owner": "{{ user `image_owner` }}"
@@ -304,12 +306,8 @@
           "volume_size": "{{user `image_size`}}"
         }
       ],
-      "tags": {
-        "builder": "packer",
-        "version": "{{user `version`}}"
-      },
-      "snapshot_groups": "all",
-      "ami_groups": "all",
+      "snapshot_groups": "{{ user `aws_snapshot_groups` }}",
+      "ami_groups": "{{ user `aws_ami_groups` }}",
       "ami_name": "{{ user `image_name`}}"
     },
     {
@@ -324,8 +322,11 @@
       "ena_support": false,
       "skip_region_validation": true,
       "tags": {
+        "builder": "packer",
+        "version": "{{user `version`}}",
+        "cb-creation-timestamp": "{{timestamp}}",
         "Owner": "{{ user `image_owner` }}",
-        "cb-creation-timestamp": "{{timestamp}}"
+        "Customer Delivered": "{{user `tag_customer_delivered`}}"
       },
       "run_tags": {
         "Owner": "{{ user `image_owner` }}"
@@ -346,12 +347,8 @@
           "volume_size": "{{user `image_size`}}"
         }
       ],
-      "tags": {
-        "builder": "packer",
-        "version": "{{user `version`}}"
-      },
-      "snapshot_groups": "all",
-      "ami_groups": "all",
+      "snapshot_groups": "{{ user `aws_snapshot_groups` }}",
+      "ami_groups": "{{ user `aws_ami_groups` }}",
       "ami_name": "{{ user `image_name`}}"
     },
     {
@@ -366,8 +363,11 @@
       "ena_support": false,
       "skip_region_validation": true,
       "tags": {
+        "builder": "packer",
+        "version": "{{user `version`}}",
+        "cb-creation-timestamp": "{{timestamp}}",
         "Owner": "{{ user `image_owner` }}",
-        "cb-creation-timestamp": "{{timestamp}}"
+        "Customer Delivered": "{{user `tag_customer_delivered`}}"
       },
       "run_tags": {
         "Owner": "{{ user `image_owner` }}"
@@ -388,12 +388,8 @@
           "volume_size": "{{user `image_size`}}"
         }
       ],
-      "tags": {
-        "builder": "packer",
-        "version": "{{user `version`}}"
-      },
-      "snapshot_groups": "all",
-      "ami_groups": "all",
+      "snapshot_groups": "{{ user `aws_snapshot_groups` }}",
+      "ami_groups": "{{ user `aws_ami_groups` }}",
       "ami_name": "{{ user `image_name`}}"
     },
     {
@@ -595,8 +591,11 @@
       "vm_size": "Standard_D4",
       "os_disk_size_gb": "{{user `image_size`}}",
       "azure_tags": {
+        "builder": "packer",
+        "version": "{{user `version`}}",
+        "cb-creation-timestamp": "{{timestamp}}",
         "Owner": "{{ user `image_owner` }}",
-        "cb-creation-timestamp": "{{timestamp}}"
+        "Customer Delivered": "{{user `tag_customer_delivered`}}"
       }
     },
     {
@@ -622,8 +621,11 @@
       "vm_size": "Standard_D4",
       "os_disk_size_gb": "{{user `image_size`}}",
       "azure_tags": {
+        "builder": "packer",
+        "version": "{{user `version`}}",
+        "cb-creation-timestamp": "{{timestamp}}",
         "Owner": "{{ user `image_owner` }}",
-        "cb-creation-timestamp": "{{timestamp}}"
+        "Customer Delivered": "{{user `tag_customer_delivered`}}"
       }
     },
     {
@@ -649,8 +651,11 @@
       "vm_size": "Standard_D4",
       "os_disk_size_gb": "{{user `image_size`}}",
       "azure_tags": {
+        "builder": "packer",
+        "version": "{{user `version`}}",
+        "cb-creation-timestamp": "{{timestamp}}",
         "Owner": "{{ user `image_owner` }}",
-        "cb-creation-timestamp": "{{timestamp}}"
+        "Customer Delivered": "{{user `tag_customer_delivered`}}"
       }
     },
     {
@@ -676,8 +681,11 @@
       "vm_size": "Standard_D4",
       "os_disk_size_gb": "{{user `image_size`}}",
       "azure_tags": {
+        "builder": "packer",
+        "version": "{{user `version`}}",
+        "cb-creation-timestamp": "{{timestamp}}",
         "Owner": "{{ user `image_owner` }}",
-        "cb-creation-timestamp": "{{timestamp}}"
+        "Customer Delivered": "{{user `tag_customer_delivered`}}"
       }
     }
   ],

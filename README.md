@@ -119,6 +119,18 @@ Use the following commands to build AWS images based on the following base opera
 > If you want to start from **your own base image**, follow the instructions in [Advanced topics](#advanced-topics) to
 modify the `package.json` to start from your own base image. Then use the commands above to build that image.
 
+#### Permissions
+The created Snapshots and AMIs will be private on AWS by default, you could use the following environment variables to change this behavior:
+```
+#Use this to make the created AMIs public
+export MAKE_PUBLIC_AMIS=yes
+
+#Use this to make the created Snapshot of the AMIs public
+export MAKE_PUBLIC_SNAPSHOTS=yes
+```
+
+> Note: Environment variables need to be exported before the use of the `make` command.
+
 
 ### Azure
 
