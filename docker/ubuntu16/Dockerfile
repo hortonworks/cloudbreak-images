@@ -71,7 +71,7 @@ COPY /scripts/salt_requirements.txt /tmp/salt_requirements.txt
 COPY docker/common/_grains/ /tmp/saltstack/base/salt/_grains/
 COPY docker/common/_grains/ /tmp/saltstack/hortonworks/salt/_grains/
 RUN printf '\n\nproviders:\n  service: systemd\n' >>/tmp/saltstack/config/minion
-RUN /tmp/scripts/salt-install.sh ubuntu salt-repo-ubuntu16.list
+RUN /tmp/scripts/salt-install.sh ubuntu
 RUN /tmp/scripts/salt-setup.sh hortonworks
 
 # Fix SaltStack init autodiscovery
