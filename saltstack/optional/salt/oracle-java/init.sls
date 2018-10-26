@@ -14,7 +14,6 @@ set_java_home_systemd:
 {% endif %}
 
 {% if grains['os_family'] == 'RedHat' and grains['osmajorrelease'] | int == 7 %}
-
 download_oracle_jdk:
   cmd.run:
     - name: |
@@ -29,20 +28,25 @@ install_oracle_jdk:
       - jdk1.8: /tmp/oracle_jdk_install.rpm
 
 {% elif grains['os_family'] == 'Debian' %}
-
-install_oracle_java8_repository:
+install_oracle_java8:
   pkgrepo.managed:
     - humanname: Oracle java8 repo
     - name: deb http://ppa.launchpad.net/webupd8team/java/ubuntu xenial main
-    - dist: xenial
     - file: /etc/apt/sources.list.d/oracle_java8.list
     - keyid: C2518248EEA14886
     - keyserver: keyserver.ubuntu.com
 
-install_oracle_jdk:
-  pkg.installed:
+  cmd.run:
+    - name: |
+        echo oracle-java8-installer shared/accepted-oracle-license-v1-1 select true | \
+        sudo /usr/bin/debconf-set-selections
+
+  pkg.latest:
     - pkgs:
-      - oracle-java8-installer
+        - oracle-java8-installer
+        - oracle-java8-set-default
+        - oracle-java8-unlimited-jce-policy
+    - refresh: True
 
 {% else %}
     {{ salt.test.exception("Doesn't support oracle-java state.") }}
