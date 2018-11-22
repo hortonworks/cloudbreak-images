@@ -3,12 +3,7 @@
 packer_in_container() {
   local dockerOpts=""
   local packerFile="packer.json"
-  PACKER_VERSION="1.1.3"
-
-# https://github.com/hashicorp/packer/issues/5825
-  if [[ "$2" == -only=gc-* ]]; then
-    PACKER_VERSION="1.2.4"
-  fi
+  PACKER_VERSION="1.2.5"
 
   if [[ "$GCP_ACCOUNT_FILE" ]]; then
     dockerOpts="$dockerOpts -v $GCP_ACCOUNT_FILE:$GCP_ACCOUNT_FILE"
