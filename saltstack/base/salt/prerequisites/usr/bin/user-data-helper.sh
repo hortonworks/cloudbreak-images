@@ -125,7 +125,7 @@ main() {
     shift
     eval "$@"
   elif [ ! -f "/var/cb-init-executed" ]; then
-    [[ $CLOUD_PLATFORM != "YARN" ]] && format_disks
+    [[ $CLOUD_PLATFORM != "YARN" && $CLOUD_PLATFORM != "AWS" ]] && format_disks
     if [[ "$IS_GATEWAY" == "true" ]]; then
       setup_tmp_ssh
       if [[ -n "$CB_CERT" ]]; then

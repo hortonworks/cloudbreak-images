@@ -41,6 +41,7 @@ packages_install:
       - dnsutils
   {% endif %}
       - deltarpm
+      - nvme-cli
 
 {% if grains['os_family'] == 'Suse' %}
 remove_snappy:
