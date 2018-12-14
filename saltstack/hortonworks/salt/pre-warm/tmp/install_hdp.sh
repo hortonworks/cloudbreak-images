@@ -200,9 +200,7 @@ main() {
       download_vdf
     fi
     install_hdp_without_ambari
-    if [[ "$STACK_TYPE" == "HDF" ]]; then
-      install_mpacks
-    fi
+    install_mpacks
   fi
 #  set +x
 }
