@@ -154,7 +154,7 @@ install_hdp() {
 }
 
 install_hdp_without_ambari() {
-  REPOSITORY_NAME=$(tr '[:upper:]' '[:lower:]' <<< ${STACK_TYPE})
+  REPOSITORY_NAME=$(tr '[:upper:]' '[:lower:]' <<< ${STACK_TYPE})bn
   #yum install -y mysql-server mysql
   curl ${HDP_BASEURL}/${REPOSITORY_NAME}.repo -o /etc/yum.repos.d/${REPOSITORY_NAME}.repo
   yum repo-pkgs ambari -y install
