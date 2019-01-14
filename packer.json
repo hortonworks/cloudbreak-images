@@ -517,6 +517,7 @@
       "machine_type": "n1-standard-2",
       "image_name": "{{user `image_name`}}",
       "disk_size": "{{user `image_size`}}",
+      "state_timeout": "15m",
       "tags": [
         "packer", "imagebuild-hortonworks"
       ],
@@ -538,6 +539,7 @@
       "machine_type": "n1-standard-2",
       "image_name": "{{user `image_name`}}",
       "disk_size": "{{user `image_size`}}",
+      "state_timeout": "15m",
       "tags": [
         "packer", "imagebuild-hortonworks"
       ],
@@ -560,6 +562,7 @@
       "machine_type": "n1-standard-2",
       "image_name": "{{user `image_name`}}",
       "disk_size": "{{user `image_size`}}",
+      "state_timeout": "15m",
       "tags": [
         "packer", "imagebuild-hortonworks"
       ],
