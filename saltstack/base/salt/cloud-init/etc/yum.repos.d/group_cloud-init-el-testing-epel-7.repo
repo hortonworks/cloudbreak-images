@@ -1,0 +1,10 @@
+[group_cloud-init-el-testing]
+name=Copr repo for el-testing owned by @cloud-init
+baseurl=https://copr-be.cloud.fedoraproject.org/results/@cloud-init/el-testing/epel-7-$basearch/
+type=rpm-md
+skip_if_unavailable=True
+gpgcheck=1
+gpgkey=https://copr-be.cloud.fedoraproject.org/results/@cloud-init/el-testing/pubkey.gpg
+repo_gpgcheck=0
+enabled=1
+enabled_metadata=1

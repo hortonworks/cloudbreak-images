@@ -1,3 +1,14 @@
+{% if grains[‘os’] == ‘RedHat’ and grains[‘osmajorrelease’] | int == 7 %}
+
+setup_cloudinit_epel_repo:
+  file.managed:
+    - name: /etc/yum.repos.d/group_cloud-init-el-testing-epel-7.repo
+    - user: root
+    - group: root
+    - source: salt://{{ slspath }}/etc/yum.repos.d/group_cloud-init-el-testing-epel-7.repo
+
+{% endif %}
+
 install_cloud-init_packages:
   pkg.installed:
     - pkgs:
