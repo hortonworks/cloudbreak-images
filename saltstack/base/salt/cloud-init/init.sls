@@ -1,21 +1,8 @@
-{% if grains[‘os’] == ‘RedHat’ and grains[‘osmajorrelease’] | int == 7 %}
-
-setup_cloudinit_epel_repo:
-  file.managed:
-    - name: /etc/yum.repos.d/group_cloud-init-el-testing-epel-7.repo
-    - user: root
-    - group: root
-    - source: salt://{{ slspath }}/etc/yum.repos.d/group_cloud-init-el-testing-epel-7.repo
-
-{% endif %}
-
 install_cloud-init_packages:
   pkg.installed:
-    - pkgs:
-      - cloud-init
-    {% if grains['os'] == 'Debian' and  grains['osmajorrelease'] | int == 7 %}
-    - fromrepo: wheezy-backports
-    {% endif %}
+    - sources:
+      - cloud-init: http://vault.centos.org/7.5.1804/os/x86_64/Packages/cloud-init-0.7.9-24.el7.centos.x86_64.rpm
+    - skip_verify: True
 
 preserve_hostname_false:
   file.replace:
