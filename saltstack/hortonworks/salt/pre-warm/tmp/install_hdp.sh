@@ -15,6 +15,19 @@ check_prerequisites() {
   : ${REPOSITORY_TYPE:? required}
 }
 
+
+set_hdp_repo() {
+  REPOSITORY_NAME=$(tr '[:upper:]' '[:lower:]' <<< ${STACK_TYPE})
+
+  mkdir -p ${REPOSITORY_NAME}/${OS}
+  cd ${REPOSITORY_NAME}/${OS}/
+
+  curl --fail ${HDP_BASEURL}/${REPOSITORY_NAME}.repo -o /etc/yum.repos.d/${REPOSITORY_NAME}.repo || true
+  curl --fail ${HDP_BASEURL}/${REPOSITORY_NAME}bn.repo -o /etc/yum.repos.d/${REPOSITORY_NAME}.repo || true
+  #if the 'bn' repo exist that will rewrite /etc/yum.repos.d/${REPOSITORY_NAME}.repo with that
+
+}
+
 set_repos() {
   rm  -rvf  /var/run/yum.pid
 
@@ -30,15 +43,10 @@ set_repos() {
   sed -i "s;${AMBARI_BASEURL};${LOCAL_URL_AMBARI};g" /etc/yum.repos.d/ambari.repo
   cp /etc/yum.repos.d/ambari.repo /var/www/html/
 
-  REPOSITORY_NAME=$(tr '[:upper:]' '[:lower:]' <<< ${STACK_TYPE})
-
   cd ../..
-  mkdir -p ${REPOSITORY_NAME}/${OS}
-  cd ${REPOSITORY_NAME}/${OS}/
-
-  curl ${HDP_BASEURL}/${REPOSITORY_NAME}.repo -o /etc/yum.repos.d/${REPOSITORY_NAME}.repo
-
+  set_hdp_repo
   cat /etc/yum.repos.d/${REPOSITORY_NAME}.repo | sed -e '/HDP-UTIL/,$d' > ${REPOSITORY_NAME}-core.repo
+
   HDP_URL=$(grep -Pho '(?<=baseurl=).*' ${REPOSITORY_NAME}-core.repo)
   HDP_GPG_KEY_URL=$(grep -Pho '(?<=gpgkey=).*' ${REPOSITORY_NAME}-core.repo)
   rm ${REPOSITORY_NAME}-core.repo
@@ -154,9 +162,10 @@ install_hdp() {
 }
 
 install_hdp_without_ambari() {
-  REPOSITORY_NAME=$(tr '[:upper:]' '[:lower:]' <<< ${STACK_TYPE})
-  #yum install -y mysql-server mysql
-  curl ${HDP_BASEURL}/${REPOSITORY_NAME}.repo -o /etc/yum.repos.d/${REPOSITORY_NAME}.repo
+  set_hdp_repo
+  #REPOSITORY_NAME=$(tr '[:upper:]' '[:lower:]' <<< ${STACK_TYPE})bn
+  ##yum install -y mysql-server mysql
+  #curl ${HDP_BASEURL}/${REPOSITORY_NAME}.repo -o /etc/yum.repos.d/${REPOSITORY_NAME}.repo
   yum repo-pkgs ambari -y install
   yum repo-pkgs ${STACK_TYPE}-${HDP_VERSION} -y install --skip-broken
   if [[ "$STACK_TYPE" == "HDP" ]]; then
