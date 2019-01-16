@@ -11,6 +11,11 @@ OPTIONAL_STATES ?= ""
 ORACLE_JDK8_URL_RPM ?= ""
 SLES_REGISTRATION_CODE ?= ""
 
+# Azure VM image specifications
+AZURE_IMAGE_PUBLISHER ?= OpenLogic
+AZURE_IMAGE_OFFER ?= CentOS
+AZURE_IMAGE_SKU ?= 7.6
+
 ###############################
 # DO NOT EDIT BELOW THIS LINE #
 ###############################
@@ -294,9 +299,9 @@ build-azure-centos7:
 	OS_TYPE=redhat7 \
 	ATLAS_ARTIFACT_TYPE=azure-arm \
 	SALT_INSTALL_OS=centos \
-	AZURE_IMAGE_PUBLISHER=OpenLogic \
-	AZURE_IMAGE_OFFER=CentOS \
-	AZURE_IMAGE_SKU=7.4 \
+	AZURE_IMAGE_PUBLISHER=$(AZURE_IMAGE_PUBLISHER) \
+	AZURE_IMAGE_OFFER=$(AZURE_IMAGE_OFFER) \
+	AZURE_IMAGE_SKU=$(AZURE_IMAGE_SKU) \
 	./scripts/packer.sh build -only=arm-centos7 $(PACKER_OPTS)
 
 build-azure-sles12sp3:
