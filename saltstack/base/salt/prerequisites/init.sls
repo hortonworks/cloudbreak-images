@@ -14,6 +14,9 @@ include:
   - {{ slspath }}.user
   - {{ slspath }}.firewall
   - {{ slspath }}.umask
+{% if  pillar['OS'].startswith('ubuntu') %}
+  - {{ slspath }}.disable-unattended-upgrades
+ {% endif %}
 
 /usr/bin/:
   file.recurse:

@@ -356,7 +356,7 @@
       "type": "amazon-ebs",
       "region": "eu-west-1",
       "ssh_pty": true,
-      "source_ami": "ami-58d7e821",
+      "source_ami": "ami-05e2fa3e100f8d881",
       "ami_regions": "{{ user `aws_ami_regions` }}",
       "instance_type": "{{ user `aws_instance_type` }}",
       "ssh_username": "ubuntu",
