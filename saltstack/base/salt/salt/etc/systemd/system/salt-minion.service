@@ -1,0 +1,16 @@
+[Unit]
+Description=Salt Minion
+After=syslog.target network.target
+
+[Service]
+Type=simple
+Restart=always
+ExecStart={{ pillar['salt_path'] }}/bin/python {{ pillar['salt_path'] }}/bin/salt-minion
+
+[Install]
+WantedBy=multi-user.target
+
+{% if grains['os'] != 'ubuntu16' %}
+[Service]
+Environment="SHELL=/bin/bash"
+{% endif %}

@@ -1,3 +1,10 @@
+{% if pillar['OS'] == 'centos7' and pillar['subtype'] != 'Docker' %}
+install_cloud-init_packages:
+  pkg.installed:
+    - sources:
+      - cloud-init: http://vault.centos.org/7.5.1804/os/x86_64/Packages/cloud-init-0.7.9-24.el7.centos.x86_64.rpm
+    - skip_verify: True
+{% else %}
 install_cloud-init_packages:
   pkg.installed:
     - pkgs:
@@ -5,6 +12,7 @@ install_cloud-init_packages:
     {% if grains['os'] == 'Debian' and  grains['osmajorrelease'] | int == 7 %}
     - fromrepo: wheezy-backports
     {% endif %}
+{% endif %}
 
 preserve_hostname_false:
   file.replace:

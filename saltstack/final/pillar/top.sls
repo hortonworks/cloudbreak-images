@@ -1,3 +1,3 @@
-base:
-  'final':
+final:
+  '*':
     - cleanup

@@ -4,17 +4,29 @@ HDP_VERSION ?= ""
 ATLAS_PROJECT ?= "cloudbreak"
 ENABLE_POSTPROCESSORS ?= ""
 CUSTOM_IMAGE_TYPE ?= "hortonworks"
-IMAGE_OWNER ?= "imagebuild@hortonworks.com"
+IMAGE_OWNER ?= "cloudbreak-dev@hortonworks.com"
 #for oracle JDK use oracle-java
 OPTIONAL_STATES ?= ""
 # only for oracle JDK
 ORACLE_JDK8_URL_RPM ?= ""
 SLES_REGISTRATION_CODE ?= ""
 
+# Azure VM image specifications
+AZURE_IMAGE_PUBLISHER ?= OpenLogic
+AZURE_IMAGE_OFFER ?= CentOS
+AZURE_IMAGE_SKU ?= 7.6
+
 ###############################
 # DO NOT EDIT BELOW THIS LINE #
 ###############################
 
+## https://github.com/hashicorp/packer/issues/6536
+AWS_MAX_ATTEMPTS ?= 300
+PACKAGE_VERSIONS ?= ""
+SALT_VERSION ?= 2017.7.5
+SALT_PATH ?= /opt/salt_$(SALT_VERSION)
+PYZMQ_VERSION ?= 14.5.0
+PYTHON_APT_VERSION ?= 1.1.0_beta1ubuntu0.16.04.1
 HDP_VERSION_SHORT=hdp-$(shell echo $(HDP_VERSION) | tr -d . | cut -c1-2 )
 IMAGE_NAME ?= $(BASE_NAME)-$(HDP_VERSION_SHORT)-$(shell date +%y%m%d%H%M)$(IMAGE_NAME_SUFFIX)
 
@@ -29,7 +41,17 @@ ifdef ARM_CLIENT_ID
 	IMAGE_SIZE = 30
 endif
 
-ENVS=DESCRIPTION=$(DESCRIPTION) STACK_TYPE=$(STACK_TYPE) MPACK_URLS=$(MPACK_URLS) HDP_VERSION=$(HDP_VERSION) BASE_NAME=$(BASE_NAME) IMAGE_NAME=$(IMAGE_NAME) IMAGE_SIZE=$(IMAGE_SIZE) ENABLE_POSTPROCESSORS=$(ENABLE_POSTPROCESSORS) CUSTOM_IMAGE_TYPE=$(CUSTOM_IMAGE_TYPE) OPTIONAL_STATES=$(OPTIONAL_STATES) ORACLE_JDK8_URL_RPM=$(ORACLE_JDK8_URL_RPM) PREINSTALLED_JAVA_HOME=${PREINSTALLED_JAVA_HOME} IMAGE_OWNER=${IMAGE_OWNER} REPOSITORY_TYPE=${REPOSITORY_TYPE} TRACE=1
+ifdef MAKE_PUBLIC_SNAPSHOTS
+	AWS_SNAPSHOT_GROUPS = "all"
+endif
+
+ifdef MAKE_PUBLIC_AMIS
+	AWS_AMI_GROUPS = "all"
+endif
+
+TAG_CUSTOMER_DELIVERED ?= "No"
+
+ENVS=DESCRIPTION=$(DESCRIPTION) STACK_TYPE=$(STACK_TYPE) MPACK_URLS=$(MPACK_URLS) HDP_VERSION=$(HDP_VERSION) BASE_NAME=$(BASE_NAME) IMAGE_NAME=$(IMAGE_NAME) IMAGE_SIZE=$(IMAGE_SIZE) ENABLE_POSTPROCESSORS=$(ENABLE_POSTPROCESSORS) CUSTOM_IMAGE_TYPE=$(CUSTOM_IMAGE_TYPE) OPTIONAL_STATES=$(OPTIONAL_STATES) ORACLE_JDK8_URL_RPM=$(ORACLE_JDK8_URL_RPM) PREINSTALLED_JAVA_HOME=${PREINSTALLED_JAVA_HOME} IMAGE_OWNER=${IMAGE_OWNER} REPOSITORY_TYPE=${REPOSITORY_TYPE} PACKAGE_VERSIONS=$(PACKAGE_VERSIONS) SALT_VERSION=$(SALT_VERSION) SALT_PATH=$(SALT_PATH) PYZMQ_VERSION=$(PYZMQ_VERSION) PYTHON_APT_VERSION=$(PYTHON_APT_VERSION) AWS_MAX_ATTEMPTS=$(AWS_MAX_ATTEMPTS) TRACE=1 AWS_SNAPSHOT_GROUPS=$(AWS_SNAPSHOT_GROUPS) AWS_AMI_GROUPS=$(AWS_AMI_GROUPS) TAG_CUSTOMER_DELIVERED=$(TAG_CUSTOMER_DELIVERED) VERSION=$(VERSION)
 
 GITHUB_ORG ?= hortonworks
 GITHUB_REPO ?= cloudbreak-images-metadata
@@ -52,6 +74,14 @@ endif
 
 define AWS_AMI_REGIONS
 ap-northeast-1,ap-northeast-2,ap-south-1,ap-southeast-1,ap-southeast-2,ca-central-1,eu-central-1,eu-west-1,eu-west-2,eu-west-3,sa-east-1,us-east-1,us-east-2,us-west-1,us-west-2
+endef
+
+define AWS_GOV_AMI_REGIONS
+us-gov-west-1
+endef
+
+define AWS_GOV_INSTANCE_PROFILE
+packer
 endef
 
 define AZURE_STORAGE_ACCOUNTS
@@ -95,12 +125,23 @@ show-image-name:
 build-aws-amazonlinux:
 	$(ENVS) \
 	AWS_AMI_REGIONS="$(AWS_AMI_REGIONS)" \
+	AWS_INSTANCE_PROFILE="$(AWS_GOV_INSTANCE_PROFILE)" \
 	OS=amazonlinux \
 	OS_TYPE=redhat6 \
 	ATLAS_ARTIFACT_TYPE=amazon \
 	SALT_INSTALL_OS=amazon \
 	SALT_REPO_FILE="salt-repo-amzn.repo" \
 	./scripts/packer.sh build -only=aws-amazonlinux $(PACKER_OPTS)
+
+build-gov-aws-amazonlinux:
+	$(ENVS) \
+	AWS_AMI_REGIONS="$(AWS_GOV_AMI_REGIONS)" \
+	OS=amazonlinux \
+	OS_TYPE=redhat6 \
+	ATLAS_ARTIFACT_TYPE=amazon \
+	SALT_INSTALL_OS=amazon \
+	SALT_REPO_FILE="salt-repo-amzn.repo" \
+	./scripts/packer.sh build -only=gov-aws-amazonlinux $(PACKER_OPTS)
 
 build-aws-amazonlinux2:
 	$(ENVS) \
@@ -109,7 +150,6 @@ build-aws-amazonlinux2:
 	OS_TYPE=amazonlinux2 \
 	ATLAS_ARTIFACT_TYPE=amazon \
 	SALT_INSTALL_OS=amazon \
-	SALT_REPO_FILE="salt-repo-amazonlinux2.repo" \
 	./scripts/packer.sh build -only=aws-amazonlinux2 $(PACKER_OPTS)
 
 build-aws-centos6:
@@ -129,7 +169,6 @@ build-aws-centos7:
 	OS_TYPE=redhat7 \
 	ATLAS_ARTIFACT_TYPE=amazon \
 	SALT_INSTALL_OS=centos \
-	SALT_REPO_FILE="salt-repo-el7.repo" \
 	./scripts/packer.sh build -only=aws-centos7 $(PACKER_OPTS)
 
 build-aws-rhel7:
@@ -139,7 +178,6 @@ build-aws-rhel7:
 	OS_TYPE=redhat7 \
 	ATLAS_ARTIFACT_TYPE=amazon \
 	SALT_INSTALL_OS=redhat \
-	SALT_REPO_FILE="salt-repo-el7.repo" \
 	./scripts/packer.sh build -only=aws-rhel7 $(PACKER_OPTS)
 
 build-aws-sles12sp3:
@@ -149,7 +187,6 @@ build-aws-sles12sp3:
 	OS_TYPE=sles12 \
 	ATLAS_ARTIFACT_TYPE=amazon \
 	SALT_INSTALL_OS=suse \
-	SALT_REPO_FILE="salt-repo-sles12.repo" \
 	./scripts/packer.sh build -only=aws-sles12sp3 $(PACKER_OPTS)
 
 build-aws-ubuntu16:
@@ -159,14 +196,12 @@ build-aws-ubuntu16:
 	OS_TYPE=ubuntu16 \
 	ATLAS_ARTIFACT_TYPE=amazon \
 	SALT_INSTALL_OS=ubuntu \
-	SALT_REPO_FILE="salt-repo-ubuntu16.list" \
 	./scripts/packer.sh build -only=aws-ubuntu16 $(PACKER_OPTS)
 
 build-os-centos6:
 	$(ENVS) \
 	ATLAS_ARTIFACT_TYPE=openstack \
 	SALT_INSTALL_OS=centos \
-	SALT_REPO_FILE="salt-repo-el6.repo" \
 	./scripts/packer.sh build -only=os-centos6 $(PACKER_OPTS)
 
 build-os-centos7:
@@ -175,7 +210,6 @@ build-os-centos7:
 	OS_TYPE=redhat7 \
 	ATLAS_ARTIFACT_TYPE=openstack \
 	SALT_INSTALL_OS=centos \
-	SALT_REPO_FILE="salt-repo-el7.repo" \
 	./scripts/packer.sh build -only=os-centos7 $(PACKER_OPTS)
 
 build-os-debian9:
@@ -184,7 +218,6 @@ build-os-debian9:
 	OS_TYPE=debian9 \
 	ATLAS_ARTIFACT_TYPE=openstack \
 	SALT_INSTALL_OS=debian \
-	SALT_REPO_FILE="salt-repo-debian9.list" \
 	./scripts/packer.sh build -only=os-debian9 $(PACKER_OPTS)
 
 build-os-ubuntu12:
@@ -193,7 +226,6 @@ build-os-ubuntu12:
 	OS_TYPE=ubuntu12 \
 	ATLAS_ARTIFACT_TYPE=openstack \
 	SALT_INSTALL_OS=ubuntu \
-	SALT_REPO_FILE="salt-repo-ubuntu12.list" \
 	./scripts/packer.sh build -only=os-ubuntu12 $(PACKER_OPTS)
 
 build-os-ubuntu14:
@@ -202,7 +234,6 @@ build-os-ubuntu14:
 	OS_TYPE=ubuntu14 \
 	ATLAS_ARTIFACT_TYPE=openstack \
 	SALT_INSTALL_OS=ubuntu \
-	SALT_REPO_FILE="salt-repo-ubuntu14.list" \
 	./scripts/packer.sh build -only=os-ubuntu14 $(PACKER_OPTS)
 
 build-os-ubuntu16:
@@ -211,7 +242,6 @@ build-os-ubuntu16:
 	OS_TYPE=ubuntu16 \
 	ATLAS_ARTIFACT_TYPE=openstack \
 	SALT_INSTALL_OS=ubuntu \
-	SALT_REPO_FILE="salt-repo-ubuntu16.list" \
 	./scripts/packer.sh build -only=os-ubuntu16 $(PACKER_OPTS)
 
 build-os-sles12sp3:
@@ -220,7 +250,6 @@ build-os-sles12sp3:
 	OS_TYPE=sles12 \
 	ATLAS_ARTIFACT_TYPE=openstack \
 	SALT_INSTALL_OS=suse \
-	SALT_REPO_FILE="salt-repo-sles12.repo" \
 	./scripts/packer.sh build -only=os-sles12sp3 $(PACKER_OPTS)
 
 build-gc-centos7:
@@ -230,7 +259,6 @@ build-gc-centos7:
 	OS_TYPE=redhat7 \
 	ATLAS_ARTIFACT_TYPE=googlecompute \
 	SALT_INSTALL_OS=centos \
-	SALT_REPO_FILE="salt-repo-el7.repo" \
 	./scripts/packer.sh build -only=gc-centos7 $(PACKER_OPTS)
 
 build-gc-sles12sp3:
@@ -240,7 +268,6 @@ build-gc-sles12sp3:
 	OS_TYPE=sles12 \
 	ATLAS_ARTIFACT_TYPE=googlecompute \
 	SALT_INSTALL_OS=suse \
-	SALT_REPO_FILE="salt-repo-sles12.repo" \
 	./scripts/packer.sh build -only=gc-sles12sp3 $(PACKER_OPTS)
 
 build-gc-ubuntu16:
@@ -250,7 +277,6 @@ build-gc-ubuntu16:
 	OS_TYPE=ubuntu16 \
 	ATLAS_ARTIFACT_TYPE=googlecompute \
 	SALT_INSTALL_OS=ubuntu \
-	SALT_REPO_FILE="salt-repo-ubuntu16.list" \
 	./scripts/packer.sh build -only=gc-ubuntu16 $(PACKER_OPTS)
 
 build-azure-rhel6:
@@ -260,10 +286,10 @@ build-azure-rhel6:
 	OS_TYPE=redhat6 \
 	ATLAS_ARTIFACT_TYPE=azure-arm \
 	SALT_INSTALL_OS=redhat \
-	SALT_REPO_FILE="salt-repo-el6.repo" \
 	AZURE_IMAGE_PUBLISHER=RedHat \
 	AZURE_IMAGE_OFFER=RHEL \
 	AZURE_IMAGE_SKU=6.8 \
+	SALT_REPO_FILE="salt-repo-el6.repo" \
 	./scripts/packer.sh build -only=arm-rhel6 $(PACKER_OPTS)
 
 build-azure-centos7:
@@ -273,10 +299,9 @@ build-azure-centos7:
 	OS_TYPE=redhat7 \
 	ATLAS_ARTIFACT_TYPE=azure-arm \
 	SALT_INSTALL_OS=centos \
-	SALT_REPO_FILE="salt-repo-el7.repo" \
-	AZURE_IMAGE_PUBLISHER=OpenLogic \
-	AZURE_IMAGE_OFFER=CentOS \
-	AZURE_IMAGE_SKU=7.4 \
+	AZURE_IMAGE_PUBLISHER=$(AZURE_IMAGE_PUBLISHER) \
+	AZURE_IMAGE_OFFER=$(AZURE_IMAGE_OFFER) \
+	AZURE_IMAGE_SKU=$(AZURE_IMAGE_SKU) \
 	./scripts/packer.sh build -only=arm-centos7 $(PACKER_OPTS)
 
 build-azure-sles12sp3:
@@ -286,7 +311,6 @@ build-azure-sles12sp3:
 	OS_TYPE=sles12 \
 	ATLAS_ARTIFACT_TYPE=azure-arm \
 	SALT_INSTALL_OS=suse \
-	SALT_REPO_FILE="salt-repo-sles12.repo" \
 	AZURE_IMAGE_PUBLISHER=SUSE \
 	AZURE_IMAGE_OFFER=SLES \
 	AZURE_IMAGE_SKU=12-SP3 \
@@ -299,7 +323,6 @@ build-azure-ubuntu16:
 	OS_TYPE=ubuntu16 \
 	ATLAS_ARTIFACT_TYPE=azure-arm \
 	SALT_INSTALL_OS=ubuntu \
-	SALT_REPO_FILE="salt-repo-ubuntu16.list" \
 	AZURE_IMAGE_PUBLISHER=Canonical \
 	AZURE_IMAGE_OFFER=UbuntuServer \
 	AZURE_IMAGE_SKU=16.04-LTS \
@@ -314,8 +337,23 @@ bundle-googlecompute:
 upload-openstack-image:
 	S3_TARGET=$(S3_TARGET) ./scripts/openstack-upload.sh
 
+docker-build-centos7:
+	@ OS=centos7 OS_TYPE=redhat7 TAG=centos-7 DIR=centos7.3 make docker-build
+
+docker-build-centos74:
+	echo "Building image for ycloud2"
+	@ OS=centos7 OS_TYPE=redhat7 TAG=centos-74 DIR=centos7.4 make docker-build
+
+docker-build-debian9:
+	@ OS=debian9 OS_TYPE=debian9 TAG=debian-9 DIR=debian9 make docker-build
+
+docker-build-ubuntu16:
+	@ OS=ubuntu16 OS_TYPE=ubuntu16 TAG=ubuntu-16 DIR=ubuntu16 make docker-build
+
 docker-build:
-	docker build -t registry.eng.hortonworks.com/cloudbreak/centos-7:$(shell date +%Y-%m-%d) -f docker/centos7.3/Dockerfile .
+	$(eval DOCKER_ENVS="OS=$(OS) OS_TYPE=$(OS_TYPE) SALT_VERSION=$(SALT_VERSION) SALT_PATH=$(SALT_PATH) PYZMQ_VERSION=$(PYZMQ_VERSION) PYTHON_APT_VERSION=$(PYTHON_APT_VERSION) TRACE=1")
+	$(eval DOCKER_BUILD_ARGS=$(shell echo ${DOCKER_ENVS} | xargs -n 1 echo "--build-arg " | xargs))
+	docker build $(DOCKER_BUILD_ARGS) -t registry.eng.hortonworks.com/cloudbreak/${TAG}:$(shell date +%Y-%m-%d) -f docker/${DIR}/Dockerfile .
 
 build-in-docker:
 	docker run -it \

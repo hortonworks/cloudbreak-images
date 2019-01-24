@@ -47,9 +47,12 @@
     "azure_storage_accounts": "{{ env `AZURE_STORAGE_ACCOUNTS` }}",
     "salt_install_os": "{{ env `SALT_INSTALL_OS` }}",
     "salt_install_repo": "{{ env `SALT_INSTALL_REPO` }}",
-    "salt_repo_file": "{{ env `SALT_REPO_FILE` }}",
-    "aws_instance_type": "m4.large",
+    "salt_version": "{{ env `SALT_VERSION` }}",
+    "salt_path": "{{ env `SALT_PATH` }}",
+    "pyzmq_version": "{{ env `PYZMQ_VERSION` }}",
+    "aws_instance_type": "m5.large",
     "aws_ami_regions": "{{ env `AWS_AMI_REGIONS` }}",
+    "aws_instance_profile": "{{ env `AWS_INSTANCE_PROFILE` }}",
     "custom_image_type": "{{ env `CUSTOM_IMAGE_TYPE` }}",
     "optional_states": "{{ env `OPTIONAL_STATES` }}",
     "oracle_jdk8_url_rpm": "{{ env `ORACLE_JDK8_URL_RPM` }}",
@@ -59,23 +62,34 @@
     "local_url_hdp_utils": "{{ env `LOCAL_URL_HDP_UTILS` }}",
     "local_url_vdf": "{{ env `LOCAL_URL_VDF` }}",
     "repository_type": "{{ env `REPOSITORY_TYPE` }}",
-    "sles_registration_code": "{{ env `SLES_REGISTRATION_CODE` }}"
+    "sles_registration_code": "{{ env `SLES_REGISTRATION_CODE` }}",
+    "package_versions" :  "{{ env `PACKAGE_VERSIONS` }}",
+    "python_apt_version" : "{{ env `PYTHON_APT_VERSION` }}",
+    "salt_repo_file": "{{ env `SALT_REPO_FILE` }}",
+    "aws_snapshot_groups": "{{ env `AWS_SNAPSHOT_GROUPS` }}",
+    "aws_ami_groups": "{{ env `AWS_AMI_GROUPS` }}",
+    "tag_customer_delivered": "{{ env `TAG_CUSTOMER_DELIVERED` }}",
+    "version": "{{ env `VERSION` }}"
   },
   "builders": [
     {
-      "name": "aws-amazonlinux",
+      "name": "gov-aws-amazonlinux",
       "type": "amazon-ebs",
-      "region": "eu-west-1",
+      "region": "us-gov-west-1",
       "ami_regions": "{{ user `aws_ami_regions` }}",
       "ssh_pty": true,
-      "source_ami": "ami-1a962263",
+      "source_ami": "ami-f562ee94",
       "instance_type": "{{ user `aws_instance_type` }}",
       "ssh_username": "ec2-user",
-      "ena_support": true,
+      "ena_support": false,
+      "iam_instance_profile": "{{ user `aws_instance_profile` }}",
       "skip_region_validation": true,
       "tags": {
+        "builder": "packer",
+        "version": "{{user `version`}}",
+        "cb-creation-timestamp": "{{timestamp}}",
         "Owner": "{{ user `image_owner` }}",
-        "cb-creation-timestamp": "{{timestamp}}"
+        "Customer Delivered": "{{user `tag_customer_delivered`}}"
       },
       "ami_block_device_mappings": [
         {
@@ -93,11 +107,47 @@
           "volume_size": "{{user `image_size`}}"
         }
       ],
+      "ami_name": "{{ user `image_name`}}"
+    },
+    {
+      "name": "aws-amazonlinux",
+      "type": "amazon-ebs",
+      "region": "eu-west-1",
+      "ami_regions": "{{ user `aws_ami_regions` }}",
+      "ssh_pty": true,
+      "source_ami": "ami-1a962263",
+      "instance_type": "{{ user `aws_instance_type` }}",
+      "ssh_username": "ec2-user",
+      "ena_support": true,
+      "skip_region_validation": true,
       "tags": {
         "builder": "packer",
-        "version": "{{user `version`}}"
+        "version": "{{user `version`}}",
+        "cb-creation-timestamp": "{{timestamp}}",
+        "Owner": "{{ user `image_owner` }}",
+        "Customer Delivered": "{{user `tag_customer_delivered`}}"
       },
-      "ami_groups": "all",
+      "ami_block_device_mappings": [
+        {
+          "device_name": "/dev/xvda",
+          "volume_type": "gp2",
+          "delete_on_termination": true,
+          "volume_size": "{{user `image_size`}}"
+        }
+      ],
+      "launch_block_device_mappings": [
+        {
+          "device_name": "/dev/xvda",
+          "volume_type": "gp2",
+          "delete_on_termination": true,
+          "volume_size": "{{user `image_size`}}"
+        }
+      ],
+      "run_tags": {
+        "Owner": "{{ user `image_owner` }}"
+      },
+      "snapshot_groups": "{{ user `aws_snapshot_groups`}}",
+      "ami_groups": "{{ user `aws_ami_groups` }}",
       "ami_name": "{{ user `image_name`}}"
     },
     {
@@ -112,8 +162,14 @@
       "ena_support": false,
       "skip_region_validation": true,
       "tags": {
+        "builder": "packer",
+        "version": "{{user `version`}}",
+        "cb-creation-timestamp": "{{timestamp}}",
         "Owner": "{{ user `image_owner` }}",
-        "cb-creation-timestamp": "{{timestamp}}"
+        "Customer Delivered": "{{user `tag_customer_delivered`}}"
+      },
+      "run_tags": {
+        "Owner": "{{ user `image_owner` }}"
       },
       "ami_block_device_mappings": [
         {
@@ -131,10 +187,6 @@
           "volume_size": "{{user `image_size`}}"
         }
       ],
-      "tags": {
-        "builder": "packer",
-        "version": "{{user `version`}}"
-      },
       "ami_name": "{{ user `image_name`}}"
     },
     {
@@ -149,8 +201,14 @@
       "ena_support": false,
       "skip_region_validation": true,
       "tags": {
+        "builder": "packer",
+        "version": "{{user `version`}}",
+        "cb-creation-timestamp": "{{timestamp}}",
         "Owner": "{{ user `image_owner` }}",
-        "cb-creation-timestamp": "{{timestamp}}"
+        "Customer Delivered": "{{user `tag_customer_delivered`}}"
+      },
+      "run_tags": {
+        "Owner": "{{ user `image_owner` }}"
       },
       "ami_block_device_mappings": [
         {
@@ -168,10 +226,6 @@
           "volume_size": "{{user `image_size`}}"
         }
       ],
-      "tags": {
-        "builder": "packer",
-        "version": "{{user `version`}}"
-      },
       "ami_name": "{{ user `image_name`}}"
     },
     {
@@ -186,8 +240,14 @@
       "ena_support": false,
       "skip_region_validation": true,
       "tags": {
+        "builder": "packer",
+        "version": "{{user `version`}}",
+        "cb-creation-timestamp": "{{timestamp}}",
         "Owner": "{{ user `image_owner` }}",
-        "cb-creation-timestamp": "{{timestamp}}"
+        "Customer Delivered": "{{user `tag_customer_delivered`}}"
+      },
+      "run_tags": {
+        "Owner": "{{ user `image_owner` }}"
       },
       "ami_block_device_mappings": [
         {
@@ -205,11 +265,8 @@
           "volume_size": "{{user `image_size`}}"
         }
       ],
-      "tags": {
-        "builder": "packer",
-        "version": "{{user `version`}}"
-      },
-      "ami_groups": "all",
+      "snapshot_groups": "{{ user `aws_snapshot_groups` }}",
+      "ami_groups": "{{ user `aws_ami_groups` }}",
       "ami_name": "{{ user `image_name`}}"
     },
     {
@@ -217,15 +274,21 @@
       "type": "amazon-ebs",
       "region": "eu-west-1",
       "ssh_pty": true,
-      "source_ami": "ami-38c09341",
+      "source_ami": "ami-776a659d",
       "ami_regions": "{{ user `aws_ami_regions` }}",
       "instance_type": "{{ user `aws_instance_type` }}",
       "ssh_username": "ec2-user",
       "ena_support": false,
       "skip_region_validation": true,
       "tags": {
+        "builder": "packer",
+        "version": "{{user `version`}}",
+        "cb-creation-timestamp": "{{timestamp}}",
         "Owner": "{{ user `image_owner` }}",
-        "cb-creation-timestamp": "{{timestamp}}"
+        "Customer Delivered": "{{user `tag_customer_delivered`}}"
+      },
+      "run_tags": {
+        "Owner": "{{ user `image_owner` }}"
       },
       "ami_block_device_mappings": [
         {
@@ -243,11 +306,8 @@
           "volume_size": "{{user `image_size`}}"
         }
       ],
-      "tags": {
-        "builder": "packer",
-        "version": "{{user `version`}}"
-      },
-      "ami_groups": "all",
+      "snapshot_groups": "{{ user `aws_snapshot_groups` }}",
+      "ami_groups": "{{ user `aws_ami_groups` }}",
       "ami_name": "{{ user `image_name`}}"
     },
     {
@@ -262,8 +322,14 @@
       "ena_support": false,
       "skip_region_validation": true,
       "tags": {
+        "builder": "packer",
+        "version": "{{user `version`}}",
+        "cb-creation-timestamp": "{{timestamp}}",
         "Owner": "{{ user `image_owner` }}",
-        "cb-creation-timestamp": "{{timestamp}}"
+        "Customer Delivered": "{{user `tag_customer_delivered`}}"
+      },
+      "run_tags": {
+        "Owner": "{{ user `image_owner` }}"
       },
       "ami_block_device_mappings": [
         {
@@ -281,11 +347,8 @@
           "volume_size": "{{user `image_size`}}"
         }
       ],
-      "tags": {
-        "builder": "packer",
-        "version": "{{user `version`}}"
-      },
-      "ami_groups": "all",
+      "snapshot_groups": "{{ user `aws_snapshot_groups` }}",
+      "ami_groups": "{{ user `aws_ami_groups` }}",
       "ami_name": "{{ user `image_name`}}"
     },
     {
@@ -293,15 +356,21 @@
       "type": "amazon-ebs",
       "region": "eu-west-1",
       "ssh_pty": true,
-      "source_ami": "ami-58d7e821",
+      "source_ami": "ami-05e2fa3e100f8d881",
       "ami_regions": "{{ user `aws_ami_regions` }}",
       "instance_type": "{{ user `aws_instance_type` }}",
       "ssh_username": "ubuntu",
       "ena_support": false,
       "skip_region_validation": true,
       "tags": {
+        "builder": "packer",
+        "version": "{{user `version`}}",
+        "cb-creation-timestamp": "{{timestamp}}",
         "Owner": "{{ user `image_owner` }}",
-        "cb-creation-timestamp": "{{timestamp}}"
+        "Customer Delivered": "{{user `tag_customer_delivered`}}"
+      },
+      "run_tags": {
+        "Owner": "{{ user `image_owner` }}"
       },
       "ami_block_device_mappings": [
         {
@@ -319,11 +388,8 @@
           "volume_size": "{{user `image_size`}}"
         }
       ],
-      "tags": {
-        "builder": "packer",
-        "version": "{{user `version`}}"
-      },
-      "ami_groups": "all",
+      "snapshot_groups": "{{ user `aws_snapshot_groups` }}",
+      "ami_groups": "{{ user `aws_ami_groups` }}",
       "ami_name": "{{ user `image_name`}}"
     },
     {
@@ -451,6 +517,7 @@
       "machine_type": "n1-standard-2",
       "image_name": "{{user `image_name`}}",
       "disk_size": "{{user `image_size`}}",
+      "state_timeout": "15m",
       "tags": [
         "packer", "imagebuild-hortonworks"
       ],
@@ -464,7 +531,7 @@
       "type": "googlecompute",
       "disable_default_service_account" : true,
       "account_file": "{{user `gcp_account_file`}}",
-      "source_image": "sles-12-sp3-v20180214",
+      "source_image": "sles-12-sp3-v20180814",
       "zone": "us-central1-b",
       "project_id": "siq-haas",
       "ssh_username": "root",
@@ -472,6 +539,7 @@
       "machine_type": "n1-standard-2",
       "image_name": "{{user `image_name`}}",
       "disk_size": "{{user `image_size`}}",
+      "state_timeout": "15m",
       "tags": [
         "packer", "imagebuild-hortonworks"
       ],
@@ -494,6 +562,7 @@
       "machine_type": "n1-standard-2",
       "image_name": "{{user `image_name`}}",
       "disk_size": "{{user `image_size`}}",
+      "state_timeout": "15m",
       "tags": [
         "packer", "imagebuild-hortonworks"
       ],
@@ -525,8 +594,11 @@
       "vm_size": "Standard_D4",
       "os_disk_size_gb": "{{user `image_size`}}",
       "azure_tags": {
+        "builder": "packer",
+        "version": "{{user `version`}}",
+        "cb-creation-timestamp": "{{timestamp}}",
         "Owner": "{{ user `image_owner` }}",
-        "cb-creation-timestamp": "{{timestamp}}"
+        "Customer Delivered": "{{user `tag_customer_delivered`}}"
       }
     },
     {
@@ -552,8 +624,11 @@
       "vm_size": "Standard_D4",
       "os_disk_size_gb": "{{user `image_size`}}",
       "azure_tags": {
+        "builder": "packer",
+        "version": "{{user `version`}}",
+        "cb-creation-timestamp": "{{timestamp}}",
         "Owner": "{{ user `image_owner` }}",
-        "cb-creation-timestamp": "{{timestamp}}"
+        "Customer Delivered": "{{user `tag_customer_delivered`}}"
       }
     },
     {
@@ -579,8 +654,11 @@
       "vm_size": "Standard_D4",
       "os_disk_size_gb": "{{user `image_size`}}",
       "azure_tags": {
+        "builder": "packer",
+        "version": "{{user `version`}}",
+        "cb-creation-timestamp": "{{timestamp}}",
         "Owner": "{{ user `image_owner` }}",
-        "cb-creation-timestamp": "{{timestamp}}"
+        "Customer Delivered": "{{user `tag_customer_delivered`}}"
       }
     },
     {
@@ -606,8 +684,11 @@
       "vm_size": "Standard_D4",
       "os_disk_size_gb": "{{user `image_size`}}",
       "azure_tags": {
+        "builder": "packer",
+        "version": "{{user `version`}}",
+        "cb-creation-timestamp": "{{timestamp}}",
         "Owner": "{{ user `image_owner` }}",
-        "cb-creation-timestamp": "{{timestamp}}"
+        "Customer Delivered": "{{user `tag_customer_delivered`}}"
       }
     }
   ],
@@ -623,11 +704,23 @@
       "destination": "/tmp/repos"
     },
     {
+      "type": "file",
+      "source": "scripts/salt_requirements.txt",
+      "destination": "/tmp/salt_requirements.txt"
+    },
+    {
       "type": "shell",
       "script": "scripts/salt-install.sh",
       "environment_vars": [
         "SALT_INSTALL_OS={{ user `salt_install_os` }}",
         "SALT_INSTALL_REPO={{user `salt_install_repo` }}",
+        "SALT_VERSION={{user `salt_version`}}",
+        "PYZMQ_VERSION={{user `pyzmq_version`}}",
+        "SLES_REGISTRATION_CODE={{user `sles_registration_code`}}",
+        "OS_TYPE={{user `os_type`}}",
+        "OS={{user `os`}}",
+        "PYTHON_APT_VERSION={{user `python_apt_version`}}",
+        "SALT_PATH={{user `salt_path`}}",
         "SALT_REPO_FILE={{user `salt_repo_file` }}"
       ],
       "execute_command": "chmod +x {{ .Path }}; sudo {{ .Vars }} {{ .Path }}"
@@ -664,8 +757,17 @@
         "LOCAL_URL_HDP_UTILS={{user `local_url_hdp_utils`}}",
         "LOCAL_URL_VDF={{user `local_url_vdf`}}",
         "REPOSITORY_TYPE={{user `repository_type`}}",
-        "SLES_REGISTRATION_CODE={{user `sles_registration_code`}}"
+        "SLES_REGISTRATION_CODE={{user `sles_registration_code`}}",
+        "PACKAGE_VERSIONS={{user `package_versions`}}",
+        "SALT_VERSION={{user `salt_version`}}",
+        "SALT_PATH={{user `salt_path`}}"
       ]
+    },
+    {
+      "type": "file",
+      "source": "/tmp/package-versions.json",
+      "destination": "package-versions.json",
+      "direction" : "download"
     }
   ],
   "post-processors": [

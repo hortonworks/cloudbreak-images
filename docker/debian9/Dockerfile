@@ -13,10 +13,19 @@ RUN gcc -Wall -DCOMMAND='"/bootstrap/start-systemd.sh"' -o /systemd-wrapper /src
 
 FROM debian:9
 
+ARG SALT_VERSION
+ARG SALT_PATH
+ARG PYZMQ_VERSION
+ARG PYTHON_APT_VERSION
+ARG TRACE
+ARG OS
+ARG OS_TYPE
+
 LABEL maintainer=Hortonworks
 
 ARG SYSTEMCTL=https://raw.githubusercontent.com/hortonworks/docker-systemctl-replacement/3a885817b377f0307bd03d82323fa5749136de8f/files/docker/systemctl.py
 
+ENV DEBIAN_FRONTEND noninteractive
 ENV TERM linux
 ENV PS1 "[\u@cloudbreak \W]\$ "
 
@@ -31,6 +40,7 @@ RUN apt-get update && \
         cron \
         curl \
         gnupg2 \
+        initscripts \
         iproute2 \
         python-minimal \
         ssh \
@@ -57,6 +67,7 @@ RUN dpkg-divert --add --rename /bin/systemctl && \
 COPY /saltstack/ /tmp/saltstack/
 COPY /repos/     /tmp/repos/
 COPY /scripts/   /tmp/scripts/
+COPY /scripts/salt_requirements.txt /tmp/salt_requirements.txt
 COPY docker/common/_grains/ /tmp/saltstack/base/salt/_grains/
 COPY docker/common/_grains/ /tmp/saltstack/hortonworks/salt/_grains/
 RUN printf '\n\nproviders:\n  service: systemd\n' >>/tmp/saltstack/config/minion
@@ -76,8 +87,8 @@ RUN rm /bin/systemctl && \
     dpkg-divert --remove --rename /bin/systemctl
 
 # Fix ssh login and salt-api auth problems
-RUN sed -i '/pam_nologin/s/\(.*\)/#\1/g' /etc/pam.d/sshd
-RUN sed -i '/pam_nologin/s/\(.*\)/#\1/g' /etc/pam.d/login
+RUN rm /lib/systemd/system/rmnologin.service && \
+    sed -i 's/#\?DELAYLOGIN=.*/DELAYLOGIN=yes/' /etc/default/rcS
 
 # Ycloud integration
 RUN groupmod -g 99 nogroup && \

@@ -40,7 +40,7 @@ create_jvm_symlink:
 
 add_openjdk_gplv2:
   file.managed:
-    - name: /usr/lib/jvm/java/OpenJDK_GPLv2_and_Classpath_Exception.pdf
+    - name: {{ pillar['JAVA_HOME'] }}/OpenJDK_GPLv2_and_Classpath_Exception.pdf
     - source: salt://java/usr/lib/jvm/java/OpenJDK_GPLv2_and_Classpath_Exception.pdf
     - follow_symlinks: True
     - makedirs: True

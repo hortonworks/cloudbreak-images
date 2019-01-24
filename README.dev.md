@@ -15,6 +15,9 @@
     + [JDBC connector's JAR for MySQL or Oracle External Database](#jdbc-connectors-jar-for-mysql-or-oracle-external-database)
     + [Secure /tmp with noexec option](#secure-tmp-with-noexec-option)
   * [Packer Postprocessors](#packer-postprocessors)
+  * [Saltstack installation](#saltstack-installation)
+  * [Saltstack upgrade](#saltstack-upgrade)
+  * [Salt-bootstrap upgrade](#salt-bootstrap-upgrade)
 
 
 # Custom Images for Cloudbreak
@@ -168,3 +171,69 @@ export ENABLE_POSTPROCESSORS=1
 For example a postprocessor could be used to store image metadata into  [HashiCorp Atlas](https://www.hashicorp.com/blog/atlas-announcement/) for further processing.
 
 If you don't know how postprocessors are working then you can safely ignore this section and please do NOT set ENABLE_POSTPROCESSORS=1 unless you know what you are doing.
+
+## Saltstack installation
+
+Salt will be installed in a different Python environment using virtualenv. You can specify Salt version using SALT_VERSION environment variable. 
+Salt services are running with Python of the virtual environment. Hence you cannot execute salt related commands by default, you have to activate the environment.
+
+```
+source /path/to/environment/bin/activate
+```
+
+By default, the path of the virtual environment will be `/opt/salt_{SALT_VERSION}`.
+
+Or you can use the predefined binary to activate the environment.
+
+```
+source activate_salt_env
+```
+
+If you are finished with your work with salt, you have to **deactivate the environment**:
+
+```
+deactivate
+```
+
+## Saltstack upgrade
+
+If you want to upgrade salt installation, you have to **activate the environment** then execute the following command:
+
+```
+pip install salt=={DESIRED_SALT_VERSION} --upgrade
+```
+
+Do not forget to **deactivate** the environment:
+
+```
+deactivate
+```
+
+Be aware that the ZMQ versions should match on every instance within a cluster, so if they differ, you have to install manually ZMQ using package manager. 
+To do so, package manager should contain a repository which can provide the desired ZMQ package.
+
+After the update you should restart salt related services:
+
+| Service type | Command |
+| ---- | ---- |
+| systemd | `systemctl restart salt-master`
+|  | `systemctl restart salt-api`
+|  | `systemctl restart salt-minion`
+| amazonlinux | `service salt-master restart`
+|  | `service salt-api restart`
+|  | `service salt-minion restart`
+| upstart | `initctl restart salt-master`
+|  | `initctl restart salt-api`
+|  | `initctl restart salt-minion`
+
+## Salt-bootstrap upgrade
+
+To upgrade salt-bootstrap, you have to download (with curl or with other preferred way) the new release package from releases of salt-bootstrap github repository and extract it into folder `/usr/sbin/salt-bootstrap`.
+
+Then you have to restart service:
+
+| Service type | Command |
+| ---- | ---- |
+| systemd | `systemctl restart salt-bootstrap`
+| amazonlinux | `service salt-bootstrap restart`
+| upstart | `initctl restart salt-bootstrap`

@@ -36,7 +36,6 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
         :box => "centos/7",
         :ram => 1024,
         :cpu => 2,
-        :salt_repo => "salt-repo-el7.repo",
         :optional_states => "oracle-java",
         :custom_image_type => "hortonworks",
         :oracle_jdk8_url_rpm => "http://download.oracle.com/otn-pub/java/jdk/8u161-b12/2f38c3b165be4555a1fa6e98c45e0808/jdk-8u161-linux-x64.rpm",
@@ -47,7 +46,6 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
         :box => "centos/6",
         :ram => 1536,
         :cpu => 2,
-        :salt_repo => "salt-repo-el6.repo",
         :custom_image_type => "hortonworks",
         :salt_install_os => "centos"
       },
@@ -56,7 +54,6 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
         :box => "debian/stretch64",
         :ram => 1536,
         :cpu => 2,
-        :salt_repo => "salt-repo-debian9.list",
         :custom_image_type => "hortonworks",
         :salt_install_os => "debian"
       },
@@ -65,7 +62,6 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
         :box => "ubuntu/trusty64",
         :ram => 1536,
         :cpu => 2,
-        :salt_repo => "salt-repo-ubuntu14.list",
         :custom_image_type => "hortonworks",
         :salt_install_os => "ubuntu"
       },
@@ -74,7 +70,6 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
         :box => "ubuntu/xenial64",
         :ram => 1536,
         :cpu => 2,
-        :salt_repo => "salt-repo-ubuntu16.list",
         :custom_image_type => "hortonworks",
         :salt_install_os => "ubuntu"
       },
@@ -83,7 +78,6 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
         :box => "mmolnar/sles12sp3",
         :ram => 1536,
         :cpu => 4,
-        :salt_repo => "salt-repo-sles12.repo",
         :custom_image_type => "hortonworks",
         :salt_install_os => "suse" 
       }
@@ -105,7 +99,7 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
 
         node.vm.provision :shell do |shell|
           shell.path = "scripts/salt-install.sh"
-          shell.args = machine[:salt_install_os] + " " + machine[:salt_repo] + " " + machine[:box].split('/',-1)[1].gsub(/ *\d+$/, '')
+          shell.args = machine[:salt_install_os] + " " + machine[:box].split('/',-1)[1].gsub(/ *\d+$/, '')
           shell.keep_color = false
         end
 

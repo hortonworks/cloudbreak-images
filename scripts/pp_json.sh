@@ -1,4 +1,8 @@
 #!/bin/bash
+if [ -f package-versions.json -a "$hdp_version" != "" -a "$ambari_version" != "" ]; then
+	apk update && apk add jq
+	cat package-versions.json | jq --arg hdp_version $hdp_version --arg ambari_version $ambari_version '. += {"stack" : $hdp_version,  "ambari" : $ambari_version}' > package-versions-tmp.json && mv package-versions-tmp.json package-versions.json
+fi
 
 cat  > ${image_name}.json <<EOF
 {
@@ -33,7 +37,8 @@ cat  > ${image_name}.json <<EOF
 "gcp_storage_bundle": "${gcp_storage_bundle}",
 "hdp_vdf": "$([ "$repository_type" == "local" ] && echo "${local_url_vdf}" || echo "${hdp_vdf}")",
 "hdp_repository_version": "${hdp_repository_version}",
-"manifest": $(if [ -f ${image_name}_manifest.json ]; then cat ${image_name}_manifest.json; else echo "{}"; fi)
+"manifest": $(if [ -f ${image_name}_manifest.json ]; then cat ${image_name}_manifest.json; else echo "{}"; fi),
+"package_versions": $(if [ -f package-versions.json ]; then cat package-versions.json; else echo "{}"; fi)
 }
 EOF
 

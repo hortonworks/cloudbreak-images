@@ -1,12 +1,19 @@
 FROM docker.io/centos:7.3.1611
 
+ARG SALT_VERSION
+ARG SALT_PATH
+ARG PYZMQ_VERSION
+ARG PYTHON_APT_VERSION
+ARG TRACE
+ARG OS
+ARG OS_TYPE
+
 LABEL maintainer=Hortonworks
 
 ENV container docker
 ENV TERM linux
 ENV PS1 "[\u@cloudbreak \W]\$ "
 
-ENV SALT_REPO=salt-repo-el7.repo
 ENV SYSTEMCTL_REPLACEMENT=https://raw.githubusercontent.com/hortonworks/docker-systemctl-replacement/3a885817b377f0307bd03d82323fa5749136de8f/files/docker/systemctl.py
 
 # Fix the default shell from dash to bash
@@ -121,6 +128,7 @@ COPY /saltstack /tmp/saltstack
 COPY /repos /tmp/repos
 COPY /scripts/salt-install.sh /tmp/saltstack/
 COPY /scripts/salt-setup.sh /tmp/saltstack/
+COPY /scripts/salt_requirements.txt /tmp/salt_requirements.txt
 
 # Workaround problem caused by sytemd not being pid-1:
 # Force the minions to use systemd on this host
