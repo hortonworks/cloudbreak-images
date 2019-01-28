@@ -2,6 +2,7 @@ install_consul_template:
   archive.extracted:
     - name: /usr/local/bin/
     - source: https://releases.hashicorp.com/consul-template/0.16.0/consul-template_0.16.0_linux_amd64.zip
+    - source_hash: md5=4637fb989af3b10a2cc34a0fa5fd414d
     - archive_format: zip
     - enforce_toplevel: False
     - skip_verify: True
