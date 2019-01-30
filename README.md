@@ -131,6 +131,8 @@ export MAKE_PUBLIC_SNAPSHOTS=yes
 
 > Note: Environment variables need to be exported before the use of the `make` command.
 
+#### Deployment Regions
+The generated AMI will be deployed to multiple AWS Regions as listed in the Makefile.  So be sure to review and edit the Makefile with updates to the AWS_AMI_REGIONS and AWS_GOV_AMI_REGIONS to limit deployment.
 
 ### Azure
 
