@@ -16,6 +16,7 @@ packages_install:
   {% if grains['os_family'] == 'Suse' %}
       - git-core
       - man
+      - libxml2-tools
   {% else %}
       - git
       - tmux
