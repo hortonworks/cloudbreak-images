@@ -9,7 +9,9 @@ case "$2" in
         SEARCH=$DHCP4_DOMAIN_SEARCH
         new_domain_search=$SEARCH
         new_domain_name=$DHCP4_DOMAIN_NAME
-        make_resolv_conf
+        if [ -n "${new_domain_name_servers}" ] && echo $interface | grep -vq docker; then
+            make_resolv_conf
+        fi
         ;;
     *)
         echo "https://people.freedesktop.org/~lkundrak/nm-docs/NetworkManager.html"
