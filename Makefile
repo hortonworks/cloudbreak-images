@@ -348,6 +348,10 @@ docker-build-centos75:
 	echo "Building image for ycloud2"
 	@ OS=centos7 OS_TYPE=redhat7 TAG=centos-75 DIR=centos7.5 make docker-build
 
+docker-build-centos76:
+	echo "Building image for ycloud2"
+	@ OS=centos7 OS_TYPE=redhat7 TAG=centos-76 DIR=centos7.6 make docker-build
+
 docker-build-debian9:
 	@ OS=debian9 OS_TYPE=debian9 TAG=debian-9 DIR=debian9 make docker-build
 
