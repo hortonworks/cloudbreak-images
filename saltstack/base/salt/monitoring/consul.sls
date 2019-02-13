@@ -2,6 +2,7 @@ install_consul:
   archive.extracted:
     - name: /usr/local/bin/
     - source: https://releases.hashicorp.com/consul/0.7.3/consul_0.7.3_linux_amd64.zip
+    - source_hash: md5=7339e0d687f289db4080c08e3f6f003a
     - archive_format: zip
     - enforce_toplevel: False
     - skip_verify: True
