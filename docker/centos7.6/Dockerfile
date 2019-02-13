@@ -52,7 +52,7 @@ RUN rm -f /etc/salt/minion_id /etc/salt/pki/minion/minion.pem /etc/salt/pki/mini
 # restore systemctl to system default
 RUN ln -sf /usr/bin/systemctl.orig /usr/bin/systemctl
 
-ADD docker/centos7.3/files/image-runtime-scripts/start-services-script.sh /bootstrap/
+ADD docker/centos7.6/image-runtime-scripts/start-services-script.sh /bootstrap/
 
 #################################################################################
 
