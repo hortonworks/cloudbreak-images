@@ -509,7 +509,7 @@
       "type": "googlecompute",
       "disable_default_service_account" : true,
       "account_file": "{{user `gcp_account_file`}}",
-      "source_image": "centos-7-v20160921",
+      "source_image": "centos-7-v20190312",
       "zone": "us-central1-b",
       "project_id": "siq-haas",
       "ssh_username": "centos",
