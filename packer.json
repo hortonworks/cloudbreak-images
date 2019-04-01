@@ -41,6 +41,7 @@
     "image_name": "{{ env `IMAGE_NAME` }}",
     "image_size": "{{ env `IMAGE_SIZE` }}",
     "image_owner": "{{ env `IMAGE_OWNER` }}",
+    "include_fluent": "{{ env `INCLUDE_FLUENT` }}",
     "azure_image_publisher": "{{ env `AZURE_IMAGE_PUBLISHER` }}",
     "azure_image_offer": "{{ env `AZURE_IMAGE_OFFER` }}",
     "azure_image_sku": "{{ env `AZURE_IMAGE_SKU` }}",
@@ -761,6 +762,17 @@
         "PACKAGE_VERSIONS={{user `package_versions`}}",
         "SALT_VERSION={{user `salt_version`}}",
         "SALT_PATH={{user `salt_path`}}"
+      ]
+    },
+    {
+      "type": "shell",
+      "script": "scripts/fluent-install.sh",
+      "expect_disconnect": true,
+      "execute_command": "chmod +x {{ .Path }}; sudo {{ .Vars }} {{ .Path }} ",
+      "environment_vars": [
+        "INCLUDE_FLUENT={{user `include_fluent`}}", 
+        "OS={{user `os`}}",
+        "OS_TYPE={{user `os_type`}}"
       ]
     },
     {
