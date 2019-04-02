@@ -746,6 +746,7 @@
         "HDPUTIL_VERSION={{user `hdputil_version`}}",
         "HDPUTIL_REPOID={{user `hdputil_repoid`}}",
         "HDPUTIL_BASEURL={{user `hdputil_baseurl`}}",
+        "INCLUDE_FLUENT={{user `include_fluent`}}",
         "VDF={{user `vdf`}}",
         "OS={{user `os`}}",
         "REPOSITORY_VERSION={{user `repository_version`}}",
@@ -762,17 +763,6 @@
         "PACKAGE_VERSIONS={{user `package_versions`}}",
         "SALT_VERSION={{user `salt_version`}}",
         "SALT_PATH={{user `salt_path`}}"
-      ]
-    },
-    {
-      "type": "shell",
-      "script": "scripts/fluent-install.sh",
-      "expect_disconnect": true,
-      "execute_command": "chmod +x {{ .Path }}; sudo {{ .Vars }} {{ .Path }} ",
-      "environment_vars": [
-        "INCLUDE_FLUENT={{user `include_fluent`}}", 
-        "OS={{user `os`}}",
-        "OS_TYPE={{user `os_type`}}"
       ]
     },
     {
