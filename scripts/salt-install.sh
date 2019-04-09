@@ -38,7 +38,7 @@ function install_python_apt_into_virtualenv() {
 
 function install_with_yum() {
   yum update -y python
-  yum install -y yum-utils
+  yum install -y yum-utils yum-plugin-versionlock
   yum clean metadata
   enable_epel_repository
   yum groupinstall -y 'Development Tools'

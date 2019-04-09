@@ -1,4 +1,4 @@
-{% if pillar['HDP_VERSION'] %}
+{% if pillar['STACK_VERSION'] %}
 copy_eula:
   file.recurse:
     - name: /etc/hortonworks/
@@ -15,7 +15,7 @@ remove_marketplace_eulas:
     - name: rm -f /etc/hortonworks/hdcloud*marketplace*
 {% endif %}
 
-{% if '2.5' in pillar['HDP_VERSION'] %}
+{% if '2.5' in pillar['STACK_VERSION'] %}
 remove_hdp26_eulas:
   cmd.run:
     - name: rm -f /etc/hortonworks/hdcloud*hdp26*
