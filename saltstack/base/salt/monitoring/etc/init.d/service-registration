@@ -21,7 +21,7 @@
 
 NAME=service-registration
 PROG=/usr/local/bin/$NAME
-AMBARI_ADDRESS=ambari-server.$(hostname -d)
+CLUSTERMANAGER_ADDRESS=ambari-server.$(hostname -d)
 
 get_pid() {
     ps -o pid= -C $NAME
@@ -37,7 +37,7 @@ case "$1" in
         echo "Already started"
     else
         echo "Starting ${NAME}"
-        AMBARI_ADDRESS=$AMBARI_ADDRESS $PROG &> /dev/null &
+        CLUSTERMANAGER_ADDRESS=$CLUSTERMANAGER_ADDRESS $PROG &> /dev/null &
     fi
     ;;
     stop)

@@ -1,37 +1,37 @@
 {% if grains['os_family'] == 'RedHat' %}
-create_ambari_repo:
+create_clustermanager_repo:
   pkgrepo.managed:
-    - name: ambari
-    - humanname: "AMBARI.{{ pillar['AMBARI_VERSION'] }}"
-    - baseurl: "{{ pillar['AMBARI_BASEURL'] }}"
+    - name: clustermanager
+    - humanname: "AMBARI.{{ pillar['CLUSTERMANAGER_VERSION'] }}"
+    - baseurl: "{{ pillar['CLUSTERMANAGER_BASEURL'] }}"
     - gpgcheck: 1
-    - gpgkey: "{{ pillar['AMBARI_GPGKEY'] }}"
+    - gpgkey: "{{ pillar['CLUSTERMANAGER_GPGKEY'] }}"
     - priority: 1
 {% elif grains['os_family'] == 'Debian' %}
-create_ambari_repo:
+create_clustermanager_repo:
   pkgrepo.managed:
-    - humanname: "AMBARI.{{ pillar['AMBARI_VERSION'] }}"
-    - name: "deb {{ pillar['AMBARI_BASEURL'] }} Ambari main"
+    - humanname: "AMBARI.{{ pillar['CLUSTERMANAGER_VERSION'] }}"
+    - name: "deb {{ pillar['CLUSTERMANAGER_BASEURL'] }} Ambari main"
     - file: /etc/apt/sources.list.d/ambari.list
-    - keyid: "{{ pillar['AMBARI_GPGKEY'] }}"
+    - keyid: "{{ pillar['CLUSTERMANAGER_GPGKEY'] }}"
     - keyserver: keyserver.ubuntu.com
     - priority: 1
 {% endif %}
 
-install_ambari_pgks:
+install_clustermanager_pgks:
   pkg.installed:
     - pkgs:
       - ambari-server
       - ambari-agent
     - require:
-      - pkgrepo: create_ambari_repo
+      - pkgrepo: create_clustermanager_repo
 
-disable_ambari_server:
+disable_clustermanager_server:
   cmd.run:
     - name: chkconfig ambari-server off
     - onlyif: /sbin/chkconfig --list ambari-server | grep on
 
-disable_ambari_agent:
+disable_clustermanager_agent:
   cmd.run:
     - name: chkconfig ambari-agent off
     - onlyif: /sbin/chkconfig --list ambari-agent | grep on
