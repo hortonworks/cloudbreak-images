@@ -39,7 +39,7 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
         :optional_states => "oracle-java",
         :custom_image_type => "hortonworks",
         :oracle_jdk8_url_rpm => "http://download.oracle.com/otn-pub/java/jdk/8u161-b12/2f38c3b165be4555a1fa6e98c45e0808/jdk-8u161-linux-x64.rpm",
-        :salt_install_os => "centos" 
+        :salt_install_os => "centos"
       },
       {
         :hostname => "centos6",
@@ -79,7 +79,7 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
         :ram => 1536,
         :cpu => 4,
         :custom_image_type => "hortonworks",
-        :salt_install_os => "suse" 
+        :salt_install_os => "suse"
       }
   ].each do |machine|
     config.vm.define machine[:hostname] do |node|
@@ -121,13 +121,13 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
         #   salt.install_type = "stable"
         #   salt.pillar({
         #
-        #     "AMBARI_VERSION" => "2.4",
-        #     "AMBARI_BASEURL" => machine[:ambari_baseurl],
-        #     "AMBARI_GPGKEY" => machine[:ambari_key],
-        #     "HDP_STACK_VERSION" => machine[:hdp_stack_version],
-        #     "HDP_VERSION" => machine[:hdp_version],
-        #     "HDP_BASEURL" => machine[:hdp_baseurl],
-        #     "HDP_REPOID" => machine[:hdp_repoid]
+        #     "CLUSTERMANAGER_VERSION" => "2.4",
+        #     "CLUSTERMANAGER_BASEURL" => machine[:clustermanager_baseurl],
+        #     "CLUSTERMANAGER_GPGKEY" => machine[:clustermanager_key],
+        #     
+        #     "STACK_VERSION" => machine[:stack_version],
+        #     "STACK_BASEURL" => machine[:stack_baseurl],
+        #     "STACK_REPOID" => machine[:stack_repoid]
         #   })
         #   salt.install_master = false
         #   salt.no_minion = true

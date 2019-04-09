@@ -1,3 +1,3 @@
-AMBARI_VERSION: {{ salt['environ.get']('AMBARI_VERSION', False) }}
-AMBARI_BASEURL: {{ salt['environ.get']('AMBARI_BASEURL', False) }}
-AMBARI_GPGKEY: {{ salt['environ.get']('AMBARI_GPGKEY', False) }}
+CLUSTERMANAGER_VERSION: {{ salt['environ.get']('CLUSTERMANAGER_VERSION', False) }}
+CLUSTERMANAGER_BASEURL: {{ salt['environ.get']('CLUSTERMANAGER_BASEURL', False) }}
+CLUSTERMANAGER_GPGKEY: {{ salt['environ.get']('CLUSTERMANAGER_GPGKEY', False) }}

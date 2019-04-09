@@ -36,14 +36,13 @@ install_hdp:
     - template: jinja
     - env:
       - STACK_TYPE: "{{ pillar['STACK_TYPE'] }}"
-      - HDP_STACK_VERSION: "{{ pillar['HDP_STACK_VERSION'] }}"
-      - HDP_VERSION: {{ pillar['HDP_VERSION'] }}
-      - HDP_BASEURL: {{ pillar['HDP_BASEURL'] }}
-      - HDP_REPOID: {{ pillar['HDP_REPOID'] }}
+      - STACK_VERSION: {{ pillar['STACK_VERSION'] }}
+      - STACK_BASEURL: {{ pillar['STACK_BASEURL'] }}
+      - STACK_REPOID: {{ pillar['STACK_REPOID'] }}
       - MPACK_URLS: "{{ pillar['MPACK_URLS'] }}"
       - VDF: {{ pillar['VDF'] }}
-      - REPOSITORY_VERSION: {{ pillar['REPOSITORY_VERSION'] }}
-      - AMBARI_VERSION: {{ pillar['AMBARI_VERSION'] }}
+      - STACK_REPOSITORY_VERSION: {{ pillar['STACK_REPOSITORY_VERSION'] }}
+      - CLUSTERMANAGER_VERSION: {{ pillar['CLUSTERMANAGER_VERSION'] }}
       - OS: {{ pillar['OS'] }}
       - LOCAL_URL_AMBARI: {{ pillar['LOCAL_URL_AMBARI'] }}
       - LOCAL_URL_HDP: {{ pillar['LOCAL_URL_HDP'] }}

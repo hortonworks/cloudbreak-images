@@ -1,6 +1,6 @@
 BASE_NAME ?= cb
 DESCRIPTION ?= "Official Cloudbreak image"
-HDP_VERSION ?= ""
+STACK_VERSION ?= ""
 ATLAS_PROJECT ?= "cloudbreak"
 ENABLE_POSTPROCESSORS ?= ""
 CUSTOM_IMAGE_TYPE ?= "hortonworks"
@@ -28,15 +28,10 @@ SALT_VERSION ?= 2017.7.5
 SALT_PATH ?= /opt/salt_$(SALT_VERSION)
 PYZMQ_VERSION ?= 14.5.0
 PYTHON_APT_VERSION ?= 1.1.0_beta1ubuntu0.16.04.1
-HDP_VERSION_SHORT=hdp-$(shell echo $(HDP_VERSION) | tr -d . | cut -c1-2 )
-IMAGE_NAME ?= $(BASE_NAME)-$(HDP_VERSION_SHORT)-$(shell date +%y%m%d%H%M)$(IMAGE_NAME_SUFFIX)
+STACK_VERSION_SHORT=$(STACK_TYPE)-$(shell echo $(STACK_VERSION) | tr -d . | cut -c1-2 )
+IMAGE_NAME ?= $(BASE_NAME)-$(shell echo $(STACK_VERSION_SHORT) | tr '[:upper:]' '[:lower:]')-$(shell date +%y%m%d%H%M)$(IMAGE_NAME_SUFFIX)
+IMAGE_SIZE ?= 25
 
-# Use larger image size for pre-warmed images
-ifeq ($(HDP_VERSION),"")
-	IMAGE_SIZE = 15
-else
-	IMAGE_SIZE = 25
-endif
 # Azure has a limitation of having minimum 30 GB disk size
 ifdef ARM_CLIENT_ID
 	IMAGE_SIZE = 30
