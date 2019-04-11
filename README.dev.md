@@ -50,9 +50,9 @@ You can set the cloud provider regions for the image to be copied over by editin
 
  After saving the `Makefile` the modified values are applied to all subsequent image burns.
 
-Note: During the build process, a transient EC2 instance will be created in the default VPC of the region associated 
-with the source_ami value.  If the build process is executed outside the default VPC, be sure to add the subnet_id value 
-within the packer.json file to avoid SSH connectivity errors.
+Note: If you experience a failure during the SSH connection step, you might need to adjust the subnet_id and vpc_id values
+within the packer.json file.  By default the transient EC2 instance will be created in the same VPC and Subnet as the 
+process building the image. 
 
 ## Customizing the Base Image
 
