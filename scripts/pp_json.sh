@@ -1,16 +1,19 @@
 #!/bin/bash
-if [ -f package-versions.json -a "$stack_version" != "" -a "$clustermanager_version" != "" ]; then
-	apk update && apk add jq
-	cat package-versions.json
-	if [ "$stack_type" == "CDH" ]; then
-		cat package-versions.json | jq --arg stack_version $stack_version --arg clustermanager_version $clustermanager_version '. += {"stack" : $stack_version,  "cm" : $clustermanager_version}' > package-versions-tmp.json && mv package-versions-tmp.json package-versions.json
-	else
-		cat package-versions.json | jq --arg stack_version $stack_version --arg clustermanager_version $clustermanager_version '. += {"stack" : $stack_version,  "ambari" : $clustermanager_version}' > package-versions-tmp.json && mv package-versions-tmp.json package-versions.json
-	fi
-	cat package-versions.json 
-fi
+if [ "$custom_image_type" != "freeipa" ];
+then
 
-cat  > ${image_name}.json <<EOF
+	if [ -f package-versions.json -a "$stack_version" != "" -a "$clustermanager_version" != "" ]; then
+		apk update && apk add jq
+		cat package-versions.json
+		if [ "$stack_type" == "CDH" ]; then
+			cat package-versions.json | jq --arg stack_version $stack_version --arg clustermanager_version $clustermanager_version '. += {"stack" : $stack_version,  "cm" : $clustermanager_version}' > package-versions-tmp.json && mv package-versions-tmp.json package-versions.json
+		else
+			cat package-versions.json | jq --arg stack_version $stack_version --arg clustermanager_version $clustermanager_version '. += {"stack" : $stack_version,  "ambari" : $clustermanager_version}' > package-versions-tmp.json && mv package-versions-tmp.json package-versions.json
+		fi
+		cat package-versions.json
+	fi
+
+	cat  > ${image_name}.json <<EOF
 {
 "created_at": ${created_at},
 "prometheus": ${prometheus},
@@ -56,5 +59,6 @@ cat  > ${image_name}.json <<EOF
 "package_versions": $(if [ -f package-versions.json ]; then cat package-versions.json; else echo "{}"; fi)
 }
 EOF
+	exit 0
 
-exit 0
+fi

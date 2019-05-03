@@ -4,6 +4,7 @@
   * [Customizing the burning process](#customizing-the-burning-process)
     + [Setting the disk size](#setting-the-disk-size)
     + [Customizing the regions](#customizing-the-regions)
+    + [Setting image type](#setting-the-image-type)
   * [Customizing the Base Image](#customizing-the-base-image)
     + [Custom Base Image](#custom-base-image)
       - [AWS Example](#aws-example)
@@ -58,6 +59,14 @@ You can set the cloud provider regions for the image to be copied over by editin
  Azure | AZURE_STORAGE_ACCOUNTS | East Asia, East US, Central US, North Europe, South Central US, North Central US, East US 2, Japan East, Japan West, South East Asia, West US, West Europe, Brazil South, Canada East, Canada Central, Australia East, Australia South East, Central India, Korea Central, Korea South, South India, UK South, West Central US, UK West, West US 2, West India
 
  After saving the `Makefile` the modified values are applied to all subsequent image burns.
+
+### Setting the image type
+
+You have the option to burn a prewarmed image compatible with FreeIPA service, to do so, you have to export the following variable before invoking the image burning make target.
+
+`export CUSTOM_IMAGE_TYPE=freeipa`
+
+Running this will install the necessary packages for FreeIPA and will not run the modifications required only for the Cloudbreak compatible custom images.
 
 ## Customizing the Base Image
 

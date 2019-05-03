@@ -54,6 +54,12 @@ case ${CUSTOM_IMAGE_TYPE} in
     prepare
     highstate "base"
   ;;
+  freeipa)
+    echo "Running highstate for FreeIPA.."
+    prepare
+    highstate "base"
+    highstate "freeipa"
+  ;;
   hortonworks)
     echo "Running highstate for Base and Hortonworks.."
     prepare

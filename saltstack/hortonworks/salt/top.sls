@@ -1,5 +1,13 @@
 hortonworks:
   '*':
+    - unbound
+{% if pillar['subtype'] != 'Docker' %}
+{% if grains['os_family'] == 'Debian' %}
+    - resolvconf
+{% else %}
+    - dhcp
+{% endif %}
+{% endif %}
     - simple-webserver
     - eula
     - kerberos
