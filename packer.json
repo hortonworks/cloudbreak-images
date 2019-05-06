@@ -801,6 +801,7 @@
       "type": "shell-local",
       "script": "scripts/pp_json.sh",
       "environment_vars": [
+        "custom_image_type={{user `custom_image_type`}}",
         "created_at={{timestamp}}",
         "prometheus=true",
         "created={{ isotime \"2006-01-02 15:04:05 -0700\" }}",

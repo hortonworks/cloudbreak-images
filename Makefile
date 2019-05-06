@@ -29,12 +29,7 @@ PYZMQ_VERSION ?= 14.5.0
 PYTHON_APT_VERSION ?= 1.1.0_beta1ubuntu0.16.04.1
 STACK_VERSION_SHORT=$(STACK_TYPE)-$(shell echo $(STACK_VERSION) | tr -d . | cut -c1-2 )
 IMAGE_NAME ?= $(BASE_NAME)-$(shell echo $(STACK_VERSION_SHORT) | tr '[:upper:]' '[:lower:]')-$(shell date +%y%m%d%H%M)$(IMAGE_NAME_SUFFIX)
-IMAGE_SIZE ?= 25
-
-# Azure has a limitation of having minimum 30 GB disk size
-ifdef ARM_CLIENT_ID
-	IMAGE_SIZE = 30
-endif
+IMAGE_SIZE ?= 30
 
 ifdef MAKE_PUBLIC_SNAPSHOTS
 	AWS_SNAPSHOT_GROUPS = "all"
@@ -66,6 +61,10 @@ ifeq ($(MOCK),true)
 	PACKER_OPTS=$(PACKER_VARS) -var atlas_artifact=mock
 else
 	PACKER_OPTS+=$(PACKER_VARS)
+endif
+
+ifeq ($(CUSTOM_IMAGE_TYPE),freeipa)
+	BASE_NAME=freeipa
 endif
 
 define AWS_AMI_REGIONS
