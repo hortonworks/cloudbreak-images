@@ -31,7 +31,7 @@ function install_python_apt_into_virtualenv() {
   git clone git://git.launchpad.net/python-apt /opt/python-apt
   cd /opt/python-apt
   git checkout tags/${PYTHON_APT_VERSION} -b ${PYTHON_APT_VERSION}
-  apt -y build-dep ./
+  apt-get -y build-dep
   python setup.py install
   deactivate
 }
