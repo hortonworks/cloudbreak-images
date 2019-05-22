@@ -28,11 +28,12 @@ function install_python_apt_into_virtualenv() {
     echo 'git is not installed.'
     apt install -y git-all
   fi
-  git clone git://git.launchpad.net/python-apt /opt/python-apt
-  cd /opt/python-apt
-  git checkout tags/${PYTHON_APT_VERSION} -b ${PYTHON_APT_VERSION}
-  apt -y build-dep ./
-  python setup.py install
+
+  # first install build requirements / dependencies
+  apt-get -y build-dep python-apt
+
+  pip install git+https://git.launchpad.net/python-apt@${PYTHON_APT_VERSION}
+
   deactivate
 }
 

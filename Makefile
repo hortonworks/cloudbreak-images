@@ -228,6 +228,7 @@ build-os-ubuntu14:
 	OS=ubuntu14 \
 	OS_TYPE=ubuntu14 \
 	ATLAS_ARTIFACT_TYPE=openstack \
+	PYTHON_APT_VERSION=0.9.3.5ubuntu3 \
 	SALT_INSTALL_OS=ubuntu \
 	./scripts/packer.sh build -only=os-ubuntu14 $(PACKER_OPTS)
 
