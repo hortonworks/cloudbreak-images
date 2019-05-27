@@ -64,21 +64,22 @@ extract_cdh_parcel() {
   touch ${PARCELS_ROOT}/${PARCEL_PRODUCT}/.dont_delete
   echo "Done extracting"
 
-  for parcel_path in /opt/cloudera/parcel-repo/*.parcel
-  do
-      if [ ! -e "/opt/cloudera/parcel-cache/$(basename "$parcel_path")" ];
-      then
-        sudo ln "$parcel_path" "/opt/cloudera/parcel-cache/$(basename "$parcel_path")"
-      fi
-  done
+  # for parcel_path in /opt/cloudera/parcel-repo/*.parcel
+  # do
+  #     if [ ! -e "/opt/cloudera/parcel-cache/$(basename "$parcel_path")" ];
+  #     then
+  #       sudo ln "$parcel_path" "/opt/cloudera/parcel-cache/$(basename "$parcel_path")"
+  #     fi
+  # done
 
-  head -c -1 <<EOF | sudo tee /var/lib/cloudera-scm-agent/active_parcels.json > /dev/null
-{"${PARCEL_PRODUCT}": "${PARCEL_VERSION}"}
-EOF
+#   head -c -1 <<EOF | sudo tee /var/lib/cloudera-scm-agent/active_parcels.json > /dev/null
+# {"${PARCEL_PRODUCT}": "${PARCEL_VERSION}"}
+# EOF
 
   chown -R cloudera-scm:cloudera-scm /opt/cloudera
-  sync
-  sleep 5
+  sudo rm /opt/cloudera/parcel-repo/*
+  echo "Sleeping for 300 seconds to ensure parcels will properly sync with EBS."
+  sleep 300
 }
 
 
