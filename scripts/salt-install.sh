@@ -26,7 +26,7 @@ function install_python_apt_into_virtualenv() {
   source ${SALT_PATH}/bin/activate
   if ! [ -x "$(command -v git)" ]; then
     echo 'git is not installed.'
-    apt install -y git-all
+    apt install -y git
   fi
   git clone git://git.launchpad.net/python-apt /opt/python-apt
   cd /opt/python-apt
