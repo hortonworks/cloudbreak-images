@@ -166,7 +166,7 @@ build-aws-centos7:
 	SALT_INSTALL_OS=centos \
 	./scripts/packer.sh build -only=aws-centos7 $(PACKER_OPTS)
 
-build-aws-rhel7:
+build-aws-redhat7:
 	$(ENVS) \
 	AWS_AMI_REGIONS="$(AWS_AMI_REGIONS)" \
 	OS=redhat7 \
@@ -274,7 +274,7 @@ build-gc-ubuntu16:
 	SALT_INSTALL_OS=ubuntu \
 	./scripts/packer.sh build -only=gc-ubuntu16 $(PACKER_OPTS)
 
-build-azure-rhel6:
+build-azure-redhat6:
 	$(ENVS) \
 	AZURE_STORAGE_ACCOUNTS="$(AZURE_STORAGE_ACCOUNTS)" \
 	OS=redhat6 \
