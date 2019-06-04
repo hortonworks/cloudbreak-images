@@ -20,20 +20,30 @@ function install_with_apt() {
   # apt-mark hold salt zeromq zeromq-devel
   install_python_apt_into_virtualenv
   create_temp_minion_config
+  if [ "${OS_TYPE}" == "ubuntu14" ]; then
+    install_nvme-cli
+  fi
 }
 
 function install_python_apt_into_virtualenv() {
   source ${SALT_PATH}/bin/activate
   if ! [ -x "$(command -v git)" ]; then
     echo 'git is not installed.'
-    apt install -y git-all
+    apt install -y git
   fi
-  git clone git://git.launchpad.net/python-apt /opt/python-apt
-  cd /opt/python-apt
-  git checkout tags/${PYTHON_APT_VERSION} -b ${PYTHON_APT_VERSION}
-  apt -y build-dep ./
-  python setup.py install
+
+  # first install build requirements / dependencies
+  apt-get -y build-dep python-apt
+
+  pip install git+https://git.launchpad.net/python-apt@${PYTHON_APT_VERSION}
+
   deactivate
+}
+
+function install_nvme-cli () {
+  add-apt-repository -y ppa:sbates
+  apt-get update -y
+  apt-get install -y nvme-cli
 }
 
 function install_with_yum() {
