@@ -104,7 +104,7 @@ export AWS_SECRET_ACCESS_KEY=XHj6bjmal***********************
 
 > Note: Since Packer is the underlaying technology used to build the AWS images, you can learn more 
 > about the environment variables at [Packer > Amazon Reference](https://www.packer.io/docs/builders/amazon-ebs.html#configuration-reference) and the minimal set of AWS IAM or Role policies necessary at
-> [Packer > Amazon EC2 Roles](https://www.packer.io/docs/builders/amazon.html#using-an-iam-task-or-instance-role)
+> [Packer > Amazon EC2 Roles](https://www.packer.io/docs/builders/amazon.html#using-an-iam-task-or-instance-role).  A traditional IAM Role can be used in place of AWS Access Keys using the same policy definition.
 
 
 Use the following commands to build AWS images based on the following base operating systems:
