@@ -50,8 +50,12 @@ You can set the cloud provider regions for the image to be copied over by editin
 
  After saving the `Makefile` the modified values are applied to all subsequent image burns.
 
-Note: If you experience a failure during the SSH connection step, you might need to adjust the subnet_id and vpc_id values
-within the packer.json file.  By default the transient EC2 instance will be created in the same VPC and Subnet as the 
+Note: If you experience a failure during the SSH connection step, you might need to adjust the SUBNET_ID and VPC_ID environment variable values.
+E.g.:
+`export SUBNET_ID=subnet-aaaaaaaaaaaaaaaa
+ export VPC_ID=vpc-aaaaaaaaaaaaaaaa`
+
+  By default the transient EC2 instance will be created in the same VPC and Subnet as the 
 process building the image. 
 
 ## Customizing the Base Image
