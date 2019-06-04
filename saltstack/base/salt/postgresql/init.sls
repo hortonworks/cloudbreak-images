@@ -121,7 +121,7 @@ start-postgresql:
 
 configure-listen-address:
   cmd.run:
-    - name: runuser -l postgres -c '/opt/salt/scripts/conf_pgsql_listen_address.sh' && echo $(date +%Y-%m-%d:%H:%M:%S) >> /var/log/pgsql_listen_address_configured
+    - name: su postgres -c '/opt/salt/scripts/conf_pgsql_listen_address.sh' && echo $(date +%Y-%m-%d:%H:%M:%S) >> /var/log/pgsql_listen_address_configured
     - require:
       - file: /opt/salt/scripts/conf_pgsql_listen_address.sh
 {% if pillar['subtype'] != 'Docker' %}

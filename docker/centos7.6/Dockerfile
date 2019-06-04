@@ -1,4 +1,4 @@
-FROM registry.eng.hortonworks.com/hortonworks/base-centos7.6:0.1.0.0-84
+FROM registry.eng.hortonworks.com/hortonworks/base-centos7.6:0.1.0.0-88
 
 ARG SALT_VERSION
 ARG SALT_PATH

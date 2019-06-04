@@ -4,3 +4,4 @@ hortonworks:
     - java
     - ambari
     - hdp
+    - cdh

@@ -4,6 +4,8 @@ install_cloud-init_packages:
     - sources:
       - cloud-init: http://vault.centos.org/7.5.1804/os/x86_64/Packages/cloud-init-0.7.9-24.el7.centos.x86_64.rpm
     - skip_verify: True
+    - allow_updates: True
+    - hold: False
 {% else %}
 install_cloud-init_packages:
   pkg.installed:

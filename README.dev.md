@@ -4,6 +4,7 @@
   * [Customizing the burning process](#customizing-the-burning-process)
     + [Setting the disk size](#setting-the-disk-size)
     + [Customizing the regions](#customizing-the-regions)
+    + [Setting image type](#setting-the-image-type)
   * [Customizing the Base Image](#customizing-the-base-image)
     + [Custom Base Image](#custom-base-image)
       - [AWS Example](#aws-example)
@@ -23,6 +24,15 @@
 # Custom Images for Cloudbreak
 
 This section covers advanced topics for building Custom Images.
+
+# Requirements for custom image imposed by Packer and Cloudbreak
+
+In case you plan to use your own hardened base image, you should meet the following requirements.
+1. `/tmp/**` directory is used by our packer provisioners to copy temporary install scripts and other binaries,
+therefore it is required to provide write access for Packer.
+2. Packer communicates with their plugins via RPC calls. By default they will try to allocate ports in the range of
+10,000 - 25,000. If for any reason there are security restrictions applied in your custom image you can modify these values with the environment variables listed here. `PACKER_PLUGIN_MIN_PORT` - `PACKER_PLUGIN_MAX_PORT`
+https://www.packer.io/docs/other/environment-variables.html
 
 ## Customizing the burning process
 
@@ -52,11 +62,18 @@ You can set the cloud provider regions for the image to be copied over by editin
 
 Note: If you experience a failure during the SSH connection step, you might need to adjust the SUBNET_ID and VPC_ID environment variable values.
 E.g.:
-`export SUBNET_ID=subnet-aaaaaaaaaaaaaaaa
- export VPC_ID=vpc-aaaaaaaaaaaaaaaa`
+`export SUBNET_ID=subnet-aaaaaaaaaaaaaaaa`
+`export VPC_ID=vpc-aaaaaaaaaaaaaaaa`
 
-  By default the transient EC2 instance will be created in the same VPC and Subnet as the 
-process building the image. 
+By default the transient EC2 instance will be created in the same VPC and Subnet as the process building the image. 
+
+### Setting the image type
+
+You have the option to burn a prewarmed image compatible with FreeIPA service, to do so, you have to export the following variable before invoking the image burning make target.
+
+`export CUSTOM_IMAGE_TYPE=freeipa`
+
+Running this will install the necessary packages for FreeIPA and will not run the modifications required only for the Cloudbreak compatible custom images.
 
 ## Customizing the Base Image
 
@@ -106,7 +123,7 @@ For more information on the VDF file refer to the [documentation](https://docs.h
 
 ### Custom Script
 
-Cloudbreak uses [SaltStack](https://docs.saltstack.com/en/latest/) for image provisioninig. You have an option to extend the factory scripts based on custom requirements.
+Cloudbreak uses [SaltStack](https://docs.saltstack.com/en/latest/) for image provisioning. You have an option to extend the factory scripts based on custom requirements.
 
 > Warning: This is very advanced option. Understanding the following content requires a basic understanding of the concepts of [SaltStack](https://docs.saltstack.com/en/latest/). Please read the relevant sections of the documentation.
 
@@ -182,7 +199,7 @@ If you don't know how postprocessors are working then you can safely ignore this
 
 ## Saltstack installation
 
-Salt will be installed in a different Python environment using virtualenv. You can specify Salt version using SALT_VERSION environment variable. 
+Salt will be installed in a different Python environment using virtualenv. You can specify Salt version using SALT_VERSION environment variable.
 Salt services are running with Python of the virtual environment. Hence you cannot execute salt related commands by default, you have to activate the environment.
 
 ```
@@ -217,7 +234,7 @@ Do not forget to **deactivate** the environment:
 deactivate
 ```
 
-Be aware that the ZMQ versions should match on every instance within a cluster, so if they differ, you have to install manually ZMQ using package manager. 
+Be aware that the ZMQ versions should match on every instance within a cluster, so if they differ, you have to install manually ZMQ using package manager.
 To do so, package manager should contain a repository which can provide the desired ZMQ package.
 
 After the update you should restart salt related services:
