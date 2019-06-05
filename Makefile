@@ -240,6 +240,14 @@ build-os-ubuntu16:
 	SALT_INSTALL_OS=ubuntu \
 	./scripts/packer.sh build -only=os-ubuntu16 $(PACKER_OPTS)
 
+build-os-ubuntu18:
+	$(ENVS) \
+        OS=ubuntu18 \
+        OS_TYPE=ubuntu18 \
+        ATLAS_ARTIFACT_TYPE=openstack \
+        SALT_INSTALL_OS=ubuntu \
+        ./scripts/packer.sh build -only=os-ubuntu18 $(PACKER_OPTS)
+
 build-os-sles12sp3:
 	$(ENVS) \
 	OS=sles12 \
