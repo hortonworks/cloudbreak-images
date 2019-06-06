@@ -135,10 +135,7 @@ disable_ipv6:
         - net.ipv6.conf.{{ pillar['network_interface'] }}.disable_ipv6
 {% endif %}
 
-#In Ubuntu 18.04 the unbound service is enabled by default (by install)
-{% if grains['os'] != 'Ubuntu' and grains['osmajorrelease'] | int != 18 %}
 enable_unbound:
   service.running:
     - name: unbound
     - enable: True
-{% endif %}
