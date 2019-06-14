@@ -56,5 +56,9 @@ warning_fluentd_os:
 
 install_fluentd_plugins:
   cmd.run:
-    - name: /opt/td-agent/embedded/bin/fluent-gem install fluent-plugin-cloudwatch-logs
+    - names:
+      - /opt/td-agent/embedded/bin/fluent-gem install fluent-plugin-cloudwatch-logs
+      - curl -k -o /tmp/fluent-plugin-databus-1.0.0.gem https://cloudera-service-delivery-cache.s3-us-west-2.amazonaws.com/fluent-plugin-databus-1.0.0.gem
+      - /opt/td-agent/embedded/bin/fluent-gem install /tmp/fluent-plugin-databus-1.0.0.gem
+      - rm -r /tmp/fluent-plugin-databus-1.0.0.gem
     - onlyif: test -d /opt/td-agent/embedded/bin/
