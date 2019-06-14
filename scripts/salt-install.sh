@@ -33,6 +33,10 @@ function install_python_apt_into_virtualenv() {
   fi
 
   # first install build requirements / dependencies
+  if [ "${OS_TYPE}" == "ubuntu18" ]; then
+    sed -i 's/^# deb-src/deb-src/g' /etc/apt/sources.list
+    apt-get update
+  fi
   apt-get -y build-dep python-apt
 
   pip install git+https://git.launchpad.net/python-apt@${PYTHON_APT_VERSION}
