@@ -1,0 +1,16 @@
+#!/bin/bash -ux
+
+ROLE=$1
+HOST_PORT=$2
+cat > /cdp/bin/reverse-tunnel-values-${ROLE}.sh <<EOF
+CCM_SSH_PORT=${CCM_SSH_PORT}
+HOST_PORT=${HOST_PORT}
+ROLE=${ROLE}
+HOST=${HOST}
+TUNNEL_INITIATOR_ID=${TUNNEL_INITIATOR_ID}
+ENCIPHERED_PRIVATE_KEY=${ENCIPHERED_PRIVATE_KEY}
+CLOUD_PROVIDER=${CLOUD_PROVIDER}
+PUBLIC_KEY=${PUBLIC_KEY}
+EOF
+systemctl enable tunnel@{ROLE}.service
+systemctl start tunnel@${ROLE}.service

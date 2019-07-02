@@ -10,4 +10,5 @@ base:
     - postgresql
     - monitoring
     - performance
+    - ccm-client
     - custom
