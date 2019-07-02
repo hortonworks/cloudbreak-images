@@ -1,5 +1,6 @@
 {% set os = salt['environ.get']('OS') %}
 {% set cloudera_public_gem_repo = 'https://repository.cloudera.com/cloudera/api/gems/cloudera-gems/' %}
+{% set cloudera_azure_plugin_version = '1.0.0' %}
 
 {% if os.startswith("centos") or os.startswith("redhat") %}
 install_fluentd_yum:
@@ -60,4 +61,5 @@ install_fluentd_plugins:
     - names:
       - /opt/td-agent/embedded/bin/fluent-gem source -a {{ cloudera_public_gem_repo }}
       - /opt/td-agent/embedded/bin/fluent-gem install fluent-plugin-databus fluent-plugin-cloudwatch-logs
+      - /opt/td-agent/embedded/bin/fluent-gem install fluent-plugin-azurestorage -v {{ cloudera_azure_plugin_version }} -s {{ cloudera_public_gem_repo }}
     - onlyif: test -d /opt/td-agent/embedded/bin/
