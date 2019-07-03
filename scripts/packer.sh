@@ -48,6 +48,12 @@ packer_in_container() {
     packerFile="packer_no_pp.json"
   fi
 
+  if [[ -f packer-manifest.json ]]; then
+    BASE_AMI_ID=$(jq -r '.builds[0].artifact_id | split(":")[1]'  packer-manifest.json)
+  else
+    BASE_AMI_ID=ami-0ff760d16d9497662
+  fi
+
   [[ "$TRACE" ]] && set -x
   ${DRY_RUN:+echo ===} docker run -i $TTY_OPTS --rm \
     -e MOCK=$MOCK \
@@ -128,6 +134,7 @@ packer_in_container() {
     -e PARCELS_ROOT="$PARCELS_ROOT" \
     -e VPC_ID="$VPC_ID" \
     -e SUBNET_ID="$SUBNET_ID" \
+    -e BASE_AMI_ID="$BASE_AMI_ID" \
     -v /var/run/docker.sock:/var/run/docker.sock \
     -v $PWD:$PWD \
     -w $PWD \

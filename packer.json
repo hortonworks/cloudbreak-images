@@ -72,8 +72,9 @@
     "version": "{{ env `VERSION` }}",
     "parcels_root": "{{ env `PARCELS_ROOT` }}",
     "parcels_name": "{{ env `PARCELS_NAME` }}",
-    "subnet_id": "{{ env `SUBNET_ID`}}",
-    "vpc_id": "{{ env `VPC_ID`}}"
+    "subnet_id": "{{ env `SUBNET_ID` }}",
+    "vpc_id": "{{ env `VPC_ID` }}",
+    "base_ami_id": "{{ env `BASE_AMI_ID` }}"
   },
   "builders": [
     {
@@ -205,7 +206,7 @@
       "region": "eu-west-1",
       "ami_regions": "{{ user `aws_ami_regions` }}",
       "ssh_pty": true,
-      "source_ami": "ami-0ff760d16d9497662",
+      "source_ami": "{{ user `base_ami_id` }}",
       "instance_type": "{{ user `aws_instance_type` }}",
       "ssh_username": "centos",
       "ena_support": true,
@@ -222,7 +223,7 @@
       },
       "ami_block_device_mappings": [
         {
-          "device_name": "/dev/sda1",
+          "device_name": "/dev/xvda",
           "volume_type": "gp2",
           "delete_on_termination": true,
           "volume_size": "{{user `image_size`}}"
@@ -230,7 +231,7 @@
       ],
       "launch_block_device_mappings": [
         {
-          "device_name": "/dev/sda1",
+          "device_name": "/dev/xvda",
           "volume_type": "gp2",
           "delete_on_termination": true,
           "volume_size": "{{user `image_size`}}"

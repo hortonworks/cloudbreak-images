@@ -4,7 +4,7 @@ STACK_VERSION ?= ""
 ATLAS_PROJECT ?= "cloudbreak"
 ENABLE_POSTPROCESSORS ?= ""
 CUSTOM_IMAGE_TYPE ?= "hortonworks"
-IMAGE_OWNER ?= "cloudbreak-dev@hortonworks.com"
+IMAGE_OWNER ?= "cloudbreak-dev@cloudera.com"
 #for oracle JDK use oracle-java
 OPTIONAL_STATES ?= ""
 # only for oracle JDK
@@ -157,7 +157,7 @@ build-aws-centos6:
 	SALT_REPO_FILE="salt-repo-el6.repo" \
 	./scripts/packer.sh build -only=aws-centos6 $(PACKER_OPTS)
 
-build-aws-centos7:
+build-aws-centos7: build-aws-sparseimage-centos7
 	$(ENVS) \
 	AWS_AMI_REGIONS="$(AWS_AMI_REGIONS)" \
 	OS=centos7 \
@@ -192,6 +192,10 @@ build-aws-ubuntu16:
 	ATLAS_ARTIFACT_TYPE=amazon \
 	SALT_INSTALL_OS=ubuntu \
 	./scripts/packer.sh build -only=aws-ubuntu16 $(PACKER_OPTS)
+
+build-aws-sparseimage-centos7:
+	$(ENVS) \
+	./scripts/sparseimage/packer.sh build -force $(PACKER_OPTS)
 
 build-os-centos6:
 	$(ENVS) \
@@ -228,7 +232,6 @@ build-os-ubuntu14:
 	OS=ubuntu14 \
 	OS_TYPE=ubuntu14 \
 	ATLAS_ARTIFACT_TYPE=openstack \
-	PYTHON_APT_VERSION=0.9.3.5ubuntu3 \
 	SALT_INSTALL_OS=ubuntu \
 	./scripts/packer.sh build -only=os-ubuntu14 $(PACKER_OPTS)
 

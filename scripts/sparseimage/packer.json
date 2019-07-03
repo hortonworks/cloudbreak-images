@@ -1,0 +1,90 @@
+{
+    "variables": {
+        "aws_subnet_id": "{{env `AWS_SUBNET_ID`}}",
+        "aws_vpc_id": "{{env `AWS_VPC_ID`}}",
+        "aws_region": "eu-west-1",
+        "aws_ssh_username": "centos",
+        "aws_source_ami": "{{env `SOURCE_AMI`}}",
+        "aws_target_ami": "{{env `IMAGE_NAME`}}",
+        "aws_associate_public_ip_address": "false",
+        "aws_ena_support": "true",
+        "aws_sriov_support": "true",
+        "owner": "{{env `IMAGE_OWNER`}}",
+        "ami_virtualization_type": "hvm",
+        "root_volume_size": "45",
+        "instance_size" : "m4.xlarge",
+        "aws_ami_base_snapshot" : "{{env `SOURCE_AMI_SNAPSHOT`}}",
+        "aws_ami_base_snapshot_size" : "8"
+    },
+    "builders": [
+    {
+        "type": "amazon-ebssurrogate",
+        "region": "{{user `aws_region`}}",
+        "source_ami": "{{user `aws_source_ami`}}",
+        "instance_type": "{{user `instance_size`}}",
+        "ssh_username": "{{user `aws_ssh_username`}}",
+        "ami_name": "{{user `aws_target_ami`}}",
+        "ami_virtualization_type": "{{user `ami_virtualization_type`}}",
+        "ssh_timeout": "10m",
+        "ena_support": "{{user `aws_ena_support`}}",
+        "sriov_support": "{{user `aws_sriov_support`}}",
+        "associate_public_ip_address": false,
+        "force_deregister": "true",
+        "force_delete_snapshot": "true",        
+
+        "tags": {
+            "owner": "{{user `owner`}}"
+        },
+        "launch_block_device_mappings" : [
+            {
+                "device_name": "/dev/sda1",
+                "delete_on_termination" : true,
+                "volume_size": "{{user `root_volume_size`}}",
+                "volume_type" : "gp2",
+                "omit_from_artifact": true
+            },
+            {
+                "volume_type" : "gp2",
+                "device_name" : "/dev/xvdb",
+                "delete_on_termination" : true,
+                "snapshot_id" : "{{user `aws_ami_base_snapshot`}}",
+                "omit_from_artifact": true
+            },
+            {
+                "device_name": "/dev/xvdd",
+                "delete_on_termination" : true,
+                "volume_size": "{{user `root_volume_size`}}",
+                "volume_type" : "gp2",
+                "omit_from_artifact": true
+            },
+            {
+                "volume_type" : "gp2",
+                "device_name" : "/dev/xvdc",
+                "delete_on_termination" : true,
+                "volume_size" : "{{user `aws_ami_base_snapshot_size`}}"
+            }
+        ],
+        "ami_root_device": {
+            "source_device_name": "/dev/xvdc",
+            "device_name": "/dev/xvda",
+            "delete_on_termination": true,
+            "volume_size": "{{user `aws_ami_base_snapshot_size`}}",
+            "volume_type": "gp2"
+        }
+    }],
+    "provisioners": [
+    {
+        "type" : "shell",
+        "inline": "lsblk"
+    },
+    {
+        "type" : "shell",
+        "script": "scripts/sparseimage/sparse_image.sh"
+    }
+    ],
+    "post-processors": [
+    {
+      "type": "manifest"
+    }
+	]
+}
