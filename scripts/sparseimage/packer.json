@@ -25,7 +25,7 @@
         "ssh_username": "{{user `aws_ssh_username`}}",
         "ami_name": "{{user `aws_target_ami`}}",
         "ami_virtualization_type": "{{user `ami_virtualization_type`}}",
-        "ssh_timeout": "10m",
+        "ssh_timeout": "30m",
         "ena_support": "{{user `aws_ena_support`}}",
         "sriov_support": "{{user `aws_sriov_support`}}",
         "associate_public_ip_address": false,
@@ -37,7 +37,7 @@
         },
         "launch_block_device_mappings" : [
             {
-                "device_name": "/dev/sda1",
+                "device_name": "/dev/xvda",
                 "delete_on_termination" : true,
                 "volume_size": "{{user `root_volume_size`}}",
                 "volume_type" : "gp2",
