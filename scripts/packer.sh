@@ -48,12 +48,6 @@ packer_in_container() {
     packerFile="packer_no_pp.json"
   fi
 
-  if [[ -f packer-manifest.json ]]; then
-    BASE_AMI_ID=$(jq -r '.builds[0].artifact_id | split(":")[1]'  packer-manifest.json)
-  else
-    BASE_AMI_ID=ami-0ff760d16d9497662
-  fi
-
   [[ "$TRACE" ]] && set -x
   ${DRY_RUN:+echo ===} docker run -i $TTY_OPTS --rm \
     -e MOCK=$MOCK \
