@@ -157,9 +157,9 @@ build-aws-centos6:
 	SALT_REPO_FILE="salt-repo-el6.repo" \
 	./scripts/packer.sh build -only=aws-centos6 $(PACKER_OPTS)
 
-build-aws-centos7: build-aws-sparseimage-centos7
+build-aws-centos7: 
 	$(ENVS) \
-	AWS_AMI_REGIONS="$(AWS_AMI_REGIONS)" \
+	AWS_AMI_REGIONS="eu-west-1" \
 	OS=centos7 \
 	OS_TYPE=redhat7 \
 	ATLAS_ARTIFACT_TYPE=amazon \
@@ -193,8 +193,9 @@ build-aws-ubuntu16:
 	SALT_INSTALL_OS=ubuntu \
 	./scripts/packer.sh build -only=aws-ubuntu16 $(PACKER_OPTS)
 
-build-aws-sparseimage-centos7:
+build-aws-sparseimage-centos7: build-aws-centos7
 	$(ENVS) \
+	AWS_AMI_REGIONS="$(AWS_AMI_REGIONS)" \
 	./scripts/sparseimage/packer.sh build -force $(PACKER_OPTS)
 
 build-os-centos6:

@@ -3,18 +3,21 @@
         "aws_subnet_id": "{{env `AWS_SUBNET_ID`}}",
         "aws_vpc_id": "{{env `AWS_VPC_ID`}}",
         "aws_region": "eu-west-1",
-        "aws_ssh_username": "centos",
-        "aws_source_ami": "{{env `SOURCE_AMI`}}",
+        "aws_ssh_username": "ubuntu",
+        "aws_source_ami": "ami-a4d44ed7",
         "aws_target_ami": "{{env `IMAGE_NAME`}}",
         "aws_associate_public_ip_address": "false",
         "aws_ena_support": "true",
         "aws_sriov_support": "true",
         "owner": "{{env `IMAGE_OWNER`}}",
         "ami_virtualization_type": "hvm",
-        "root_volume_size": "45",
+        "root_volume_size": "90",
         "instance_size" : "m4.xlarge",
         "aws_ami_base_snapshot" : "{{env `SOURCE_AMI_SNAPSHOT`}}",
-        "aws_ami_base_snapshot_size" : "8"
+        "aws_ami_base_snapshot_size" : "30",
+        "aws_access_key": "{{env `AWS_ACCESS_KEY_ID`}}",
+        "aws_secret_key": "{{env `AWS_SECRET_ACCESS_KEY`}}",
+        "aws_ami_regions": "{{ env `AWS_AMI_REGIONS` }}"
     },
     "builders": [
     {
@@ -24,6 +27,7 @@
         "instance_type": "{{user `instance_size`}}",
         "ssh_username": "{{user `aws_ssh_username`}}",
         "ami_name": "{{user `aws_target_ami`}}",
+        "ami_regions": "{{ user `aws_ami_regions` }}",
         "ami_virtualization_type": "{{user `ami_virtualization_type`}}",
         "ssh_timeout": "30m",
         "ena_support": "{{user `aws_ena_support`}}",
@@ -31,7 +35,6 @@
         "associate_public_ip_address": false,
         "force_deregister": "true",
         "force_delete_snapshot": "true",
-        "availability_zone": "eu-west-1a",
         "tags": {
             "owner": "{{user `owner`}}"
         },
@@ -42,14 +45,7 @@
                 "volume_size": "{{user `root_volume_size`}}",
                 "volume_type" : "gp2",
                 "omit_from_artifact": true
-            },            
-            {
-                "device_name": "/dev/xvda",
-                "delete_on_termination" : true,
-                "volume_size": "{{user `root_volume_size`}}",
-                "volume_type" : "gp2",
-                "omit_from_artifact": true
-            },
+            },          
             {
                 "volume_type" : "gp2",
                 "device_name" : "/dev/xvdb",

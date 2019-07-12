@@ -208,7 +208,7 @@
       "region": "eu-west-1",
       "ami_regions": "{{ user `aws_ami_regions` }}",
       "ssh_pty": true,
-      "source_ami": "{{ user `base_ami_id` }}",
+      "source_ami": "ami-0ff760d16d9497662",
       "instance_type": "{{ user `aws_instance_type` }}",
       "ssh_username": "centos",
       "ena_support": true,
@@ -225,7 +225,7 @@
       },
       "ami_block_device_mappings": [
         {
-          "device_name": "/dev/xvda",
+          "device_name": "/dev/sda1",
           "volume_type": "gp2",
           "delete_on_termination": true,
           "volume_size": "{{user `image_size`}}"
@@ -233,7 +233,7 @@
       ],
       "launch_block_device_mappings": [
         {
-          "device_name": "/dev/xvda",
+          "device_name": "/dev/sda1",
           "volume_type": "gp2",
           "delete_on_termination": true,
           "volume_size": "{{user `image_size`}}"

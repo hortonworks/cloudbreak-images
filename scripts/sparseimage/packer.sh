@@ -5,10 +5,17 @@ packer_in_container() {
   local packerFile="./scripts/sparseimage/packer.json"
   PACKER_VERSION="1.4.2"
 
-  AMI_INFO=$(aws --region eu-west-1 ec2 describe-images --owners 679593333241 --filters 'Name=name,Values=CentOS Linux 7*' 'Name=state,Values=available' --query 'reverse(sort_by(Images, &CreationDate))[]' --output json | jq -r '.[0]')
-  SOURCE_AMI=$(echo $AMI_INFO | jq -r .ImageId)
+  # Figure out the AMI of the previous build
+  if [[ -f $(ls -1tr *_manifest.json | tail -1) ]]; then
+    SOURCE_AMI=$(jq -r '.builds[0].artifact_id | split(",")[] | select(contains("eu-west-1")) | split(":")[1]' $(ls -1tr *_manifest.json | tail -1))
+  else
+    echo "There is no image burnt with name $IMAGE_NAME"
+    exit -1
+  fi
+  AMI_INFO=$(aws ec2 describe-images --region eu-west-1 --image-ids $SOURCE_AMI --output json | jq -r '.Images[0]')
+  # Figure out the snapshot id of the previous build
   SOURCE_AMI_SNAPSHOT=$(echo $AMI_INFO | jq -r '.BlockDeviceMappings[0].Ebs.SnapshotId')
-  IMAGE_NAME=centos-sparse-base-image
+  
   echo Going to use AMI $SOURCE_AMI with SnapshotId $SOURCE_AMI_SNAPSHOT...
 
 
@@ -24,10 +31,15 @@ packer_in_container() {
     -e AWS_SECRET_ACCESS_KEY=$AWS_SECRET_ACCESS_KEY \
     -e AWS_SUBNET_ID=$SUBNET_ID \
     -e AWS_VPC_ID=$VPC_ID \
+    -e AWS_AMI_REGIONS="$AWS_AMI_REGIONS" \
     -e IMAGE_NAME=$IMAGE_NAME \
     -e IMAGE_OWNER=$IMAGE_OWNER \
     -e SOURCE_AMI=$SOURCE_AMI \
     -e SOURCE_AMI_SNAPSHOT=$SOURCE_AMI_SNAPSHOT \
+    -e AWS_POLL_DELAY_SECONDS=30 \
+    -e AWS_MAX_ATTEMPTS=3000 \
+    -e AWS_TIMEOUT_SECONDS=3000 \
+    -e PACKER_LOG=$PACKER_LOG \
     -v /var/run/docker.sock:/var/run/docker.sock \
     -v $PWD:$PWD \
     -w $PWD \
