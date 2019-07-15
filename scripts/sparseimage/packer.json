@@ -85,6 +85,13 @@
     "post-processors": [
     {
       "type": "manifest"
+    },
+    {
+      "type": "shell-local",
+      "script": "scripts/sparseimage/pp_sparse_json.sh",
+      "environment_vars": [
+        "image_name={{ user `aws_target_ami` }}"
+      ]
     }
 	]
 }
