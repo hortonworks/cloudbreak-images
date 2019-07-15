@@ -15,6 +15,8 @@
         "instance_size" : "m4.xlarge",
         "aws_ami_base_snapshot" : "{{env `SOURCE_AMI_SNAPSHOT`}}",
         "aws_ami_base_snapshot_size" : "30",
+        "aws_snapshot_groups": "{{ env `AWS_SNAPSHOT_GROUPS` }}",
+        "aws_ami_groups": "{{ env `AWS_AMI_GROUPS` }}",        
         "aws_access_key": "{{env `AWS_ACCESS_KEY_ID`}}",
         "aws_secret_key": "{{env `AWS_SECRET_ACCESS_KEY`}}",
         "aws_ami_regions": "{{ env `AWS_AMI_REGIONS` }}"
@@ -38,6 +40,8 @@
         "tags": {
             "owner": "{{user `owner`}}"
         },
+        "snapshot_groups": "{{ user `aws_snapshot_groups` }}",
+        "ami_groups": "{{ user `aws_ami_groups` }}",
         "launch_block_device_mappings" : [
             {
                 "device_name": "/dev/sda1",

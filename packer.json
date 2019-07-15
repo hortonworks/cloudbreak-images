@@ -239,8 +239,6 @@
           "volume_size": "{{user `image_size`}}"
         }
       ],
-      "snapshot_groups": "{{ user `aws_snapshot_groups` }}",
-      "ami_groups": "{{ user `aws_ami_groups` }}",
       "ami_name": "{{ user `image_name`}}",
       "subnet_id": "{{ user `subnet_id`}}",
       "vpc_id": "{{ user `vpc_id`}}"
