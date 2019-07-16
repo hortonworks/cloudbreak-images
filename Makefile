@@ -28,7 +28,10 @@ SALT_PATH ?= /opt/salt_$(SALT_VERSION)
 PYZMQ_VERSION ?= 14.5.0
 PYTHON_APT_VERSION ?= 1.1.0_beta1ubuntu0.16.04.1
 STACK_VERSION_SHORT=$(STACK_TYPE)-$(shell echo $(STACK_VERSION) | tr -d . | cut -c1-2 )
-IMAGE_NAME ?= $(BASE_NAME)-$(shell echo $(STACK_VERSION_SHORT) | tr '[:upper:]' '[:lower:]')-$(shell date +%y%m%d%H%M)$(IMAGE_NAME_SUFFIX)
+ifndef IMAGE_NAME
+	IMAGE_NAME ?= $(BASE_NAME)-$(shell echo $(STACK_VERSION_SHORT) | tr '[:upper:]' '[:lower:]')-$(shell date +%y%m%d%H%M)$(IMAGE_NAME_SUFFIX)
+endif
+
 IMAGE_SIZE ?= 30
 
 ifdef MAKE_PUBLIC_SNAPSHOTS
@@ -157,7 +160,7 @@ build-aws-centos6:
 	SALT_REPO_FILE="salt-repo-el6.repo" \
 	./scripts/packer.sh build -only=aws-centos6 $(PACKER_OPTS)
 
-build-aws-centos7-base: 
+build-aws-centos7-base:
 	$(ENVS) \
 	AWS_AMI_REGIONS="eu-west-1" \
 	OS=centos7 \
@@ -193,7 +196,9 @@ build-aws-ubuntu16:
 	SALT_INSTALL_OS=ubuntu \
 	./scripts/packer.sh build -only=aws-ubuntu16 $(PACKER_OPTS)
 
-build-aws-centos7: build-aws-centos7-base
+build-aws-centos7: export IMAGE_NAME := $(IMAGE_NAME)
+
+build-aws-centos7: build-aws-centos7-base 
 	$(ENVS) \
 	AWS_AMI_REGIONS="$(AWS_AMI_REGIONS)" \
 	./scripts/sparseimage/packer.sh build -force $(PACKER_OPTS)

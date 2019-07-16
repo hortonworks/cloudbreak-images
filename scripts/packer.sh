@@ -137,6 +137,7 @@ packer_in_container() {
 }
 
 main() {
+  echo $IMAGE_NAME
   packer_in_container "$@"
 }
 
