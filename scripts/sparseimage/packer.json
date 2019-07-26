@@ -31,13 +31,16 @@
         "ami_name": "{{user `aws_target_ami`}}",
         "ami_regions": "{{ user `aws_ami_regions` }}",
         "ami_virtualization_type": "{{user `ami_virtualization_type`}}",
-        "ssh_timeout": "30m",
+        "ssh_timeout": "60m",
         "ena_support": "{{user `aws_ena_support`}}",
         "sriov_support": "{{user `aws_sriov_support`}}",
         "associate_public_ip_address": false,
         "force_deregister": "true",
         "force_delete_snapshot": "true",
         "tags": {
+            "owner": "{{user `owner`}}"
+        },
+        "run_tags": {
             "owner": "{{user `owner`}}"
         },
         "snapshot_groups": "{{ user `aws_snapshot_groups` }}",
@@ -79,7 +82,8 @@
     },
     {
         "type" : "shell",
-        "script": "scripts/sparseimage/sparse_image.sh"
+        "script": "scripts/sparseimage/sparse_image.sh",
+        "expect_disconnect": true
     }
     ],
     "post-processors": [
