@@ -6,6 +6,9 @@ include:
     {% if pillar['STACK_VERSION'] and  pillar['STACK_BASEURL'] and  pillar['STACK_REPOID'] %}
   - {{ slspath }}.cdh
     {% endif %}
+    {% if 'STREAMS_MESSAGING_MANAGER' in pillar['PRE_WARM_CSD'] %}
+  - {{ slspath }}.node
+    {% endif %}
   - {{ slspath }}.parcels
   {% endif %}
 {% elif pillar['STACK_TYPE'] == 'HDP' or  pillar['STACK_TYPE'] == 'HDF' %}
