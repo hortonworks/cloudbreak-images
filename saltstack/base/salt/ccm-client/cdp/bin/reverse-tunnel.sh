@@ -14,12 +14,12 @@ export AUTOSSH_POLL=30
 
 PRIVATE_KEY=/tmp/pk.key
 
-if grep -q "BEGIN" ${ENCIPHERED_PRIVATE_KEY}; then
-    cat ${ENCIPHERED_PRIVATE_KEY} > ${PRIVATE_KEY}
+if grep -q "BEGIN" ${CCM_ENCIPHERED_PRIVATE_KEY_FILE}; then
+    cat ${CCM_ENCIPHERED_PRIVATE_KEY_FILE} > ${PRIVATE_KEY}
 else
     IV=436c6f7564657261436c6f7564657261
-    cat ${ENCIPHERED_PRIVATE_KEY} | openssl enc -aes-128-cbc -d -A -a \
-        -K $(xxd -pu <<< $(echo ${TUNNEL_INITIATOR_ID} | cut -c1-16) | cut -c1-32) \
+    cat ${CCM_ENCIPHERED_PRIVATE_KEY_FILE} | openssl enc -aes-128-cbc -d -A -a \
+        -K $(xxd -pu <<< $(echo ${CCM_TUNNEL_INITIATOR_ID} | cut -c1-16) | cut -c1-32) \
         -iv ${IV} > ${PRIVATE_KEY}
 fi
 
@@ -27,12 +27,12 @@ chmod 400 ${PRIVATE_KEY}
 
 if [[ ${ROLE} == "SSH" ]]; then
     LOCAL_IP=127.0.0.1
-    USER=${TUNNEL_INITIATOR_ID}_${ROLE}
+    USER=${CCM_TUNNEL_INITIATOR_ID}_${ROLE}
 else
     LOCAL_IP=0.0.0.0
-    USER=${TUNNEL_INITIATOR_ID}_${ROLE}
+    USER=${CCM_TUNNEL_INITIATOR_ID}_${ROLE}
 fi
 
 exec autossh -M 0 -o "ServerAliveInterval 30" -o "ServerAliveCountMax 3" \
--o UserKnownHostsFile=${PUBLIC_KEY} -N -T -R ${LOCAL_IP}:0:localhost:${HOST_PORT} \
--i ${PRIVATE_KEY} -p ${CCM_SSH_PORT} ${USER}@${HOST} -vvv
+-o UserKnownHostsFile=${CCM_PUBLIC_KEY_FILE} -N -T -R ${LOCAL_IP}:0:localhost:${CCM_TUNNEL_SERVICE_PORT} \
+-i ${PRIVATE_KEY} -p ${CCM_SSH_PORT} ${USER}@${CCM_HOST} -vvv

@@ -118,6 +118,29 @@ setup_tls() {
   fi
 }
 
+setup_ccm() {
+  : ${CCM_HOST:? required}
+  : ${CCM_SSH_PORT:? required}
+  : ${CCM_PUBLIC_KEY:? required}
+  : ${CCM_TUNNEL_INITIATOR_ID:? required}
+  : ${CCM_ENCIPHERED_PRIVATE_KEY:? required}
+
+  mkdir -p /etc/ccm
+
+  CCM_PUBLIC_KEY_FILE=/etc/ccm/ccm.pub
+  echo $CCM_PUBLIC_KEY | base64 --decode > $CCM_PUBLIC_KEY_FILE
+  chmod 400 $CCM_PUBLIC_KEY_FILE
+
+  CCM_ENCIPHERED_PRIVATE_KEY_FILE=/etc/ccm/initiator.enc
+  echo $CCM_ENCIPHERED_PRIVATE_KEY | base64 --decode > $CCM_ENCIPHERED_PRIVATE_KEY_FILE
+  chmod 400 $CCM_ENCIPHERED_PRIVATE_KEY_FILE
+
+  if [[ -n "$CCM_GATEWAY_PORT" ]]
+    /cdp/bin/update_reversetunnel.sh GATEWAY $CCM_GATEWAY_PORT
+  if [[ -n "$CCM_KNOX_PORT" ]]
+    /cdp/bin/update_reversetunnel.sh KNOX $CCM_KNOX_PORT
+}
+
 main() {
   configure-salt-bootstrap
   reload_sysconf
@@ -132,6 +155,9 @@ main() {
         setup_tls
         start_nginx
       fi
+    fi
+    if [[ "$IS_CCM_ENABLED" == "true" ]]; then
+      setup_ccm
     fi
     echo $(date +%Y-%m-%d:%H:%M:%S) >> /var/cb-init-executed
   fi
