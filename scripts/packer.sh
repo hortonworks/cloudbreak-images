@@ -3,7 +3,8 @@
 packer_in_container() {
   local dockerOpts=""
   local packerFile="packer.json"
-  PACKER_VERSION="1.2.5"
+
+  PACKER_VERSION="1.4.2"
 
   if [[ "$GCP_ACCOUNT_FILE" ]]; then
     dockerOpts="$dockerOpts -v $GCP_ACCOUNT_FILE:$GCP_ACCOUNT_FILE"
@@ -19,7 +20,7 @@ packer_in_container() {
     TTY_OPTS=""
   fi
 
-  : ${STACK_TYPE:=HDP}
+  : ${STACK_TYPE:=CDH}
   if [[ "$STACK_TYPE" = "HDP" ]]
   then
     REPOSITORY_NAME="hdp"
@@ -71,6 +72,8 @@ packer_in_container() {
     -e ARM_STORAGE_ACCOUNT=$ARM_STORAGE_ACCOUNT \
     -e ARM_SUBSCRIPTION_ID=$ARM_SUBSCRIPTION_ID \
     -e ARM_TENANT_ID=$ARM_TENANT_ID \
+    -e VIRTUAL_NETWORK_RESOURCE_GROUP_NAME=$VIRTUAL_NETWORK_RESOURCE_GROUP_NAME \
+    -e ARM_BUILD_REGION=$ARM_BUILD_REGION \
     -e GCP_ACCOUNT_FILE=$GCP_ACCOUNT_FILE \
     -e GCP_STORAGE_BUNDLE=$GCP_STORAGE_BUNDLE \
     -e OS_IMAGE_NAME=$OS_IMAGE_NAME \
