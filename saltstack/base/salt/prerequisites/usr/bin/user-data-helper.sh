@@ -128,17 +128,19 @@ setup_ccm() {
   mkdir -p /etc/ccm
 
   CCM_PUBLIC_KEY_FILE=/etc/ccm/ccm.pub
-  echo $CCM_PUBLIC_KEY | base64 --decode > $CCM_PUBLIC_KEY_FILE
+  echo "$CCM_PUBLIC_KEY" | base64 --decode > $CCM_PUBLIC_KEY_FILE
   chmod 400 $CCM_PUBLIC_KEY_FILE
 
   CCM_ENCIPHERED_PRIVATE_KEY_FILE=/etc/ccm/initiator.enc
-  echo $CCM_ENCIPHERED_PRIVATE_KEY | base64 --decode > $CCM_ENCIPHERED_PRIVATE_KEY_FILE
+  echo "$CCM_ENCIPHERED_PRIVATE_KEY" | base64 --decode > $CCM_ENCIPHERED_PRIVATE_KEY_FILE
   chmod 400 $CCM_ENCIPHERED_PRIVATE_KEY_FILE
 
-  if [[ -n "$CCM_GATEWAY_PORT" ]]
+  if [[ -n "$CCM_GATEWAY_PORT" ]]; then
     /cdp/bin/update_reversetunnel.sh GATEWAY $CCM_GATEWAY_PORT
-  if [[ -n "$CCM_KNOX_PORT" ]]
+  fi
+  if [[ -n "$CCM_KNOX_PORT" ]]; then
     /cdp/bin/update_reversetunnel.sh KNOX $CCM_KNOX_PORT
+  fi
 }
 
 main() {
