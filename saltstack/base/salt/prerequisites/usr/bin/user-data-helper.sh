@@ -136,10 +136,10 @@ setup_ccm() {
   chmod 400 $CCM_ENCIPHERED_PRIVATE_KEY_FILE
 
   if [[ -n "$CCM_GATEWAY_PORT" ]]; then
-    /cdp/bin/update_reversetunnel.sh GATEWAY $CCM_GATEWAY_PORT
+    /cdp/bin/update-reverse-tunnel-values.sh GATEWAY $CCM_GATEWAY_PORT
   fi
   if [[ -n "$CCM_KNOX_PORT" ]]; then
-    /cdp/bin/update_reversetunnel.sh KNOX $CCM_KNOX_PORT
+    /cdp/bin/update-reverse-tunnel-values.sh KNOX $CCM_KNOX_PORT
   fi
 }
 
