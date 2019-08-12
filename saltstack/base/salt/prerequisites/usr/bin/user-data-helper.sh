@@ -122,25 +122,34 @@ setup_ccm() {
   : ${CCM_HOST:? required}
   : ${CCM_SSH_PORT:? required}
   : ${CCM_PUBLIC_KEY:? required}
-  : ${CCM_TUNNEL_INITIATOR_ID:? required}
+  : ${CCM_TUNNEL_INITIATOR_ID:="$INSTANCE_ID"}
   : ${CCM_ENCIPHERED_PRIVATE_KEY:? required}
 
   mkdir -p /etc/ccm
 
   CCM_PUBLIC_KEY_FILE=/etc/ccm/ccm.pub
-  echo "$CCM_PUBLIC_KEY" | base64 --decode > $CCM_PUBLIC_KEY_FILE
-  chmod 400 $CCM_PUBLIC_KEY_FILE
+  echo "$CCM_PUBLIC_KEY" | base64 --decode > "$CCM_PUBLIC_KEY_FILE"
+  chmod 400 "$CCM_PUBLIC_KEY_FILE"
 
   CCM_ENCIPHERED_PRIVATE_KEY_FILE=/etc/ccm/initiator.enc
-  echo "$CCM_ENCIPHERED_PRIVATE_KEY" | base64 --decode > $CCM_ENCIPHERED_PRIVATE_KEY_FILE
-  chmod 400 $CCM_ENCIPHERED_PRIVATE_KEY_FILE
+  echo "$CCM_ENCIPHERED_PRIVATE_KEY" | base64 --decode > "$CCM_ENCIPHERED_PRIVATE_KEY_FILE"
+  chmod 400 "$CCM_ENCIPHERED_PRIVATE_KEY_FILE"
 
   if [[ -n "$CCM_GATEWAY_PORT" ]]; then
-    /cdp/bin/update-reverse-tunnel-values.sh GATEWAY $CCM_GATEWAY_PORT
+    update_reverse_tunnel_values GATEWAY "$CCM_GATEWAY_PORT"
   fi
   if [[ -n "$CCM_KNOX_PORT" ]]; then
-    /cdp/bin/update-reverse-tunnel-values.sh KNOX $CCM_KNOX_PORT
+    update_reverse_tunnel_values KNOX "$CCM_KNOX_PORT"
   fi
+}
+
+update_reverse_tunnel_values() {
+  CCM_HOST="$CCM_HOST" \
+  CCM_SSH_PORT="$CCM_SSH_PORT" \
+  CCM_PUBLIC_KEY_FILE="$CCM_PUBLIC_KEY_FILE" \
+  CCM_TUNNEL_INITIATOR_ID="$CCM_TUNNEL_INITIATOR_ID" \
+  CCM_ENCIPHERED_PRIVATE_KEY_FILE="$CCM_ENCIPHERED_PRIVATE_KEY_FILE" \
+  /cdp/bin/update-reverse-tunnel-values.sh "$1" "$2"
 }
 
 main() {
@@ -158,6 +167,14 @@ main() {
         start_nginx
       fi
     fi
+
+    INSTANCE_ID=
+    if [[ "$CLOUD_PLATFORM" == "AWS" ]]; then
+      INSTANCE_ID="`wget -q -O - http://169.254.169.254/latest/meta-data/instance-id`"
+    elif [[ "$CLOUD_PLATFORM" == "AZURE" ]]; then
+      INSTANCE_ID="`wget -q -O - --header="Metadata: true" http://169.254.169.254/metadata/instance/compute/vmId?api-version=2017-08-01&format=text`"
+    fi
+
     if [[ "$IS_CCM_ENABLED" == "true" ]]; then
       setup_ccm
     fi
