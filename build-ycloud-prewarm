@@ -1,0 +1,41 @@
+#!/bin/bash
+export STACK_BUILD="1328689"
+export CLUSTERMANAGER_BUILD="1328793"
+
+export STACK_TYPE="CDH"
+export STACK_VERSION="7.0.0.0"
+export STACK_BASEURL="http://cloudera-build-us-west-1.vpc.cloudera.com/s3/build/${STACK_BUILD}/cdh/7.x/parcels/"
+export PARCELS_NAME="CDH-7.0.0-1.cdh7.0.0.p0.${STACK_BUILD}-el7.parcel"
+export STACK_REPOID="CDH-7.0.0.0"
+export STACK_REPOSITORY_VERSION="CDH-7.0.0-1.cdh7.0.0.p0.${STACK_BUILD}"
+export CLUSTERMANAGER_VERSION="7.x.0"
+export CLUSTERMANAGER_BASEURL="http://cloudera-build-us-west-1.vpc.cloudera.com/s3/build/${CLUSTERMANAGER_BUILD}/cm7/7.x.0/redhat7/yum/"
+export CLUSTERMANAGER_GPGKEY="http://cloudera-build-us-west-1.vpc.cloudera.com/s3/build/${CLUSTERMANAGER_BUILD}/cm7/7.x.0/redhat7/yum/RPM-GPG-KEY-cloudera"
+
+export SALT_VERSION="2017.7.5"
+export SALT_PATH="/opt/salt_${SALT_VERSION}"
+export PYZMQ_VERSION="14.5.0"
+export PYTHON_APT_VERSION="1.1.0_beta1ubuntu0.16.04.1"
+export OS=centos7
+export OS_TYPE=redhat7
+export TAG=centos-76
+export DIR=centos7.6
+export PARCELS_ROOT=/opt/cloudera/parcels
+
+export CSP_BUILD="2.0.0.0-78"
+export CFM_BUILD="1.1.0.0-34"
+
+export PRE_WARM_PARCELS="[
+  [\"STREAMS_MESSAGING_MANAGER-2.1.0.${CSP_BUILD}-el7.parcel\",\"http://s3.amazonaws.com/dev.hortonworks.com/CSP/centos7/2.x/BUILDS/${CSP_BUILD}/tars/parcel\"],
+  [\"SCHEMAREGISTRY-0.8.0.${CSP_BUILD}-el7.parcel\",\"http://s3.amazonaws.com/dev.hortonworks.com/CSP/centos7/2.x/BUILDS/${CSP_BUILD}/tars/parcel\"],
+  [\"CFM-1.1.0.0-el7.parcel\",\"http://s3.amazonaws.com/dev.hortonworks.com/CFM/centos7/1.x/BUILDS/${CFM_BUILD}/tars/parcel\"]]"
+
+export PRE_WARM_CSD="[\"http://s3.amazonaws.com/dev.hortonworks.com/CSP/centos7/2.x/BUILDS/${CSP_BUILD}/tars/parcel/SCHEMAREGISTRY-0.8.0.jar\",
+  \"http://s3.amazonaws.com/dev.hortonworks.com/CSP/centos7/2.x/BUILDS/${CSP_BUILD}/tars/parcel/STREAMS_MESSAGING_MANAGER-2.1.0.jar\",
+  \"http://s3.amazonaws.com/dev.hortonworks.com/CFM/centos7/1.x/BUILDS/${CFM_BUILD}/tars/parcel/NIFICA-1.9.0.${CFM_BUILD}.jar\",
+  \"http://s3.amazonaws.com/dev.hortonworks.com/CFM/centos7/1.x/BUILDS/${CFM_BUILD}/tars/parcel/NIFI-1.9.0.${CFM_BUILD}.jar\",
+  \"http://s3.amazonaws.com/dev.hortonworks.com/CFM/centos7/1.x/BUILDS/${CFM_BUILD}/tars/parcel/NIFIREGISTRY-0.3.0.${CFM_BUILD}.jar\"]"
+
+DOCKER_ENVS="PARCELS_NAME=${PARCELS_NAME} STACK_REPOSITORY_VERSION=${STACK_REPOSITORY_VERSION} STACK_TYPE=${STACK_TYPE} CLUSTERMANAGER_VERSION=${CLUSTERMANAGER_VERSION} CLUSTERMANAGER_BASEURL=${CLUSTERMANAGER_BASEURL} CLUSTERMANAGER_GPGKEY=${CLUSTERMANAGER_GPGKEY} OS=${OS} OS_TYPE=${OS_TYPE} SALT_VERSION=${SALT_VERSION} SALT_PATH=${SALT_PATH} PYZMQ_VERSION=${PYZMQ_VERSION} PYTHON_APT_VERSION=${PYTHON_APT_VERSION} TRACE=1"
+DOCKER_BUILD_ARGS=$(echo ${DOCKER_ENVS} | xargs -n 1 echo "--build-arg " | xargs)
+docker build --build-arg PRE_WARM_PARCELS="${PRE_WARM_PARCELS}" --build-arg PRE_WARM_CSD="${PRE_WARM_CSD}" ${DOCKER_BUILD_ARGS} -t registry.eng.hortonworks.com/cloudbreak/${TAG}:$(date +%Y-%m-%d) -f docker/${DIR}/Dockerfile . | tee build.log

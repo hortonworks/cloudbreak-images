@@ -12,3 +12,5 @@ LOCAL_URL_HDP: {{ salt['environ.get']('LOCAL_URL_HDP', False) }}
 LOCAL_URL_HDP_UTILS: {{ salt['environ.get']('LOCAL_URL_HDP_UTILS', False) }}
 LOCAL_URL_VDF: {{ salt['environ.get']('LOCAL_URL_VDF', False) }}
 REPOSITORY_TYPE : {{ salt['environ.get']('REPOSITORY_TYPE', "remote") }}
+PRE_WARM_PARCELS: '{{ salt['environ.get']('PRE_WARM_PARCELS', "[]") }}'
+PRE_WARM_CSD: '{{ salt['environ.get']('PRE_WARM_CSD', "[]") }}'
