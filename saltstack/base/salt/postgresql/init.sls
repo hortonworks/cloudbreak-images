@@ -1,20 +1,20 @@
 {% if  pillar['OS'] == 'amazonlinux' or ( grains['os_family'] == 'RedHat' and grains['osmajorrelease'] | int == 6 )  %}
-/etc/yum.repos.d/pgdg95.repo:
+/etc/yum.repos.d/pgdg96.repo:
   file.managed:
-    - source: salt://postgresql/yum/postgres95-el6.repo
+    - source: salt://postgresql/yum/postgres96-el6.repo
 
-/etc/pki/rpm-gpg/RPM-GPG-KEY-PGDG-95:
+/etc/pki/rpm-gpg/RPM-GPG-KEY-PGDG-96:
   file.managed:
-    - source: salt://postgresql/yum/pgdg95-gpg
+    - source: salt://postgresql/yum/pgdg96-gpg
 
-{% elif  pillar['OS'] == 'amazonlinux2' %}
-/etc/yum.repos.d/pgdg95.repo:
+{% elif  pillar['OS'] == 'amazonlinux2' or ( grains['os_family'] == 'RedHat' and grains['osmajorrelease'] | int == 7 ) %}
+/etc/yum.repos.d/pgdg96.repo:
   file.managed:
-    - source: salt://postgresql/yum/postgres95-el7.repo
+    - source: salt://postgresql/yum/postgres96-el7.repo
 
-/etc/pki/rpm-gpg/RPM-GPG-KEY-PGDG-95:
+/etc/pki/rpm-gpg/RPM-GPG-KEY-PGDG-96:
   file.managed:
-    - source: salt://postgresql/yum/pgdg95-gpg
+    - source: salt://postgresql/yum/pgdg96-gpg
 {% endif %}
 
 {% if grains['os_family'] == 'RedHat' and grains['osmajorrelease'] | int == 7  %}
@@ -68,37 +68,37 @@ remove-postgres-sysconfig:
 install-postgres:
   pkg.installed:
     - pkgs:
-      - postgresql95-server
+      - postgresql96-server
       - postgresql-jdbc
-      - postgresql95
+      - postgresql96
 
 {% if  pillar['OS'] != 'amazonlinux2' %}
 /etc/init.d/postgresql:
   file.symlink:
-      - target: /etc/init.d/postgresql-9.5
+      - target: /etc/init.d/postgresql-9.6
       - force: True
 {% endif %}
 
 {% if  pillar['OS'] == 'amazonlinux2' %}
 /var/lib/pgsql/data:
   file.symlink:
-      - target: /var/lib/pgsql/9.5/data
+      - target: /var/lib/pgsql/9.6/data
       - force: True
 
 init-pg-database:
   cmd.run:
-    - name: find /var/lib/pgsql/ -name PG_VERSION | grep -q "data/PG_VERSION" || /usr/pgsql-9.5/bin/postgresql95-setup initdb
+    - name: find /var/lib/pgsql/ -name PG_VERSION | grep -q "data/PG_VERSION" || /usr/pgsql-9.6/bin/postgresql96-setup initdb
 
 systemd-link:
   file.replace:
-    - name: /usr/lib/systemd/system/postgresql-9.5.service
+    - name: /usr/lib/systemd/system/postgresql-9.6.service
     - pattern: "\\[Install\\]"
     - repl: "[Install]\nAlias=postgresql.service"
-    - unless: cat /usr/lib/systemd/system/postgresql-9.5.service | grep postgresql.service
+    - unless: cat /usr/lib/systemd/system/postgresql-9.6.service | grep postgresql.service
 
 reenable-postgres:
   cmd.run:
-    - name: systemctl reenable postgresql-9.5.service
+    - name: systemctl reenable postgresql-9.6.service
 
 {% else %}
 init-pg-database:
