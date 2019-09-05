@@ -30,6 +30,7 @@ packages_install:
       - ruby
   {% if grains['os_family'] == 'RedHat' %}
       - snappy
+      - cloud-utils-growpart
     {% if pillar['OS'] != 'redhat7' %}
       - snappy-devel
     {% endif %}
