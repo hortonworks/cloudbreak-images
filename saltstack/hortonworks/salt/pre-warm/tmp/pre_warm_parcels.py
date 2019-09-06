@@ -6,6 +6,11 @@ import errno
 import subprocess
 import tarfile
 
+print "PRE_WARM_PARCELS: " + os.environ.get("PRE_WARM_PARCELS", "[]")
+print "\n-------------\n"
+print "PRE_WARM_CSD: " + os.environ.get("PRE_WARM_CSD", "[]")
+print "\n-------------\n"
+
 PRE_WARM_PARCELS = json.loads(os.environ.get("PRE_WARM_PARCELS", "[]"))
 PRE_WARM_CSD = json.loads(os.environ.get("PRE_WARM_CSD", "[]"))
 PARCELS_ROOT = os.environ.get("PARCELS_ROOT", "/opt/cloudera/parcels")

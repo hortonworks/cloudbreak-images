@@ -1,6 +1,6 @@
 install_parcels:
   cmd.script:
-    - name: salt://pre-warm/tmp/pre_warm_parcels
+    - name: salt://pre-warm/tmp/pre_warm_parcels.py
     - template: jinja
     - env:
       - OS: {{ pillar['OS'] }}

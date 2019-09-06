@@ -19,6 +19,8 @@
     "clustermanager_version": "{{ env `CLUSTERMANAGER_VERSION` }}",
     "clustermanager_baseurl": "{{ env `CLUSTERMANAGER_BASEURL` }}",
     "clustermanager_gpgkey": "{{ env `CLUSTERMANAGER_GPGKEY` }}",
+    "pre_warm_parcels": "{{ env `PRE_WARM_PARCELS` }}",
+    "pre_warm_csd": "{{ env `PRE_WARM_CSD` }}",
     "stack_type": "{{ env `STACK_TYPE` }}",
     "mpack_urls": "{{ env `MPACK_URLS` }}",
     "stack_version": "{{ env `STACK_VERSION` }}",
@@ -817,7 +819,9 @@
         "SALT_VERSION={{user `salt_version`}}",
         "SALT_PATH={{user `salt_path`}}",
         "PARCELS_ROOT={{ user `parcels_root` }}",
-        "PARCELS_NAME={{ user `parcels_name` }}"
+        "PARCELS_NAME={{ user `parcels_name` }}",
+        "PRE_WARM_PARCELS={{ user `pre_warm_parcels` }}",
+        "PRE_WARM_CSD={{ user `pre_warm_csd` }}"
       ]
     },
     {
