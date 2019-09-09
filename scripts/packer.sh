@@ -143,6 +143,7 @@ packer_in_container() {
 
 main() {
   echo $IMAGE_NAME
+  echo "------------- PRE_WARM_PARCELS: ${PRE_WARM_PARCELS}"
   packer_in_container "$@"
 }
 

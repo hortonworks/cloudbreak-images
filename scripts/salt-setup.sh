@@ -5,6 +5,9 @@
 
 set -e -o pipefail -o errexit
 
+
+echo "------------- PRE_WARM_PARCELS: ${PRE_WARM_PARCELS}"
+
 function prepare {
   sudo chown -R root:root /tmp/saltstack
   apply_amazonlinux_salt_patch
