@@ -29,9 +29,9 @@ DOCKER_REPO_PASSWORD ?= ""
 ## https://github.com/hashicorp/packer/issues/6536
 AWS_MAX_ATTEMPTS ?= 300
 PACKAGE_VERSIONS ?= ""
-SALT_VERSION ?= 2017.7.7
+SALT_VERSION ?= 3000.2
 SALT_PATH ?= /opt/salt_$(SALT_VERSION)
-PYZMQ_VERSION ?= 14.5.0
+PYZMQ_VERSION ?= 19.0
 PYTHON_APT_VERSION ?= 1.1.0_beta1ubuntu0.16.04.1
 STACK_VERSION_SHORT=$(STACK_TYPE)-$(shell echo $(STACK_VERSION) | tr -d . | cut -c1-2 )
 ifndef IMAGE_NAME
