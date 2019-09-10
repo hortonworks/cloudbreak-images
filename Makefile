@@ -24,7 +24,7 @@ ARM_BUILD_REGION ?= northeurope
 ## https://github.com/hashicorp/packer/issues/6536
 AWS_MAX_ATTEMPTS ?= 300
 PACKAGE_VERSIONS ?= ""
-SALT_VERSION ?= 2017.7.5
+SALT_VERSION ?= 2019.2.0
 SALT_PATH ?= /opt/salt_$(SALT_VERSION)
 PYZMQ_VERSION ?= 14.5.0
 PYTHON_APT_VERSION ?= 1.1.0_beta1ubuntu0.16.04.1
