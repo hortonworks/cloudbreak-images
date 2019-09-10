@@ -876,7 +876,8 @@
         "local_url_hdp={{user `local_url_hdp`}}",
         "local_url_hdp_utils={{user `local_url_hdp_utils`}}",
         "local_url_vdf={{user `local_url_vdf`}}",
-        "repository_type={{user `repository_type`}}"
+        "repository_type={{user `repository_type`}}",
+        "pre_warm_parcels={{ user `pre_warm_parcels` }}"
       ]
     }
   ]
