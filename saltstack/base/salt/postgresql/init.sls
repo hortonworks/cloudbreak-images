@@ -7,7 +7,7 @@
   file.managed:
     - source: salt://postgresql/yum/pgdg96-gpg
 
-{% elif  pillar['OS'] == 'amazonlinux2' or ( grains['os_family'] == 'RedHat' and grains['osmajorrelease'] | int == 7 ) %}
+{% elif pillar['OS'] == 'amazonlinux2' or ( grains['os_family'] == 'RedHat' and grains['osmajorrelease'] | int == 7 ) %}
 /etc/yum.repos.d/pgdg96.repo:
   file.managed:
     - source: salt://postgresql/yum/postgres96-el7.repo
@@ -21,14 +21,10 @@
 install-postgres:
   pkg.installed:
     - pkgs:
-      - postgresql-server
+      - postgresql96-server
       - postgresql-jdbc
-      - postgresql
+      - postgresql96
 
-init-pg-database:
-  cmd.run:
-    - name: find /var/lib/pgsql/ -name PG_VERSION | grep -q "data/PG_VERSION" || postgresql-setup initdb
-    - runas: postgres
 {% elif grains['os_family'] == 'Debian' %}
 install-postgres:
   pkg.installed:
@@ -71,6 +67,7 @@ install-postgres:
       - postgresql96-server
       - postgresql-jdbc
       - postgresql96
+{% endif %}
 
 {% if  pillar['OS'] != 'amazonlinux2' %}
 /etc/init.d/postgresql:
@@ -79,7 +76,7 @@ install-postgres:
       - force: True
 {% endif %}
 
-{% if  pillar['OS'] == 'amazonlinux2' %}
+{% if  pillar['OS'] == 'amazonlinux2' or ( grains['os_family'] == 'RedHat' and grains['osmajorrelease'] | int == 7 ) %}
 /var/lib/pgsql/data:
   file.symlink:
       - target: /var/lib/pgsql/9.6/data
@@ -104,7 +101,6 @@ reenable-postgres:
 init-pg-database:
   cmd.run:
     - name: find /var/lib/pgsql/ -name PG_VERSION | grep -q "data/PG_VERSION" || service postgresql initdb
-{% endif %}
 {% endif %}
 
 {% if pillar['subtype'] != 'Docker' %}
