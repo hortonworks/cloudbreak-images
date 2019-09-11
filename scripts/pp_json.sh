@@ -1,5 +1,7 @@
 #!/bin/bash
 
+set -xe
+
 if [ -f package-versions.json -a "$stack_version" != "" -a "$clustermanager_version" != "" ]; then
 	apk update && apk add jq
 	cat package-versions.json
@@ -10,6 +12,8 @@ if [ -f package-versions.json -a "$stack_version" != "" -a "$clustermanager_vers
 	fi
 	cat package-versions.json
 fi
+
+echo "pre_warm_parcels: ${pre_warm_parcels}"
 
 cat  > ${image_name}.json <<EOF
 {
@@ -54,8 +58,12 @@ cat  > ${image_name}.json <<EOF
 "hdp_repository_version": "${stack_repository_version}",
 "cdh_repository_version": "${stack_repository_version#*-}",
 "manifest": $(if [ -f ${image_name}_manifest.json ]; then cat ${image_name}_manifest.json; else echo "{}"; fi),
-"package_versions": $(if [ -f package-versions.json ]; then cat package-versions.json; else echo "{}"; fi)
+"package_versions": $(if [ -f package-versions.json ]; then cat package-versions.json; else echo "{}"; fi),
+"pre_warm_parcels": ${pre_warm_parcels},
+"pre_warm_csd": ${pre_warm_csd}
 }
 EOF
+
+cat ${image_name}.json
 
 exit 0
