@@ -24,6 +24,7 @@ install-postgres:
       - postgresql96-server
       - postgresql-jdbc
       - postgresql96
+      - postgresql96-contrib
 
 {% elif grains['os_family'] == 'Debian' %}
 install-postgres:
@@ -39,6 +40,7 @@ install-postgres:
       - postgresql96
       - postgresql-init
       - postgresql96-server
+      - postgresql96-contrib
       - postgresql-jdbc
 {% else %}
 remove-old-postgres:
@@ -65,6 +67,7 @@ install-postgres:
   pkg.installed:
     - pkgs:
       - postgresql96-server
+      - postgresql96-contrib
       - postgresql-jdbc
       - postgresql96
 {% endif %}
