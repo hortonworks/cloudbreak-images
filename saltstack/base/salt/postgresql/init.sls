@@ -25,6 +25,8 @@ install-postgres:
       - postgresql-jdbc
       - postgresql96
       - postgresql96-contrib
+      - postgresql96-docs
+      - postgresql96-devel
 
 {% elif grains['os_family'] == 'Debian' %}
 install-postgres:
@@ -41,6 +43,8 @@ install-postgres:
       - postgresql-init
       - postgresql96-server
       - postgresql96-contrib
+      - postgresql96-docs
+      - postgresql96-devel
       - postgresql-jdbc
 {% else %}
 remove-old-postgres:
@@ -68,9 +72,17 @@ install-postgres:
     - pkgs:
       - postgresql96-server
       - postgresql96-contrib
+      - postgresql96-docs
+      - postgresql96-devel
       - postgresql-jdbc
       - postgresql96
 {% endif %}
+
+/usr/bin/initdb:
+  file.symlink:
+    - mode: 755
+    - target: /usr/pgsql-9.6/bin/initdb
+    - force: True
 
 {% if  pillar['OS'] != 'amazonlinux2' %}
 /etc/init.d/postgresql:
