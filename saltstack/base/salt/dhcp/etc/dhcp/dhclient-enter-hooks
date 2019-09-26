@@ -13,13 +13,16 @@ LOGFILE=/var/log/dhcp-hook.log
 
 RUN_FILE=/var/dhcp-hook.run
 
+MAX_RETRY_COUNT=6
+SLEEP_INTERVAL_SECONDS=5
+
 log() {
     if [[ "${LOG_ENABLED}" == "true" ]]; then
         if [[ "${USE_SYSTEMD_CAT}" == "true" ]]; then
             echo ${1} | systemd-cat -t "${LOG_ID}"
         fi
         DATE=`date '+%Y-%m-%d %H:%M:%S'`
-        echo "${DATE} ${1}" >> $LOGFILE
+        echo "${DATE} $@" >> $LOGFILE
     fi
 }
 
@@ -38,6 +41,42 @@ set_hostname_from_dns() {
     else
         log "No hostname was found from DNS server for domain ${search}"
     fi
+}
+
+get_dig_response_with_answer() {
+    local nameserver=$1
+    local ip_address=$2
+    local search=$3
+
+    dig_lookup=$(dig @${nameserver} -x $ip_address)
+    log "Reverse DNS by ${nameserver}: ${dig_lookup}"
+    echo "$dig_lookup" | grep -A 1 "ANSWER SECTION" | grep -qc "${search}"
+    if [[ $? -eq 0 ]]; then
+        echo "$dig_lookup"
+        return 0
+    fi
+    return 1
+}
+
+execute_with_retry() {
+    local max_retry_count=$MAX_RETRY_COUNT
+    local sleep_interval_seconds=$SLEEP_INTERVAL_SECONDS
+    local retry_counter=0
+    log "execute_with_retry: $@"
+
+    while [ $retry_counter -lt $max_retry_count ]; do
+        ((retry_counter++))
+        log "retry: attempt $retry_counter with sleep interval ${sleep_interval_seconds}s: $@"
+        response=$("$@")
+        if [ $? -eq 0 ]; then
+            log "retry success"
+            echo "$response"
+            return 0
+        fi
+        log "attempt $retry_counter unsuccesful".
+        sleep ${sleep_interval_seconds}s
+    done
+    return 1
 }
 
 make_resolv_conf() {
@@ -67,9 +106,7 @@ make_resolv_conf() {
         else
             log "Failed to get reverse DNS name for $IP, trying directly with DNS servers: ${new_domain_name_servers}"
             for nameserver in ${new_domain_name_servers} ; do
-                REVERSE_DNS=$(dig @${nameserver} -x $IP)
-                log "Reverse DNS by ${nameserver}: ${REVERSE_DNS}"
-                echo "$REVERSE_DNS" | grep -qc "${search}"
+                REVERSE_DNS=$(execute_with_retry get_dig_response_with_answer $nameserver $IP $search)
                 if [[ $? -eq 0 ]]; then
                     set_hostname_from_dns "$REVERSE_DNS" "$IP" "$search"
                     break
