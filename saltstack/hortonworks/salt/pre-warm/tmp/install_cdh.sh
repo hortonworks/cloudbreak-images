@@ -91,7 +91,6 @@ install_cdh() {
 main() {
   if [[ -n "$STACK_VERSION" ]]; then
     check_prerequisites
-    exec 1>/var/log/install_cdh.log 2>&1
     install_cdh
   fi
 }
