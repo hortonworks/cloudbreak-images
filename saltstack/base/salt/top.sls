@@ -10,5 +10,8 @@ base:
     - postgresql
     - monitoring
     - performance
+{% if salt['environ.get']('INCLUDE_FLUENT') == 'Yes' %}
+    - fluent
+{% endif %}
     - ccm-client
     - custom

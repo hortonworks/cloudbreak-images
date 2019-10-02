@@ -15,9 +15,6 @@ hortonworks:
     - java
 {% endif %}
     - pre-warm
-{% if salt['environ.get']('INCLUDE_FLUENT') == 'Yes' %}
-    - fluent
-{% endif %}
 {% if salt['environ.get']('INCLUDE_METERING') == 'Yes' %}
     - metering
 {% endif %}
