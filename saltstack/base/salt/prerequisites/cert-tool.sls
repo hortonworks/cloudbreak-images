@@ -6,10 +6,12 @@
     - mode: 755
     - source_hash: md5=986784535ed40745be95009b7314c657
 
-/sbin/certm :
-  file.managed:
-    - source: https://github.com/ehazlett/certm/releases/download/0.1.2/certm_linux_amd64 
-    - user: root
-    - group: root
-    - mode: 755
-    - source_hash: md5=9a2afe90c41cc645e6ea6e731ac20850
+install_certm:
+  archive.extracted:
+    - name: /sbin/
+    - source: https://github.com/keyki/certm/releases/download/v0.1.3/certm_0.1.3_Linux_x86_64.tgz
+    - source_hash: md5=7aafdb92c4d17e842f2167c51451412c
+    - archive_format: tar
+    - enforce_toplevel: false
+    - skip_verify: True
+    - if_missing: /sbin/certm
