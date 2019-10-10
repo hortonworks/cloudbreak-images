@@ -15,7 +15,7 @@ fi
 
 echo "pre_warm_parcels: ${pre_warm_parcels}"
 
-pre_warm_parcels=${pre_warm_parcels:-\"\"}
+pre_warm_parcels=${pre_warm_parcels:-[[\"\"]]}
 pre_warm_csd=${pre_warm_csd:-\"\"}
 
 cat  > ${image_name}.json <<EOF
