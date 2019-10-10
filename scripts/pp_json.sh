@@ -62,8 +62,8 @@ cat  > ${image_name}.json <<EOF
 "cdh_repository_version": "${stack_repository_version#*-}",
 "manifest": $(if [ -f ${image_name}_manifest.json ]; then cat ${image_name}_manifest.json; else echo "{}"; fi),
 "package_versions": $(if [ -f package-versions.json ]; then cat package-versions.json; else echo "{}"; fi),
-"pre_warm_parcels": ${pre_warm_parcels},
-"pre_warm_csd": ${pre_warm_csd}
+"pre_warm_parcels": $(if [[ -z "$pre_warm_parcels" ]]; then echo null; else echo $pre_warm_parcels; fi),
+"pre_warm_csd": $(if [[ -z "$pre_warm_csd" ]]; then echo null; else echo $pre_warm_csd; fi)
 }
 EOF
 
