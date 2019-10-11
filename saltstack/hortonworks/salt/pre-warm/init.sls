@@ -10,6 +10,7 @@ include:
   - {{ slspath }}.node
     {% endif %}
   - {{ slspath }}.parcels
+  - {{ slspath }}.torrent
   {% endif %}
 {% elif pillar['STACK_TYPE'] == 'HDP' or  pillar['STACK_TYPE'] == 'HDF' %}
   {% if pillar['CLUSTERMANAGER_VERSION'] and pillar['CLUSTERMANAGER_BASEURL'] and pillar['CLUSTERMANAGER_GPGKEY'] %}
