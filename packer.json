@@ -509,8 +509,8 @@
       "ssh_username": "debian",
       "ssh_pty": "true",
       "image_name": "{{user `image_name`}}",
-      "source_image": "b9d23657-f8ef-49cd-a262-48bd597234ec",
-      "flavor": "m2.xlarge",
+      "source_image": "1499a98f-e965-40bd-a71f-3c75c56faa01",
+      "flavor": "m1.medium",
       "endpoint_type": "internalURL",
       "networks": [
         "a5ad7a1d-d3a6-4180-8d61-07a23f6fb449"
