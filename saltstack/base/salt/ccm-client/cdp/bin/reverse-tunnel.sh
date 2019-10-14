@@ -19,7 +19,7 @@ if grep -q "BEGIN" ${CCM_ENCIPHERED_PRIVATE_KEY_FILE}; then
 else
     IV=436c6f7564657261436c6f7564657261
     cat ${CCM_ENCIPHERED_PRIVATE_KEY_FILE} | openssl enc -aes-128-cbc -d -A -a \
-        -K $(xxd -pu <<< $(echo ${CCM_TUNNEL_INITIATOR_ID} | cut -c1-16) | cut -c1-32) \
+        -K $(xxd -pu <<< $(echo ${CCM_KEY_ID} | cut -c1-16) | cut -c1-32) \
         -iv ${IV} > ${PRIVATE_KEY}
 fi
 

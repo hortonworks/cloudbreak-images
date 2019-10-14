@@ -122,6 +122,7 @@ setup_ccm() {
   : ${CCM_HOST:? required}
   : ${CCM_SSH_PORT:? required}
   : ${CCM_PUBLIC_KEY:? required}
+  : ${CCM_KEY_ID:? required}
   : ${CCM_TUNNEL_INITIATOR_ID:="$INSTANCE_ID"}
   : ${CCM_ENCIPHERED_PRIVATE_KEY:? required}
 
