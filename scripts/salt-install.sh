@@ -14,6 +14,7 @@ function install_salt_with_pip() {
 }
 
 function install_with_apt() {
+  export DEBIAN_FRONTEND=noninteractive
   apt-get update
   apt-get install -y apt-transport-https python-pip python-dev build-essential
   install_salt_with_pip
@@ -33,7 +34,7 @@ function install_python_apt_into_virtualenv() {
   fi
 
   # first install build requirements / dependencies
-  if [ "${OS_TYPE}" == "ubuntu18" ]; then
+  if [ "${OS_TYPE}" == "ubuntu18" ] || [ "${OS_TYPE}" == "ubuntu16" ]; then
     sed -i 's/^# deb-src/deb-src/g' /etc/apt/sources.list
     apt-get update
   fi
