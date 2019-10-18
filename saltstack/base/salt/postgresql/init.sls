@@ -112,9 +112,14 @@ reenable-postgres:
   cmd.run:
     - name: systemctl reenable postgresql-9.6.service
 
-{% elif pillar['OS'] == 'debian9' or ( grains['os_family'] == 'Debian' and ( grains['osmajorrelease'] | int in ( 8, 9, 16, 18 ) ) )  %}
+{% elif pillar['OS'] == 'debian9' or ( grains['os_family'] == 'Debian' and grains['osmajorrelease'] | int in ( 8, 9, 16, 18 ) )  %}
   cmd.run:
     - name: echo 'Ubuntu/Debian, it is initialized automatically.'
+
+{% elif pillar['OS'] == 'sles12sp3' or ( grains['os_family'] == 'Suse' and grains['osmajorrelease'] | int == 12 )  %}
+  cmd.run:
+    - runas: postgres
+    - name: /usr/lib/postgresql96/bin/initdb /var/lib/pgsql/data/
 
 {% else %}
 init-pg-database:
