@@ -44,9 +44,11 @@ packages_install:
   {% endif %}
       - deltarpm
       - nvme-cli
-      - autossh
       - openssl
-      - vim-common
+      - vim
+  {% if grains['os_family'] != 'Suse' and grains['osmajorrelease'] |int != 12 %}
+      - autossh
+  {% endif %}
 
 {% if grains['os_family'] == 'Suse' %}
 remove_snappy:

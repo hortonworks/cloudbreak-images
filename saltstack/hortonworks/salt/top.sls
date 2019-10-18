@@ -17,4 +17,7 @@ hortonworks:
     - pre-warm
 {% if salt['environ.get']('INCLUDE_METERING') == 'Yes' %}
     - metering
+{% if grains['os_family'] == 'Suse' and grains['osmajorrelease'] | int == 12 %}
+    - autossh
+{% endif %}
 {% endif %}
