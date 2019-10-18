@@ -97,7 +97,8 @@ function install_with_zypper() {
     sleep 5
   done
   zypper --gpg-auto-import-keys refresh
-  if [[ "x${SLES_REGISTRATION_CODE}" != "x" ]] && ! SUSEConnect -s | grep -q \"Registered\"; then
+  if [[ -n "${SLES_REGISTRATION_CODE}" ]] && ! SUSEConnect -s | grep -q \"Registered\"; then
+    echo "SLES_REGISTRATION_CODE="$SLES_REGISTRATION_CODE
     SUSEConnect --regcode $SLES_REGISTRATION_CODE
   fi
   if ! SUSEConnect -s | grep -q \"sle-sdk\"; then
