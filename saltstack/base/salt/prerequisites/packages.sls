@@ -45,7 +45,11 @@ packages_install:
       - deltarpm
       - nvme-cli
       - openssl
+  {% if pillar['OS'] in ('centos7', 'centos6') %}
+      - vim-common
+  {% else %}
       - vim
+  {% endif %}
   {% if grains['os_family'] != 'Suse' and grains['osmajorrelease'] |int != 12 %}
       - autossh
   {% endif %}
