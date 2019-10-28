@@ -60,6 +60,8 @@ cat  > ${image_name}.json <<EOF
 "hdp_vdf": "$([ "$repository_type" == "local" ] && echo "${local_url_vdf}" || echo "${hdp_vdf}")",
 "hdp_repository_version": "${stack_repository_version}",
 "cdh_repository_version": "${stack_repository_version#*-}",
+"cm_build_number": "${cm_build_number}",
+"stack_build_number": "${stack_build_number}",
 "manifest": $(if [ -f ${image_name}_manifest.json ]; then cat ${image_name}_manifest.json; else echo "{}"; fi),
 "package_versions": $(if [ -f package-versions.json ]; then cat package-versions.json; else echo "{}"; fi),
 "pre_warm_parcels": $(if [[ -z "$pre_warm_parcels" ]]; then echo null; else echo $pre_warm_parcels; fi),
