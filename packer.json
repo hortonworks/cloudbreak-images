@@ -79,7 +79,9 @@
     "parcels_name": "{{ env `PARCELS_NAME` }}",
     "subnet_id": "{{ env `SUBNET_ID` }}",
     "vpc_id": "{{ env `VPC_ID` }}",
-    "base_ami_id": "{{ env `BASE_AMI_ID` }}"
+    "base_ami_id": "{{ env `BASE_AMI_ID` }}",
+    "cm_build_number": "{{ env `CM_BUILD_NUMBER` }}",
+    "stack_build_number": "{{ env `STACK_BUILD_NUMBER` }}"
   },
   "builders": [
     {
@@ -879,7 +881,9 @@
         "local_url_vdf={{user `local_url_vdf`}}",
         "repository_type={{user `repository_type`}}",
         "pre_warm_parcels={{ user `pre_warm_parcels` }}",
-        "pre_warm_csd={{ user `pre_warm_csd` }}"
+        "pre_warm_csd={{ user `pre_warm_csd` }}",
+        "cm_build_number={{ user `cm_build_number` }}",
+        "stack_build_number={{ user `stack_build_number` }}"
       ]
     }
   ]
