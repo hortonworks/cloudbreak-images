@@ -136,6 +136,8 @@ packer_in_container() {
     -e VPC_ID="$VPC_ID" \
     -e SUBNET_ID="$SUBNET_ID" \
     -e BASE_AMI_ID="$BASE_AMI_ID" \
+    -e CM_BUILD_NUMBER="$CM_BUILD_NUMBER" \
+    -e STACK_BUILD_NUMBER="$STACK_BUILD_NUMBER" \
     -v /var/run/docker.sock:/var/run/docker.sock \
     -v $PWD:$PWD \
     -w $PWD \
