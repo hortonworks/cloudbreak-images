@@ -18,6 +18,8 @@
     "ambari_baseurl": "{{ env `AMBARI_BASEURL` }}",
     "ambari_gpgkey": "{{ env `AMBARI_GPGKEY` }}",
     "virtual_network_resource_group_name": "{{ env `VIRTUAL_NETWORK_RESOURCE_GROUP_NAME` }}",
+    "vpc_id": "{{ env `VPC_ID` }}",
+    "subnet_id": "{{ env `SUBNET_ID` }}",
     "arm_build_region": "{{ env `ARM_BUILD_REGION` }}",
     "stack_type": "{{ env `STACK_TYPE` }}",
     "mpack_urls": "{{ env `MPACK_URLS` }}",
