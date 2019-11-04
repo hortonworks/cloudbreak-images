@@ -53,6 +53,9 @@ packages_install:
   {% if grains['os_family'] != 'Suse' and grains['osmajorrelease'] |int != 12 %}
       - autossh
   {% endif %}
+      - ipa-client
+      - openldap
+      - openldap-clients
 
 {% if grains['os_family'] == 'Suse' %}
 remove_snappy:
