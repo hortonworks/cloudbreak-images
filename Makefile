@@ -84,34 +84,38 @@ define AWS_GOV_INSTANCE_PROFILE
 packer
 endef
 
-define AZURE_STORAGE_ACCOUNTS
-East Asia:sequenceiqeastasia2,\
-East US:sequenceiqeastus12,\
-Central US:sequenceiqcentralus2,\
-North Europe:sequenceiqnortheurope2,\
-South Central US:sequenceiqouthcentralus2,\
-North Central US:sequenceiqorthcentralus2,\
-East US 2:sequenceiqeastus22,\
-Japan East:sequenceiqjapaneast2,\
-Japan West:sequenceiqjapanwest2,\
-South East Asia:sequenceiqsoutheastasia2,\
-West US:sequenceiqwestus2,\
-West Europe:sequenceiqwesteurope2,\
-Brazil South:sequenceiqbrazilsouth2,\
-Canada East:sequenceiqcanadaeast,\
-Canada Central:sequenceiqcanadacentral,\
-Australia East:hwxaustraliaeast,\
-Australia South East:hwxaustralisoutheast,\
-Central India:hwxcentralindia,\
-Korea Central:hwxkoreacentral,\
-Korea South:hwxkoreasouth,\
-South India:hwxsouthindia,\
-UK South:hwxsouthuk,\
-West Central US:hwxwestcentralus,\
-UK West:hwxwestuk,\
-West US 2:hwxwestus2,\
-West India:hwxwestindia,\
-France Central:hwxfrancecentral
+define AZURE_IMAGE_GALLERY_NAME
+azure-image-galery
+endef
+
+define AZURE_REPLICATION_REGIONS
+East Asia,\
+East US,\
+Central US,\
+North Europe,\
+South Central US,\
+North Central US,\
+East US 2,\
+Japan East,\
+Japan West,\
+South East Asia,\
+West US,\
+West Europe,\
+Brazil South,\
+Canada East,\
+Canada Central,\
+Australia East,\
+Australia South East,\
+Central India,\
+Korea Central,\
+Korea South,\
+South India,\
+UK South,\
+West Central US,\
+UK West,\
+West US 2,\
+West India,\
+France Central
 endef
 
 GCP_STORAGE_BUNDLE ?= "sequenceiqimage"
@@ -200,7 +204,7 @@ build-aws-ubuntu16:
 
 build-aws-centos7: export IMAGE_NAME := $(IMAGE_NAME)
 
-build-aws-centos7: build-aws-centos7-base 
+build-aws-centos7: build-aws-centos7-base
 	$(ENVS) \
 	AWS_AMI_REGIONS="$(AWS_AMI_REGIONS)" \
 	./scripts/sparseimage/packer.sh build -force $(PACKER_OPTS)
@@ -296,7 +300,8 @@ build-gc-ubuntu16:
 
 build-azure-redhat6:
 	$(ENVS) \
-	AZURE_STORAGE_ACCOUNTS="$(AZURE_STORAGE_ACCOUNTS)" \
+	AZURE_REPLICATION_REGIONS="$(AZURE_REPLICATION_REGIONS)" \
+	AZURE_IMAGE_GALLERY_NAME="$(AZURE_IMAGE_GALLERY_NAME)" \
 	OS=redhat6 \
 	OS_TYPE=redhat6 \
 	ATLAS_ARTIFACT_TYPE=azure-arm \
@@ -309,7 +314,8 @@ build-azure-redhat6:
 
 build-azure-centos7:
 	$(ENVS) \
-	AZURE_STORAGE_ACCOUNTS="$(AZURE_STORAGE_ACCOUNTS)" \
+	AZURE_REPLICATION_REGIONS="$(AZURE_REPLICATION_REGIONS)" \
+	AZURE_IMAGE_GALLERY_NAME="$(AZURE_IMAGE_GALLERY_NAME)" \
 	OS=centos7 \
 	OS_TYPE=redhat7 \
 	ATLAS_ARTIFACT_TYPE=azure-arm \
@@ -321,7 +327,8 @@ build-azure-centos7:
 
 build-azure-sles12sp3:
 	$(ENVS) \
-	AZURE_STORAGE_ACCOUNTS="$(AZURE_STORAGE_ACCOUNTS)" \
+	AZURE_REPLICATION_REGIONS="$(AZURE_REPLICATION_REGIONS)" \
+	AZURE_IMAGE_GALLERY_NAME="$(AZURE_IMAGE_GALLERY_NAME)" \
 	OS=sles12 \
 	OS_TYPE=sles12 \
 	ATLAS_ARTIFACT_TYPE=azure-arm \
@@ -333,7 +340,8 @@ build-azure-sles12sp3:
 
 build-azure-ubuntu16:
 	$(ENVS) \
-	AZURE_STORAGE_ACCOUNTS="$(AZURE_STORAGE_ACCOUNTS)" \
+	AZURE_REPLICATION_REGIONS="$(AZURE_REPLICATION_REGIONS)" \
+	AZURE_IMAGE_GALLERY_NAME="$(AZURE_IMAGE_GALLERY_NAME)" \
 	OS=ubuntu16 \
 	OS_TYPE=ubuntu16 \
 	ATLAS_ARTIFACT_TYPE=azure-arm \
@@ -344,7 +352,7 @@ build-azure-ubuntu16:
 	./scripts/packer.sh build -only=arm-ubuntu16 $(PACKER_OPTS)
 
 copy-azure-images:
-	AZURE_STORAGE_ACCOUNTS="$(AZURE_STORAGE_ACCOUNTS)" AZURE_IMAGE_NAME="$(AZURE_IMAGE_NAME)" ./scripts/azure-copy.sh
+	AZURE_IMAGE_NAME="$(AZURE_IMAGE_NAME)" ./scripts/azure-copy.sh
 
 bundle-googlecompute:
 	$(ENVS) GCP_STORAGE_BUNDLE=$(GCP_STORAGE_BUNDLE) GCP_STORAGE_BUNDLE_LOG=$(GCP_STORAGE_BUNDLE_LOG) ./scripts/bundle-gcp-image.sh

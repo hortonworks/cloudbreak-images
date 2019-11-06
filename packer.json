@@ -44,6 +44,7 @@
     "image_name": "{{ env `IMAGE_NAME` }}",
     "image_size": "{{ env `IMAGE_SIZE` }}",
     "image_owner": "{{ env `IMAGE_OWNER` }}",
+    "azure_image_gallery_name": "{{ env `AZURE_IMAGE_GALLERY_NAME` }}",
     "include_fluent": "{{ env `INCLUDE_FLUENT` }}",
     "include_metering": "{{ env `INCLUDE_METERING` }}",
     "azure_image_publisher": "{{ env `AZURE_IMAGE_PUBLISHER` }}",
@@ -81,7 +82,8 @@
     "vpc_id": "{{ env `VPC_ID` }}",
     "base_ami_id": "{{ env `BASE_AMI_ID` }}",
     "cm_build_number": "{{ env `CM_BUILD_NUMBER` }}",
-    "stack_build_number": "{{ env `STACK_BUILD_NUMBER` }}"
+    "stack_build_number": "{{ env `STACK_BUILD_NUMBER` }}",
+    "azure_replication_regions": "{{ env `AZURE_REPLICATION_REGIONS` }}"
   },
   "builders": [
     {
@@ -594,7 +596,6 @@
         "cb-creation-timestamp": "{{timestamp}}"
       }
     },
-
     {
       "name": "gc-ubuntu16",
       "type": "googlecompute",
@@ -624,10 +625,8 @@
       "client_secret": "{{user `client_secret`}}",
       "subscription_id": "{{user `subscription_id`}}",
       "tenant_id": "{{user `tenant_id`}}",
-      "resource_group_name": "{{user `resource_group_name`}}",
-      "storage_account": "{{user `storage_account`}}",
-      "capture_container_name": "packer",
-      "capture_name_prefix": "{{user `image_name`}}",
+      "managed_image_resource_group_name": "{{user `resource_group_name`}}",
+      "managed_image_name": "{{user `image_name`}}",
       "image_publisher": "{{user `azure_image_publisher`}}",
       "image_offer": "{{user `azure_image_offer`}}",
       "image_sku": "{{user `azure_image_sku`}}",
@@ -639,7 +638,7 @@
       "location": "{{user `arm_build_region`}}",
       "vm_size": "Standard_D4",
       "os_disk_size_gb": "{{user `image_size`}}",
-      "virtual_network_resource_group_name":"{{user `virtual_network_resource_group_name`}}",      
+      "virtual_network_resource_group_name":"{{user `virtual_network_resource_group_name`}}",
       "virtual_network_name": "{{user `vpc_id`}}",
       "virtual_network_subnet_name": "{{user `subnet_id`}}",
       "azure_tags": {
@@ -657,10 +656,8 @@
       "client_secret": "{{user `client_secret`}}",
       "subscription_id": "{{user `subscription_id`}}",
       "tenant_id": "{{user `tenant_id`}}",
-      "resource_group_name": "{{user `resource_group_name`}}",
-      "storage_account": "{{user `storage_account`}}",
-      "capture_container_name": "packer",
-      "capture_name_prefix": "{{user `image_name`}}",
+      "managed_image_resource_group_name": "{{user `resource_group_name`}}",
+      "managed_image_name": "{{user `image_name`}}",
       "image_publisher": "{{user `azure_image_publisher`}}",
       "image_offer": "{{user `azure_image_offer`}}",
       "image_sku": "{{user `azure_image_sku`}}",
@@ -676,6 +673,13 @@
       "virtual_network_name": "{{user `vpc_id`}}",
       "virtual_network_subnet_name": "{{user `subnet_id`}}",
       "private_virtual_network_with_public_ip": true,
+      "shared_image_gallery_destination": {
+        "resource_group": "{{user `resource_group_name`}}",
+        "gallery_name": "{{user `azure_image_gallery_name`}}",
+        "image_name": "{{user `image_name`}}",
+        "image_version": "{{user `version`}}",
+        "replication_regions": ["{{user `azure_replication_regions`}}"]
+        },
       "azure_tags": {
         "builder": "packer",
         "version": "{{user `version`}}",
@@ -691,10 +695,8 @@
       "client_secret": "{{user `client_secret`}}",
       "subscription_id": "{{user `subscription_id`}}",
       "tenant_id": "{{user `tenant_id`}}",
-      "resource_group_name": "{{user `resource_group_name`}}",
-      "storage_account": "{{user `storage_account`}}",
-      "capture_container_name": "packer",
-      "capture_name_prefix": "{{user `image_name`}}",
+      "managed_image_resource_group_name": "{{user `resource_group_name`}}",
+      "managed_image_name": "{{user `image_name`}}",
       "image_publisher": "{{user `azure_image_publisher`}}",
       "image_offer": "{{user `azure_image_offer`}}",
       "image_sku": "{{user `azure_image_sku`}}",
@@ -706,9 +708,9 @@
       "location": "{{user `arm_build_region`}}",
       "vm_size": "Standard_D4",
       "os_disk_size_gb": "{{user `image_size`}}",
-      "virtual_network_resource_group_name":"{{user `virtual_network_resource_group_name`}}",      
+      "virtual_network_resource_group_name":"{{user `virtual_network_resource_group_name`}}",
       "virtual_network_name": "{{user `vpc_id`}}",
-      "virtual_network_subnet_name": "{{user `subnet_id`}}",      
+      "virtual_network_subnet_name": "{{user `subnet_id`}}",
       "azure_tags": {
         "builder": "packer",
         "version": "{{user `version`}}",
@@ -724,10 +726,8 @@
       "client_secret": "{{user `client_secret`}}",
       "subscription_id": "{{user `subscription_id`}}",
       "tenant_id": "{{user `tenant_id`}}",
-      "resource_group_name": "{{user `resource_group_name`}}",
-      "storage_account": "{{user `storage_account`}}",
-      "capture_container_name": "packer",
-      "capture_name_prefix": "{{user `image_name`}}",
+      "managed_image_resource_group_name": "{{user `resource_group_name`}}",
+      "managed_image_name": "{{user `image_name`}}",
       "image_publisher": "{{user `azure_image_publisher`}}",
       "image_offer": "{{user `azure_image_offer`}}",
       "image_sku": "{{user `azure_image_sku`}}",
@@ -739,9 +739,9 @@
       "location": "{{user `arm_build_region`}}",
       "vm_size": "Standard_D4",
       "os_disk_size_gb": "{{user `image_size`}}",
-      "virtual_network_resource_group_name":"{{user `virtual_network_resource_group_name`}}",      
+      "virtual_network_resource_group_name":"{{user `virtual_network_resource_group_name`}}",
       "virtual_network_name": "{{user `vpc_id`}}",
-      "virtual_network_subnet_name": "{{user `subnet_id`}}",     
+      "virtual_network_subnet_name": "{{user `subnet_id`}}",
       "azure_tags": {
         "builder": "packer",
         "version": "{{user `version`}}",

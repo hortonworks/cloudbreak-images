@@ -3,7 +3,7 @@
 packer_in_container() {
   local dockerOpts=""
   local packerFile="packer.json"
-  PACKER_VERSION="1.4.2"
+  PACKER_VERSION="1.4.4"
 
   if [[ "$GCP_ACCOUNT_FILE" ]]; then
     dockerOpts="$dockerOpts -v $GCP_ACCOUNT_FILE:$GCP_ACCOUNT_FILE"

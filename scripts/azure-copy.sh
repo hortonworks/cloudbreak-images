@@ -11,7 +11,6 @@ docker run -i --rm \
     -e ARM_DESTINATION_IMAGE_PREFIX=$ARM_DESTINATION_IMAGE_PREFIX \
     -e ARM_USERNAME=$ARM_USERNAME \
     -e ARM_PASSWORD=$ARM_PASSWORD \
-    -e AZURE_STORAGE_ACCOUNTS="$AZURE_STORAGE_ACCOUNTS" \
     -e AZURE_IMAGE_NAME="$AZURE_IMAGE_NAME" \
     --entrypoint azure-copy \
     hortonworks/cloudbreak-azure-cli-tools:1.14.0
