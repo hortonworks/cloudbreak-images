@@ -53,9 +53,20 @@ packages_install:
   {% if grains['os_family'] != 'Suse' and grains['osmajorrelease'] |int != 12 %}
       - autossh
   {% endif %}
+  {% if grains['os_family'] != 'Suse' and grains['os_family'] != 'Debian' %}
       - ipa-client
       - openldap
       - openldap-clients
+  {% endif %}
+  {% if grains['os_family'] == 'Debian' %}
+      - slapd
+      - ldap-utils
+      - freeipa-client
+  {% endif %}
+  {% if grains['os_family'] == 'Suse' and grains['osmajorrelease'] |int == 12 %}
+      - openldap2
+      - openldap2-clients
+  {% endif %}
 
 {% if grains['os_family'] == 'Suse' %}
 remove_snappy:

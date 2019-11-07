@@ -5,8 +5,24 @@
 
 set -e -o pipefail -o errexit
 
+function add-freeipa-repo {
+  if [ "${OS}" == "debian9" ]; then
+    #Add freeipa repo to debian repository list
+    cat << EOF > /etc/apt/sources.list.d/freeipa.list
+deb http://apt.numeezy.fr stretch main
+deb-src http://apt.numeezy.fr stretch main
+EOF
+
+    #Add signature verification key
+    wget -qO - http://apt.numeezy.fr/numeezy.asc | apt-key add -
+    #Update package list
+    apt-get update
+  fi
+}
+
 function prepare {
   sudo chown -R root:root /tmp/saltstack
+  add-freeipa-repo
   apply_amazonlinux_salt_patch
 }
 
