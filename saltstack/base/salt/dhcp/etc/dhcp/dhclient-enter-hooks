@@ -100,7 +100,7 @@ make_resolv_conf() {
 
     if [ ! -f "$RUN_FILE" ]; then 
         IP=$(ip addr show dev ${interface} | grep  -Po 'inet \K[\d.]+')
-        REVERSE_DNS=$(host $IP)
+        REVERSE_DNS=$(dig -x $IP)
         if [[ $? -eq 0 ]]; then
             set_hostname_from_dns "$REVERSE_DNS" "$IP" "$search"
         else
