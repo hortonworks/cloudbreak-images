@@ -108,10 +108,6 @@ start_nginx() {
 setup_tls() {
   mkdir -p /etc/certs
   echo $CB_CERT | base64 --decode > /etc/certs/cb-client.pem
-  if [[ "$IS_CCM_ENABLED" == "true" ]]; then
-      sed -i '/ssl_client_certificate/d' /etc/nginx/sites-enabled/ssl.conf
-      sed -i '/ssl_verify_client/d' /etc/nginx/sites-enabled/ssl.conf
-  fi
   if [[ -f /sbin/certm ]]
   then
     echo "certm exists on the fs"
