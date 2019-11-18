@@ -8,20 +8,25 @@ debug() {
 
 create_motd() {
   debug "create_motd()"
-  cat > /etc/motd <<"EOF"
+  FILENAME=/etc/motd
+  SIZE=$(du -sb $FILENAME | awk '{ print $1}')
+
+  if ["$SIZE" -eq 0]; then
+    cat > /etc/motd <<"EOF"
 cat /etc/motd
-                    .-.._
-              __  /`     '.
-           .-'  `/   (   a \
-          /      (    \,_   \
-         /|       '---` |\ =|
-        ` \    /__.-/  /  | |
-           |  / / \ \  \   \_\
-           |__|_|  |_|__\
+      _                 _                
+     | |               | |               
+  ___| | ___  _   _  __| | ___ _ __ __ _ 
+ / __| |/ _ \| | | |/ _` |/ _ \ '__/ _` |
+| (__| | (_) | |_| | (_| |  __/ | | (_| |
+ \___|_|\___/ \__,_|\__,_|\___|_|  \__,_|
 =================================================
 EOF
-  helper_desc >> /etc/motd
-  echo >> /etc/motd
+    helper_desc >> /etc/motd
+    echo >> /etc/motd
+  else
+    debug "motd already exists";
+  fi
 }
 
 create_motd_login() {
@@ -29,7 +34,7 @@ create_motd_login() {
   cat > /etc/motd-login <<EOF
 Please login with one of the following username rather than the user "root":
 
-$(printf '  %-24s : %s\n' $OS_USER  'Reach the host running the ambari')
+$(printf '  %-24s : %s\n' $OS_USER  'Reach the host running the cloudera manager')
 $(helper_desc)
 
 EOF
