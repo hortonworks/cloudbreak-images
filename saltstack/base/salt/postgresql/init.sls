@@ -76,13 +76,6 @@ install-postgres:
       - postgresql96-devel
       - postgresql-jdbc
       - postgresql96
-{% endif %}
-
-/usr/bin/initdb:
-  file.symlink:
-    - mode: 755
-    - target: /usr/pgsql-9.6/bin/initdb
-    - force: True
 
 {% if  pillar['OS'] != 'amazonlinux2' %}
 /etc/init.d/postgresql:
@@ -90,6 +83,13 @@ install-postgres:
       - target: /etc/init.d/postgresql-9.6
       - force: True
 {% endif %}
+{% endif %}
+
+/usr/bin/initdb:
+  file.symlink:
+    - mode: 755
+    - target: /usr/pgsql-9.6/bin/initdb
+    - force: True
 
 {% if  pillar['OS'] == 'amazonlinux2' or ( grains['os_family'] == 'RedHat' and grains['osmajorrelease'] | int == 7 ) %}
 /var/lib/pgsql/data:
