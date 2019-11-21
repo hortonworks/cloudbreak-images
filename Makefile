@@ -94,14 +94,14 @@ North Central US:sequenceiqorthcentralus2,\
 East US 2:sequenceiqeastus22,\
 Japan East:sequenceiqjapaneast2,\
 Japan West:sequenceiqjapanwest2,\
-South East Asia:sequenceiqsoutheastasia2,\
+Southeast Asia:sequenceiqsoutheastasia2,\
 West US:sequenceiqwestus2,\
 West Europe:sequenceiqwesteurope2,\
 Brazil South:sequenceiqbrazilsouth2,\
 Canada East:sequenceiqcanadaeast,\
 Canada Central:sequenceiqcanadacentral,\
 Australia East:hwxaustraliaeast,\
-Australia South East:hwxaustralisoutheast,\
+Australia Southeast:hwxaustralisoutheast,\
 Central India:hwxcentralindia,\
 Korea Central:hwxkoreacentral,\
 Korea South:hwxkoreasouth,\
@@ -111,6 +111,9 @@ West Central US:hwxwestcentralus,\
 UK West:hwxwestuk,\
 West US 2:hwxwestus2,\
 West India:hwxwestindia,\
+Australia Central:hwxaustraliacentral,\
+UAE North:hwxuaenorth,\
+South Africa North:hwxsouthafricanorth,\
 France Central:hwxfrancecentral
 endef
 
@@ -200,7 +203,7 @@ build-aws-ubuntu16:
 
 build-aws-centos7: export IMAGE_NAME := $(IMAGE_NAME)
 
-build-aws-centos7: build-aws-centos7-base 
+build-aws-centos7: build-aws-centos7-base
 	$(ENVS) \
 	AWS_AMI_REGIONS="$(AWS_AMI_REGIONS)" \
 	./scripts/sparseimage/packer.sh build -force $(PACKER_OPTS)
