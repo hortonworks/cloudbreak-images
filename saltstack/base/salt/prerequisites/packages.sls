@@ -30,6 +30,7 @@ packages_install:
       - ruby
   {% if grains['os_family'] == 'RedHat' %}
       - snappy
+      - cloud-utils-growpart
     {% if pillar['OS'] != 'redhat7' %}
       - snappy-devel
     {% endif %}
@@ -43,6 +44,18 @@ packages_install:
   {% endif %}
       - deltarpm
       - nvme-cli
+      - openssl
+  {% if pillar['OS'] in ('centos7', 'centos6', 'redhat7') %}
+      - vim-common
+  {% else %}
+      - vim
+  {% endif %}
+  {% if grains['os_family'] != 'Suse' and grains['osmajorrelease'] |int != 12 %}
+      - autossh
+  {% endif %}
+      - ipa-client
+      - openldap
+      - openldap-clients
 
 {% if grains['os_family'] == 'Suse' %}
 remove_snappy:

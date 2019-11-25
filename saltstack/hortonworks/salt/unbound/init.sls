@@ -25,6 +25,17 @@ install_pyhton26:
   {% endif %}      
 {% endif %}
 
+{% if grains['os'] == 'Ubuntu' and grains['osmajorrelease'] | int == 18 %}
+enable_ipv6:
+  sysctl.present:
+    - value: 0
+    - names:
+      - net.ipv6.conf.default.disable_ipv6
+      - net.ipv6.conf.all.disable_ipv6
+      - net.ipv6.conf.lo.disable_ipv6
+      - net.ipv6.conf.{{ pillar['network_interface'] }}.disable_ipv6
+{% endif %}
+
 install_unbound_server:
   pkg.installed:
     {% if grains['os'] == 'Amazon' %}
@@ -111,6 +122,17 @@ config_unbound_upstart:
       - salt://{{ slspath }}/etc/init/unbound.conf
     - mode: 644
 
+{% endif %}
+
+{% if grains['os'] == 'Ubuntu' and grains['osmajorrelease'] | int == 18 %}
+disable_ipv6:
+    sysctl.present:
+      - value: 1
+      - names:
+        - net.ipv6.conf.default.disable_ipv6
+        - net.ipv6.conf.all.disable_ipv6
+        - net.ipv6.conf.lo.disable_ipv6
+        - net.ipv6.conf.{{ pillar['network_interface'] }}.disable_ipv6
 {% endif %}
 
 enable_unbound:

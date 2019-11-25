@@ -1,4 +1,4 @@
-FROM registry.eng.hortonworks.com/hortonworks/base-centos7.6:0.1.0.0-84
+FROM registry.eng.hortonworks.com/hortonworks/base-centos7.6:0.1.0.0-88
 
 ARG SALT_VERSION
 ARG SALT_PATH
@@ -7,8 +7,12 @@ ARG PYTHON_APT_VERSION
 ARG TRACE
 ARG OS
 ARG OS_TYPE
+ARG PRE_WARM_PARCELS
+ARG PRE_WARM_CSD
 
 ENV SYSTEMCTL_REPLACEMENT=https://raw.githubusercontent.com/hortonworks/docker-systemctl-replacement/3a885817b377f0307bd03d82323fa5749136de8f/files/docker/systemctl.py
+ENV PRE_WARM_PARCELS=${PRE_WARM_PARCELS}
+ENV PRE_WARM_CSD=${PRE_WARM_CSD}
 
 #################################################################################
 # Install Cloudbreak dependencies
@@ -45,6 +49,20 @@ ADD ${SYSTEMCTL_REPLACEMENT} /usr/bin
 RUN chmod 755 /usr/bin/$(basename ${SYSTEMCTL_REPLACEMENT}) && \
     mv /usr/bin/systemctl /usr/bin/systemctl.orig && \
     ln -sf /usr/bin/systemctl.py /usr/bin/systemctl
+
+ARG PARCELS_NAME
+ARG STACK_REPOSITORY_VERSION
+ARG STACK_TYPE
+ARG CLUSTERMANAGER_VERSION
+ARG CLUSTERMANAGER_BASEURL
+ARG CLUSTERMANAGER_GPGKEY
+
+ENV PARCELS_NAME=${PARCELS_NAME}
+ENV STACK_REPOSITORY_VERSION=${STACK_REPOSITORY_VERSION}
+ENV STACK_TYPE=${STACK_TYPE}
+ENV CLUSTERMANAGER_VERSION=${CLUSTERMANAGER_VERSION}
+ENV CLUSTERMANAGER_BASEURL=${CLUSTERMANAGER_BASEURL}
+ENV CLUSTERMANAGER_GPGKEY=${CLUSTERMANAGER_GPGKEY}
 
 RUN /tmp/saltstack/salt-setup.sh hortonworks
 RUN rm -f /etc/salt/minion_id /etc/salt/pki/minion/minion.pem /etc/salt/pki/minion/minion.pub

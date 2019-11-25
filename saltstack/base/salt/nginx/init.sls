@@ -13,6 +13,7 @@ install_nginx:
 /etc/nginx/sites-enabled/ssl-template:
   file.managed:
     - name: /etc/nginx/sites-enabled/ssl-template
+    - template: jinja
     - makedirs: True
     - source: salt://{{ slspath }}/etc/nginx/ssl.conf
 

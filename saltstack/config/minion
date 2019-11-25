@@ -12,6 +12,8 @@ pillar_roots:
     - /srv/pillar/optional
   final:
     - /srv/pillar/final
+  freeipa:
+    - /srv/pillar/freeipa
 
 file_roots:
   base:
@@ -22,3 +24,5 @@ file_roots:
     - /srv/salt/optional
   final:
     - /srv/salt/final
+  freeipa:
+    - /srv/salt/freeipa 

@@ -4,4 +4,3 @@ include:
   - {{ slspath }}.jmx-exporter
   - {{ slspath }}.node-exporter
   - {{ slspath }}.prometheus
-  - {{ slspath }}.service-registration

@@ -14,31 +14,46 @@ function install_salt_with_pip() {
 }
 
 function install_with_apt() {
+  export DEBIAN_FRONTEND=noninteractive
   apt-get update
   apt-get install -y apt-transport-https python-pip python-dev build-essential
   install_salt_with_pip
   # apt-mark hold salt zeromq zeromq-devel
   install_python_apt_into_virtualenv
   create_temp_minion_config
+  if [ "${OS_TYPE}" == "ubuntu14" ]; then
+    install_nvme-cli
+  fi
 }
 
 function install_python_apt_into_virtualenv() {
   source ${SALT_PATH}/bin/activate
   if ! [ -x "$(command -v git)" ]; then
     echo 'git is not installed.'
-    apt install -y git-all
+    apt install -y git
   fi
-  git clone git://git.launchpad.net/python-apt /opt/python-apt
-  cd /opt/python-apt
-  git checkout tags/${PYTHON_APT_VERSION} -b ${PYTHON_APT_VERSION}
-  apt -y build-dep ./
-  python setup.py install
+
+  # first install build requirements / dependencies
+  if [ "${OS_TYPE}" == "ubuntu18" ] || [ "${OS_TYPE}" == "ubuntu16" ]; then
+    sed -i 's/^# deb-src/deb-src/g' /etc/apt/sources.list
+    apt-get update
+  fi
+  apt-get -y build-dep python-apt
+
+  pip install git+https://git.launchpad.net/python-apt@${PYTHON_APT_VERSION}
+
   deactivate
+}
+
+function install_nvme-cli () {
+  add-apt-repository -y ppa:sbates
+  apt-get update -y
+  apt-get install -y nvme-cli
 }
 
 function install_with_yum() {
   yum update -y python
-  yum install -y yum-utils
+  yum install -y yum-utils yum-plugin-versionlock
   yum clean metadata
   enable_epel_repository
   yum groupinstall -y 'Development Tools'
@@ -82,7 +97,8 @@ function install_with_zypper() {
     sleep 5
   done
   zypper --gpg-auto-import-keys refresh
-  if [[ "x${SLES_REGISTRATION_CODE}" != "x" ]] && ! SUSEConnect -s | grep -q \"Registered\"; then
+  if [[ -n "${SLES_REGISTRATION_CODE}" ]] && ! SUSEConnect -s | grep -q \"Registered\"; then
+    echo "SLES_REGISTRATION_CODE="$SLES_REGISTRATION_CODE
     SUSEConnect --regcode $SLES_REGISTRATION_CODE
   fi
   if ! SUSEConnect -s | grep -q \"sle-sdk\"; then
