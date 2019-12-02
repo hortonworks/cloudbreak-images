@@ -173,7 +173,7 @@ main() {
     if [[ "$CLOUD_PLATFORM" == "AWS" ]]; then
       INSTANCE_ID="`wget -q -O - http://169.254.169.254/latest/meta-data/instance-id`"
     elif [[ "$CLOUD_PLATFORM" == "AZURE" ]]; then
-      INSTANCE_ID="`wget -q -O - --header="Metadata: true" http://169.254.169.254/metadata/instance/compute/vmId?api-version=2017-08-01&format=text`"
+      INSTANCE_ID="`wget -q -O - --header="Metadata: true" 'http://169.254.169.254/metadata/instance/compute/name?api-version=2017-08-01&format=text'`"
     fi
 
     if [[ "$IS_CCM_ENABLED" == "true" ]]; then
