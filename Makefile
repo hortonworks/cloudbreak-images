@@ -114,7 +114,9 @@ West India:hwxwestindia,\
 Australia Central:hwxaustraliacentral,\
 UAE North:hwxuaenorth,\
 South Africa North:hwxsouthafricanorth,\
-France Central:hwxfrancecentral
+France Central:hwxfrancecentral,\
+Switzerland North:hwxswitzerlandnorth,\
+Switzerland West:hwxswitzerlandwest
 endef
 
 GCP_STORAGE_BUNDLE ?= "sequenceiqimage"
