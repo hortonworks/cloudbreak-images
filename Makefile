@@ -113,10 +113,16 @@ West US 2:hwxwestus2,\
 West India:hwxwestindia,\
 Australia Central:hwxaustraliacentral,\
 UAE North:hwxuaenorth,\
+UAE Central:hwxuaecentral,\
 South Africa North:hwxsouthafricanorth,\
+South Africa West:hwxsouthafricawest,\
 France Central:hwxfrancecentral,\
 Switzerland North:hwxswitzerlandnorth,\
-Switzerland West:hwxswitzerlandwest
+Switzerland West:hwxswitzerlandwest,\
+Germany North :hwxgermanynorth,\
+Germany West Central:hwxgermanywestcentral,\
+Norway West:hwxnorwaywest,\
+Norway East:hwxnorwayeast
 endef
 
 GCP_STORAGE_BUNDLE ?= "sequenceiqimage"
