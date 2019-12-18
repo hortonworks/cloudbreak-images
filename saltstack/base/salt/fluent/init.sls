@@ -2,6 +2,7 @@
 {% set cloudera_public_gem_repo = 'https://repository.cloudera.com/cloudera/api/gems/cloudera-gems/' %}
 {% set cloudera_azure_plugin_version = '1.0.1' %}
 {% set cloudera_databus_plugin_version = '1.0.3' %}
+{% set cloudera_azure_gen2_plugin_version = '0.1.1' %}
 
 {% if os.startswith("centos") or os.startswith("redhat") %}
 install_fluentd_yum:
