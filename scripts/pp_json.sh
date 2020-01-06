@@ -6,7 +6,7 @@ if [ -f package-versions.json -a "$stack_version" != "" -a "$clustermanager_vers
 	apk update && apk add jq
 	cat package-versions.json
 	if [ "$stack_type" == "CDH" ]; then
-		cat package-versions.json | jq --arg stack_version $stack_version --arg clustermanager_version $clustermanager_version --arg cm_build_number $cm_build_number --arg stack_build_number $stack_build_number '. += {"stack" : $stack_version,  "cm" : $clustermanager_version,  "cm-build-number" : $cm_build_number,  "cdh-build-number" : $stack_build_number}' > package-versions-tmp.json && mv package-versions-tmp.json package-versions.json
+		cat package-versions.json | jq --arg stack_version $stack_version --arg clustermanager_version $clustermanager_version --arg cfm_build_number $cfm_build_number --arg csp_build_number $csp_build_number --arg cm_build_number $cm_build_number --arg stack_build_number $stack_build_number '. += {"stack" : $stack_version,  "cm" : $clustermanager_version,  "cm-build-number" : $cm_build_number,  "cdh-build-number" : $stack_build_number, "cfm" : $cfm_build_number, "csp" : $csp_build_number}' > package-versions-tmp.json && mv package-versions-tmp.json package-versions.json
 	else
 		cat package-versions.json | jq --arg stack_version $stack_version --arg clustermanager_version $clustermanager_version '. += {"stack" : $stack_version,  "ambari" : $clustermanager_version}' > package-versions-tmp.json && mv package-versions-tmp.json package-versions.json
 	fi
