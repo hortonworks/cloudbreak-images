@@ -64,6 +64,9 @@ ENV CLUSTERMANAGER_VERSION=${CLUSTERMANAGER_VERSION}
 ENV CLUSTERMANAGER_BASEURL=${CLUSTERMANAGER_BASEURL}
 ENV CLUSTERMANAGER_GPGKEY=${CLUSTERMANAGER_GPGKEY}
 
+#we build logic on the existance of this directory, please DO NOT REMOVE
+RUN mkdir /yarn-private
+
 RUN /tmp/saltstack/salt-setup.sh hortonworks
 RUN rm -f /etc/salt/minion_id /etc/salt/pki/minion/minion.pem /etc/salt/pki/minion/minion.pub
 
