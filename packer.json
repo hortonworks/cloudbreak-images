@@ -81,7 +81,9 @@
     "vpc_id": "{{ env `VPC_ID` }}",
     "base_ami_id": "{{ env `BASE_AMI_ID` }}",
     "cm_build_number": "{{ env `CM_BUILD_NUMBER` }}",
-    "stack_build_number": "{{ env `STACK_BUILD_NUMBER` }}"
+    "stack_build_number": "{{ env `STACK_BUILD_NUMBER` }}",
+    "cfm_build_number": "{{ env `CFM_BUILD_NUMBER` }}",
+    "csp_build_number": "{{ env `CSP_BUILD_NUMBER` }}"
   },
   "builders": [
     {
