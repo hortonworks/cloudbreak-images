@@ -17,6 +17,11 @@ AZURE_IMAGE_OFFER ?= CentOS
 AZURE_IMAGE_SKU ?= 7.6
 ARM_BUILD_REGION ?= northeurope
 
+DOCKER_REPOSITORY ?= registry.eng.hortonworks.com
+DOCKER_REPO_USERNAME ?= ""
+DOCKER_REPO_PASSWORD ?= ""
+
+
 ###############################
 # DO NOT EDIT BELOW THIS LINE #
 ###############################
@@ -387,7 +392,12 @@ docker-build-ubuntu16:
 docker-build:
 	$(eval DOCKER_ENVS="OS=$(OS) OS_TYPE=$(OS_TYPE) SALT_VERSION=$(SALT_VERSION) SALT_PATH=$(SALT_PATH) PYZMQ_VERSION=$(PYZMQ_VERSION) PYTHON_APT_VERSION=$(PYTHON_APT_VERSION) TRACE=1")
 	$(eval DOCKER_BUILD_ARGS=$(shell echo ${DOCKER_ENVS} | xargs -n 1 echo "--build-arg " | xargs))
-	docker build $(DOCKER_BUILD_ARGS) -t registry.eng.hortonworks.com/cloudbreak/${TAG}:$(shell date +%Y-%m-%d) -f docker/${DIR}/Dockerfile .
+	$(eval IMAGE_NAME=cloudbreak/${TAG}:$(shell date +%Y-%m-%d-%H-%M-%S))
+	docker build $(DOCKER_BUILD_ARGS) -t $(DOCKER_REPOSITORY)/${IMAGE_NAME} -f docker/${DIR}/Dockerfile .
+	make IMAGE_NAME=${IMAGE_NAME} push-docker-image-to-hwx-registry
+
+push-docker-image-to-hwx-registry:
+	docker login --username=$(DOCKER_REPO_USERNAME) --password=$(DOCKER_REPO_PASSWORD) $(DOCKER_REPOSITORY) && docker push $(DOCKER_REPOSITORY)/${IMAGE_NAME}
 
 build-in-docker:
 	docker run -it \

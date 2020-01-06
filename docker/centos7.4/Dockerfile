@@ -46,6 +46,9 @@ RUN chmod 755 /usr/bin/$(basename ${SYSTEMCTL_REPLACEMENT}) && \
     mv /usr/bin/systemctl /usr/bin/systemctl.orig && \
     ln -sf /usr/bin/systemctl.py /usr/bin/systemctl
 
+#we build logic on the existance of this directory, please DO NOT REMOVE
+RUN mkdir /yarn-private
+
 RUN /tmp/saltstack/salt-setup.sh hortonworks
 RUN rm -f /etc/salt/minion_id /etc/salt/pki/minion/minion.pem /etc/salt/pki/minion/minion.pub
 
