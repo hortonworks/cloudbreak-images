@@ -83,7 +83,8 @@
     "cm_build_number": "{{ env `CM_BUILD_NUMBER` }}",
     "stack_build_number": "{{ env `STACK_BUILD_NUMBER` }}",
     "cfm_build_number": "{{ env `CFM_BUILD_NUMBER` }}",
-    "csp_build_number": "{{ env `CSP_BUILD_NUMBER` }}"
+    "csp_build_number": "{{ env `CSP_BUILD_NUMBER` }}",
+    "profiler_build_number": "{{ env `PROFILER_BUILD_NUMBER` }}"
   },
   "builders": [
     {

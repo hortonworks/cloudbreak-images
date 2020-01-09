@@ -140,6 +140,7 @@ packer_in_container() {
     -e STACK_BUILD_NUMBER="$STACK_BUILD_NUMBER" \
     -e CSP_BUILD_NUMBER="$CSP_BUILD_NUMBER" \
     -e CFM_BUILD_NUMBER="$CFM_BUILD_NUMBER" \
+    -e PROFILER_BUILD_NUMBER="$PROFILER_BUILD_NUMBER" \
     -v /var/run/docker.sock:/var/run/docker.sock \
     -v $PWD:$PWD \
     -w $PWD \
