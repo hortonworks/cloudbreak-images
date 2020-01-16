@@ -11,7 +11,7 @@ install_prometheus:
 install_jmx_javaagent_exporter:
   file.managed:
     - name: /opt/jmx_javaagent.jar
-    - source: http://central.maven.org/maven2/io/prometheus/jmx/jmx_prometheus_javaagent/0.2.0/jmx_prometheus_javaagent-0.2.0.jar
+    - source: https://repo1.maven.org/maven2/io/prometheus/jmx/jmx_prometheus_javaagent/0.2.0/jmx_prometheus_javaagent-0.2.0.jar
     - source_hash: md5=5aed7dd0f6ed8bdf62a303db5d18410d
     - if_missing: /opt/jmx_javaagent.jar
 
