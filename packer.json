@@ -55,7 +55,7 @@
     "salt_version": "{{ env `SALT_VERSION` }}",
     "salt_path": "{{ env `SALT_PATH` }}",
     "pyzmq_version": "{{ env `PYZMQ_VERSION` }}",
-    "aws_instance_type": "t2.2xlarge",
+    "aws_instance_type": "t3.2xlarge",
     "aws_ami_regions": "{{ env `AWS_AMI_REGIONS` }}",
     "aws_instance_profile": "{{ env `AWS_INSTANCE_PROFILE` }}",
     "custom_image_type": "{{ env `CUSTOM_IMAGE_TYPE` }}",
