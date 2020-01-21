@@ -141,6 +141,10 @@ COPY docker/common/_grains/ /tmp/saltstack/base/salt/_grains/
 COPY docker/common/_grains/ /tmp/saltstack/hortonworks/salt/_grains/
 
 RUN /tmp/saltstack/salt-install.sh centos ${SALT_REPO}
+
+#we build logic on the existance of this directory, please DO NOT REMOVE
+RUN mkdir /yarn-private
+
 RUN /tmp/saltstack/salt-setup.sh hortonworks
 RUN rm -f /etc/salt/minion_id /etc/salt/pki/minion/minion.pem /etc/salt/pki/minion/minion.pub
 

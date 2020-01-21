@@ -108,9 +108,16 @@ systemd-link:
     - repl: "[Install]\nAlias=postgresql.service"
     - unless: cat /usr/lib/systemd/system/postgresql-9.6.service | grep postgresql.service
 
+
+{% if salt['file.directory_exists']('/yarn-private') %}  # systemctl reenable does not work on ycloud so we create the symlink manually
+create-postgres-service-link:
+  cmd.run:
+    - name: ln -sf /usr/lib/systemd/system/postgresql-9.6.service /usr/lib/systemd/system/postgresql.service && systemctl disable postgresql-9.6 && systemctl enable postgresql
+{% else %}
 reenable-postgres:
   cmd.run:
     - name: systemctl reenable postgresql-9.6.service
+{% endif %}
 
 {% elif pillar['OS'] == 'debian9' or ( grains['os_family'] == 'Debian' and grains['osmajorrelease'] | int in ( 8, 9, 16, 18 ) )  %}
   cmd.run:

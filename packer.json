@@ -81,7 +81,10 @@
     "vpc_id": "{{ env `VPC_ID` }}",
     "base_ami_id": "{{ env `BASE_AMI_ID` }}",
     "cm_build_number": "{{ env `CM_BUILD_NUMBER` }}",
-    "stack_build_number": "{{ env `STACK_BUILD_NUMBER` }}"
+    "stack_build_number": "{{ env `STACK_BUILD_NUMBER` }}",
+    "cfm_build_number": "{{ env `CFM_BUILD_NUMBER` }}",
+    "csp_build_number": "{{ env `CSP_BUILD_NUMBER` }}",
+    "profiler_build_number": "{{ env `PROFILER_BUILD_NUMBER` }}"
   },
   "builders": [
     {
@@ -883,7 +886,10 @@
         "pre_warm_parcels={{ user `pre_warm_parcels` }}",
         "pre_warm_csd={{ user `pre_warm_csd` }}",
         "cm_build_number={{ user `cm_build_number` }}",
-        "stack_build_number={{ user `stack_build_number` }}"
+        "stack_build_number={{ user `stack_build_number` }}",
+        "cfm_build_number={{ user `cfm_build_number` }}",
+        "csp_build_number={{ user `csp_build_number` }}",
+        "profiler_build_number={{ user `profiler_build_number` }}"
       ]
     }
   ]

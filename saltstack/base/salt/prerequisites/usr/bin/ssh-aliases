@@ -8,9 +8,11 @@ debug() {
 
 create_motd() {
   debug "create_motd()"
+  FILENAME=/etc/motd
+  SIZE=$(du -sb $FILENAME | awk '{ print $1}')
+
+  if [ "$SIZE" -eq 0 ]; then
   cat > /etc/motd <<"EOF"
-cat /etc/motd
-      _                 _                
      | |               | |               
   ___| | ___  _   _  __| | ___ _ __ __ _ 
  / __| |/ _ \| | | |/ _` |/ _ \ '__/ _` |
@@ -20,6 +22,9 @@ cat /etc/motd
 EOF
   helper_desc >> /etc/motd
   echo >> /etc/motd
+  else
+    debug "motd already exists";
+  fi
 }
 
 create_motd_login() {
