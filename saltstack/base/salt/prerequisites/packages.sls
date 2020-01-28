@@ -78,3 +78,8 @@ install_bash_completion:
       - bash-completion
 {% endif %}
 
+{% if grains['os_family'] == 'RedHat' %}
+install-psycopg2:
+  cmd.run:
+    - name: pip install psycopg2==2.7.5 --ignore-installed
+{% endif %}
