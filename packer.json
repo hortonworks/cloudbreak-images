@@ -84,7 +84,8 @@
     "stack_build_number": "{{ env `STACK_BUILD_NUMBER` }}",
     "cfm_build_number": "{{ env `CFM_BUILD_NUMBER` }}",
     "csp_build_number": "{{ env `CSP_BUILD_NUMBER` }}",
-    "profiler_build_number": "{{ env `PROFILER_BUILD_NUMBER` }}"
+    "profiler_build_number": "{{ env `PROFILER_BUILD_NUMBER` }}",
+    "metadata_filename_postfix": "{{ env `METADATA_FILENAME_POSTFIX` }}"
   },
   "builders": [
     {
@@ -840,7 +841,7 @@
   "post-processors": [
     {
       "type": "manifest",
-      "output": "{{ user `image_name` }}_manifest.json"
+      "output": "{{ user `image_name` }}_{{ user `metadata_filename_postfix` }}_manifest.json"
     },
     {
       "type": "shell-local",
@@ -889,7 +890,8 @@
         "stack_build_number={{ user `stack_build_number` }}",
         "cfm_build_number={{ user `cfm_build_number` }}",
         "csp_build_number={{ user `csp_build_number` }}",
-        "profiler_build_number={{ user `profiler_build_number` }}"
+        "profiler_build_number={{ user `profiler_build_number` }}",
+        "metadata_filename_postfix={{ user `metadata_filename_postfix` }}"
       ]
     }
   ]
