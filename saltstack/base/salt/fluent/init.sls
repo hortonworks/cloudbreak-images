@@ -3,6 +3,7 @@
 {% set cloudera_azure_plugin_version = '1.0.1' %}
 {% set cloudera_azure_gen2_plugin_version = '0.2.4' %}
 {% set cloudera_databus_plugin_version = '1.0.3' %}
+{% set redaction_plugin_version = '0.1.1' %}
 
 {% if os.startswith("centos") or os.startswith("redhat") %}
 install_fluentd_yum:
@@ -62,7 +63,8 @@ install_fluentd_plugins:
   cmd.run:
     - names:
       - /opt/td-agent/embedded/bin/fluent-gem source -a {{ cloudera_public_gem_repo }}
-      - /opt/td-agent/embedded/bin/fluent-gem install fluent-plugin-cloudwatch-logs fluent-plugin-detect-exceptions
+      - /opt/td-agent/embedded/bin/fluent-gem install fluent-plugin-cloudwatch-logs fluent-plugin-detect-exceptions 
+      - /opt/td-agent/embedded/bin/fluent-gem install fluent-plugin-redaction -v {{ redaction_plugin_version }}
       - /opt/td-agent/embedded/bin/fluent-gem install fluent-plugin-databus -v {{ cloudera_databus_plugin_version }}
       - /opt/td-agent/embedded/bin/fluent-gem install fluent-plugin-azurestorage -v {{ cloudera_azure_plugin_version }} -s {{ cloudera_public_gem_repo }}
       - /opt/td-agent/embedded/bin/fluent-gem install fluent-plugin-azurestorage-gen2 -v {{ cloudera_azure_gen2_plugin_version }}
