@@ -99,7 +99,7 @@ North Central US:sequenceiqorthcentralus2,\
 East US 2:sequenceiqeastus22,\
 Japan East:sequenceiqjapaneast2,\
 Japan West:sequenceiqjapanwest2,\
-Southeast Asia:sequenceiqsoutheastasia2,\
+South East Asia:sequenceiqsoutheastasia2,\
 West US:sequenceiqwestus2,\
 West Europe:sequenceiqwesteurope2,\
 Brazil South:sequenceiqbrazilsouth2,\
