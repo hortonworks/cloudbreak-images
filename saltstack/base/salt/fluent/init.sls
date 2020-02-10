@@ -3,7 +3,7 @@
 {% set cloudera_azure_plugin_version = '1.0.1' %}
 {% set cloudera_azure_gen2_plugin_version = '0.2.4' %}
 {% set cloudera_databus_plugin_version = '1.0.3' %}
-{% set redaction_plugin_version = '0.1.1' %}
+{% set redaction_plugin_version = '0.1.2' %}
 
 {% if os.startswith("centos") or os.startswith("redhat") %}
 install_fluentd_yum:
