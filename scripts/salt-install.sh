@@ -6,6 +6,7 @@
 set -e -o pipefail -o errexit
 
 function install_salt_with_pip() {
+  pip install --upgrade pip
   pip install virtualenv
   mkdir ${SALT_PATH}
   virtualenv ${SALT_PATH}
