@@ -4,6 +4,14 @@
       + 'cdp-hashed-pwd-' + freeipa_plugin_version
       + '.x86_64.rpm' %}
 
+disable_postfix:
+  service.disabled:
+    - name: postfix
+
+disable_postgres:
+  service.disabled:
+    - name: postgresql
+
 freeipa-install:
   pkg.installed:
     - pkgs:
