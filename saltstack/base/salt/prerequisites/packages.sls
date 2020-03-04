@@ -56,6 +56,28 @@ packages_install:
       - ipa-client
       - openldap
       - openldap-clients
+      - awscli
+
+download_azcopy:
+  archive.extracted:
+    - name: /tmp/azcopy
+    - source:  https://aka.ms/downloadazcopy-v10-linux
+    - archive_format: tar
+    - skip_verify: true
+    - options: "--strip 1"
+    - enforce_toplevel: false
+
+/usr/local/bin/azcopy:
+  file.managed:
+    - source: /tmp/azcopy/azcopy
+    - user: root
+    - group: root
+    - mode: 755
+
+remove_azcopy_extract:
+  file.directory:
+    - name: /tmp/azcopy
+    - clean: True
 
 {% if grains['os_family'] == 'Suse' %}
 remove_snappy:
