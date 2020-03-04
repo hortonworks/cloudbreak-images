@@ -47,6 +47,10 @@ packer_in_container() {
     jq 'del(."post-processors")' packer.json > packer_no_pp.json
     packerFile="packer_no_pp.json"
   fi
+  
+  if [[ "$CLUSTERMANAGER_BASEURL" =~ "@" ]]; then
+    PAYWALL_CREDENTIAL=$(echo "$CLUSTERMANAGER_BASEURL" | sed -e 's/.*:\/\/\(.*\)@.*/\1/')
+  fi
 
   [[ "$TRACE" ]] && set -x
   ${DRY_RUN:+echo ===} docker run -i $TTY_OPTS --rm \
@@ -142,6 +146,7 @@ packer_in_container() {
     -e CFM_BUILD_NUMBER="$CFM_BUILD_NUMBER" \
     -e PROFILER_BUILD_NUMBER="$PROFILER_BUILD_NUMBER" \
     -e METADATA_FILENAME_POSTFIX="$METADATA_FILENAME_POSTFIX" \
+    -e PAYWALL_CREDENTIAL="$PAYWALL_CREDENTIAL" \
     -v /var/run/docker.sock:/var/run/docker.sock \
     -v $PWD:$PWD \
     -w $PWD \

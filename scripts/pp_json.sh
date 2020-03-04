@@ -61,6 +61,7 @@ cat  > ${image_name}_$metadata_filename_postfix.json <<EOF
 "hdp_repository_version": "${stack_repository_version}",
 "cdh_repository_version": "${stack_repository_version#*-}",
 "cm_build_number": "${cm_build_number}",
+"paywall_credential": "${paywall_credential}",
 "stack_build_number": "${stack_build_number}",
 "manifest": $(if [ -f ${image_name}_${metadata_filename_postfix}_manifest.json ]; then cat ${image_name}_${metadata_filename_postfix}_manifest.json; else echo "{}"; fi),
 "package_versions": $(if [ -f package-versions.json ]; then cat package-versions.json; else echo "{}"; fi),

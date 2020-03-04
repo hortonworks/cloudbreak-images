@@ -39,7 +39,12 @@ download_cdh_parcel() {
   cd ${PARCELS_ROOT}
 
   echo "Downloading parcel from  ${STACK_BASEURL}/${PARCELS_NAME}"
-  curl --progress-bar -C - -s -S --create-dirs ${STACK_BASEURL}/${PARCELS_NAME} -o /opt/cloudera/parcel-repo/${PARCELS_NAME}
+  if [[ "$PAYWALL_CREDENTIAL" ]]; then
+    curl --progress-bar -C - -s -S --user ${PAYWALL_CREDENTIAL} --create-dirs ${STACK_BASEURL}/${PARCELS_NAME} -o /opt/cloudera/parcel-repo/${PARCELS_NAME}
+  else
+    curl --progress-bar -C - -s -S --create-dirs ${STACK_BASEURL}/${PARCELS_NAME} -o /opt/cloudera/parcel-repo/${PARCELS_NAME}
+  fi
+
   # C5 uses SHA-1 and C6 uses SHA-256
   if  curl -sf "${STACK_BASEURL}/${PARCELS_NAME}.sha1" -o /dev/null; then
     verify_parcel_checksum "sha1"

@@ -12,6 +12,7 @@ install_cdh:
       - OS: {{ pillar['OS'] }}
       - PARCELS_ROOT: {{ pillar['PARCELS_ROOT'] }}
       - PARCELS_NAME: {{ pillar['PARCELS_NAME'] }}
+      - PAYWALL_CREDENTIAL: {{ pillar['PAYWALL_CREDENTIAL'] }}
     - output_loglevel: DEBUG
     - timeout: 9000
     - unless: ls /tmp/install_cdh.status
