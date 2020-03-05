@@ -29,6 +29,16 @@ update_python_pip3:
 
 {% endif %}
 
+install_pyyaml:
+  cmd.run:
+    - name: pip install PyYAML --ignore-installed
+    - unless: pip list | grep -E 'PyYAML'
+
+install_cm_client:
+  cmd.run:
+    - name: pip install cm-client==40.0.3 --ignore-installed
+    - unless: pip list | grep -E 'cm-client.*40.0.3'
+
 install_jq:
   file.managed:
     - name: /usr/bin/jq
