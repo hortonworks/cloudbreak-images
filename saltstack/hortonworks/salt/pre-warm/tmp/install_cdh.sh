@@ -41,9 +41,9 @@ download_cdh_parcel() {
   echo "Downloading parcel from  ${STACK_BASEURL}/${PARCELS_NAME}"
   curl --progress-bar -C - -s -S --create-dirs ${STACK_BASEURL}/${PARCELS_NAME} -o /opt/cloudera/parcel-repo/${PARCELS_NAME}
   # C5 uses SHA-1 and C6 uses SHA-256
-  if  curl -sf "${STACK_BASEURL}/${PARCELS_NAME}.sha1" -o /dev/null; then
+  if  curl -sLf "${STACK_BASEURL}/${PARCELS_NAME}.sha1" -o /dev/null; then
     verify_parcel_checksum "sha1"
-  elif  curl -sf "${STACK_BASEURL}/${PARCELS_NAME}.sha256" -o /dev/null; then
+  elif  curl -sLf "${STACK_BASEURL}/${PARCELS_NAME}.sha256" -o /dev/null; then
     verify_parcel_checksum "sha256"
   else
     echo "Unable to locate sha file."
