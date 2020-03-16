@@ -14,6 +14,7 @@ include:
   - {{ slspath }}.user
   - {{ slspath }}.firewall
   - {{ slspath }}.umask
+  - {{ slspath }}.jinja
 {% if  pillar['OS'].startswith('ubuntu') %}
   - {{ slspath }}.disable-unattended-upgrades
  {% endif %}
