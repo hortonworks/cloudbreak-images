@@ -1,5 +1,5 @@
 {% set freeipa_plugin_base_url = 'https://cloudera-service-delivery-cache.s3.amazonaws.com/cdp-hashed-pwd/workloads/' %}
-{% set freeipa_plugin_version = '1.0-20190917183838gitccdab5a' %}
+{% set freeipa_plugin_version = '1.0-20200319002729gitc964030' %}
 {% set freeipa_plugin_rpm_url = freeipa_plugin_base_url
       + 'cdp-hashed-pwd-' + freeipa_plugin_version
       + '.x86_64.rpm' %}
