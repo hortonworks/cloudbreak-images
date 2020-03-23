@@ -41,6 +41,14 @@ packages_install:
   {% elif grains['os_family'] == 'Debian' %}
       - iptables-persistent
       - dnsutils
+      - sssd
+      - sssd-common
+      - sssd-ipa
+      - sssd-krb5
+      - sssd-proxy
+      - sssd-tools
+      - slapd
+      - ldap-utils
   {% endif %}
       - deltarpm
       - nvme-cli
@@ -53,9 +61,11 @@ packages_install:
   {% if grains['os_family'] != 'Suse' and grains['osmajorrelease'] |int != 12 %}
       - autossh
   {% endif %}
+  {% if grains['os_family'] != 'Debian' %}
       - ipa-client
       - openldap
       - openldap-clients
+  {% endif %}
       - awscli
 
 download_azcopy:

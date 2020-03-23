@@ -3,7 +3,7 @@
 packer_in_container() {
   local dockerOpts=""
   local packerFile="packer.json"
-  PACKER_VERSION="1.4.2"
+  PACKER_VERSION="latest"
 
   if [[ "$GCP_ACCOUNT_FILE" ]]; then
     dockerOpts="$dockerOpts -v $GCP_ACCOUNT_FILE:$GCP_ACCOUNT_FILE"
@@ -85,6 +85,9 @@ packer_in_container() {
     -e OS_PASSWORD=$OS_PASSWORD \
     -e OS_TENANT_NAME="$OS_TENANT_NAME" \
     -e OS_USERNAME=$OS_USERNAME \
+    -e OS_PROJECT_DOMAIN_NAME="$OS_PROJECT_DOMAIN_NAME" \
+    -e OS_PROJECT_DOMAIN_ID="$OS_PROJECT_DOMAIN_ID" \
+    -e OS_USER_DOMAIN_NAME="$OS_PROJECT_DOMAIN_NAME" \
     -e IMAGE_NAME_SUFFIX=$IMAGE_NAME_SUFFIX \
     -e STACK_TYPE=$STACK_TYPE \
     -e MPACK_URLS=$MPACK_URLS \

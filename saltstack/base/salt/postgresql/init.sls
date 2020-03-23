@@ -39,12 +39,20 @@ install-postgres:
 install-postgres:
   pkg.installed:
     - pkgs:
+      {% if grains['osmajorrelease'] | int == 12 and grains['osrelease'] == "12.3" %}
       - postgresql96
-      - postgresql-init
       - postgresql96-server
       - postgresql96-contrib
       - postgresql96-docs
       - postgresql96-devel
+      {% elif grains['osmajorrelease'] | int == 12 and grains['osrelease'] == "12.5" %}
+      - postgresql10
+      - postgresql10-server
+      - postgresql10-contrib
+      - postgresql10-docs
+      - postgresql10-devel
+      {% endif %}
+      - postgresql-init
       - postgresql-jdbc
 {% else %}
 remove-old-postgres:
@@ -123,10 +131,14 @@ reenable-postgres:
   cmd.run:
     - name: echo 'Ubuntu/Debian, it is initialized automatically.'
 
-{% elif pillar['OS'] == 'sles12sp3' or ( grains['os_family'] == 'Suse' and grains['osmajorrelease'] | int == 12 )  %}
+{% elif pillar['OS'] == 'sles12sp3' or ( grains['os_family'] == 'Suse' and grains['osrelease'] == "12.3")  %}
   cmd.run:
     - runas: postgres
     - name: /usr/lib/postgresql96/bin/initdb /var/lib/pgsql/data/
+{% elif pillar['OS'] == 'sles12sp5' or ( grains['os_family'] == 'Suse' and grains['osrelease'] == "12.5" )  %}
+  cmd.run:
+    - runas: postgres
+    - name: /usr/lib/postgresql10/bin/initdb /var/lib/pgsql/data/
 
 {% else %}
 init-pg-database:

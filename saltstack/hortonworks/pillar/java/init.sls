@@ -12,10 +12,11 @@ oracle_java: {{ salt['environ.get']('OPTIONAL_STATES', '') == 'oracle-java' }}
 %}
   {% set openjdk_version = 7 %}
 {% else %}
-  {% set openjdk_version = 8 %}
+  {% set openjdk_version = 11 %}
 {% endif %}
 
 openjdk_version: {{ openjdk_version }}
+
 openjdk_packages:
 {% if grains['os_family'] == 'Debian' %}
   - openjdk-{{ openjdk_version }}-jre-headless

@@ -23,9 +23,16 @@ register_system:
     - name: SUSEConnect -r $SLES_REGISTRATION_CODE
     - unless: '[[ "x${SLES_REGISTRATION_CODE}" != "x" ]] && SUSEConnect -s | grep -q \"Registered\"'
 
+{% if grains['osmajorrelease'] | int == 12 and grains['osrelease'] == "12.3" %}
 register_sle-sdk:
   cmd.run:
     - name: SUSEConnect -p sle-sdk/12.3/x86_64
     - unless: SUSEConnect -s | grep -q \"sle-sdk\"
+{% elif grains['osmajorrelease'] | int == 12 and grains['osrelease'] == "12.5" %}
+register_sle-sdk:
+  cmd.run:
+    - name: SUSEConnect -p sle-sdk/12.5/x86_64
+    - unless: SUSEConnect -s | grep -q \"sle-sdk\"
+{% endif %}
 
 {% endif %}

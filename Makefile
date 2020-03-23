@@ -9,7 +9,7 @@ IMAGE_OWNER ?= "cloudbreak-dev@cloudera.com"
 OPTIONAL_STATES ?= ""
 # only for oracle JDK
 ORACLE_JDK8_URL_RPM ?= ""
-SLES_REGISTRATION_CODE ?= "73D5EBB68CB348"
+SLES_REGISTRATION_CODE ?= "3307C2AEF88638"
 
 # Azure VM image specifications
 AZURE_IMAGE_PUBLISHER ?= OpenLogic
@@ -285,6 +285,14 @@ build-os-sles12sp3:
 	ATLAS_ARTIFACT_TYPE=openstack \
 	SALT_INSTALL_OS=suse \
 	./scripts/packer.sh build -only=os-sles12sp3 $(PACKER_OPTS)
+
+build-os-sles12sp5:
+	$(ENVS) \
+        OS=sles12 \
+        OS_TYPE=sles12 \
+        ATLAS_ARTIFACT_TYPE=openstack \
+        SALT_INSTALL_OS=suse \
+        ./scripts/packer.sh build -only=os-sles12sp5 $(PACKER_OPTS)
 
 build-gc-centos7:
 	$(ENVS) \

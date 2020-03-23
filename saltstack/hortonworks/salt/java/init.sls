@@ -27,6 +27,18 @@ enable_redhat_rhui_repos:
     - repl: 'enabled=1'
 {% endif %}
 
+{% if pillar['openjdk_version'] | int == 11 and grains['os_family'] == 'Debian' and grains['osmajorrelease'] | int == 9 %}
+install_openjdk11:
+  file.managed:
+    - name: /etc/apt/sources.list.d/stretch-backports.list
+    - mode: 755
+    - contents: |
+        deb http://httpredir.debian.org/debian stretch-backports main
+  cmd.run:
+    - names:
+      - apt-get update
+{% endif %}
+
 install_openjdk:
   pkg.installed:
     - pkgs: {{ pillar['openjdk_packages'] }}
