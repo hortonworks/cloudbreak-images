@@ -12,7 +12,11 @@ oracle_java: {{ salt['environ.get']('OPTIONAL_STATES', '') == 'oracle-java' }}
 %}
   {% set openjdk_version = 7 %}
 {% else %}
-  {% set openjdk_version = 8 %}
+  {% if salt['environ.get']('JAVA_VERSION') is defined %}
+    {% set openjdk_version = salt['environ.get']('JAVA_VERSION') %}
+  {% else %}
+    {% set openjdk_version = 8 %}
+  {% endif %}
 {% endif %}
 
 openjdk_version: {{ openjdk_version }}

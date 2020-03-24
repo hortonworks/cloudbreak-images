@@ -18,8 +18,8 @@ AZURE_IMAGE_SKU ?= 7.6
 ARM_BUILD_REGION ?= northeurope
 
 DOCKER_REPOSITORY ?= registry.eng.hortonworks.com
-DOCKER_REPO_USERNAME ?= ""
-DOCKER_REPO_PASSWORD ?= ""
+DOCKER_REPO_USERNAME ?= "ztorok"
+DOCKER_REPO_PASSWORD ?= "JCnvWff6iFSfD5QgYt66"
 
 
 ###############################
@@ -372,34 +372,40 @@ upload-openstack-image:
 	S3_TARGET=$(S3_TARGET) ./scripts/openstack-upload.sh
 
 docker-build-centos7:
-	@ OS=centos7 OS_TYPE=redhat7 TAG=centos-7 DIR=centos7.3 make docker-build
+	@ OS=centos7 OS_TYPE=redhat7 TAG=centos-7 DIR=centos7.3 JAVA_VERSION=8 make docker-build
 
 docker-build-centos74:
 	echo "Building image for ycloud2"
-	@ OS=centos7 OS_TYPE=redhat7 TAG=centos-74 DIR=centos7.4 make docker-build
+	@ OS=centos7 OS_TYPE=redhat7 TAG=centos-74 DIR=centos7.4 JAVA_VERSION=8 make docker-build
 
 docker-build-centos75:
 	echo "Building image for ycloud2"
-	@ OS=centos7 OS_TYPE=redhat7 TAG=centos-75 DIR=centos7.5 make docker-build
+	@ OS=centos7 OS_TYPE=redhat7 TAG=centos-75 DIR=centos7.5 JAVA_VERSION=8 make docker-build
 
 docker-build-centos76:
 	echo "Building image for ycloud2"
-	@ OS=centos7 OS_TYPE=redhat7 TAG=centos-76 DIR=centos7.6 make docker-build
+	@ OS=centos7 OS_TYPE=redhat7 TAG=centos-76 DIR=centos7.6 JAVA_VERSION=8 make docker-build
 
 docker-build-debian9:
-	@ OS=debian9 OS_TYPE=debian9 TAG=debian-9 DIR=debian9 make docker-build
+	@ OS=debian9 OS_TYPE=debian9 TAG=debian-9 DIR=debian9 JAVA_VERSION=8 make docker-build
 
 docker-build-ubuntu16:
-	@ OS=ubuntu16 OS_TYPE=ubuntu16 TAG=ubuntu-16 DIR=ubuntu16 make docker-build
+	@ OS=ubuntu16 OS_TYPE=ubuntu16 TAG=ubuntu-16 DIR=ubuntu16 JAVA_VERSION=8 make docker-build
 
 docker-build-ubuntu18:
-	@ OS=ubuntu18 OS_TYPE=ubuntu18 TAG=ubuntu-18 DIR=ubuntu18 make docker-build
+	@ OS=ubuntu18 OS_TYPE=ubuntu18 TAG=ubuntu-18 DIR=ubuntu18 JAVA_VERSION=8 make docker-build
+
+docker-build-ubuntu16-java-11:
+	@ OS=ubuntu16 OS_TYPE=ubuntu16 TAG=ubuntu-16 DIR=ubuntu16 JAVA_VERSION=11 make docker-build
+
+docker-build-ubuntu18-java-11:
+	@ OS=ubuntu18 OS_TYPE=ubuntu18 TAG=ubuntu-18 DIR=ubuntu18 JAVA_VERSION=11 make docker-build
 
 docker-build:
-	$(eval DOCKER_ENVS="OS=$(OS) OS_TYPE=$(OS_TYPE) SALT_VERSION=$(SALT_VERSION) SALT_PATH=$(SALT_PATH) PYZMQ_VERSION=$(PYZMQ_VERSION) PYTHON_APT_VERSION=$(PYTHON_APT_VERSION) TRACE=1")
+	$(eval DOCKER_ENVS="OS=$(OS) OS_TYPE=$(OS_TYPE) SALT_VERSION=$(SALT_VERSION) SALT_PATH=$(SALT_PATH) PYZMQ_VERSION=$(PYZMQ_VERSION) PYTHON_APT_VERSION=$(PYTHON_APT_VERSION) TRACE=1 JAVA_VERSION=$(JAVA_VERSION)")
 	$(eval DOCKER_BUILD_ARGS=$(shell echo ${DOCKER_ENVS} | xargs -n 1 echo "--build-arg " | xargs))
 	$(eval IMAGE_NAME=dim/${TAG}:$(shell date +%Y-%m-%d-%H-%M-%S))
-	docker build $(DOCKER_BUILD_ARGS) -t $(DOCKER_REPOSITORY)/${IMAGE_NAME} -f docker/${DIR}/Dockerfile .
+	docker build --no-cache $(DOCKER_BUILD_ARGS) -t $(DOCKER_REPOSITORY)/${IMAGE_NAME} -f docker/${DIR}/Dockerfile .
 	make IMAGE_NAME=${IMAGE_NAME} push-docker-image-to-hwx-registry
 
 push-docker-image-to-hwx-registry:
