@@ -405,7 +405,7 @@ docker-build:
 	$(eval DOCKER_ENVS="OS=$(OS) OS_TYPE=$(OS_TYPE) SALT_VERSION=$(SALT_VERSION) SALT_PATH=$(SALT_PATH) PYZMQ_VERSION=$(PYZMQ_VERSION) PYTHON_APT_VERSION=$(PYTHON_APT_VERSION) TRACE=1 JAVA_VERSION=$(JAVA_VERSION)")
 	$(eval DOCKER_BUILD_ARGS=$(shell echo ${DOCKER_ENVS} | xargs -n 1 echo "--build-arg " | xargs))
 	$(eval IMAGE_NAME=dim/${TAG}:$(shell date +%Y-%m-%d-%H-%M-%S))
-	docker build --no-cache $(DOCKER_BUILD_ARGS) -t $(DOCKER_REPOSITORY)/${IMAGE_NAME} -f docker/${DIR}/Dockerfile .
+	docker build $(DOCKER_BUILD_ARGS) -t $(DOCKER_REPOSITORY)/${IMAGE_NAME} -f docker/${DIR}/Dockerfile .
 	make IMAGE_NAME=${IMAGE_NAME} push-docker-image-to-hwx-registry
 
 push-docker-image-to-hwx-registry:
