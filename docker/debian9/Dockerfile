@@ -28,6 +28,7 @@ ARG SYSTEMCTL=https://raw.githubusercontent.com/hortonworks/docker-systemctl-rep
 ENV DEBIAN_FRONTEND noninteractive
 ENV TERM linux
 ENV PS1 "[\u@cloudbreak \W]\$ "
+ENV TAG debian-9
 
 # Set default shell to bash
 SHELL ["/bin/bash", "-c"]

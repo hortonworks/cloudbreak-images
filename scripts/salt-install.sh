@@ -3,7 +3,7 @@
 : ${DEBUG:=1}
 : ${DRY_RUN:-1}
 
-set -e -o pipefail -o errexit
+set -x -e -o pipefail -o errexit
 
 function install_salt_with_pip() {
   pip install --upgrade pip
@@ -38,6 +38,14 @@ function install_python_apt_into_virtualenv() {
   if [ "${OS_TYPE}" == "ubuntu18" ] || [ "${OS_TYPE}" == "ubuntu16" ]; then
     sed -i 's/^# deb-src/deb-src/g' /etc/apt/sources.list
     apt-get update
+  fi
+  if [ "${TAG}" == "debian-9" ]; then
+  cat <<EOT >> /etc/apt/sources.list
+deb-src http://deb.debian.org/debian stretch main contrib non-free
+deb-src http://deb.debian.org/debian-security/ stretch/updates main contrib non-free
+deb-src http://deb.debian.org/debian stretch-updates main contrib non-free
+EOT
+  apt-get update
   fi
   apt-get -y build-dep python-apt
 
