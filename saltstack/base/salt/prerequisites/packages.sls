@@ -53,10 +53,17 @@ packages_install:
   {% if grains['os_family'] != 'Suse' and grains['osmajorrelease'] |int != 12 %}
       - autossh
   {% endif %}
-      - ipa-client
-      - openldap
-      - openldap-clients
+      - freeipa-client
+      - slapd
+      - ldap-utils
+      - libnss-ldap
+      - libpam-ldap
+      - ldap-utils
       - awscli
+    {% if pillar['OS'] in ('ubuntu16', 'ubuntu18') %}
+      - unattended-upgrades
+      - update-notifier-common
+    {% endif %}
 
 download_azcopy:
   archive.extracted:

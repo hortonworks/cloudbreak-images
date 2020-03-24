@@ -25,6 +25,10 @@ function install_with_apt() {
   if [ "${OS_TYPE}" == "ubuntu14" ]; then
     install_nvme-cli
   fi
+  if [ "${OS_TYPE}" == "ubuntu16" ]; then
+    apt-get install -y software-properties-common
+    install_nvme-cli
+  fi
 }
 
 function install_python_apt_into_virtualenv() {
@@ -47,7 +51,9 @@ function install_python_apt_into_virtualenv() {
 }
 
 function install_nvme-cli () {
-  add-apt-repository -y ppa:sbates
+  if [ "${OS_TYPE}" == "ubuntu14" ]; then
+    add-apt-repository -y ppa:sbates
+  fi
   apt-get update -y
   apt-get install -y nvme-cli
 }

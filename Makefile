@@ -218,7 +218,7 @@ build-aws-ubuntu16:
 
 build-aws-centos7: export IMAGE_NAME := $(IMAGE_NAME)
 
-build-aws-centos7: 
+build-aws-centos7:
 	@ METADATA_FILENAME_POSTFIX=$(METADATA_FILENAME_POSTFIX) make build-aws-centos7-base
 	$(ENVS) \
 	AWS_AMI_REGIONS="$(AWS_AMI_REGIONS)" \
@@ -391,6 +391,9 @@ docker-build-debian9:
 
 docker-build-ubuntu16:
 	@ OS=ubuntu16 OS_TYPE=ubuntu16 TAG=ubuntu-16 DIR=ubuntu16 make docker-build
+
+docker-build-ubuntu18:
+	@ OS=ubuntu18 OS_TYPE=ubuntu18 TAG=ubuntu-18 DIR=ubuntu18 make docker-build
 
 docker-build:
 	$(eval DOCKER_ENVS="OS=$(OS) OS_TYPE=$(OS_TYPE) SALT_VERSION=$(SALT_VERSION) SALT_PATH=$(SALT_PATH) PYZMQ_VERSION=$(PYZMQ_VERSION) PYTHON_APT_VERSION=$(PYTHON_APT_VERSION) TRACE=1")
