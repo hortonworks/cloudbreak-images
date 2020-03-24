@@ -1,4 +1,4 @@
-FROM ubuntu:18.04 as builder
+FROM registry.eng.hortonworks.com/hortonworks/base-ubuntu18:0.1.0.0-105 as builder
 
 RUN apt-get update && \
     apt-get install -y --no-install-recommends \
