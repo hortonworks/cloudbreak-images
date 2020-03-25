@@ -2,6 +2,7 @@ FROM registry.eng.hortonworks.com/hortonworks/base-ubuntu18:0.1.0.0-105 as build
 
 RUN apt-get update && \
     apt-get install -y --no-install-recommends \
+        software-properties-common \
         gcc \
         libc6-dev
 
@@ -11,7 +12,12 @@ RUN gcc -Wall -DCOMMAND='"/bootstrap/start-systemd.sh"' -o /systemd-wrapper /src
 
 #####
 
-FROM ubuntu:16.04
+FROM ubuntu:18.04
+
+RUN apt-get update && \
+    apt-get install -y --no-install-recommends \
+        software-properties-common
+RUN add-apt-repository -y ppa:openjdk-r/ppa && apt-get update
 
 ARG SALT_VERSION
 ARG SALT_PATH
@@ -20,6 +26,7 @@ ARG PYTHON_APT_VERSION
 ARG TRACE
 ARG OS
 ARG OS_TYPE
+ARG JAVA_VERSION
 
 LABEL maintainer=Hortonworks
 
@@ -40,7 +47,8 @@ RUN apt-get update && \
         cron \
         curl \
         gnupg2 \
-        initscripts \
+        util-linux \
+        sysvinit-utils \
         iproute2 \
         python-minimal \
         ssh \
@@ -88,8 +96,7 @@ RUN rm /bin/systemctl && \
     dpkg-divert --remove --rename /bin/systemctl
 
 # Fix ssh login and salt-api auth problems
-RUN rm /lib/systemd/system/rmnologin.service && \
-    sed -i 's/#\?DELAYLOGIN=.*/DELAYLOGIN=yes/' /etc/default/rcS
+RUN rm /lib/systemd/system/rmnologin.service
 
 # Ycloud integration
 RUN groupmod -g 99 nogroup && \

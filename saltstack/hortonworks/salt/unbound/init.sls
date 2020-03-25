@@ -22,10 +22,10 @@ install_pyhton26:
       - libpcap
       - python26
       - python26-libs
-  {% endif %}      
+  {% endif %}
 {% endif %}
 
-{% if grains['os'] == 'Ubuntu' and grains['osmajorrelease'] | int == 18 %}
+{% if pillar['subtype'] != 'Docker' and grains['os'] == 'Ubuntu' and grains['osmajorrelease'] | int == 18 %}
 enable_ipv6:
   sysctl.present:
     - value: 0
@@ -124,7 +124,7 @@ config_unbound_upstart:
 
 {% endif %}
 
-{% if grains['os'] == 'Ubuntu' and grains['osmajorrelease'] | int == 18 %}
+{% if pillar['subtype'] != 'Docker' and grains['os'] == 'Ubuntu' and grains['osmajorrelease'] | int == 18 %}
 disable_ipv6:
     sysctl.present:
       - value: 1

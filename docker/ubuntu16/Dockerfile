@@ -2,6 +2,7 @@ FROM registry.eng.hortonworks.com/hortonworks/base-ubuntu16:0.1.0.0-105 as build
 
 RUN apt-get update && \
     apt-get install -y --no-install-recommends \
+        software-properties-common \
         gcc \
         libc6-dev
 
@@ -12,6 +13,11 @@ RUN gcc -Wall -DCOMMAND='"/bootstrap/start-systemd.sh"' -o /systemd-wrapper /src
 #####
 
 FROM ubuntu:16.04
+
+RUN apt-get update && \
+    apt-get install -y --no-install-recommends \
+        software-properties-common
+RUN add-apt-repository -y ppa:openjdk-r/ppa && apt-get update
 
 ARG SALT_VERSION
 ARG SALT_PATH

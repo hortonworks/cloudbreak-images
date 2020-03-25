@@ -21,7 +21,11 @@ packages_install:
       - git
       - tmux
   {% endif %}
+  {% if pillar['OS'] in ('ubuntu18') %}
+      - chrony
+  {% else %}
       - ntp
+  {% endif %}
   {% if grains['os'] != 'Amazon' %}
       - bash-completion
   {% endif %}
