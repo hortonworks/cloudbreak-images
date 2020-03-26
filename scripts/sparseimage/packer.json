@@ -38,6 +38,8 @@
         "associate_public_ip_address": false,
         "force_deregister": "true",
         "force_delete_snapshot": "true",
+        "vpc_id": "{{ user `aws_vpc_id`}}",
+        "subnet_id": "{{ user `aws_subnet_id`}}",
         "tags": {
             "owner": "{{user `owner`}}"
         },
