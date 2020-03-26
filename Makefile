@@ -182,7 +182,7 @@ build-aws-centos6:
 
 build-aws-centos7-base:
 	$(ENVS) \
-	AWS_AMI_REGIONS="eu-west-1" \
+	AWS_AMI_REGIONS="us-west-1" \
 	OS=centos7 \
 	OS_TYPE=redhat7 \
 	ATLAS_ARTIFACT_TYPE=amazon \
