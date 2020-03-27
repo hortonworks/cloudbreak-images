@@ -6,9 +6,12 @@
 set -e -o pipefail -o errexit
 
 function install_salt_with_pip() {
-  pip install --upgrade pip
-  pip install virtualenv
+  # Upgrading pip replaces the system pip, removing /usr/bin/pip and installing
+  # /usr/local/bin/pip in its stead
+  pip install -v --upgrade pip
+  /usr/local/bin/pip install virtualenv
   mkdir ${SALT_PATH}
+  # But virtualenv is installed globally it seems
   virtualenv ${SALT_PATH}
   source ${SALT_PATH}/bin/activate
   pip install -r /tmp/salt_requirements.txt

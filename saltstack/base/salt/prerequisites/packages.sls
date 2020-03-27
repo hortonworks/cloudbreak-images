@@ -30,7 +30,11 @@ packages_install:
       - ruby
   {% if grains['os_family'] == 'RedHat' %}
       - snappy
+    {% if pillar['OS'] == 'amazonlinux' %}
+      - cloud-disk-utils
+    {% else %}
       - cloud-utils-growpart
+    {% endif %}
     {% if pillar['OS'] != 'redhat7' %}
       - snappy-devel
     {% endif %}
@@ -47,16 +51,24 @@ packages_install:
       - openssl
   {% if pillar['OS'] in ('centos7', 'centos6', 'redhat7') %}
       - vim-common
+  {% elif pillar['OS'] == 'amazonlinux' %}
+      - vim-enhanced
   {% else %}
       - vim
   {% endif %}
   {% if grains['os_family'] != 'Suse' and grains['osmajorrelease'] |int != 12 %}
       - autossh
   {% endif %}
+  {% if pillar['OS'] != 'amazonlinux' %}
       - ipa-client
+  {% endif %}
       - openldap
       - openldap-clients
+  {% if pillar['OS'] == 'amazonlinux' %}
+      - aws-cli
+  {% else %}
       - awscli
+  {% endif %}
 
 download_azcopy:
   archive.extracted:
