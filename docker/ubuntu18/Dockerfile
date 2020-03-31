@@ -10,14 +10,8 @@ COPY /docker/common/src /src
 
 RUN gcc -Wall -DCOMMAND='"/bootstrap/start-systemd.sh"' -o /systemd-wrapper /src/start-setuid.c
 
-#####
 
-FROM ubuntu:18.04
-
-RUN apt-get update && \
-    apt-get install -y --no-install-recommends \
-        software-properties-common
-RUN add-apt-repository -y ppa:openjdk-r/ppa && apt-get update
+FROM registry.eng.hortonworks.com/hortonworks/base-ubuntu18:0.1.0.0-105
 
 ARG SALT_VERSION
 ARG SALT_PATH
@@ -27,6 +21,11 @@ ARG TRACE
 ARG OS
 ARG OS_TYPE
 ARG JAVA_VERSION
+ARG PRE_WARM_PARCELS
+ARG PRE_WARM_CSD
+
+ENV PRE_WARM_PARCELS=${PRE_WARM_PARCELS}
+ENV PRE_WARM_CSD=${PRE_WARM_CSD}
 
 LABEL maintainer=Hortonworks
 
@@ -42,34 +41,34 @@ SHELL ["/bin/bash", "-c"]
 # Install packages
 RUN apt-get update && \
     apt-get install -y --no-install-recommends \
+        software-properties-common \
+        udev \
+        gcc \
+        libc6-dev \
         apt-transport-https \
         ca-certificates \
         cron \
         curl \
         gnupg2 \
         util-linux \
-        sysvinit-utils \
         iproute2 \
         python-minimal \
         ssh \
         sudo \
+        virt-what \
         systemd && \
     rm -rf /var/lib/apt/lists/*
 
-# Unneeded systemd services
-RUN (cd /lib/systemd/system/sysinit.target.wants && \
-    ls | grep -v systemd-tmpfiles-setup.service | xargs rm) && \
-    rm -f /lib/systemd/system/multi-user.target.wants/* && \
-    rm -f /lib/systemd/system/local-fs.target.wants/* && \
-    rm -f /lib/systemd/system/sockets.target.wants/*udev* && \
-    rm -f /lib/systemd/system/sockets.target.wants/*initctl* && \
-    rm -f /lib/systemd/system/basic.target.wants/* && \
-    rm -f /etc/systemd/system/*.wants/*
+RUN add-apt-repository -y ppa:openjdk-r/ppa && apt-get update
 
 # Replace systemctl during SaltStack provisioning
 RUN dpkg-divert --add --rename /bin/systemctl && \
     curl -s -o /bin/systemctl $SYSTEMCTL && \
     chmod 755 /bin/systemctl
+
+
+#we build logic on the existance of this directory, please DO NOT REMOVE
+RUN mkdir /yarn-private
 
 # SaltStack provisioning
 COPY /saltstack/ /tmp/saltstack/
@@ -81,7 +80,23 @@ COPY docker/common/_grains/ /tmp/saltstack/hortonworks/salt/_grains/
 RUN printf '\n\nproviders:\n  service: systemd\n' >>/tmp/saltstack/config/minion
 RUN /tmp/scripts/salt-install.sh ubuntu
 RUN mkdir /etc/salt
+
+ARG PARCELS_NAME
+ARG STACK_REPOSITORY_VERSION
+ARG STACK_TYPE
+ARG CLUSTERMANAGER_VERSION
+ARG CLUSTERMANAGER_BASEURL
+ARG CLUSTERMANAGER_GPGKEY
+
+ENV PARCELS_NAME=${PARCELS_NAME}
+ENV STACK_REPOSITORY_VERSION=${STACK_REPOSITORY_VERSION}
+ENV STACK_TYPE=${STACK_TYPE}
+ENV CLUSTERMANAGER_VERSION=${CLUSTERMANAGER_VERSION}
+ENV CLUSTERMANAGER_BASEURL=${CLUSTERMANAGER_BASEURL}
+ENV CLUSTERMANAGER_GPGKEY=${CLUSTERMANAGER_GPGKEY}
+
 RUN /tmp/scripts/salt-setup.sh hortonworks
+RUN rm -f /etc/salt/minion_id /etc/salt/pki/minion/minion.pem /etc/salt/pki/minion/minion.pub
 
 # Fix SaltStack init autodiscovery
 RUN printf '\n\nproviders:\n  service: systemd\n' >>/etc/salt/minion
@@ -109,6 +124,7 @@ RUN chown root:nogroup /bootstrap/start-systemd && \
     chmod 4750 /bootstrap/start-systemd
 
 RUN systemctl enable ssh cron
+RUN service ssh start
 
 EXPOSE 22
 

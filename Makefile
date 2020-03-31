@@ -396,10 +396,10 @@ docker-build-ubuntu18:
 	@ OS=ubuntu18 OS_TYPE=ubuntu18 TAG=ubuntu-18 DIR=ubuntu18 JAVA_VERSION=8 make docker-build
 
 docker-build-ubuntu16-java-11:
-	@ OS=ubuntu16 OS_TYPE=ubuntu16 TAG=ubuntu-16 DIR=ubuntu16 JAVA_VERSION=11 make docker-build
+	@ OS=ubuntu16 OS_TYPE=ubuntu16 TAG=ubuntu-16-java-11 DIR=ubuntu16 JAVA_VERSION=11 make docker-build
 
 docker-build-ubuntu18-java-11:
-	@ OS=ubuntu18 OS_TYPE=ubuntu18 TAG=ubuntu-18 DIR=ubuntu18 JAVA_VERSION=11 make docker-build
+	@ OS=ubuntu18 OS_TYPE=ubuntu18 TAG=ubuntu-18-java-11 DIR=ubuntu18 JAVA_VERSION=11 make docker-build
 
 docker-build:
 	$(eval DOCKER_ENVS="OS=$(OS) OS_TYPE=$(OS_TYPE) SALT_VERSION=$(SALT_VERSION) SALT_PATH=$(SALT_PATH) PYZMQ_VERSION=$(PYZMQ_VERSION) PYTHON_APT_VERSION=$(PYTHON_APT_VERSION) TRACE=1 JAVA_VERSION=$(JAVA_VERSION)")

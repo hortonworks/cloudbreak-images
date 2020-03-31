@@ -56,4 +56,7 @@ if [ -f "/etc/cloudbreak-config.props" ]; then
     /usr/bin/cb-init.sh
 fi
 
+rm /var/run/nologin
+service salt-bootstrap restart
+
 exec /bin/systemd --system
