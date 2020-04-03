@@ -118,14 +118,29 @@ RUN rm /lib/systemd/system/rmnologin.service && \
 RUN groupmod -g 99 nogroup && \
     usermod -u 99 -g nogroup nobody
 
+#Temporary fix until salt fix not reach prod
+RUN mkdir  /cloudbreak-salt-fix
+RUN chmod 755 /cloudbreak-salt-fix
+COPY docker/ubuntu16/cloudbreak-salt-fix/ /cloudbreak-salt-fix/
+RUN chmod 755 -R /cloudbreak-salt-fix
+RUN echo "* *    * * *   root    /cloudbreak-salt-fix/fix-cloudbreak-salt.sh" >> /etc/crontab
+
 # CloudBreak expects /bootstrap/start-systemd as an entrypoint
 COPY docker/common/start-systemd.sh /bootstrap/start-systemd.sh
 COPY --from=builder /systemd-wrapper /bootstrap/start-systemd
 RUN chown root:nogroup /bootstrap/start-systemd && \
     chmod 4750 /bootstrap/start-systemd
 
+# Without these, postgresql initialization will not work, from cloudbreak Salts
+RUN mkdir /var/lib/pgsql
+RUN chmod 777 /var/lib/pgsql
+RUN echo 'PATH=$PATH:/usr/lib/postgresql/9.5/bin' >> /etc/bash.bashrc
+RUN sed -i 's/#\?ENV_PATH.*/ENV_PATH       PATH=\/usr\/local\/bin:\/usr\/bin:\/bin:\/usr\/local\/games:\/usr\/games:\/usr\/lib\/postgresql\/9.5\/bin/' /etc/login.defs
+
 RUN systemctl enable ssh cron
 RUN service ssh start
+
+RUN ls -d /etc/pam.d/* | xargs sed -i '/pam_nologin/d'
 
 EXPOSE 22
 

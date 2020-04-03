@@ -56,4 +56,4 @@ if [ -f "/etc/cloudbreak-config.props" ]; then
     /usr/bin/cb-init.sh
 fi
 
-exec /bin/systemd --system
+exec systemd --system
