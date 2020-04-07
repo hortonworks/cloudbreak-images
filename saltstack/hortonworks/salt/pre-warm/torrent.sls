@@ -1,8 +1,3 @@
-install_mktorrent:
-  pkg.installed:
-    - pkgs:
-      - mktorrent
-
 create_torrent:
   cmd.script:
     - name: salt://pre-warm/tmp/create_torrent.sh
