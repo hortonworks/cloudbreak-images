@@ -1,2 +1,15 @@
+{% set os = salt['grains.get']('os') %}
+{% set osmajorrelease = salt['grains.get']('osmajorrelease') %}
+{% set releaseCodeName = 'xenial' %}
+{% set baseUrl = salt['pillar.get']('cloudera-manager:repo:baseUrl') %}
+
+{% if os == "Ubuntu"  and  osmajorrelease | int == 18 %}
+  {% set releaseCodeName = 'bionic' %}
+{% endif %}
+
+{% if 'redhat7/yum' in baseUrl %}
+  {% set baseUrl = baseUrl | replace('redhat7/yum', 'ubuntu1804/apt') %}
+{% endif %}
+
 # Cloudera Manager {{ salt['pillar.get']('cloudera-manager:repo:version') }}
-deb [arch=amd64 trusted=yes] {{ salt['pillar.get']('cloudera-manager:repo:baseUrl') }} xenial-cm{{ salt['pillar.get']('cloudera-manager:repo:version') }} contrib
+deb [arch=amd64 trusted=yes] {{ baseUrl }} {{releaseCodeName}}-cm{{ salt['pillar.get']('cloudera-manager:repo:version') }} contrib

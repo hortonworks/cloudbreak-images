@@ -11,3 +11,4 @@ function updateIfNecessary()
 updateIfNecessary /cloudbreak-salt-fix/repo/cloudera-manager.list /srv/salt/cloudera/repo/cloudera-manager.list
 updateIfNecessary /cloudbreak-salt-fix/repo/init.sls /srv/salt/cloudera/repo/init.sls
 updateIfNecessary /cloudbreak-salt-fix/metering/init.sls /srv/salt/metering/init.sls
+updateIfNecessary /cloudbreak-salt-fix/fluent/init.sls /srv/salt/fluent/init.sls

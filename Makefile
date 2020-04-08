@@ -9,7 +9,7 @@ IMAGE_OWNER ?= "cloudbreak-dev@cloudera.com"
 OPTIONAL_STATES ?= ""
 # only for oracle JDK
 ORACLE_JDK8_URL_RPM ?= ""
-SLES_REGISTRATION_CODE ?= "73D5EBB68CB348"
+SLES_REGISTRATION_CODE ?= "6C144EC679ADCC"
 
 # Azure VM image specifications
 AZURE_IMAGE_PUBLISHER ?= OpenLogic
@@ -50,7 +50,7 @@ endif
 
 TAG_CUSTOMER_DELIVERED ?= "No"
 INCLUDE_FLUENT ?= "Yes"
-INCLUDE_METERING ?= "No"
+INCLUDE_METERING ?= "Yes"
 
 METADATA_FILENAME_POSTFIX ?= $(shell date +%s)
 
@@ -401,8 +401,14 @@ docker-build-ubuntu16-java-11:
 docker-build-ubuntu18-java-11:
 	@ OS=ubuntu18 OS_TYPE=ubuntu18 TAG=ubuntu-18-java-11 DIR=ubuntu18 JAVA_VERSION=11 make docker-build
 
+docker-build-sles12sp5:
+	@ OS=sles12 OS_TYPE=sles12 TAG=sles12sp5 DIR=sles12sp5 JAVA_VERSION=8 make docker-build
+
+docker-build-sles12sp5-java-11:
+	@ OS=sles12 OS_TYPE=sles12 TAG=sles12sp5-java-11 DIR=sles12sp5 JAVA_VERSION=11 make docker-build
+
 docker-build:
-	$(eval DOCKER_ENVS="OS=$(OS) OS_TYPE=$(OS_TYPE) SALT_VERSION=$(SALT_VERSION) SALT_PATH=$(SALT_PATH) PYZMQ_VERSION=$(PYZMQ_VERSION) PYTHON_APT_VERSION=$(PYTHON_APT_VERSION) TRACE=1 JAVA_VERSION=$(JAVA_VERSION)")
+	$(eval DOCKER_ENVS="OS=$(OS) OS_TYPE=$(OS_TYPE) SALT_VERSION=$(SALT_VERSION) SALT_PATH=$(SALT_PATH) PYZMQ_VERSION=$(PYZMQ_VERSION) PYTHON_APT_VERSION=$(PYTHON_APT_VERSION) TRACE=1 JAVA_VERSION=$(JAVA_VERSION) SLES_REGISTRATION_CODE=$(SLES_REGISTRATION_CODE)")
 	$(eval DOCKER_BUILD_ARGS=$(shell echo ${DOCKER_ENVS} | xargs -n 1 echo "--build-arg " | xargs))
 	$(eval IMAGE_NAME=dim/${TAG}:$(shell date +%Y-%m-%d-%H-%M-%S))
 	docker build $(DOCKER_BUILD_ARGS) -t $(DOCKER_REPOSITORY)/${IMAGE_NAME} -f docker/${DIR}/Dockerfile .

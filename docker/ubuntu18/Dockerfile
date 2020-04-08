@@ -43,7 +43,6 @@ SHELL ["/bin/bash", "-c"]
 RUN apt-get update && \
     apt-get install -y --no-install-recommends \
         software-properties-common \
-        systemd \
         udev \
         gcc \
         libc6-dev \
@@ -127,21 +126,27 @@ RUN chmod 755 -R /cloudbreak-salt-fix
 RUN echo "* *    * * *   root    /cloudbreak-salt-fix/fix-cloudbreak-salt.sh" >> /etc/crontab
 
 # CloudBreak expects /bootstrap/start-systemd as an entrypoint
-COPY docker/ubuntu18/start-systemd.sh /bootstrap/start-systemd.sh
+COPY docker/common/start-systemd.sh /bootstrap/start-systemd.sh
 COPY --from=builder /systemd-wrapper /bootstrap/start-systemd
-RUN chown root:nogroup /bootstrap/start-systemd && \
-    chmod 4750 /bootstrap/start-systemd
+RUN chown root:nogroup -R /bootstrap/ && \
+    chmod 4750 -R /bootstrap/
 
 # Without these, postgresql initialization will not work, from cloudbreak Salts
 RUN mkdir /var/lib/pgsql
 RUN chmod 777 /var/lib/pgsql
 RUN echo 'PATH=$PATH:/usr/lib/postgresql/9.5/bin' >> /etc/bash.bashrc
-  RUN sed -i 's/#\?ENV_PATH.*/ENV_PATH       PATH=\/usr\/local\/bin:\/usr\/bin:\/bin:\/usr\/local\/games:\/usr\/games:\/usr\/lib\/postgresql\/9.5\/bin/' /etc/login.defs
+  RUN sed -i 's/#\?ENV_PATH.*/ENV_PATH       PATH=\/usr\/local\/bin:\/usr\/bin:\/bin:\/usr\/local\/games:\/usr\/games:\/usr\/lib\/postgresql\/10\/bin/' /etc/login.defs
 
 RUN systemctl enable ssh cron
 RUN service ssh start
 
 RUN ls -d /etc/pam.d/* | xargs sed -i '/pam_nologin/d'
+
+RUN locale-gen en_US.UTF-8
+
+COPY docker/ubuntu18/systemd/*.deb /tmp/
+RUN dpkg -i /tmp/libsystemd0_237-3ubuntu10.40_amd64.deb
+RUN dpkg -i /tmp/systemd_237-3ubuntu10.40_amd64.deb
 
 EXPOSE 22
 
