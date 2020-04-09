@@ -386,25 +386,35 @@ docker-build-centos76:
 	echo "Building image for ycloud2"
 	@ OS=centos7 OS_TYPE=redhat7 TAG=centos-76 DIR=centos7.6 JAVA_VERSION=8 make docker-build
 
+docker-build-centos76-java-11:
+	echo "Building image for ycloud2"
+	@ OS=centos7 OS_TYPE=redhat7 TAG=centos-76 DIR=centos7.6 JAVA_VERSION=11 make docker-build
+
 docker-build-debian9:
 	@ OS=debian9 OS_TYPE=debian9 TAG=debian-9 DIR=debian9 JAVA_VERSION=8 make docker-build
 
 docker-build-ubuntu16:
+	echo "Building image for ycloud2"
 	@ OS=ubuntu16 OS_TYPE=ubuntu16 TAG=ubuntu-16 DIR=ubuntu16 JAVA_VERSION=8 make docker-build
 
 docker-build-ubuntu18:
+	echo "Building image for ycloud2"
 	@ OS=ubuntu18 OS_TYPE=ubuntu18 TAG=ubuntu-18 DIR=ubuntu18 JAVA_VERSION=8 make docker-build
 
 docker-build-ubuntu16-java-11:
+	echo "Building image for ycloud2"
 	@ OS=ubuntu16 OS_TYPE=ubuntu16 TAG=ubuntu-16-java-11 DIR=ubuntu16 JAVA_VERSION=11 make docker-build
 
 docker-build-ubuntu18-java-11:
+	echo "Building image for ycloud2"
 	@ OS=ubuntu18 OS_TYPE=ubuntu18 TAG=ubuntu-18-java-11 DIR=ubuntu18 JAVA_VERSION=11 make docker-build
 
 docker-build-sles12sp5:
+	echo "Building image for ycloud2"
 	@ OS=sles12 OS_TYPE=sles12 TAG=sles12sp5 DIR=sles12sp5 JAVA_VERSION=8 make docker-build
 
 docker-build-sles12sp5-java-11:
+	echo "Building image for ycloud2"
 	@ OS=sles12 OS_TYPE=sles12 TAG=sles12sp5-java-11 DIR=sles12sp5 JAVA_VERSION=11 make docker-build
 
 docker-build:
