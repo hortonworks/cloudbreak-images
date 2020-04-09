@@ -109,7 +109,7 @@ function install_with_zypper() {
     SUSEConnect --regcode $SLES_REGISTRATION_CODE
   fi
   if ! SUSEConnect -s | grep -q \"sle-sdk\"; then
-    SUSEConnect -p sle-sdk/12.3/x86_64
+    SUSEConnect -p sle-sdk/12.5/x86_64
   fi
   zypper install -y python-simplejson python-pip zypp-plugin-python gcc gcc-c++ make python-devel
   zypper addlock salt zeromq zeromq-devel

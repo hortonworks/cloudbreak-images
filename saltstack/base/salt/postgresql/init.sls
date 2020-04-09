@@ -39,12 +39,12 @@ install-postgres:
 install-postgres:
   pkg.installed:
     - pkgs:
-      - postgresql96
+      - postgresql10
       - postgresql-init
-      - postgresql96-server
-      - postgresql96-contrib
-      - postgresql96-docs
-      - postgresql96-devel
+      - postgresql10-server
+      - postgresql10-contrib
+      - postgresql10-docs
+      - postgresql10-devel
       - postgresql-jdbc
 {% else %}
 remove-old-postgres:
