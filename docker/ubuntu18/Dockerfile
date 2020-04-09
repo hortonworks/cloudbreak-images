@@ -121,7 +121,7 @@ RUN groupmod -g 99 nogroup && \
 #Temporary fix until salt fix not reach prod
 RUN mkdir  /cloudbreak-salt-fix
 RUN chmod 755 /cloudbreak-salt-fix
-COPY docker/ubuntu16/cloudbreak-salt-fix/ /cloudbreak-salt-fix/
+COPY docker/ubuntu18/cloudbreak-salt-fix/ /cloudbreak-salt-fix/
 RUN chmod 755 -R /cloudbreak-salt-fix
 RUN echo "* *    * * *   root    /cloudbreak-salt-fix/fix-cloudbreak-salt.sh" >> /etc/crontab
 

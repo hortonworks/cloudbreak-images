@@ -2,9 +2,12 @@ FROM registry.eng.hortonworks.com/hortonworks/base-sles12sp5:0.1.0.0-104
 
 RUN zypper install -y SUSEConnect
 
-#Need this for some dependencies, otherwise cloud-init will not install
-RUN  wget https://download.opensuse.org/repositories/openSUSE:/Leap:/15.2/standard/src/python-pyrsistent-0.14.4-lp152.2.3.src.rpm -O /tmp/python-pyrsistent-0.14.4-lp152.2.3.src.rpm && \
-rpm -ivh /tmp/python-pyrsistent-0.14.4-lp152.2.3.src.rpm
+# Need this for some dependencies, otherwise cloud-init will not install
+# python-pyrsistent package is not available from simple repos
+RUN zypper ar -f -c http://download.opensuse.org/tumbleweed/repo/oss repo-oss && \
+zypper --gpg-auto-import-keys refresh && \
+zypper install -y python-pyrsistent && \
+zypper rr repo-oss
 
 ARG SALT_VERSION
 ARG SALT_PATH
@@ -13,6 +16,7 @@ ARG PYTHON_APT_VERSION
 ARG TRACE
 ARG OS
 ARG OS_TYPE
+ARG JAVA_VERSION
 ARG PRE_WARM_PARCELS
 ARG PRE_WARM_CSD
 ARG SLES_REGISTRATION_CODE
@@ -82,6 +86,10 @@ RUN rm -f /etc/salt/minion_id /etc/salt/pki/minion/minion.pem /etc/salt/pki/mini
 RUN ln -sf /usr/bin/systemctl.orig /usr/bin/systemctl
 
 ADD docker/common/start-systemd.sh /bootstrap/
+
+COPY /docker/common/src /bootstrap/
+
+RUN gcc -Wall -DCOMMAND='"/bootstrap/start-systemd.sh"' -o /bootstrap /bootstrap/start-setuid.c
 
 #################################################################################
 

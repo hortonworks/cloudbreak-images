@@ -69,6 +69,9 @@ packages_install:
       - libnss-ldap
       - libpam-ldap
       - ldap-utils
+    {% elif pillar['OS'] in ('sles12') %}
+      - openldap2
+      - openldap2-client
     {% else %}
       - ipa-client
       - openldap

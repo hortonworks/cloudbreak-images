@@ -88,7 +88,11 @@ install-postgres:
 /usr/bin/initdb:
   file.symlink:
     - mode: 755
+     {% if pillar['OS'] == 'sles12' %}
+    - target: /usr/pgsql-10/bin/initdb
+     {% else %}
     - target: /usr/pgsql-9.6/bin/initdb
+     {% endif %}
     - force: True
 
 {% if  pillar['OS'] == 'amazonlinux2' or ( grains['os_family'] == 'RedHat' and grains['osmajorrelease'] | int == 7 ) %}
@@ -126,7 +130,7 @@ reenable-postgres:
 {% elif pillar['OS'] == 'sles12sp3' or ( grains['os_family'] == 'Suse' and grains['osmajorrelease'] | int == 12 )  %}
   cmd.run:
     - runas: postgres
-    - name: /usr/lib/postgresql96/bin/initdb /var/lib/pgsql/data/
+    - name: /usr/lib/postgresql10/bin/initdb /var/lib/pgsql/data/
 
 {% else %}
 init-pg-database:
