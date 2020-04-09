@@ -147,6 +147,8 @@ RUN locale-gen en_US.UTF-8
 COPY docker/ubuntu18/systemd/*.deb /tmp/
 RUN dpkg -i /tmp/libsystemd0_237-3ubuntu10.40_amd64.deb
 RUN dpkg -i /tmp/systemd_237-3ubuntu10.40_amd64.deb
+RUN dpkg -i /tmp/libnss-systemd_237-3ubuntu10.40_amd64.deb
+RUN dpkg -i /tmp/libpam-systemd_237-3ubuntu10.40_amd64.deb
 
 EXPOSE 22
 

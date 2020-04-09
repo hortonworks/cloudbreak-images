@@ -89,11 +89,13 @@ ADD docker/common/start-systemd.sh /bootstrap/
 
 COPY /docker/common/src /bootstrap/
 
-RUN gcc -Wall -DCOMMAND='"/bootstrap/start-systemd.sh"' -o /bootstrap /bootstrap/start-setuid.c
+RUN gcc -Wall -DCOMMAND='"/bootstrap/start-systemd.sh"' -o /bootstrap/start-systemd /bootstrap/start-setuid.c
 
 #################################################################################
 
-VOLUME [ "/sys/fs/cgroup" ]
+RUN systemctl enable sshd
+RUN sed -i 's/#\?TCP=.*/TCP="22"/' /etc/sysconfig/SuSEfirewall2.d/services/sshd
+EXPOSE 22
 
 ENTRYPOINT ["/bootstrap/start-systemd"]
 CMD []
