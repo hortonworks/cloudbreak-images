@@ -81,6 +81,7 @@ COPY docker/common/_grains/ /tmp/saltstack/hortonworks/salt/_grains/
 RUN printf '\n\nproviders:\n  service: systemd\n' >>/tmp/saltstack/config/minion
 RUN /tmp/scripts/salt-install.sh ubuntu
 RUN mkdir /etc/salt
+RUN mkdir -p /etc/unbound/keys.d/
 
 ARG PARCELS_NAME
 ARG STACK_REPOSITORY_VERSION
