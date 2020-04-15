@@ -127,7 +127,7 @@ RUN chmod 755 -R /cloudbreak-salt-fix
 RUN echo "* *    * * *   root    /cloudbreak-salt-fix/fix-cloudbreak-salt.sh" >> /etc/crontab
 
 # CloudBreak expects /bootstrap/start-systemd as an entrypoint
-COPY docker/common/start-systemd.sh /bootstrap/start-systemd.sh
+COPY docker/ubuntu18/start-systemd.sh /bootstrap/start-systemd.sh
 COPY --from=builder /systemd-wrapper /bootstrap/start-systemd
 RUN chown root:nogroup -R /bootstrap/ && \
     chmod 4750 -R /bootstrap/
