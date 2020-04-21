@@ -85,7 +85,7 @@ RUN rm -f /etc/salt/minion_id /etc/salt/pki/minion/minion.pem /etc/salt/pki/mini
 # restore systemctl to system default
 RUN ln -sf /usr/bin/systemctl.orig /usr/bin/systemctl
 
-ADD docker/common/start-systemd.sh /bootstrap/
+COPY docker/sles12sp5/start-systemd.sh /bootstrap/
 
 COPY /docker/common/src /bootstrap/
 
@@ -93,9 +93,13 @@ RUN gcc -Wall -DCOMMAND='"/bootstrap/start-systemd.sh"' -o /bootstrap/start-syst
 
 #################################################################################
 
-RUN systemctl enable sshd
-RUN sed -i 's/#\?TCP=.*/TCP="22"/' /etc/sysconfig/SuSEfirewall2.d/services/sshd
 EXPOSE 22
+
+#temporary code to be able to test ssh on my local machine as well
+COPY /docker/sles12sp5/cloudbreak-config.props /etc/cloudbreak-config.props
+RUN chown nobody:nobody /etc/cloudbreak-config.props
+
+RUN ls -d /etc/pam.d/* | xargs sed -i '/pam_nologin/d'
 
 ENTRYPOINT ["/bootstrap/start-systemd"]
 CMD []
