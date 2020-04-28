@@ -4,7 +4,8 @@ RUN zypper install -y SUSEConnect
 
 # Need this for some dependencies, otherwise cloud-init will not install
 # python-pyrsistent package is not available from simple repos
-RUN zypper ar -f -c http://download.opensuse.org/tumbleweed/repo/oss repo-oss && \
+#RUN zypper ar -f -c http://download.opensuse.org/tumbleweed/repo/oss repo-oss && \
+RUN zypper ar -f -c http://download.opensuse.org/distribution/leap/15.1/repo/oss/ repo-oss && \
 zypper --gpg-auto-import-keys refresh && \
 zypper install -y python-pyrsistent && \
 zypper rr repo-oss
