@@ -136,7 +136,7 @@ RUN chown root:nogroup -R /bootstrap/ && \
 RUN mkdir /var/lib/pgsql
 RUN chmod 777 /var/lib/pgsql
 RUN echo 'PATH=$PATH:/usr/lib/postgresql/9.5/bin' >> /etc/bash.bashrc
-  RUN sed -i 's/#\?ENV_PATH.*/ENV_PATH       PATH=\/usr\/local\/bin:\/usr\/bin:\/bin:\/usr\/local\/games:\/usr\/games:\/usr\/lib\/postgresql\/10\/bin/' /etc/login.defs
+RUN sed -i 's/#\?ENV_PATH.*/ENV_PATH       PATH=\/usr\/local\/bin:\/usr\/bin:\/bin:\/usr\/local\/games:\/usr\/games:\/usr\/lib\/postgresql\/10\/bin/' /etc/login.defs
 
 RUN systemctl enable ssh cron
 RUN service ssh start

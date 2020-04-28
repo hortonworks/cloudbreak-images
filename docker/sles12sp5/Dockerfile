@@ -89,17 +89,29 @@ COPY docker/sles12sp5/start-systemd.sh /bootstrap/
 
 COPY /docker/common/src /bootstrap/
 
+RUN echo 'PATH=$PATH:/usr/lib/postgresql10/bin' >> /etc/bash.bashrc
+RUN sed -i 's/#\?ENV_PATH.*/ENV_PATH       PATH=\/usr\/local\/bin:\/usr\/bin:\/bin:\/usr\/local\/games:\/usr\/games:\/usr\/lib\/postgresql10\/bin/' /etc/login.defs
+
+#Temporary fix until salt fix not reach prod
+RUN mkdir  /cloudbreak-salt-fix
+RUN chmod 755 /cloudbreak-salt-fix
+COPY docker/sles12sp5/cloudbreak-salt-fix/ /cloudbreak-salt-fix/
+RUN chmod 755 -R /cloudbreak-salt-fix
+RUN echo "* *    * * *   root    /cloudbreak-salt-fix/fix-cloudbreak-salt.sh" >> /etc/crontab
+
 RUN gcc -Wall -DCOMMAND='"/bootstrap/start-systemd.sh"' -o /bootstrap/start-systemd /bootstrap/start-setuid.c
+
+RUN groupmod -g 99 nogroup && \
+    usermod -u 99 -g nogroup nobody
+RUN chown root:nogroup /bootstrap/start-systemd && \
+    chmod 4750 /bootstrap/start-systemd
 
 #################################################################################
 
 EXPOSE 22
 
-#temporary code to be able to test ssh on my local machine as well
-COPY /docker/sles12sp5/cloudbreak-config.props /etc/cloudbreak-config.props
-RUN chown nobody:nobody /etc/cloudbreak-config.props
-
 RUN ls -d /etc/pam.d/* | xargs sed -i '/pam_nologin/d'
+RUN echo -e "DefaultTasksMax=infinity" >> /etc/systemd/system.conf
 
 ENTRYPOINT ["/bootstrap/start-systemd"]
 CMD []

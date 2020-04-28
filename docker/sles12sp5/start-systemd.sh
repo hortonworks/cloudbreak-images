@@ -1,5 +1,11 @@
 #!/bin/sh
 
+### some reason /dev/console is not created properly and because of that
+# console-getty.service always restart which cause syslog spamming
+# This is the fix for it
+rm /dev/console
+mknod -m 600 /dev/console c 5 1
+
 ###
 # CloudBreak uses unbound as a caching name server. Docker bind-mounts
 # /etc/resolv.conf file that is why resolvconf package cannot be used
