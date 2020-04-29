@@ -113,6 +113,7 @@ EXPOSE 22
 
 RUN ls -d /etc/pam.d/* | xargs sed -i '/pam_nologin/d'
 RUN echo -e "DefaultTasksMax=infinity" >> /etc/systemd/system.conf
+RUN ln -s /usr/lib/mit/bin/kdestroy /bin/kdestroy
 
 ENTRYPOINT ["/bootstrap/start-systemd"]
 CMD []
