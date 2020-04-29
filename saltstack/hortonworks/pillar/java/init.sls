@@ -27,12 +27,12 @@ openjdk_packages:
   - openjdk-{{ openjdk_version }}-source
   - openjdk-{{ openjdk_version }}-jdk
 {% elif grains['os_family'] == 'Suse' %}
-  - java-1_8_0-openjdk
-  - java-1_8_0-openjdk-devel
-  - java-1_8_0-openjdk-headless
+  - java-{{ openjdk_version }}-openjdk
+  - java-{{ openjdk_version }}-openjdk-devel
+  - java-{{ openjdk_version }}-openjdk-headless
 {% else %}
-  - java-1.8.0-openjdk-headless
-  - java-1.8.0-openjdk-devel
-  - java-1.8.0-openjdk-javadoc
-  - java-1.8.0-openjdk-src
+  - java-{{ openjdk_version }}-openjdk-headless
+  - java-{{ openjdk_version }}-openjdk-devel
+  - java-{{ openjdk_version }}-openjdk-javadoc
+  - java-{{ openjdk_version }}-openjdk-src
 {% endif %}
