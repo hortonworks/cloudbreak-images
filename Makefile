@@ -388,7 +388,7 @@ docker-build-centos76:
 
 docker-build-centos76-java-11:
 	echo "Building image for ycloud2"
-	@ OS=centos7 OS_TYPE=redhat7 TAG=centos-76 DIR=centos7.6 JAVA_VERSION=11 make docker-build
+	@ OS=centos7 OS_TYPE=redhat7 TAG=centos-76-java-11 DIR=centos7.6 JAVA_VERSION=11 make docker-build
 
 docker-build-debian9:
 	@ OS=debian9 OS_TYPE=debian9 TAG=debian-9 DIR=debian9 JAVA_VERSION=8 make docker-build
