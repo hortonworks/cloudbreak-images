@@ -1,4 +1,4 @@
-FROM debian:9 as builder
+FROM registry.eng.hortonworks.com/hortonworks/base-debian9.3:0.1.0.0-92 as builder
 
 RUN apt-get update && \
     apt-get install -y --no-install-recommends \
@@ -11,7 +11,7 @@ RUN gcc -Wall -DCOMMAND='"/bootstrap/start-systemd.sh"' -o /systemd-wrapper /src
 
 #####
 
-FROM debian:9
+FROM registry.eng.hortonworks.com/hortonworks/base-debian9.3:0.1.0.0-92
 
 ARG SALT_VERSION
 ARG SALT_PATH
@@ -20,6 +20,7 @@ ARG PYTHON_APT_VERSION
 ARG TRACE
 ARG OS
 ARG OS_TYPE
+ARG JAVA_VERSION
 
 LABEL maintainer=Hortonworks
 
@@ -45,6 +46,7 @@ RUN apt-get update && \
         python-minimal \
         ssh \
         sudo \
+        git \
         systemd && \
     rm -rf /var/lib/apt/lists/*
 

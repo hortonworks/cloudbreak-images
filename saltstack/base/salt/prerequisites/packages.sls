@@ -72,6 +72,12 @@ packages_install:
     {% elif pillar['OS'] in ('sles12') %}
       - openldap2
       - openldap2-client
+    {% elif pillar['OS'] in ('debian9') %}
+      - unattended-upgrades
+      - slapd
+      - libnss-ldap
+      - libpam-ldap
+      - ldap-utils
     {% else %}
       - ipa-client
       - openldap

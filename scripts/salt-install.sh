@@ -43,6 +43,13 @@ function install_python_apt_into_virtualenv() {
     sed -i 's/^# deb-src/deb-src/g' /etc/apt/sources.list
     apt-get update
   fi
+
+  if [ "${OS_TYPE}" == "debian9" ]; then
+    echo "deb-src http://deb.debian.org/debian stretch main" >> /etc/apt/sources.list
+    echo "deb-src http://security.debian.org/debian-security stretch/updates main" >> /etc/apt/sources.list
+    echo "deb-src http://deb.debian.org/debian stretch-updates main" >> /etc/apt/sources.list
+    apt-get update
+  fi
   apt-get -y build-dep python-apt
 
   pip install git+https://git.launchpad.net/python-apt@${PYTHON_APT_VERSION}
