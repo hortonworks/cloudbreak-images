@@ -85,6 +85,25 @@ install-postgres:
 {% endif %}
 {% endif %}
 
+{% if (not salt['environ.get']('OPTIONAL_STATES', '') == 'oracle-java' 
+       and salt['environ.get']('JAVA_VERSION') is defined
+       and salt['environ.get']('JAVA_VERSION') == '11') %}
+
+purge_openjdk8-headless_installed_by_postgres_print:
+  cmd.run:
+    - name: echo "Purge java-1.8.0-openjdk-headless as java11 should be used..."
+
+purge_openjdk8-headless_installed_by_postgres:
+  pkg.purged:
+    - name: java-1.8.0-openjdk-headless
+
+install_openjdk11-headless_for_postgres:
+  pkg.installed:
+    - pkgs:
+      - java-11-openjdk-headless
+
+{% endif %}
+
 /usr/bin/initdb:
   file.symlink:
     - mode: 755

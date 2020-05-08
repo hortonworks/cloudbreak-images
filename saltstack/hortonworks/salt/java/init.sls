@@ -38,6 +38,34 @@ create_jvm_symlink:
     - target: /usr/lib/jvm/java-{{ pillar['openjdk_version'] }}-openjdk-amd64
 {% endif %}
 
+{% if (not salt['environ.get']('OPTIONAL_STATES', '') == 'oracle-java' 
+       and salt['environ.get']('JAVA_VERSION') is defined
+       and salt['environ.get']('JAVA_VERSION') == '11') %}
+
+# make folder structure backward compatibility with java-1.8
+# used when reaching "java.security" file, see the diff:
+# /usr/lib/jvm/java-1.8.0-openjdk-1.8.0.252.b09-2.el7_8.x86_64/jre/lib/security/java.security
+# /usr/lib/jvm/java-11-openjdk-11.0.7.10-4.el7_8.x86_64/conf/security/java.security
+
+create_java11_java8_folder_compatibility_print:
+  cmd.run:
+    - name: echo "Build Java11->Java8 folder-structure compatibility..."
+
+create_java11_java8_folder_compatibility_dir:
+  file.directory:
+    - name:  /usr/lib/jvm/java/jre
+    - mode:  755
+    - follow_symlinks: True
+    - makedirs: True
+
+create_java11_java8_folder_compatibility_symlink:
+  file.symlink:
+    - name: /usr/lib/jvm/java/jre/lib
+    - target: /usr/lib/jvm/java/conf
+    - follow_symlinks: True
+
+{% endif %}
+
 add_openjdk_gplv2:
   file.managed:
     - name: {{ pillar['JAVA_HOME'] }}/OpenJDK_GPLv2_and_Classpath_Exception.pdf
