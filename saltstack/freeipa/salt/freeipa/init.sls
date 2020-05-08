@@ -5,7 +5,7 @@
       + '.x86_64.rpm' %}
 
 {% set freeipa_healthagent_base_url = 'https://cloudera-service-delivery-cache.s3.amazonaws.com/freeipa-health-agent/packages/' %}
-{% set freeipa_healthagent_version = '0.1-20200505160242git0d7b8fe' %}
+{% set freeipa_healthagent_version = '0.1-20200508033035git34cef7c' %}
 {% set freeipa_healthagent_rpm_url = freeipa_healthagent_base_url
       + 'freeipa-health-agent-' + freeipa_healthagent_version
       + '.x86_64.rpm' %}
