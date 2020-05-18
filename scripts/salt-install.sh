@@ -102,6 +102,9 @@ function make_pip3_default_pip() {
       mv /bin/pip /bin/pip2
   fi
   mv /bin/pip3 /bin/pip
+  if [ -f "$FILE" ]; then
+      mv /bin/pip3.6 /bin/pip
+  fi
 }
 
 function install_with_zypper() {
