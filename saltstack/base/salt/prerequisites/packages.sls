@@ -58,6 +58,8 @@ packages_install:
       - openldap-clients
       - awscli
 
+{% if pillar['subtype'] != 'Docker' %}
+
 download_azcopy:
   archive.extracted:
     - name: /tmp/azcopy
@@ -78,6 +80,8 @@ remove_azcopy_extract:
   file.directory:
     - name: /tmp/azcopy
     - clean: True
+
+{% endif %}
 
 {% if grains['os_family'] == 'Suse' %}
 remove_snappy:
