@@ -12,6 +12,6 @@ CCM_ENCIPHERED_PRIVATE_KEY_FILE=${CCM_ENCIPHERED_PRIVATE_KEY_FILE}
 CCM_TUNNEL_ROLE=${CCM_TUNNEL_ROLE}
 CCM_TUNNEL_SERVICE_PORT=${CCM_TUNNEL_SERVICE_PORT}
 EOF
-chmod 744 /cdp/bin/reverse-tunnel-values-${CCM_TUNNEL_ROLE}.sh
+chmod 740 /cdp/bin/reverse-tunnel-values-${CCM_TUNNEL_ROLE}.sh
 systemctl enable ccm-tunnel@${CCM_TUNNEL_ROLE}.service
 systemctl start ccm-tunnel@${CCM_TUNNEL_ROLE}.service
