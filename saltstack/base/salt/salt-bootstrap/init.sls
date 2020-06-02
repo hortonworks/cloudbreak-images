@@ -5,6 +5,8 @@ install_saltbootstrap:
     - source_hash: md5=994fb366c638722b9e573a3aff74a848
     - archive_format: tar
     - enforce_toplevel: false
+    - user: root
+    - group: root
     - skip_verify: True
     - if_missing: /usr/sbin/salt-bootstrap
 
