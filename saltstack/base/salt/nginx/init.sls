@@ -23,12 +23,9 @@ enable_nginx:
     - require:
       - pkg: install_nginx
 
-{%- set command = 'systemctl show -p FragmentPath nginx' %}
-{%- set unitFile = salt['cmd.run'](command)  %}
-
 nginxRestart:
   file.line:
-    - name: {{ unitFile | replace("FragmentPath=","") }}
+    - name: /usr/lib/systemd/system/nginx.service
     - mode: ensure
     - content: "Restart=always"
     - after: \[Service\]
@@ -36,7 +33,7 @@ nginxRestart:
 
 nginxRestartSec:
   file.line:
-    - name: {{ unitFile | replace("FragmentPath=","") }}
+    - name: /usr/lib/systemd/system/nginx.service
     - mode: ensure
     - content: "RestartSec=3"
     - after: "Restart=always"
