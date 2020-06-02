@@ -22,3 +22,22 @@ enable_nginx:
     - name: nginx
     - require:
       - pkg: install_nginx
+
+{%- set command = 'systemctl show -p FragmentPath nginx' %}
+{%- set unitFile = salt['cmd.run'](command)  %}
+
+nginxRestart:
+  file.line:
+    - name: {{ unitFile | replace("FragmentPath=","") }}
+    - mode: ensure
+    - content: "Restart=always"
+    - after: \[Service\]
+    - backup: False
+
+nginxRestartSec:
+  file.line:
+    - name: {{ unitFile | replace("FragmentPath=","") }}
+    - mode: ensure
+    - content: "RestartSec=3"
+    - after: "Restart=always"
+    - backup: False
