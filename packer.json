@@ -85,6 +85,7 @@
     "cfm_build_number": "{{ env `CFM_BUILD_NUMBER` }}",
     "csp_build_number": "{{ env `CSP_BUILD_NUMBER` }}",
     "profiler_build_number": "{{ env `PROFILER_BUILD_NUMBER` }}",
+    "spark3_build_number": "{{ env `SPARK3_BUILD_NUMBER` }}",
     "metadata_filename_postfix": "{{ env `METADATA_FILENAME_POSTFIX` }}"
   },
   "builders": [
@@ -891,6 +892,7 @@
         "cfm_build_number={{ user `cfm_build_number` }}",
         "csp_build_number={{ user `csp_build_number` }}",
         "profiler_build_number={{ user `profiler_build_number` }}",
+        "spark3_build_number={{ user `spark3_build_number` }}",
         "metadata_filename_postfix={{ user `metadata_filename_postfix` }}"
       ]
     }
