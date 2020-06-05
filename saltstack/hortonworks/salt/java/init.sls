@@ -64,6 +64,12 @@ create_java11_java8_folder_compatibility_symlink:
     - target: /usr/lib/jvm/java/conf
     - follow_symlinks: True
 
+create_java11_java8_cacerts_symlink:
+  file.symlink:
+    - name: /usr/lib/jvm/java/jre/lib/security/cacerts
+    - target: /etc/pki/java/cacerts
+    - follow_symlinks: True
+
 {% endif %}
 
 add_openjdk_gplv2:
