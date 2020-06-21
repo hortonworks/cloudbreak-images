@@ -1,8 +1,8 @@
-ENABLE_POSTPROCESSORS=1
+#ENABLE_POSTPROCESSORS=1
 
 BASE_NAME ?= cb
 DESCRIPTION ?= "Official Cloudbreak image"
-STACK_TYPE ?= "CDH"
+STACK_TYPE ?= 'CDH'
 IMAGE_NAME ?= "cb-sseth-image-"$(shell date +%y%m%d%H%M)$(IMAGE_NAME_SUFFIX)
 STACK_VERSION ?= "7.2.0"
 STACK_BASEURL=http://cloudera-build-us-west-1.vpc.cloudera.com/s3/build/3425821/cdh/7.x/parcels/
