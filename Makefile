@@ -101,7 +101,7 @@ ifeq ($(CUSTOM_IMAGE_TYPE),freeipa)
 endif
 
 define AWS_AMI_REGIONS
-us-west-2
+us-west-1,us-west-2
 endef
 
 define AWS_GOV_AMI_REGIONS
