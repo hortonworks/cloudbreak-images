@@ -77,6 +77,6 @@ apply_optional_states
 echo "Running validation and cleanup"
 highstate "final"
 
-#echo "Removing salt and python3.6"
-#rm -fr /opt/salt_3000.2
-#rm -fr /usr/lib64/python3.6
+echo "Removing salt and python3.6"
+rm -fr /opt/salt_3000.2
+rm -fr /usr/lib64/python3.6
