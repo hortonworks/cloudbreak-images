@@ -34,6 +34,12 @@ install_pyyaml:
     - name: pip install PyYAML --ignore-installed
     - unless: pip list | grep -E 'PyYAML'
 
+install_psycopg2:
+  cmd.run:
+    - name: pip install psycopg2==2.7.5 --ignore-installed
+    - unless: pip list --no-index | grep -E 'psycopg2.*2.7.5'
+
+
 install_cm_client:
   cmd.run:
     - name: pip install cm-client==40.0.3 --ignore-installed

@@ -50,6 +50,14 @@ create_cloudbreak_files:
     - name: /etc/cloud/cloud.cfg.d/50_cloudbreak.cfg
     - source: salt://{{ slspath }}/etc/cloud/cloud.cfg.d/50_cloudbreak.cfg
 
+create_scripts:
+  file.managed:
+    - user: root
+    - group: root
+    - mode: 744
+    - name: /var/lib/cloud/scripts/per-instance/extract.sh
+    - source: salt://{{ slspath }}/etc/scripts/extract.sh
+
 {% if grains['init'] == 'systemd' %}
 create_cloud-init_service_files:
   file.managed:

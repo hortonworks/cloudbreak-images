@@ -70,6 +70,7 @@ function install_with_yum() {
   echo "exclude=salt" >> /etc/yum.conf
   install_salt_with_pip
   create_temp_minion_config
+  create_archives
 }
 
 function enable_epel_repository() {
@@ -89,7 +90,7 @@ function install_python_pip() {
     yum install -y python27-devel python27-pip
   elif [ "${OS_TYPE}" == "redhat7" ] || [ "${OS_TYPE}" == "amazonlinux2" ] ; then
     echo "Installing python36 with deps"
-    yum install -y python36 python36-pip python36-devel python36-setuptools
+    yum install -y python36 python36-pip python36-devel python36-setuptools vim strace
     make_pip3_default_pip
   else
     yum install -y python-pip python-devel
@@ -125,11 +126,25 @@ function install_with_zypper() {
   zypper addlock salt zeromq zeromq-devel
   install_salt_with_pip
   create_temp_minion_config
+
 }
 
 function create_temp_minion_config() {
   echo "requests_lib: True" > /tmp/minion
   echo "backend_requests: True" >> /tmp/minion
+}
+
+function create_archives() {
+  tar -C /usr/lib64 -cvzf /usr/lib64/python3.6-archive.tar.gz python3.6
+  ## TODO Cannot be deleted since the image building process uses this.
+  ## Let's see what happens during extraction if overwriting the same files. Likewise for the salt-archive.
+  #rm -fr /usr/lib64/python3.6
+
+  tar -C /opt -cvzf /opt/salt_${SALT_VERSION}-archive.tar.gz salt_${SALT_VERSION}
+  #rm -rf ${SALT_PATH}
+
+#  tar -C /opt -cvzf /opt/td-agent-archive.tar.gz td-agent
+#  rm -rf /op/td-agent
 }
 
 : ${SALT_INSTALL_OS:=$1}
