@@ -1,25 +1,23 @@
-#EXPORT ENABLE_POSTPROCESSORS=1
-EXPORT 
-EXPORT BASE_NAME ?= cb
-EXPORT DESCRIPTION ?= "Official Cloudbreak image"
-EXPORT STACK_TYPE ?= 'CDH'
-EXPORT IMAGE_NAME ?= "cb-sseth-image-"$(shell date +%y%m%d%H%M)$(IMAGE_NAME_SUFFIX)
-EXPORT STACK_VERSION ?= "7.2.0"
-EXPORT STACK_BASEURL=http://cloudera-build-us-west-1.vpc.cloudera.com/s3/build/3425821/cdh/7.x/parcels/
-EXPORT STACK_REPOID=CDH-7.2.0
-EXPORT STACK_REPOSITORY_VERSION=CDH-7.2.0-1.cdh7.2.0.p0.3425821
-EXPORT PARCELS_NAME=CDH-7.2.0-1.cdh7.2.0.p0.3425821-el7.parcel
-EXPORT PARCELS_ROOT=/opt/cloudera/parcels
-EXPORT STACK_BUILD_NUMBER=3425821
-EXPORT 
-EXPORT 
-EXPORT CLUSTERMANAGER_VERSION=7.2.0
-EXPORT CLUSTERMANAGER_BASEURL=http://cloudera-build-us-west-1.vpc.cloudera.com/s3/build/3341661/cm7/7.2.0/redhat7/yum/
-EXPORT CLUSTERMANAGER_GPGKEY=http://cloudera-build-us-west-1.vpc.cloudera.com/s3/build/3341661/cm7/7.2.0/redhat7/yum/RPM-GPG-KEY-cloudera
-EXPORT CM_BUILD_NUMBER=3341661
-EXPORT PRE_WARM_PARCELS="[ [\\"PROFILER_MANAGER-2.0.3.2.0.3.0-67-el7.parcel\\",\\"http://s3.amazonaws.com/dev.hortonworks.com/DSS/centos7/2.x/BUILDS/2.0.3.0-67/tars
-EXPORT PRE_WARM_CSD="[\\"http://s3.amazonaws.com/dev.hortonworks.com/DSS/centos7/2.x/BUILDS/2.0.3.0-67/tars/dataplane_profilers/PROFILER_MANAGER-2.0.3.2.0.3.0-67.ja
-EXPORT CFM_BUILD_NUMBER=2.0.0.0-213
-EXPORT PROFILER_BUILD_NUMBER=2.0.3.0-67
-EXPORT SPARK3_BUILD_NUMBER=2.99.7110.0-18
-EXPORT CSA_BUILD_NUMBER=1.2.1.0-23
+#export ENABLE_POSTPROCESSORS=1
+export BASE_NAME=cb
+export DESCRIPTION="Official Cloudbreak image"
+export STACK_TYPE=CDH
+export IMAGE_NAME="cb-sseth-image-`date +%y%m%d%H%M`"
+export STACK_VERSION=7.2.0
+export STACK_BASEURL=http://cloudera-build-us-west-1.vpc.cloudera.com/s3/build/3425821/cdh/7.x/parcels/
+export STACK_REPOID=CDH-7.2.0
+export STACK_REPOSITORY_VERSION=CDH-7.2.0-1.cdh7.2.0.p0.3425821
+export PARCELS_NAME=CDH-7.2.0-1.cdh7.2.0.p0.3425821-el7.parcel
+export PARCELS_ROOT=/opt/cloudera/parcels
+export STACK_BUILD_NUMBER=3425821
+
+export CLUSTERMANAGER_VERSION=7.2.0
+export CLUSTERMANAGER_BASEURL=http://cloudera-build-us-west-1.vpc.cloudera.com/s3/build/3341661/cm7/7.2.0/redhat7/yum/
+export CLUSTERMANAGER_GPGKEY=http://cloudera-build-us-west-1.vpc.cloudera.com/s3/build/3341661/cm7/7.2.0/redhat7/yum/RPM-GPG-KEY-cloudera
+export CM_BUILD_NUMBER=3341661
+export PRE_WARM_PARCELS="[ [\\"PROFILER_MANAGER-2.0.3.2.0.3.0-67-el7.parcel\\",\\"http://s3.amazonaws.com/dev.hortonworks.com/DSS/centos7/2.x/BUILDS/2.0.3.0-67/tars
+export PRE_WARM_CSD="[\\"http://s3.amazonaws.com/dev.hortonworks.com/DSS/centos7/2.x/BUILDS/2.0.3.0-67/tars/dataplane_profilers/PROFILER_MANAGER-2.0.3.2.0.3.0-67.ja
+export CFM_BUILD_NUMBER=2.0.0.0-213
+export PROFILER_BUILD_NUMBER=2.0.3.0-67
+export SPARK3_BUILD_NUMBER=2.99.7110.0-18
+export CSA_BUILD_NUMBER=1.2.1.0-23
