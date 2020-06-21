@@ -1,29 +1,6 @@
-#ENABLE_POSTPROCESSORS=1
-
 BASE_NAME ?= cb
 DESCRIPTION ?= "Official Cloudbreak image"
-STACK_TYPE ?= 'CDH'
-IMAGE_NAME ?= "cb-sseth-image-"$(shell date +%y%m%d%H%M)$(IMAGE_NAME_SUFFIX)
-STACK_VERSION ?= "7.2.0"
-STACK_BASEURL=http://cloudera-build-us-west-1.vpc.cloudera.com/s3/build/3425821/cdh/7.x/parcels/
-STACK_REPOID=CDH-7.2.0
-STACK_REPOSITORY_VERSION=CDH-7.2.0-1.cdh7.2.0.p0.3425821
-PARCELS_NAME=CDH-7.2.0-1.cdh7.2.0.p0.3425821-el7.parcel
-PARCELS_ROOT=/opt/cloudera/parcels
-STACK_BUILD_NUMBER=3425821
-
-
-CLUSTERMANAGER_VERSION=7.2.0
-CLUSTERMANAGER_BASEURL=http://cloudera-build-us-west-1.vpc.cloudera.com/s3/build/3341661/cm7/7.2.0/redhat7/yum/
-CLUSTERMANAGER_GPGKEY=http://cloudera-build-us-west-1.vpc.cloudera.com/s3/build/3341661/cm7/7.2.0/redhat7/yum/RPM-GPG-KEY-cloudera
-CM_BUILD_NUMBER=3341661
-PRE_WARM_PARCELS="[ [\\"PROFILER_MANAGER-2.0.3.2.0.3.0-67-el7.parcel\\",\\"http://s3.amazonaws.com/dev.hortonworks.com/DSS/centos7/2.x/BUILDS/2.0.3.0-67/tars/dataplane_profilers\\"], [\\"PROFILER_SCHEDULER-2.0.3.2.0.3.0-67-el7.parcel\\",\\"http://s3.amazonaws.com/dev.hortonworks.com/DSS/centos7/2.x/BUILDS/2.0.3.0-67/tars/dataplane_profilers\\"], [\\"SPARK3-3.0.0.2.99.7110.0-18-1.p0.3525631-el7.parcel\\",\\"http://cloudera-build-us-west-1.vpc.cloudera.com/s3/build/3525631/spark3/2.x/parcels\\"], [\\"FLINK-1.10.0-csa1.2.1.0-cdh7.2.0.0-233-3770051-el7.parcel\\",\\"http://cloudera-build-us-west-1.vpc.cloudera.com/s3/build/3770051/csa/1.2.1.0/parcels\\"], [\\"CFM-2.0.0.0-el7.parcel\\",\\"http://s3.amazonaws.com/dev.hortonworks.com/CFM/centos7/2.x/BUILDS/2.0.0.0-213/tars/parcel\\"]]"
-PRE_WARM_CSD="[\\"http://s3.amazonaws.com/dev.hortonworks.com/DSS/centos7/2.x/BUILDS/2.0.3.0-67/tars/dataplane_profilers/PROFILER_MANAGER-2.0.3.2.0.3.0-67.jar\\", \\"http://s3.amazonaws.com/dev.hortonworks.com/DSS/centos7/2.x/BUILDS/2.0.3.0-67/tars/dataplane_profilers/PROFILER_SCHEDULER-2.0.3.2.0.3.0-67.jar\\", \\"http://s3.amazonaws.com/dev.hortonworks.com/CFM/centos7/2.x/BUILDS/2.0.0.0-213/tars/parcel/NIFI-1.11.4.2.0.0.0-213.jar\\", \\"http://s3.amazonaws.com/dev.hortonworks.com/CFM/centos7/2.x/BUILDS/2.0.0.0-213/tars/parcel/NIFICA-1.11.4.2.0.0.0-213.jar\\", \\"http://cloudera-build-us-west-1.vpc.cloudera.com/s3/build/3525631/spark3/2.x/csd/SPARK3_ON_YARN-3.0.0.2.99.7110.0-18.jar\\", \\"http://cloudera-build-us-west-1.vpc.cloudera.com/s3/build/3770051/csa/1.2.1.0/csd/FLINK-1.10.0-csa1.2.1.0-cdh7.2.0.0-233-3770051.jar\\", \\"http://s3.amazonaws.com/dev.hortonworks.com/CFM/centos7/2.x/BUILDS/2.0.0.0-213/tars/parcel/NIFIREGISTRY-0.5.0.2.0.0.0-213.jar\\"]"
-CFM_BUILD_NUMBER=2.0.0.0-213
-PROFILER_BUILD_NUMBER=2.0.3.0-67
-SPARK3_BUILD_NUMBER=2.99.7110.0-18
-CSA_BUILD_NUMBER=1.2.1.0-23
-
+STACK_VERSION ?= ""
 
 ATLAS_PROJECT ?= "cloudbreak"
 ENABLE_POSTPROCESSORS ?= ""
