@@ -70,6 +70,9 @@ if os.environ.get("PRE_WARM_PARCELS", "[]"):
             try:
                 if os.path.exists(dest + ".sha"):
                     os.unlink(dest + ".sha")
+                print "ZZZ Downloading checksum file:", dest + ".sha"
+                print "ZZZ Url:", url
+                print "ZZZ ext:", ext
                 download(url + ext, dest + ".sha")
                 print "Downloaded checksum file:", dest + ".sha"
                 if check_if_string_in_file(dest + ".sha", "The specified key does not exist"):

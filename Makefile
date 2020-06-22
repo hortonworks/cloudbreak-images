@@ -2,6 +2,9 @@ BASE_NAME ?= cb
 DESCRIPTION ?= "Official Cloudbreak image"
 STACK_VERSION ?= ""
 
+PRE_WARM_PARCELS="[ [\"PROFILER_MANAGER-2.0.3.2.0.3.0-67-el7.parcel\",\"http://s3.amazonaws.com/dev.hortonworks.com/DSS/centos7/2.x/BUILDS/2.0.3.0-67/tars/dataplane_profilers\"], [\"PROFILER_SCHEDULER-2.0.3.2.0.3.0-67-el7.parcel\",\"http://s3.amazonaws.com/dev.hortonworks.com/DSS/centos7/2.x/BUILDS/2.0.3.0-67/tars/dataplane_profilers\"], [\"SPARK3-3.0.0.2.99.7110.0-18-1.p0.3525631-el7.parcel\",\"http://cloudera-build-us-west-1.vpc.cloudera.com/s3/build/3525631/spark3/2.x/parcels\"], [\"FLINK-1.10.0-csa1.2.1.0-cdh7.2.0.0-233-3728680-el7.parcel\",\"http://cloudera-build-us-west-1.vpc.cloudera.com/s3/build/3728680/csa/1.2.1.0/parcels\"], [\"CFM-2.0.0.0-el7.parcel\",\"http://s3.amazonaws.com/dev.hortonworks.com/CFM/centos7/2.x/BUILDS/2.0.0.0-213/tars/parcel\"]]"
+PRE_WARM_CSD="[\"http://s3.amazonaws.com/dev.hortonworks.com/DSS/centos7/2.x/BUILDS/2.0.3.0-67/tars/dataplane_profilers/PROFILER_MANAGER-2.0.3.2.0.3.0-67.jar\", \"http://s3.amazonaws.com/dev.hortonworks.com/DSS/centos7/2.x/BUILDS/2.0.3.0-67/tars/dataplane_profilers/PROFILER_SCHEDULER-2.0.3.2.0.3.0-67.jar\", \"http://s3.amazonaws.com/dev.hortonworks.com/CFM/centos7/2.x/BUILDS/2.0.0.0-213/tars/parcel/NIFI-1.11.4.2.0.0.0-213.jar\", \"http://s3.amazonaws.com/dev.hortonworks.com/CFM/centos7/2.x/BUILDS/2.0.0.0-213/tars/parcel/NIFICA-1.11.4.2.0.0.0-213.jar\", \"http://cloudera-build-us-west-1.vpc.cloudera.com/s3/build/3525631/spark3/2.x/csd/SPARK3_ON_YARN-3.0.0.2.99.7110.0-18.jar\", \"http://cloudera-build-us-west-1.vpc.cloudera.com/s3/build/3728680/csa/1.2.1.0/csd/FLINK-1.10.0-csa1.2.1.0-cdh7.2.0.0-233-3728680.jar\", \"http://s3.amazonaws.com/dev.hortonworks.com/CFM/centos7/2.x/BUILDS/2.0.0.0-213/tars/parcel/NIFIREGISTRY-0.5.0.2.0.0.0-213.jar\"]"
+
 ATLAS_PROJECT ?= "cloudbreak"
 ENABLE_POSTPROCESSORS ?= ""
 CUSTOM_IMAGE_TYPE ?= "hortonworks"
