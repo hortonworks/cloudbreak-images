@@ -142,6 +142,23 @@ setup_ccm() {
   if [[ -n "$CCM_KNOX_PORT" ]]; then
     update_reverse_tunnel_values KNOX "$CCM_KNOX_PORT"
   fi
+  if [[ "$IS_PROXY_ENABLED" == "true" ]]; then
+    setup_ssh_proxy
+  fi
+}
+
+setup_ssh_proxy() {
+  : ${PROXY_HOST:? required}
+  : ${PROXY_PORT:? required}
+
+  mkdir -p /root/.ssh
+  PROXY_COMMAND="ProxyCommand /usr/bin/corkscrew ${PROXY_HOST} ${PROXY_PORT} %h %p"
+  if [[ ! -z ${PROXY_USER} ]]; then
+    echo "${PROXY_USER}:${PROXY_PASSWORD}" > /root/.ssh/proxy_auth
+    chmod 600 /root/.ssh/proxy_auth
+    PROXY_COMMAND+=" /root/.ssh/proxy_auth"
+  fi
+  echo ${PROXY_COMMAND} >> /root/.ssh/config
 }
 
 update_reverse_tunnel_values() {

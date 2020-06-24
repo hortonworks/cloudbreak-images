@@ -85,6 +85,7 @@
     "cfm_build_number": "{{ env `CFM_BUILD_NUMBER` }}",
     "csp_build_number": "{{ env `CSP_BUILD_NUMBER` }}",
     "profiler_build_number": "{{ env `PROFILER_BUILD_NUMBER` }}",
+    "spark3_build_number": "{{ env `SPARK3_BUILD_NUMBER` }}",
     "metadata_filename_postfix": "{{ env `METADATA_FILENAME_POSTFIX` }}"
   },
   "builders": [
@@ -216,10 +217,10 @@
     {
       "name": "aws-centos7",
       "type": "amazon-ebs",
-      "region": "eu-west-1",
+      "region": "us-west-1",
       "ami_regions": "{{ user `aws_ami_regions` }}",
       "ssh_pty": true,
-      "source_ami": "ami-0ff760d16d9497662",
+      "source_ami": "ami-074e2d6769f445be5",
       "instance_type": "{{ user `aws_instance_type` }}",
       "ssh_username": "centos",
       "ena_support": true,
@@ -891,6 +892,7 @@
         "cfm_build_number={{ user `cfm_build_number` }}",
         "csp_build_number={{ user `csp_build_number` }}",
         "profiler_build_number={{ user `profiler_build_number` }}",
+        "spark3_build_number={{ user `spark3_build_number` }}",
         "metadata_filename_postfix={{ user `metadata_filename_postfix` }}"
       ]
     }

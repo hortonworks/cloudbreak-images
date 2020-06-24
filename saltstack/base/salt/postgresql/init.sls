@@ -1,32 +1,24 @@
-{% if  pillar['OS'] == 'amazonlinux' or ( grains['os_family'] == 'RedHat' and grains['osmajorrelease'] | int == 6 )  %}
-/etc/yum.repos.d/pgdg96.repo:
-  file.managed:
-    - source: salt://postgresql/yum/postgres96-el6.repo
 
-/etc/pki/rpm-gpg/RPM-GPG-KEY-PGDG-96:
+{% if pillar['OS'] == 'amazonlinux2' or ( grains['os_family'] == 'RedHat' and grains['osmajorrelease'] | int == 7 ) %}
+/etc/yum.repos.d/pgdg10.repo:
   file.managed:
-    - source: salt://postgresql/yum/pgdg96-gpg
+    - source: salt://postgresql/yum/postgres10-el7.repo
 
-{% elif pillar['OS'] == 'amazonlinux2' or ( grains['os_family'] == 'RedHat' and grains['osmajorrelease'] | int == 7 ) %}
-/etc/yum.repos.d/pgdg96.repo:
+/etc/pki/rpm-gpg/RPM-GPG-KEY-PGDG-10:
   file.managed:
-    - source: salt://postgresql/yum/postgres96-el7.repo
-
-/etc/pki/rpm-gpg/RPM-GPG-KEY-PGDG-96:
-  file.managed:
-    - source: salt://postgresql/yum/pgdg96-gpg
+    - source: salt://postgresql/yum/pgdg10-gpg
 {% endif %}
 
 {% if grains['os_family'] == 'RedHat' and grains['osmajorrelease'] | int == 7  %}
 install-postgres:
   pkg.installed:
     - pkgs:
-      - postgresql96-server
+      - postgresql10-server
       - postgresql-jdbc
-      - postgresql96
-      - postgresql96-contrib
-      - postgresql96-docs
-      - postgresql96-devel
+      - postgresql10
+      - postgresql10-contrib
+      - postgresql10-docs
+      - postgresql10-devel
 
 {% elif grains['os_family'] == 'Debian' %}
 install-postgres:
@@ -70,17 +62,17 @@ remove-postgres-sysconfig:
 install-postgres:
   pkg.installed:
     - pkgs:
-      - postgresql96-server
-      - postgresql96-contrib
-      - postgresql96-docs
-      - postgresql96-devel
+      - postgresql10-server
+      - postgresql10-contrib
+      - postgresql10-docs
+      - postgresql10-devel
       - postgresql-jdbc
-      - postgresql96
+      - postgresql10
 
 {% if  pillar['OS'] != 'amazonlinux2' %}
 /etc/init.d/postgresql:
   file.symlink:
-      - target: /etc/init.d/postgresql-9.6
+      - target: /etc/init.d/postgresql-10
       - force: True
 {% endif %}
 {% endif %}
@@ -117,29 +109,29 @@ install_openjdk11-headless_for_postgres:
 {% if  pillar['OS'] == 'amazonlinux2' or ( grains['os_family'] == 'RedHat' and grains['osmajorrelease'] | int == 7 ) %}
 /var/lib/pgsql/data:
   file.symlink:
-      - target: /var/lib/pgsql/9.6/data
+      - target: /var/lib/pgsql/10/data
       - force: True
 
 init-pg-database:
   cmd.run:
-    - name: find /var/lib/pgsql/ -name PG_VERSION | grep -q "data/PG_VERSION" || /usr/pgsql-9.6/bin/postgresql96-setup initdb
+    - name: find /var/lib/pgsql/ -name PG_VERSION | grep -q "data/PG_VERSION" || /usr/pgsql-10/bin/postgresql-10-setup initdb
 
 systemd-link:
   file.replace:
-    - name: /usr/lib/systemd/system/postgresql-9.6.service
+    - name: /usr/lib/systemd/system/postgresql-10.service
     - pattern: "\\[Install\\]"
     - repl: "[Install]\nAlias=postgresql.service"
-    - unless: cat /usr/lib/systemd/system/postgresql-9.6.service | grep postgresql.service
+    - unless: cat /usr/lib/systemd/system/postgresql-10.service | grep postgresql.service
 
 
 {% if salt['file.directory_exists']('/yarn-private') %}  # systemctl reenable does not work on ycloud so we create the symlink manually
 create-postgres-service-link:
   cmd.run:
-    - name: ln -sf /usr/lib/systemd/system/postgresql-9.6.service /usr/lib/systemd/system/postgresql.service && systemctl disable postgresql-9.6 && systemctl enable postgresql
+    - name: ln -sf /usr/lib/systemd/system/postgresql-10.service /usr/lib/systemd/system/postgresql.service && systemctl disable postgresql-10 && systemctl enable postgresql
 {% else %}
 reenable-postgres:
   cmd.run:
-    - name: systemctl reenable postgresql-9.6.service
+    - name: systemctl reenable postgresql-10.service
 {% endif %}
 
 {% elif pillar['OS'] == 'debian9' or ( grains['os_family'] == 'Debian' and grains['osmajorrelease'] | int in ( 8, 9, 16, 18 ) )  %}

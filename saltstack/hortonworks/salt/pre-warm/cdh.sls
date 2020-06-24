@@ -1,3 +1,8 @@
+install_mktorrent:
+  pkg.installed:
+    - pkgs:
+      - mktorrent
+
 install_cdh:
   cmd.script:
     - name: salt://pre-warm/tmp/install_cdh.sh

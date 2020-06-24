@@ -22,3 +22,19 @@ enable_nginx:
     - name: nginx
     - require:
       - pkg: install_nginx
+
+nginxRestart:
+  file.line:
+    - name: /usr/lib/systemd/system/nginx.service
+    - mode: ensure
+    - content: "Restart=always"
+    - after: \[Service\]
+    - backup: False
+
+nginxRestartSec:
+  file.line:
+    - name: /usr/lib/systemd/system/nginx.service
+    - mode: ensure
+    - content: "RestartSec=3"
+    - after: "Restart=always"
+    - backup: False

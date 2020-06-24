@@ -29,9 +29,9 @@ DOCKER_REPO_PASSWORD ?= "JCnvWff6iFSfD5QgYt66"
 ## https://github.com/hashicorp/packer/issues/6536
 AWS_MAX_ATTEMPTS ?= 300
 PACKAGE_VERSIONS ?= ""
-SALT_VERSION ?= 2017.7.5
+SALT_VERSION ?= 3000.2
 SALT_PATH ?= /opt/salt_$(SALT_VERSION)
-PYZMQ_VERSION ?= 14.5.0
+PYZMQ_VERSION ?= 19.0
 PYTHON_APT_VERSION ?= 1.1.0_beta1ubuntu0.16.04.1
 STACK_VERSION_SHORT=$(STACK_TYPE)-$(shell echo $(STACK_VERSION) | tr -d . | cut -c1-2 )
 ifndef IMAGE_NAME
@@ -182,7 +182,7 @@ build-aws-centos6:
 
 build-aws-centos7-base:
 	$(ENVS) \
-	AWS_AMI_REGIONS="eu-west-1" \
+	AWS_AMI_REGIONS="us-west-1" \
 	OS=centos7 \
 	OS_TYPE=redhat7 \
 	ATLAS_ARTIFACT_TYPE=amazon \
@@ -364,6 +364,10 @@ build-azure-ubuntu16:
 
 copy-azure-images:
 	AZURE_STORAGE_ACCOUNTS="$(AZURE_STORAGE_ACCOUNTS)" AZURE_IMAGE_NAME="$(AZURE_IMAGE_NAME)" ./scripts/azure-copy.sh
+	make check-azure-images
+
+check-azure-images:
+	AZURE_STORAGE_ACCOUNTS="$(AZURE_STORAGE_ACCOUNTS)" AZURE_IMAGE_NAME="$(AZURE_IMAGE_NAME)" ./scripts/azure-image-check.sh
 
 bundle-googlecompute:
 	$(ENVS) GCP_STORAGE_BUNDLE=$(GCP_STORAGE_BUNDLE) GCP_STORAGE_BUNDLE_LOG=$(GCP_STORAGE_BUNDLE_LOG) ./scripts/bundle-gcp-image.sh

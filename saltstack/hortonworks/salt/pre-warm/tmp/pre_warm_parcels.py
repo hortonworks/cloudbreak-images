@@ -60,13 +60,22 @@ if os.environ.get("PRE_WARM_PARCELS", "[]"):
         else:
             return url
 
+    def check_if_string_in_file(fname, txt):
+        with open(fname, 'r') as myfile:
+            if txt in myfile.read():
+                return true
 
     def download_parcel_checksum(url, dest):
         for ext in (".sha", ".sha1", ".sha256"):
             try:
+                if os.path.exists(dest + ".sha"):
+                    os.unlink(dest + ".sha")
                 download(url + ext, dest + ".sha")
-                print "Downloaded checksum file:", url + ext
-                return ext
+                print "Downloaded checksum file:", dest + ".sha"
+                if check_if_string_in_file(dest + ".sha", "The specified key does not exist"):
+                    raise Exception("wrong file:" + url + ext)
+                else:
+                    return ext
             except:
                 pass
         raise Exception("failed to download parcel sha file")

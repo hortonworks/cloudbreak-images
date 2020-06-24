@@ -3,7 +3,7 @@
 : ${DEBUG:=1}
 : ${DRY_RUN:-1}
 
-set -e -o pipefail -o errexit
+set -ex -o pipefail -o errexit
 
 function prepare {
   sudo chown -R root:root /tmp/saltstack

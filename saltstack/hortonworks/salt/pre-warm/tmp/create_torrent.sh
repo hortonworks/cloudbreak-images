@@ -7,11 +7,16 @@ set -x
 parcels=("$PARCEL_REPO"/*.parcel)
 
 for parcel in "${parcels[@]}"; do
-	mktorrent -l 19 -v -p -a "" -o "${parcel}.torrent" "${parcel}";
-	touch "${parcel}".skiphash
+	if [[ -f "${parcel}.torrent" ]]; then
+		echo "$parcel torrent already exists, skip"
+	else
+		mktorrent -l 19 -v -p -a "" -o "${parcel}.torrent" "${parcel}"
+		touch "${parcel}".skiphash
+		rm -f "${parcel}"
+		touch "${parcel}"
+	fi
 done
 
-chown cloudera-scm:cloudera-scm ${PARCEL_REPO}/*.torrent
-chown cloudera-scm:cloudera-scm ${PARCEL_REPO}/*.skiphash
+chown -R cloudera-scm:cloudera-scm ${PARCEL_REPO}
 
 echo "Torrent creation successful" >> /tmp/create_torrent.status

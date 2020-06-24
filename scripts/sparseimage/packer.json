@@ -2,9 +2,9 @@
     "variables": {
         "aws_subnet_id": "{{env `AWS_SUBNET_ID`}}",
         "aws_vpc_id": "{{env `AWS_VPC_ID`}}",
-        "aws_region": "eu-west-1",
+        "aws_region": "us-west-1",
         "aws_ssh_username": "ubuntu",
-        "aws_source_ami": "ami-a4d44ed7",
+        "aws_source_ami": "ami-b20542d2",
         "aws_target_ami": "{{env `IMAGE_NAME`}}",
         "aws_associate_public_ip_address": "false",
         "aws_ena_support": "true",
@@ -38,6 +38,8 @@
         "associate_public_ip_address": false,
         "force_deregister": "true",
         "force_delete_snapshot": "true",
+        "vpc_id": "{{ user `aws_vpc_id`}}",
+        "subnet_id": "{{ user `aws_subnet_id`}}",
         "tags": {
             "owner": "{{user `owner`}}"
         },

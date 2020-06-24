@@ -38,7 +38,7 @@ COPY /scripts/salt_requirements.txt /tmp/salt_requirements.txt
 # Force the minions to use systemd on this host
 RUN echo $'\n\
 providers:\n\
-  service: systemd\n'\
+  service: systemd_service\n'\
 >>  /tmp/saltstack/config/minion
 
 COPY docker/common/_grains/ /tmp/saltstack/base/salt/_grains/
