@@ -86,6 +86,7 @@
     "csp_build_number": "{{ env `CSP_BUILD_NUMBER` }}",
     "profiler_build_number": "{{ env `PROFILER_BUILD_NUMBER` }}",
     "spark3_build_number": "{{ env `SPARK3_BUILD_NUMBER` }}",
+    "csa_build_number": "{{ env `CSA_BUILD_NUMBER` }}",
     "metadata_filename_postfix": "{{ env `METADATA_FILENAME_POSTFIX` }}"
   },
   "builders": [
@@ -644,7 +645,7 @@
       "location": "{{user `arm_build_region`}}",
       "vm_size": "Standard_D4",
       "os_disk_size_gb": "{{user `image_size`}}",
-      "virtual_network_resource_group_name":"{{user `virtual_network_resource_group_name`}}",      
+      "virtual_network_resource_group_name":"{{user `virtual_network_resource_group_name`}}",
       "virtual_network_name": "{{user `vpc_id`}}",
       "virtual_network_subnet_name": "{{user `subnet_id`}}",
       "azure_tags": {
@@ -711,9 +712,9 @@
       "location": "{{user `arm_build_region`}}",
       "vm_size": "Standard_D4",
       "os_disk_size_gb": "{{user `image_size`}}",
-      "virtual_network_resource_group_name":"{{user `virtual_network_resource_group_name`}}",      
+      "virtual_network_resource_group_name":"{{user `virtual_network_resource_group_name`}}",
       "virtual_network_name": "{{user `vpc_id`}}",
-      "virtual_network_subnet_name": "{{user `subnet_id`}}",      
+      "virtual_network_subnet_name": "{{user `subnet_id`}}",
       "azure_tags": {
         "builder": "packer",
         "version": "{{user `version`}}",
@@ -744,9 +745,9 @@
       "location": "{{user `arm_build_region`}}",
       "vm_size": "Standard_D4",
       "os_disk_size_gb": "{{user `image_size`}}",
-      "virtual_network_resource_group_name":"{{user `virtual_network_resource_group_name`}}",      
+      "virtual_network_resource_group_name":"{{user `virtual_network_resource_group_name`}}",
       "virtual_network_name": "{{user `vpc_id`}}",
-      "virtual_network_subnet_name": "{{user `subnet_id`}}",     
+      "virtual_network_subnet_name": "{{user `subnet_id`}}",
       "azure_tags": {
         "builder": "packer",
         "version": "{{user `version`}}",
@@ -893,6 +894,7 @@
         "csp_build_number={{ user `csp_build_number` }}",
         "profiler_build_number={{ user `profiler_build_number` }}",
         "spark3_build_number={{ user `spark3_build_number` }}",
+        "csa_build_number={{ user `csa_build_number` }}",
         "metadata_filename_postfix={{ user `metadata_filename_postfix` }}"
       ]
     }

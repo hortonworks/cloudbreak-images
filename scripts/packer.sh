@@ -142,6 +142,7 @@ packer_in_container() {
     -e CFM_BUILD_NUMBER="$CFM_BUILD_NUMBER" \
     -e PROFILER_BUILD_NUMBER="$PROFILER_BUILD_NUMBER" \
     -e SPARK3_BUILD_NUMBER="$SPARK3_BUILD_NUMBER" \
+    -e CSA_BUILD_NUMBER="$CSA_BUILD_NUMBER" \
     -e METADATA_FILENAME_POSTFIX="$METADATA_FILENAME_POSTFIX" \
     -v /var/run/docker.sock:/var/run/docker.sock \
     -v $PWD:$PWD \
