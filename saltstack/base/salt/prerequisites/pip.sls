@@ -39,6 +39,16 @@ install_cm_client:
     - name: pip install cm-client==40.0.3 --ignore-installed
     - unless: pip list | grep -E 'cm-client.*40.0.3'
 
+install_fluent_logger:
+  cmd.run:
+    - name: pip install fluent-logger>=0.9.6 --ignore-installed
+    - unless: pip list --no-index | grep -E 'fluent-logger'
+
+install_pid:
+  cmd.run:
+    - name: pip install pid --ignore-installed
+    - unless: pip list --no-index | grep -E 'pid'
+
 install_jq:
   file.managed:
     - name: /usr/bin/jq
