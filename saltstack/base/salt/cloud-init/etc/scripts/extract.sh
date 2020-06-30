@@ -38,7 +38,7 @@ echo OP: Done extracting all files.
 
 
 
-# Notesfor review
+# Notes for review
 # - The way EC2 launches instances, a lot of files end up being downloaded from S3? on-demand.
 # 
 # What shows up in scale-up timing
