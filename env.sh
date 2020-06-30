@@ -25,6 +25,6 @@ export SUBNET_ID=subnet-095203f3a2844d64c
 echo "================================================================="
 echo "   Make sure to set the AWS ACCESS KEY env variables"
 echo "================================================================="
-exit 1
+#exit 1
 export AWS_SECRET_ACCESS_KEY=
 export AWS_ACCESS_KEY_ID=

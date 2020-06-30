@@ -77,6 +77,10 @@ apply_optional_states
 echo "Running validation and cleanup"
 highstate "final"
 
-echo "Removing salt and python3.6"
+echo "Removing salt,td-agent and python3.6"
 rm -fr /opt/salt_3000.2
+tar -C /opt -cvzf /opt/td-agent-archive.tar.gz td-agent
+rm -fr /opt/td-agent
 rm -fr /usr/lib64/python3.6
+rm -fr /usr/lib/python3.6
+# Not removing python2.7 since it is used by cloud-init
