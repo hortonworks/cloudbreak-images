@@ -2,7 +2,7 @@
 {% set cloudera_public_gem_repo = 'https://repository.cloudera.com/cloudera/api/gems/cloudera-gems/' %}
 {% set cloudera_azure_plugin_version = '1.0.1' %}
 {% set cloudera_azure_gen2_plugin_version = '0.3.1' %}
-{% set cloudera_databus_plugin_version = '1.0.4' %}
+{% set cloudera_databus_plugin_version = '1.0.5' %}
 {% set redaction_plugin_version = '0.1.2' %}
 
 {% if os.startswith("centos") or os.startswith("redhat") %}
