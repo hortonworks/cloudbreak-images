@@ -33,6 +33,6 @@ else
     USER=${CCM_TUNNEL_INITIATOR_ID}_${ROLE}
 fi
 
-exec autossh -M 0 -o "ServerAliveInterval 30" -o "ServerAliveCountMax 3" \
+exec autossh -M 0 -o "ConnectTimeout 30" -o "ServerAliveInterval 30" -o "ServerAliveCountMax 3" \
 -o UserKnownHostsFile=${CCM_PUBLIC_KEY_FILE} -N -T -R ${LOCAL_IP}:0:localhost:${CCM_TUNNEL_SERVICE_PORT} \
 -i ${PRIVATE_KEY} -p ${CCM_SSH_PORT} ${USER}@${CCM_HOST} -vvv
