@@ -69,7 +69,12 @@ function install_nvme-cli () {
 }
 
 function install_with_yum() {
-  yum update -y python
+  if [ "${OS}" == "centos8" ] ; then
+    yum update -y python2
+    yum update -y python3
+  else
+    yum update -y python
+  fi
   yum install -y yum-utils yum-plugin-versionlock
   yum clean metadata
   enable_epel_repository
@@ -104,6 +109,10 @@ function install_python_pip() {
     echo "Installing python36 with deps"
     yum install -y python36 python36-pip python36-devel python36-setuptools
     make_pip3_default_pip
+  elif [ "${OS_TYPE}" == "redhat8" ]; then
+    echo "Installing python36 with deps"
+    yum install -y python36 python36-devel
+    make_pip3_default_pip
   else
     yum install -y python-pip python-devel
   fi
@@ -111,7 +120,7 @@ function install_python_pip() {
 
 function make_pip3_default_pip() {
   FILE=/bin/pip
-  if [ -f "$FILE" ]; then
+  if [ -f "$FILE" ] && ["${OS_TYPE}" != "redhat8" ]; then
       mv /bin/pip /bin/pip2
   fi
   mv /bin/pip3 /bin/pip

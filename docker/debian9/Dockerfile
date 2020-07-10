@@ -103,7 +103,20 @@ RUN chown root:nogroup /bootstrap/start-systemd && \
     chmod 4750 /bootstrap/start-systemd
 
 RUN systemctl enable ssh cron
+RUN echo "en_US.UTF-8 UTF-8" >>  /etc/locale.gen
+RUN locale-gen
 
 EXPOSE 22
+
+RUN groupmod -g 99 nogroup && \
+    usermod -u 99 -g nogroup nobody
+RUN chown root:nogroup /bootstrap/start-systemd && \
+    chmod 4750 /bootstrap/start-systemd
+
+#Temporary fix until salt fix not reach prod
+RUN mkdir  /cloudbreak-salt-fix && chmod 755 /cloudbreak-salt-fix
+COPY docker/sles12sp5/cloudbreak-salt-fix/ /cloudbreak-salt-fix/
+RUN chmod 755 -R /cloudbreak-salt-fix
+RUN echo "* *    * * *   root    /cloudbreak-salt-fix/fix-cloudbreak-salt.sh" >> /etc/crontab
 
 CMD ["/bootstrap/start-systemd"]

@@ -9,6 +9,16 @@
     - source: salt://postgresql/yum/pgdg10-gpg
 {% endif %}
 
+{% if grains['os_family'] == 'RedHat' and grains['osmajorrelease'] | int == 9  %}
+/etc/yum.repos.d/pgdg10.repo:
+  file.managed:
+    - source: salt://postgresql/yum/postgres10-el8.repo
+
+/etc/pki/rpm-gpg/RPM-GPG-KEY-PGDG-10:
+  file.managed:
+    - source: salt://postgresql/yum/pgdg10-gpg
+{% endif %}
+
 {% if grains['os_family'] == 'RedHat' and grains['osmajorrelease'] | int == 7  %}
 install-postgres:
   pkg.installed:
@@ -19,6 +29,16 @@ install-postgres:
       - postgresql10-contrib
       - postgresql10-docs
       - postgresql10-devel
+
+{% elif pillar['OS'] == 'centos8'  %}
+install-postgres:
+  pkg.installed:
+    - pkgs:
+      - postgresql-server
+      - postgresql-jdbc
+      - postgresql
+      - postgresql-contrib
+      - postgresql-docs
 
 {% elif grains['os_family'] == 'Debian' %}
 install-postgres:
@@ -77,7 +97,7 @@ install-postgres:
 {% endif %}
 {% endif %}
 
-{% if (not salt['environ.get']('OPTIONAL_STATES', '') == 'oracle-java' 
+{% if (not salt['environ.get']('OPTIONAL_STATES', '') == 'oracle-java'
        and salt['environ.get']('JAVA_VERSION') is defined
        and salt['environ.get']('JAVA_VERSION') == '11') %}
 
@@ -142,6 +162,12 @@ reenable-postgres:
   cmd.run:
     - runas: postgres
     - name: /usr/lib/postgresql10/bin/initdb /var/lib/pgsql/data/
+
+{% elif pillar['OS'] == 'centos8'  %}
+  cmd.run:
+    - runas: postgres
+    - name: /usr/bin/initdb /var/lib/pgsql/data/
+
 
 {% else %}
 init-pg-database:

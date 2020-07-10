@@ -7,7 +7,7 @@ else
     CONFIG_FILE=$(psql -c "show config_file;" -t | xargs)
     echo "Config file: $CONFIG_FILE"
 fi
-
+echo "fisrt part"
 set -e
 if grep -qR "^listen_addresses =" $CONFIG_FILE; then
     echo "Updating listen_addresses config in the postgresql.conf"
@@ -16,4 +16,5 @@ else
     echo "Adding listen_addresses config to the postgresql.conf"
     echo "listen_addresses = '*'" >> $CONFIG_FILE
 fi
+echo "second part"
 set +e

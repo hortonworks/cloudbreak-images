@@ -21,7 +21,7 @@ packages_install:
       - git
       - tmux
   {% endif %}
-  {% if pillar['OS'] in ('ubuntu18') %}
+  {% if pillar['OS'] in ('ubuntu18') or pillar['OS'] in ('centos8') %}
       - chrony
   {% else %}
       - ntp
@@ -35,7 +35,7 @@ packages_install:
   {% if grains['os_family'] == 'RedHat' %}
       - snappy
       - cloud-utils-growpart
-    {% if pillar['OS'] != 'redhat7' %}
+    {% if pillar['OS'] != 'redhat7' and pillar['OS'] != 'centos8' %}
       - snappy-devel
     {% endif %}
       - bind-utils
@@ -46,7 +46,9 @@ packages_install:
       - iptables-persistent
       - dnsutils
   {% endif %}
+      {% if grains['os_family'] == 'RedHat' and grains['osmajorrelease'] | int != 8  %}
       - deltarpm
+      {% endif %}
       - nvme-cli
       - openssl
   {% if pillar['OS'] in ('centos7', 'centos6', 'redhat7') %}
@@ -54,10 +56,10 @@ packages_install:
   {% else %}
       - vim
   {% endif %}
-  {% if grains['os_family'] != 'Suse' and grains['osmajorrelease'] |int != 12 %}
+  {% if  pillar['OS'] != 'centos8' and grains['os_family'] != 'Suse' and grains['osmajorrelease'] |int != 12 %}
       - autossh
   {% endif %}
-     {% if grains['os_family'] != 'Suse'%}
+     {% if pillar['OS'] != 'centos8' and grains['os_family'] != 'Suse'%}
       - awscli
       {% endif %}
     {% if pillar['OS'] in ('ubuntu16', 'ubuntu18') %}
@@ -129,4 +131,3 @@ install_bash_completion:
     - pkgs:
       - bash-completion
 {% endif %}
-
