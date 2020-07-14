@@ -43,6 +43,7 @@ providers:\n\
 
 COPY docker/common/_grains/ /tmp/saltstack/base/salt/_grains/
 COPY docker/common/_grains/ /tmp/saltstack/hortonworks/salt/_grains/
+RUN printf '\n\nproviders:\n  service: systemd\n' >>/tmp/saltstack/config/minion
 
 RUN /tmp/saltstack/salt-install.sh centos ${SALT_REPO}
 
