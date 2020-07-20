@@ -92,44 +92,43 @@ packer
 endef
 
 define AZURE_STORAGE_ACCOUNTS
-East Asia:sequenceiqeastasia2,\
-East US:sequenceiqeastus12,\
-Central US:sequenceiqcentralus2,\
-North Europe:sequenceiqnortheurope2,\
-South Central US:sequenceiqouthcentralus2,\
-North Central US:sequenceiqorthcentralus2,\
-East US 2:sequenceiqeastus22,\
-Japan East:sequenceiqjapaneast2,\
-Japan West:sequenceiqjapanwest2,\
-South East Asia:sequenceiqsoutheastasia2,\
-West US:sequenceiqwestus2,\
-West Europe:sequenceiqwesteurope2,\
-Brazil South:sequenceiqbrazilsouth2,\
-Canada East:sequenceiqcanadaeast,\
-Canada Central:sequenceiqcanadacentral,\
-Australia East:hwxaustraliaeast,\
-Australia Southeast:hwxaustralisoutheast,\
-Central India:hwxcentralindia,\
-Korea Central:hwxkoreacentral,\
-Korea South:hwxkoreasouth,\
-South India:hwxsouthindia,\
-UK South:hwxsouthuk,\
-West Central US:hwxwestcentralus,\
-UK West:hwxwestuk,\
-West US 2:hwxwestus2,\
-West India:hwxwestindia,\
-Australia Central:hwxaustraliacentral,\
-UAE North:hwxuaenorth,\
-UAE Central:hwxuaecentral,\
-South Africa North:hwxsouthafricanorth,\
-South Africa West:hwxsouthafricawest,\
-France Central:hwxfrancecentral,\
-Switzerland North:hwxswitzerlandnorth,\
-Switzerland West:hwxswitzerlandwest,\
-Germany North :hwxgermanynorth,\
-Germany West Central:hwxgermanywestcentral,\
-Norway West:hwxnorwaywest,\
-Norway East:hwxnorwayeast
+East Asia:cldreastasia,\
+East US:cldreastus,\
+Central US:cldrcentralus,\
+North Europe:cldrnortheurope,\
+South Central US:cldrsouthcentralus,\
+North Central US:cldrnorthcentralus,\
+East US 2:cldreastus2,\
+Japan East:cldrjapaneast,\
+Japan West:cldrjapanwest,\
+South East Asia:cldrsoutheastasia,\
+West US:cldrwestus,\
+West Europe:cldrwesteurope,\
+Brazil South:cldrbrazilsouth,\
+Canada East:cldrcanadaeast,\
+Canada Central:cldrcanadacentral,\
+Australia East:cldraustraliaeast,\
+Australia Southeast:cldraustralisoutheast,\
+Central India:cldrcentralindia,\
+Korea Central:cldrkoreacentral,\
+Korea South:cldrkoreasouth,\
+South India:cldrsouthindia,\
+UK South:cldruksouth,\
+West Central US:cldrwestcentralus,\
+UK West:cldrukwest,\
+West US 2:cldrwestus2,\
+West India:cldrwestindia,\
+Australia Central:cldraustraliacentral,\
+UAE North:cldruaenorth,\
+South Africa North:cldrsouthafricanorth,\
+South Africa West:cldrsouthafricawest,\
+France Central:cldrfrancecentral,\
+Switzerland North:cldrswitzerlandnorth,\
+Switzerland West:cldrswitzerlandwest,\
+Germany North :cldrgermanynorth,\
+Germany West Central:cldrgermanywestcentral,\
+Norway West:cldrnorwaywest,\
+Norway East:cldrnorwayeast
 endef
 
 GCP_STORAGE_BUNDLE ?= "sequenceiqimage"
