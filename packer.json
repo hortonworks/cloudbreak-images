@@ -221,7 +221,7 @@
       "region": "us-west-1",
       "ami_regions": "{{ user `aws_ami_regions` }}",
       "ssh_pty": true,
-      "source_ami": "ami-074e2d6769f445be5",
+      "source_ami": "ami-098f55b4287a885ba",
       "instance_type": "{{ user `aws_instance_type` }}",
       "ssh_username": "centos",
       "ena_support": true,
