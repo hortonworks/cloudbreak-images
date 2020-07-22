@@ -83,14 +83,6 @@ define AWS_AMI_REGIONS
 ap-northeast-1,ap-northeast-2,ap-south-1,ap-southeast-1,ap-southeast-2,ca-central-1,eu-central-1,eu-west-1,eu-west-2,eu-west-3,sa-east-1,us-east-1,us-east-2,us-west-1,us-west-2,eu-north-1
 endef
 
-define AWS_GOV_AMI_REGIONS
-us-gov-west-1
-endef
-
-define AWS_GOV_INSTANCE_PROFILE
-packer
-endef
-
 define AZURE_STORAGE_ACCOUNTS
 East Asia:cldreastasia,\
 East US:cldreastus,\
@@ -131,53 +123,10 @@ Norway West:cldrnorwaywest,\
 Norway East:cldrnorwayeast
 endef
 
-GCP_STORAGE_BUNDLE ?= "sequenceiqimage"
-GCP_STORAGE_BUNDLE_LOG ?= "sequenceiqimagelog"
-
 S3_TARGET ?= "s3://public-repo-1.hortonworks.com/HDP/cloudbreak"
 
 show-image-name:
 	@echo IMAGE_NAME=$(IMAGE_NAME)
-
-build-aws-amazonlinux:
-	$(ENVS) \
-	AWS_AMI_REGIONS="$(AWS_AMI_REGIONS)" \
-	AWS_INSTANCE_PROFILE="$(AWS_GOV_INSTANCE_PROFILE)" \
-	OS=amazonlinux \
-	OS_TYPE=redhat6 \
-	ATLAS_ARTIFACT_TYPE=amazon \
-	SALT_INSTALL_OS=amazon \
-	SALT_REPO_FILE="salt-repo-amzn.repo" \
-	./scripts/packer.sh build -only=aws-amazonlinux $(PACKER_OPTS)
-
-build-gov-aws-amazonlinux:
-	$(ENVS) \
-	AWS_AMI_REGIONS="$(AWS_GOV_AMI_REGIONS)" \
-	OS=amazonlinux \
-	OS_TYPE=redhat6 \
-	ATLAS_ARTIFACT_TYPE=amazon \
-	SALT_INSTALL_OS=amazon \
-	SALT_REPO_FILE="salt-repo-amzn.repo" \
-	./scripts/packer.sh build -only=gov-aws-amazonlinux $(PACKER_OPTS)
-
-build-aws-amazonlinux2:
-	$(ENVS) \
-	AWS_AMI_REGIONS="$(AWS_AMI_REGIONS)" \
-	OS=amazonlinux2 \
-	OS_TYPE=amazonlinux2 \
-	ATLAS_ARTIFACT_TYPE=amazon \
-	SALT_INSTALL_OS=amazon \
-	./scripts/packer.sh build -only=aws-amazonlinux2 $(PACKER_OPTS)
-
-build-aws-centos6:
-	$(ENVS) \
-	AWS_AMI_REGIONS="$(AWS_AMI_REGIONS)" \
-	OS=centos6 \
-	OS_TYPE=redhat6 \
-	ATLAS_ARTIFACT_TYPE=amazon \
-	SALT_INSTALL_OS=centos \
-	SALT_REPO_FILE="salt-repo-el6.repo" \
-	./scripts/packer.sh build -only=aws-centos6 $(PACKER_OPTS)
 
 build-aws-centos7-base:
 	$(ENVS) \
@@ -188,33 +137,6 @@ build-aws-centos7-base:
 	SALT_INSTALL_OS=centos \
 	./scripts/packer.sh build -only=aws-centos7 $(PACKER_OPTS)
 
-build-aws-redhat7:
-	$(ENVS) \
-	AWS_AMI_REGIONS="$(AWS_AMI_REGIONS)" \
-	OS=redhat7 \
-	OS_TYPE=redhat7 \
-	ATLAS_ARTIFACT_TYPE=amazon \
-	SALT_INSTALL_OS=redhat \
-	./scripts/packer.sh build -only=aws-rhel7 $(PACKER_OPTS)
-
-build-aws-sles12sp3:
-	$(ENVS) \
-	AWS_AMI_REGIONS="$(AWS_AMI_REGIONS)" \
-	OS=sles12 \
-	OS_TYPE=sles12 \
-	ATLAS_ARTIFACT_TYPE=amazon \
-	SALT_INSTALL_OS=suse \
-	./scripts/packer.sh build -only=aws-sles12sp3 $(PACKER_OPTS)
-
-build-aws-ubuntu16:
-	$(ENVS) \
-	AWS_AMI_REGIONS="$(AWS_AMI_REGIONS)" \
-	OS=ubuntu16 \
-	OS_TYPE=ubuntu16 \
-	ATLAS_ARTIFACT_TYPE=amazon \
-	SALT_INSTALL_OS=ubuntu \
-	./scripts/packer.sh build -only=aws-ubuntu16 $(PACKER_OPTS)
-
 build-aws-centos7: export IMAGE_NAME := $(IMAGE_NAME)
 
 build-aws-centos7: 
@@ -222,108 +144,6 @@ build-aws-centos7:
 	$(ENVS) \
 	AWS_AMI_REGIONS="$(AWS_AMI_REGIONS)" \
 	./scripts/sparseimage/packer.sh build -force $(PACKER_OPTS)
-
-build-os-centos6:
-	$(ENVS) \
-	ATLAS_ARTIFACT_TYPE=openstack \
-	SALT_INSTALL_OS=centos \
-	./scripts/packer.sh build -only=os-centos6 $(PACKER_OPTS)
-
-build-os-centos7:
-	$(ENVS) \
-	OS=centos7 \
-	OS_TYPE=redhat7 \
-	ATLAS_ARTIFACT_TYPE=openstack \
-	SALT_INSTALL_OS=centos \
-	./scripts/packer.sh build -only=os-centos7 $(PACKER_OPTS)
-
-build-os-debian9:
-	$(ENVS) \
-	OS=debian9 \
-	OS_TYPE=debian9 \
-	ATLAS_ARTIFACT_TYPE=openstack \
-	SALT_INSTALL_OS=debian \
-	./scripts/packer.sh build -only=os-debian9 $(PACKER_OPTS)
-
-build-os-ubuntu12:
-	$(ENVS) \
-	OS=ubuntu12 \
-	OS_TYPE=ubuntu12 \
-	ATLAS_ARTIFACT_TYPE=openstack \
-	SALT_INSTALL_OS=ubuntu \
-	./scripts/packer.sh build -only=os-ubuntu12 $(PACKER_OPTS)
-
-build-os-ubuntu14:
-	$(ENVS) \
-	OS=ubuntu14 \
-	OS_TYPE=ubuntu14 \
-	ATLAS_ARTIFACT_TYPE=openstack \
-	SALT_INSTALL_OS=ubuntu \
-	./scripts/packer.sh build -only=os-ubuntu14 $(PACKER_OPTS)
-
-build-os-ubuntu16:
-	$(ENVS) \
-	OS=ubuntu16 \
-	OS_TYPE=ubuntu16 \
-	ATLAS_ARTIFACT_TYPE=openstack \
-	SALT_INSTALL_OS=ubuntu \
-	./scripts/packer.sh build -only=os-ubuntu16 $(PACKER_OPTS)
-
-build-os-ubuntu18:
-	$(ENVS) \
-        OS=ubuntu18 \
-        OS_TYPE=ubuntu18 \
-        ATLAS_ARTIFACT_TYPE=openstack \
-        SALT_INSTALL_OS=ubuntu \
-        ./scripts/packer.sh build -only=os-ubuntu18 $(PACKER_OPTS)
-
-build-os-sles12sp3:
-	$(ENVS) \
-	OS=sles12 \
-	OS_TYPE=sles12 \
-	ATLAS_ARTIFACT_TYPE=openstack \
-	SALT_INSTALL_OS=suse \
-	./scripts/packer.sh build -only=os-sles12sp3 $(PACKER_OPTS)
-
-build-gc-centos7:
-	$(ENVS) \
-	GCP_STORAGE_BUNDLE=$(GCP_STORAGE_BUNDLE) \
-	OS=centos7 \
-	OS_TYPE=redhat7 \
-	ATLAS_ARTIFACT_TYPE=googlecompute \
-	SALT_INSTALL_OS=centos \
-	./scripts/packer.sh build -only=gc-centos7 $(PACKER_OPTS)
-
-build-gc-sles12sp3:
-	$(ENVS) \
-	GCP_STORAGE_BUNDLE=$(GCP_STORAGE_BUNDLE) \
-	OS=sles12 \
-	OS_TYPE=sles12 \
-	ATLAS_ARTIFACT_TYPE=googlecompute \
-	SALT_INSTALL_OS=suse \
-	./scripts/packer.sh build -only=gc-sles12sp3 $(PACKER_OPTS)
-
-build-gc-ubuntu16:
-	$(ENVS) \
-	GCP_STORAGE_BUNDLE=$(GCP_STORAGE_BUNDLE) \
-	OS=ubuntu16 \
-	OS_TYPE=ubuntu16 \
-	ATLAS_ARTIFACT_TYPE=googlecompute \
-	SALT_INSTALL_OS=ubuntu \
-	./scripts/packer.sh build -only=gc-ubuntu16 $(PACKER_OPTS)
-
-build-azure-redhat6:
-	$(ENVS) \
-	AZURE_STORAGE_ACCOUNTS="$(AZURE_STORAGE_ACCOUNTS)" \
-	OS=redhat6 \
-	OS_TYPE=redhat6 \
-	ATLAS_ARTIFACT_TYPE=azure-arm \
-	SALT_INSTALL_OS=redhat \
-	AZURE_IMAGE_PUBLISHER=RedHat \
-	AZURE_IMAGE_OFFER=RHEL \
-	AZURE_IMAGE_SKU=6.8 \
-	SALT_REPO_FILE="salt-repo-el6.repo" \
-	./scripts/packer.sh build -only=arm-rhel6 $(PACKER_OPTS)
 
 build-azure-centos7:
 	$(ENVS) \
@@ -337,42 +157,12 @@ build-azure-centos7:
 	AZURE_IMAGE_SKU=$(AZURE_IMAGE_SKU) \
 	./scripts/packer.sh build -only=arm-centos7 $(PACKER_OPTS)
 
-build-azure-sles12sp3:
-	$(ENVS) \
-	AZURE_STORAGE_ACCOUNTS="$(AZURE_STORAGE_ACCOUNTS)" \
-	OS=sles12 \
-	OS_TYPE=sles12 \
-	ATLAS_ARTIFACT_TYPE=azure-arm \
-	SALT_INSTALL_OS=suse \
-	AZURE_IMAGE_PUBLISHER=SUSE \
-	AZURE_IMAGE_OFFER=SLES \
-	AZURE_IMAGE_SKU=12-SP3 \
-	./scripts/packer.sh build -only=arm-sles12sp3 $(PACKER_OPTS)
-
-build-azure-ubuntu16:
-	$(ENVS) \
-	AZURE_STORAGE_ACCOUNTS="$(AZURE_STORAGE_ACCOUNTS)" \
-	OS=ubuntu16 \
-	OS_TYPE=ubuntu16 \
-	ATLAS_ARTIFACT_TYPE=azure-arm \
-	SALT_INSTALL_OS=ubuntu \
-	AZURE_IMAGE_PUBLISHER=Canonical \
-	AZURE_IMAGE_OFFER=UbuntuServer \
-	AZURE_IMAGE_SKU=16.04-LTS \
-	./scripts/packer.sh build -only=arm-ubuntu16 $(PACKER_OPTS)
-
 copy-azure-images:
 	TRACE=1 AZURE_STORAGE_ACCOUNTS="$(AZURE_STORAGE_ACCOUNTS)" AZURE_IMAGE_NAME="$(AZURE_IMAGE_NAME)" ./scripts/azure-copy.sh
 	make check-azure-images
 
 check-azure-images:
 	AZURE_STORAGE_ACCOUNTS="$(AZURE_STORAGE_ACCOUNTS)" AZURE_IMAGE_NAME="$(AZURE_IMAGE_NAME)" ./scripts/azure-image-check.sh
-
-bundle-googlecompute:
-	$(ENVS) GCP_STORAGE_BUNDLE=$(GCP_STORAGE_BUNDLE) GCP_STORAGE_BUNDLE_LOG=$(GCP_STORAGE_BUNDLE_LOG) ./scripts/bundle-gcp-image.sh
-
-upload-openstack-image:
-	S3_TARGET=$(S3_TARGET) ./scripts/openstack-upload.sh
 
 docker-build-centos7:
 	@ OS=centos7 OS_TYPE=redhat7 TAG=centos-7 DIR=centos7.3 make docker-build
@@ -388,12 +178,6 @@ docker-build-centos75:
 docker-build-centos76:
 	echo "Building image for ycloud2"
 	@ OS=centos7 OS_TYPE=redhat7 TAG=centos-76 DIR=centos7.6 make docker-build
-
-docker-build-debian9:
-	@ OS=debian9 OS_TYPE=debian9 TAG=debian-9 DIR=debian9 make docker-build
-
-docker-build-ubuntu16:
-	@ OS=ubuntu16 OS_TYPE=ubuntu16 TAG=ubuntu-16 DIR=ubuntu16 make docker-build
 
 docker-build:
 	$(eval DOCKER_ENVS="OS=$(OS) OS_TYPE=$(OS_TYPE) SALT_VERSION=$(SALT_VERSION) SALT_PATH=$(SALT_PATH) PYZMQ_VERSION=$(PYZMQ_VERSION) PYTHON_APT_VERSION=$(PYTHON_APT_VERSION) TRACE=1")
