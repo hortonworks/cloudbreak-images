@@ -125,7 +125,7 @@ South Africa West:cldrsouthafricawest,\
 France Central:cldrfrancecentral,\
 Switzerland North:cldrswitzerlandnorth,\
 Switzerland West:cldrswitzerlandwest,\
-Germany North :cldrgermanynorth,\
+Germany North:cldrgermanynorth,\
 Germany West Central:cldrgermanywestcentral,\
 Norway West:cldrnorwaywest,\
 Norway East:cldrnorwayeast
@@ -362,7 +362,7 @@ build-azure-ubuntu16:
 	./scripts/packer.sh build -only=arm-ubuntu16 $(PACKER_OPTS)
 
 copy-azure-images:
-	AZURE_STORAGE_ACCOUNTS="$(AZURE_STORAGE_ACCOUNTS)" AZURE_IMAGE_NAME="$(AZURE_IMAGE_NAME)" ./scripts/azure-copy.sh
+	TRACE=1 AZURE_STORAGE_ACCOUNTS="$(AZURE_STORAGE_ACCOUNTS)" AZURE_IMAGE_NAME="$(AZURE_IMAGE_NAME)" ./scripts/azure-copy.sh
 	make check-azure-images
 
 check-azure-images:
