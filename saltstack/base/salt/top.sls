@@ -10,6 +10,7 @@ base:
     - postgresql
     - monitoring
     - performance
+    - telemetry
 {% if salt['environ.get']('INCLUDE_FLUENT') == 'Yes' %}
     - fluent
 {% endif %}
