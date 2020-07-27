@@ -116,7 +116,6 @@ South Africa North:cldrsouthafricanorth,\
 South Africa West:cldrsouthafricawest,\
 France Central:cldrfrancecentral,\
 Switzerland North:cldrswitzerlandnorth,\
-Switzerland West:cldrswitzerlandwest,\
 Germany North:cldrgermanynorth,\
 Germany West Central:cldrgermanywestcentral,\
 Norway West:cldrnorwaywest,\
