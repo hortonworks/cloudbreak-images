@@ -1,3 +1,4 @@
+## see more at internal repo: thunderhead/cdp-telemetry-cli
 {% set os = salt['environ.get']('OS') %}
 {% set cdp_telemetry_version = '0.1.0' %}
 {% set cdp_telemetry_rpm_location = 'https://cloudera-service-delivery-cache.s3.amazonaws.com/telemetry/cdp-telemetry/'%}
