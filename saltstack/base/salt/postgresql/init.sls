@@ -119,7 +119,7 @@ install_openjdk11-headless_for_postgres:
 /usr/bin/initdb:
   file.symlink:
     - mode: 755
-     {% if pillar['OS'] == 'sles12' %}
+     {% if pillar['OS'] == 'sles12' or (pillar['OS'] == 'centos7' and grains['osrelease'] == '7.8.2003' ) %}
     - target: /usr/pgsql-10/bin/initdb
      {% else %}
     - target: /usr/pgsql-9.6/bin/initdb
