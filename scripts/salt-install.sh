@@ -134,6 +134,9 @@ function create_temp_minion_config() {
 
 : ${SALT_INSTALL_OS:=$1}
 
+echo "Installing Salt on ${SALT_INSTALL_OS}"
+echo "Network interfaces $(ifconfig)"
+
 case ${SALT_INSTALL_OS} in
   centos|redhat)
     echo "Install with yum"
