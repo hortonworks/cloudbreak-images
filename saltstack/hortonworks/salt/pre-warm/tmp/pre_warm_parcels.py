@@ -6,6 +6,8 @@ import errno
 import subprocess
 import tarfile
 
+from stat import * # Needed for ST_SIZE, etc.
+
 print "PRE_WARM_PARCELS: " + os.environ.get("PRE_WARM_PARCELS", "[]")
 print "\n-------------\n"
 print "PRE_WARM_CSD: " + os.environ.get("PRE_WARM_CSD", "[]")
@@ -90,8 +92,28 @@ if os.environ.get("PRE_WARM_PARCELS", "[]"):
 
         json.dump(content, open(ACTIVE_PARCELS_PATH, "w"))
 
+    def print_file_info(file_path):
+
+        print "=== File info for", file_path
+        try:
+            st = os.stat(file_path)
+        except IOError:
+            print "Failed to get information about", file_path
+        else:
+            print "File size:", st[ST_SIZE]
+            if st[ST_SIZE] < 2048:
+                print "File contents:"
+                print "======================"
+                f = open(file_path, 'r')
+                file_contents = f.read()
+                print (file_contents)
+                f.close()
+                print "======================"
+            else:
+                print "File size exceeds 2KBs, contents should not be logged."
 
     def read_parcel_meta(parcel_path):
+        print_file_info(parcel_path)
         p_tar = tarfile.open(parcel_path, encoding='utf-8')
         for tar_member in p_tar.getmembers():
             if tar_member.name.endswith("meta/parcel.json"):
