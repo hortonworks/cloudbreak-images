@@ -156,7 +156,7 @@
       "virtual_network_resource_group_name":"{{user `virtual_network_resource_group_name`}}",
       "virtual_network_name": "{{user `vpc_id`}}",
       "virtual_network_subnet_name": "{{user `subnet_id`}}",
-      "private_virtual_network_with_public_ip": true,
+      "private_virtual_network_with_public_ip": false,
       "azure_tags": {
         "builder": "packer",
         "version": "{{user `version`}}",
