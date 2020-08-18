@@ -167,6 +167,27 @@
         "Owner": "{{ user `image_owner` }}",
         "Customer Delivered": "{{user `tag_customer_delivered`}}"
       }
+    },
+    {
+      "name": "gc-centos7",
+      "type": "googlecompute",
+      "disable_default_service_account" : true,
+      "account_file": "{{user `gcp_account_file`}}",
+      "source_image": "centos-7-v20200811",
+      "zone": "us-central1-b",
+      "project_id": "gcp-dev-cloudbreak",
+      "ssh_username": "centos",
+      "ssh_pty": "true",
+      "machine_type": "n1-standard-2",
+      "image_name": "{{user `image_name`}}",
+      "disk_size": "{{user `image_size`}}",
+      "state_timeout": "15m",
+      "tags": [
+        "builder--packer",
+        "cb-creation-timestamp--{{timestamp}}",
+        "owner--{{ user `image_owner` | clean_resource_name }}",
+        "customer-delivered--{{user `tag_customer_delivered` | clean_resource_name}}"
+      ]
     }
   ],
   "provisioners": [
