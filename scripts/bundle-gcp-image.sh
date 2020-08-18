@@ -30,14 +30,16 @@ main() {
 
 	docker rm -f gcloud-config-$IMAGE_NAME || true
     docker run --name gcloud-config-$IMAGE_NAME -v "${GCP_ACCOUNT_FILE}":/gcp.p12 google/cloud-sdk gcloud auth activate-service-account $SERVICE_ACCOUNT_EMAIL --key-file /gcp.p12 --project $GCP_PROJECT
-    if docker run --rm --name gcloud-pre-check-$IMAGE_NAME --volumes-from gcloud-config-$IMAGE_NAME google/cloud-sdk gsutil ls gs://${GCP_STORAGE_BUNDLE}/${IMAGE_PRE_NAME}-${IMAGE_NAME}.tar.gz 2>/dev/null; then
+
+    if docker run --rm --name gcloud-pre-check-$IMAGE_NAME --volumes-from gcloud-config-$IMAGE_NAME google/cloud-sdk gsutil ls gs://${GCP_STORAGE_BUNDLE}/${IMAGE_PRE_NAME}${IMAGE_NAME}.tar.gz 2>/dev/null; then
     	echo ${IMAGE_NAME}.tar.gz already exists, please delete it in order for this job to run
     	docker rm gcloud-config-$IMAGE_NAME
     	exit 1
     fi
 	
 	docker rm -f gcloud-create-instance-$IMAGE_NAME || true
-	docker run --rm --name gcloud-create-instance-$IMAGE_NAME --volumes-from gcloud-config-$IMAGE_NAME google/cloud-sdk gcloud compute images export --quiet --destination-uri gs://${GCP_STORAGE_BUNDLE}/${IMAGE_PRE_NAME}-${IMAGE_NAME}.tar.gz --image ${IMAGE_NAME} --project ${GCP_PROJECT}
+
+	docker run --rm --name gcloud-create-instance-$IMAGE_NAME --volumes-from gcloud-config-$IMAGE_NAME google/cloud-sdk gcloud compute images export --quiet --destination-uri gs://${GCP_STORAGE_BUNDLE}/${IMAGE_PRE_NAME}${IMAGE_NAME}.tar.gz --image ${IMAGE_NAME} --project ${GCP_PROJECT}
 	exit 0
 }
 
