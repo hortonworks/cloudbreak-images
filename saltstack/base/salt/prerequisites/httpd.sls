@@ -9,6 +9,6 @@ create_okay_repo:
 
 install_httpd:
   pkg.latest:
-    - name: httpd
+  	- name: httpd
 
 {% endif %}
