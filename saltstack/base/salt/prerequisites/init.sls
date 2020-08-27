@@ -18,8 +18,7 @@ include:
   - {{ slspath }}.corkscrew
 {% if  pillar['OS'].startswith('ubuntu') %}
   - {{ slspath }}.disable-unattended-upgrades
-{% endif %}
-  - {{ slspath }}.httpd
+ {% endif %}
 
 /usr/bin/:
   file.recurse:
