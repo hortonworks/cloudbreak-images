@@ -170,6 +170,13 @@ update_reverse_tunnel_values() {
   /cdp/bin/update-reverse-tunnel-values.sh "$1" "$2"
 }
 
+create_saltapi_certificates() {
+  source activate_salt_env
+  salt-call --local tls.create_self_signed_cert CN='saltapi' days=3650 replace=Tru
+  deactivate
+  rm -f /etc/salt/minion_id
+}
+
 main() {
   configure-salt-bootstrap
   reload_sysconf
@@ -184,6 +191,7 @@ main() {
         setup_tls
         start_nginx
       fi
+      create_saltapi_certificates
     fi
 
     INSTANCE_ID=
