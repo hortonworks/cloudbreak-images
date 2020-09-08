@@ -65,12 +65,6 @@ function add_prewarmed_roles {
     echo "Adding ${prewarmed} to the list of roles for the final image"
     add_single_role_for_cluster_salt ${prewarmed}
   fi
-
-  if [ "${CUSTOM_IMAGE_TYPE}" == "hortonworks" ]; then
-    local metering_prewarmed=${METERING_PREWARM_TAG}
-    echo "Adding ${metering_prewarmed} to the list of roles for the final image"
-    add_single_role_for_cluster_salt ${metering_prewarmed}
-  fi
 }
 
 : ${CUSTOM_IMAGE_TYPE:=$1}
