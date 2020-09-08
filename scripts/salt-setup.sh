@@ -46,6 +46,27 @@ function apply_optional_states {
   fi
 }
 
+# Appends any prewarmed roles to a (non-salt) file, one role per line. salt-bootstrap takes care of setting up these roles during node setup.
+function add_single_role_for_cluster_salt {
+  local role=${1}
+  echo "${role}" >> /etc/salt/prewarmed_roles
+}
+
+function add_prewarmed_roles {
+  if [ "${INCLUDE_FLUENT}" == "Yes" ]; then
+    # Note: This will need to be changed if making changes to versions etc in the prewarmed image.
+    local fluent_prewarmed=${FLUENT_PREWARM_TAG}
+    echo "Adding ${fluent_prewarmed} to the list of roles for the final image"
+    add_single_role_for_cluster_salt ${fluent_prewarmed}
+  fi
+
+  if  [ "${STACK_TYPE}" == "CDH" -a ! -z "${CLUSTERMANAGER_VERSION}" -a ! -z "${CLUSTERMANAGER_BASEURL}" -a ! -z "${CLUSTERMANAGER_GPGKEY}" -a ! -z "${STACK_VERSION}" -a ! -z "${STACK_BASEURL}" -a ! -z "${STACK_REPOID}" ]; then
+    local prewarmed=${PREWARM_TAG}
+    echo "Adding ${prewarmed} to the list of roles for the final image"
+    add_single_role_for_cluster_salt ${prewarmed}
+  fi
+}
+
 : ${CUSTOM_IMAGE_TYPE:=$1}
 
 case ${CUSTOM_IMAGE_TYPE} in
@@ -73,6 +94,9 @@ case ${CUSTOM_IMAGE_TYPE} in
 esac
 
 apply_optional_states
+
+echo "Adding prewarmed roles for salt used in final image"
+add_prewarmed_roles
 
 echo "Running validation and cleanup"
 highstate "final"
