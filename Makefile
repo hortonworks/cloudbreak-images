@@ -16,6 +16,8 @@ AZURE_IMAGE_PUBLISHER ?= OpenLogic
 AZURE_IMAGE_OFFER ?= CentOS
 AZURE_IMAGE_SKU ?= 7.6
 ARM_BUILD_REGION ?= northeurope
+GCP_STORAGE_BUNDLE ?= cdp-freeipa-images
+GCP_STORAGE_BUNDLE_LOG ?= cdp-freeipa-images
 
 DOCKER_REPOSITORY ?= registry.eng.hortonworks.com
 DOCKER_REPO_USERNAME ?= ""
@@ -149,6 +151,24 @@ build-aws-centos7:
 	$(ENVS) \
 	AWS_AMI_REGIONS="$(AWS_AMI_REGIONS)" \
 	./scripts/sparseimage/packer.sh build -force $(PACKER_OPTS)
+
+build-gc-tar-file: 
+	$(ENVS) \
+	GCP_STORAGE_BUNDLE=$(GCP_STORAGE_BUNDLE) \
+	GCP_STORAGE_BUNDLE_LOG=$(GCP_STORAGE_BUNDLE_LOG) \
+	./scripts/bundle-gcp-image.sh
+
+build-gc-centos7: export IMAGE_NAME := $(IMAGE_NAME)
+
+build-gc-centos7: 
+	@ METADATA_FILENAME_POSTFIX=$(METADATA_FILENAME_POSTFIX)
+	$(ENVS) \
+	OS=centos7 \
+	OS_TYPE=redhat7 \
+	GCP_STORAGE_BUNDLE=$(GCP_STORAGE_BUNDLE) \
+	GCP_STORAGE_BUNDLE_LOG=$(GCP_STORAGE_BUNDLE_LOG) \
+	SALT_INSTALL_OS=centos \
+	./scripts/packer.sh build -only=gc-centos7 $(PACKER_OPTS)
 
 build-azure-centos7:
 	$(ENVS) \
