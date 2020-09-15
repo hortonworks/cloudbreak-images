@@ -87,6 +87,13 @@ ifeq ($(CUSTOM_IMAGE_TYPE),freeipa)
 	BASE_NAME=freeipa
 endif
 
+GCP_STORAGE_BUNDLE ?= cdp-$(BASE_NAME)-images
+GCP_STORAGE_BUNDLE_LOG ?= cdp-$(BASE_NAME)-images
+
+define GCP_AMI_REGIONS
+asia-east1,asia-east2,australia-southeast1,europe-west2,europe-west3,europe-west4,us-west2,southamerica-east1,asia-southeast1,us-central1,europe-west1,europe-north1,us-west1,northamerica-northeast1,us-east4,asia-south1,us-east1,asia-northeast1
+endef
+
 define AWS_AMI_REGIONS
 ap-northeast-1,ap-northeast-2,ap-south-1,ap-southeast-1,ap-southeast-2,ca-central-1,eu-central-1,eu-west-1,eu-west-2,eu-west-3,sa-east-1,us-east-1,us-east-2,us-west-1,us-west-2,eu-north-1
 endef
@@ -154,6 +161,7 @@ build-aws-centos7:
 
 build-gc-tar-file: 
 	$(ENVS) \
+	GCP_AMI_REGIONS=$(GCP_AMI_REGIONS) \
 	GCP_STORAGE_BUNDLE=$(GCP_STORAGE_BUNDLE) \
 	GCP_STORAGE_BUNDLE_LOG=$(GCP_STORAGE_BUNDLE_LOG) \
 	./scripts/bundle-gcp-image.sh
@@ -165,6 +173,7 @@ build-gc-centos7:
 	$(ENVS) \
 	OS=centos7 \
 	OS_TYPE=redhat7 \
+	GCP_AMI_REGIONS=$(GCP_AMI_REGIONS) \
 	GCP_STORAGE_BUNDLE=$(GCP_STORAGE_BUNDLE) \
 	GCP_STORAGE_BUNDLE_LOG=$(GCP_STORAGE_BUNDLE_LOG) \
 	SALT_INSTALL_OS=centos \
