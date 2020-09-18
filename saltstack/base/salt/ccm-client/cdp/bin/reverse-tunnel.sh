@@ -12,7 +12,9 @@ export AUTOSSH_LOGFILE="/var/log/autossh-${ROLE}.log"
 # Set max backoff interval in case of recurring connection failures.
 export AUTOSSH_POLL=30
 
-PRIVATE_KEY=/tmp/pk.key
+ROOT_FOLDER=/etc/autossh
+mkdir -p $ROOT_FOLDER
+PRIVATE_KEY=${ROOT_FOLDER}/pk.key
 
 if grep -q "BEGIN" ${CCM_ENCIPHERED_PRIVATE_KEY_FILE}; then
     cat ${CCM_ENCIPHERED_PRIVATE_KEY_FILE} > ${PRIVATE_KEY}
