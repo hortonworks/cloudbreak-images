@@ -161,6 +161,33 @@ Use the following commands to build Azure images based on the following base ope
 > If you want to start from **your own base image**, follow the instructions in [Advanced topics](#advanced-topics) to
 modify the `package.json` to start from your own base image. Then use the commands above to build that image.
 
+### GCP
+
+Set the following environment variables to build GCP images:
+
+* GCP_STORAGE_BUNDLE
+* GCP_PROJECT
+* GCP_ACCOUNT_FILE
+
+Example for environment variables:
+```
+export GCP_STORAGE_BUNDLE==*****
+export GCP_PROJECT=*****
+export GCP_ACCOUNT_FILE={path for the GCP credential json}
+```
+
+> Note: Since Packer is the underlaying technology used to build the GCP images, you can learn more 
+> about the environment variables at [Packer > GCP Reference](https://www.packer.io/docs/builders/googlecompute).  
+
+Use the following commands to build GCP images based on the following base operating systems:
+
+| OS | Build Command |
+|---|---|
+| CentOS 7 | `make build-gc-centos7` |
+
+> If you want to start from **your own base image**, follow the instructions in [Advanced topics](#advanced-topics) to
+modify the `package.json` to start from your own base image. Then use the commands above to build that image.
+
 ### Running packer in debug mode
 
 If you run Packer in debug mode then you can SSH into the VM during build phase and do additional debugging steps on the VM.
