@@ -23,6 +23,8 @@ enable_nginx:
     - require:
       - pkg: install_nginx
 
+{% if pillar['OS'] != 'ubuntu18' %}
+
 nginxRestart:
   file.line:
     - name: /usr/lib/systemd/system/nginx.service
@@ -38,3 +40,21 @@ nginxRestartSec:
     - content: "RestartSec=3"
     - after: "Restart=always"
     - backup: False
+
+{% else %}
+nginxRestart:
+  file.line:
+    - name: /lib/systemd/system/nginx.service
+    - mode: ensure
+    - content: "Restart=always"
+    - after: \[Service\]
+    - backup: False
+
+nginxRestartSec:
+  file.line:
+    - name: /lib/systemd/system/nginx.service
+    - mode: ensure
+    - content: "RestartSec=3"
+    - after: "Restart=always"
+    - backup: False
+{% endif %}
