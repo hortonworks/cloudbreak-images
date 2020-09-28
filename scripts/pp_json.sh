@@ -7,9 +7,9 @@ if [ -f package-versions.json -a "$stack_version" != "" -a "$clustermanager_vers
 	cat package-versions.json
 	if [ "$stack_type" == "CDH" ]; then
         if [ -z "$csp_build_number" ]; then
-            cat package-versions.json | jq --arg stack_version $stack_version --arg clustermanager_version $clustermanager_version --arg cfm_build_number $cfm_build_number --arg profiler_build_number $profiler_build_number --arg spark3_build_number $spark3_build_number --arg cm_build_number $cm_build_number --arg stack_build_number $stack_build_number '. += {"stack" : $stack_version,  "cm" : $clustermanager_version,  "cm-build-number" : $cm_build_number,  "cdh-build-number" : $stack_build_number, "cfm" : $cfm_build_number, "profiler" : $profiler_build_number, "spark3": $spark3_build_number}' > package-versions-tmp.json && mv package-versions-tmp.json package-versions.json
+            cat package-versions.json | jq --arg stack_version $stack_version --arg clustermanager_version $clustermanager_version --arg cfm_build_number $cfm_build_number --arg profiler_build_number $profiler_build_number --arg spark3_build_number $spark3_build_number --arg csa_build_number $csa_build_number --arg cm_build_number $cm_build_number --arg stack_build_number $stack_build_number '. += {"stack" : $stack_version,  "cm" : $clustermanager_version,  "cm-build-number" : $cm_build_number,  "cdh-build-number" : $stack_build_number, "cfm" : $cfm_build_number, "profiler" : $profiler_build_number, "spark3": $spark3_build_number, "csa": $csa_build_number}' > package-versions-tmp.json && mv package-versions-tmp.json package-versions.json
         else
-            cat package-versions.json | jq --arg stack_version $stack_version --arg clustermanager_version $clustermanager_version --arg cfm_build_number $cfm_build_number --arg csp_build_number $csp_build_number --arg profiler_build_number $profiler_build_number --arg spark3_build_number $spark3_build_number --arg cm_build_number $cm_build_number --arg stack_build_number $stack_build_number '. += {"stack" : $stack_version,  "cm" : $clustermanager_version,  "cm-build-number" : $cm_build_number,  "cdh-build-number" : $stack_build_number, "cfm" : $cfm_build_number, "csp" : $csp_build_number, "profiler" : $profiler_build_number, "spark3": $spark3_build_number}' > package-versions-tmp.json && mv package-versions-tmp.json package-versions.json
+            cat package-versions.json | jq --arg stack_version $stack_version --arg clustermanager_version $clustermanager_version --arg cfm_build_number $cfm_build_number --arg csp_build_number $csp_build_number --arg profiler_build_number $profiler_build_number --arg spark3_build_number $spark3_build_number --arg csa_build_number $csa_build_number --arg cm_build_number $cm_build_number --arg stack_build_number $stack_build_number '. += {"stack" : $stack_version,  "cm" : $clustermanager_version,  "cm-build-number" : $cm_build_number,  "cdh-build-number" : $stack_build_number, "cfm" : $cfm_build_number, "csp" : $csp_build_number, "profiler" : $profiler_build_number, "spark3": $spark3_build_number, "csa": $csa_build_number}' > package-versions-tmp.json && mv package-versions-tmp.json package-versions.json
         fi
 	else
 		cat package-versions.json | jq --arg stack_version $stack_version --arg clustermanager_version $clustermanager_version '. += {"stack" : $stack_version,  "ambari" : $clustermanager_version}' > package-versions-tmp.json && mv package-versions-tmp.json package-versions.json
@@ -61,6 +61,7 @@ cat  > ${image_name}_$metadata_filename_postfix.json <<EOF
 "aws_ami_regions": "${aws_ami_regions}",
 "azure_storage_accounts": "${azure_storage_accounts}",
 "gcp_storage_bundle": "${gcp_storage_bundle}",
+"gcp_ami_regions": "${gcp_ami_regions}",
 "hdp_vdf": "$([ "$repository_type" == "local" ] && echo "${local_url_vdf}" || echo "${hdp_vdf}")",
 "hdp_repository_version": "${stack_repository_version}",
 "cdh_repository_version": "${stack_repository_version#*-}",

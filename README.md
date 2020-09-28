@@ -10,8 +10,6 @@
     - [Prerequisites](#prerequisites)
     - [AWS](#aws)
     - [Azure](#azure)
-    - [OpenStack](#openstack)
-    - [GCP](#gcp)
     - [Running packer in debug mode](#running-packer-in-debug-mode)
     - [Check the logs without debug mode](#check-the-logs-without-debug-mode)
     - [Advanced topics](#advanced-topics)
@@ -39,10 +37,8 @@ From bird's-eye view, images contain the following:
   are downloaded during provision time. This makes the images agnostic to the version of Ambari and HDP that can be installed by Cloudbreak.
 
 The following **Standard Default** images and Linux versions are available for each Cloudbreak version:
-- Amazon: Amazon Linux 2017
-- Azure: CentOS 7.3
-- GCP: CentOS 7.3
-- OpenStack: CentOS 7.3
+- Amazon: CentOS 7.6
+- Azure: CentOS 7.6
 
 In some cases, these default images might not fit the requirements of users (e.g. they need custom OS hardening, libraries, tooling, etc) and
 instead, the user would like to start their clusters from their own **custom image**. The repository includes **instructions** and **scripts** to help build those **custom images**. Once you have an images, refer to the Cloudbreak documentation
@@ -64,11 +60,12 @@ If you think that some of the changes you made might be useful for the Cloudbrea
 ## Finding the Correct Branch
 This repository contains different branches for different Cloudbreak versions. Cloudbreak versions are defined as:
 ```
-<major>.<minor>.<patch>[-build sequence] e.g 1.16.3 or 1.16.4-rc.7
+<major>.<minor>.<patch>[-build sequence] e.g 1.16.3 or 1.16.4-rc.7 or 2.23.0-b153
 ```
 If you are creating a custom image for Cloudbreak, always make sure that you are using the correct branch from `cloudbreak-images` repository.
 You can find the related branch based on the <major> and <minor> version numbers of Cloudbreak (e.g if you are using 1.16.3 or 1.16.4-rc.7 version of Cloudbreak then the related branch is rc-1.16).
 If you are using 2.0.1 version of Cloudbreak then the related image branch is rc-2.0.
+If you are using 2.23.0-b153 version of Cloudbreak then the related branch is CB-2.23.0
 
 > Note: If you do not use the appropriate branch for creating your image then there is a chance that Cloudbreak will not be able to install the cluster successfully.
 
@@ -111,10 +108,7 @@ Use the following commands to build AWS images based on the following base opera
 
 | OS | Build Command |
 |---|---|
-| Amazon Linux | `make build-aws-amazonlinux` |
-| CentOS 6 | `make build-aws-centos6` |
 | CentOS 7 | `make build-aws-centos7` |
-| RHEL 7 | `make build-aws-rhel7` |
 
 > If you want to start from **your own base image**, follow the instructions in [Advanced topics](#advanced-topics) to
 modify the `package.json` to start from your own base image. Then use the commands above to build that image.
@@ -163,69 +157,9 @@ Use the following commands to build Azure images based on the following base ope
 | OS | Build Command |
 |---|---|
 | CentOS 7 | `make build-azure-centos7` |
-| RHEL 6 | `make build-azure-rhel6` |
 
 > If you want to start from **your own base image**, follow the instructions in [Advanced topics](#advanced-topics) to
 modify the `package.json` to start from your own base image. Then use the commands above to build that image.
-
-
-### GCP
-
-Set the following environment variables to build Google Cloud Platform images:
-
-* GCP_ACCOUNT_FILE
-* GCP_CLIENT_SECRET
-* GCP_PROJECT
-
-Example for environment variables:
-```
-export GCP_ACCOUNT_FILE=/var/lib/jenkins/.gce/siq-haas.json
-export GCP_CLIENT_SECRET=/var/lib/jenkins/.gce/client_secret.json
-export GCP_PROJECT=siq-haas
-```
-
-> Note: Since Packer is the underlaying technology used to build the Google Cloud Platform images, you can learn more 
-> about the environment variables at [Packer > Google Compute Reference](https://www.packer.io/docs/builders/googlecompute.html#configuration-reference).  
-
-Use the following commands to build GCP images based on the following base operating systems:
-
-| OS | Build Command |
-|---|---|
-| CentOS 7 | `make build-gc-centos7` |
-
-> If you want to start from **your own base image**, follow the instructions in [Advanced topics](#advanced-topics) to
-modify the `package.json` to start from your own base image. Then use the commands above to build that image.
-
-
-### OpenStack
-
-Set the following environment variables to build OpenStack images:
-
-* OS_AUTH_URL
-* OS_TENANT_NAME
-* OS_USERNAME
-* OS_PASSWORD
-
-Example for environment variables:
-```
-export OS_AUTH_URL=http://openstack.eng.hortonworks.com:5000/v2.0
-export OS_USERNAME=cloudbreak
-export OS_TENANT_NAME=cloudbreak
-export OS_PASSWORD=**********
-```
-
-> Note: Since Packer is the underlaying technology used to build the OpenStack images, you can learn more 
-> about the environment variables at [Packer > OpenStack Reference](https://www.packer.io/docs/builders/openstack.html#configuration-reference). 
-
-Use the following commands to build OpenStack images based on the following base operating systems:
-
-| OS | Build Command |
-|---|---|
-| CentOS 7 | `make build-os-centos7` |
-
-> If you want to start from **your own base image**, follow the instructions in [Advanced topics](#advanced-topics) to
-modify the `package.json` to start from your own base image. Then use the commands above to build that image.
-
 
 ### Running packer in debug mode
 
@@ -233,7 +167,7 @@ If you run Packer in debug mode then you can SSH into the VM during build phase 
 This is how to start a build in debug mode:
 
 ```
-PACKER_OPTS=--debug make build-aws-rhel7
+PACKER_OPTS=--debug make build-aws-centos7
 ```
 In debug mode, you need to hit enter before each step is executed by Packer. Once the VM is launched by Packer, it places a temporary SSH key in the launch directory with which you can login and do additional debug steps:
 

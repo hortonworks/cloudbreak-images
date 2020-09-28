@@ -5,6 +5,9 @@ import json
 import errno
 import subprocess
 import tarfile
+import time
+import functools
+import hashlib
 
 print "PRE_WARM_PARCELS: " + os.environ.get("PRE_WARM_PARCELS", "[]")
 print "\n-------------\n"
@@ -30,7 +33,24 @@ if os.environ.get("PRE_WARM_PARCELS", "[]"):
 # CREATE_USERS = False
 # PARCEL_REPO = "/home/workstation/dev/cloudera/cloudbreak-images/test-folder/prepo"
 # PARCEL_CACHE = "/home/workstation/dev/cloudera/cloudbreak-images/test-folder/pcache"
+    
+    def retry(num_attempts=3, sleeptime_in_seconds=1):
+        def decorator(func):
+            @functools.wraps(func)
+            def wrapper(*args, **kwargs):
+                for i in range(num_attempts):
+                    try:
+                        return func(*args, **kwargs)
+                    except Exception as e:
+                        if i == num_attempts - 1:
+                            raise
+                        else:
+                            print 'Failed with error {0}, trying again'.format(e)
+                            time.sleep(sleeptime_in_seconds)
 
+            return wrapper
+
+        return decorator
 
     def mkdir_p(path):
         try:
@@ -41,17 +61,12 @@ if os.environ.get("PRE_WARM_PARCELS", "[]"):
             else:
                 raise
 
-
+    @retry(5, 2)
     def download(source, dest):
-        cmd = "curl -C - -s -S --create-dirs {0} -o {1}".format(source, dest)
-        if os.path.isfile(dest):
-            try:
-                subprocess.check_call(cmd, shell=True)
-            except subprocess.CalledProcessError:
-                os.unlink(dest)
-                subprocess.check_call(cmd, shell=True)
-        else:
-            subprocess.check_call(cmd, shell=True)
+        cmd = "curl -s -S --create-dirs {0} -o {1} --fail".format(source, dest)
+        if os.path.exists(dest):
+            os.unlink(dest)
+        subprocess.check_call(cmd, shell=True, stderr=subprocess.STDOUT)
 
 
     def normalize_url(url):
@@ -63,19 +78,15 @@ if os.environ.get("PRE_WARM_PARCELS", "[]"):
     def check_if_string_in_file(fname, txt):
         with open(fname, 'r') as myfile:
             if txt in myfile.read():
-                return true
+                return True
 
     def download_parcel_checksum(url, dest):
-        for ext in (".sha", ".sha1", ".sha256"):
+        for ext in ("sha", "sha1", "sha256"):
             try:
-                if os.path.exists(dest + ".sha"):
-                    os.unlink(dest + ".sha")
-                download(url + ext, dest + ".sha")
+                checksum_url = url + "." + ext
+                download(checksum_url, dest + ".sha")
                 print "Downloaded checksum file:", dest + ".sha"
-                if check_if_string_in_file(dest + ".sha", "The specified key does not exist"):
-                    raise Exception("wrong file:" + url + ext)
-                else:
-                    return ext
+                return ext
             except:
                 pass
         raise Exception("failed to download parcel sha file")
@@ -90,7 +101,6 @@ if os.environ.get("PRE_WARM_PARCELS", "[]"):
 
         json.dump(content, open(ACTIVE_PARCELS_PATH, "w"))
 
-
     def read_parcel_meta(parcel_path):
         p_tar = tarfile.open(parcel_path, encoding='utf-8')
         for tar_member in p_tar.getmembers():
@@ -100,7 +110,23 @@ if os.environ.get("PRE_WARM_PARCELS", "[]"):
         raise Exception("failed to find parcel.json in file " + parcel_path)
 
 
+    def verify_checksum(hash_method, parcel_dest):
+        sha_hash = hashlib.sha1()
+        if "sha256" == hash_method:
+            sha_hash = hashlib.sha256()
+
+        with open(parcel_dest,"rb") as f:
+            for byte_block in iter(lambda: f.read(4096),b""):
+                sha_hash.update(byte_block)
+
+        if check_if_string_in_file(parcel_dest + ".sha", sha_hash.hexdigest()):
+            print "Hash verification passed for {0}".format(parcel_dest)
+        else:
+            raise Exception("Hash verification failed for {0}".format(parcel_dest))
+
+
     def place_parcel(parcel_path):
+        print "Place parcel: {0}".format(parcel_path)
         base_folder, parcel_meta = read_parcel_meta(parcel_path)
 
         cmd = 'tar zxf "{0}" -C "{1}"'.format(parcel_path, PARCELS_ROOT)
@@ -120,8 +146,8 @@ if os.environ.get("PRE_WARM_PARCELS", "[]"):
             print "Downloading parcel {0}, please wait ...".format(parcel_url)
             download(parcel_url, parcel_dest)
             print "Downloaded parcel:", parcel_url
-            download_parcel_checksum(parcel_url, parcel_dest)
-            # TODO call checksum here
+            hash_method = download_parcel_checksum(parcel_url, parcel_dest)
+            verify_checksum(hash_method, parcel_dest)
             place_parcel(parcel_dest)
 
 
