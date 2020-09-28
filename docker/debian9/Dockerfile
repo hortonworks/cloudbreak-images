@@ -104,7 +104,7 @@ RUN chown root:nogroup /bootstrap/start-systemd && \
 
 RUN systemctl enable ssh cron
 RUN echo "en_US.UTF-8 UTF-8" >>  /etc/locale.gen
-RUN locale-gen
+RUN locale-gen UTF-8
 
 EXPOSE 22
 

@@ -12,3 +12,4 @@ updateIfNecessary /cloudbreak-salt-fix/repo/cloudera-manager.list /srv/salt/clou
 updateIfNecessary /cloudbreak-salt-fix/repo/init.sls /srv/salt/cloudera/repo/init.sls
 updateIfNecessary /cloudbreak-salt-fix/metering/init.sls /srv/salt/metering/init.sls
 updateIfNecessary /cloudbreak-salt-fix/fluent/init.sls /srv/salt/fluent/init.sls
+updateIfNecessary /cloudbreak-salt-fix/kerberos/common.sls /srv/salt/kerberos/common.sls
