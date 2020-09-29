@@ -4,6 +4,7 @@
     "description": "{{ env `DESCRIPTION` }}",
     "gcp_account_file": "{{env `GCP_ACCOUNT_FILE`}}",
     "gcp_storage_bundle": "{{env `GCP_STORAGE_BUNDLE`}}",
+    "gcp_ami_regions": "{{env `GCP_AMI_REGIONS`}}",
     "os_auth_url": "{{ env `OS_AUTH_URL` }}",
     "os_username": "{{ env `OS_USERNAME` }}",
     "os_password": "{{ env `OS_PASSWORD` }}",
@@ -44,8 +45,11 @@
     "image_name": "{{ env `IMAGE_NAME` }}",
     "image_size": "{{ env `IMAGE_SIZE` }}",
     "image_owner": "{{ env `IMAGE_OWNER` }}",
+    "prewarm_tag": "{{ env `PREWARM_TAG` }}",
     "include_fluent": "{{ env `INCLUDE_FLUENT` }}",
+    "fluent_prewarm_tag": "{{env `FLUENT_PREWARM_TAG` }}",
     "include_metering": "{{ env `INCLUDE_METERING` }}",
+    "metering_prewarm_tag": "{{env `METERING_PREWARM_TAG` }}",
     "azure_image_publisher": "{{ env `AZURE_IMAGE_PUBLISHER` }}",
     "azure_image_offer": "{{ env `AZURE_IMAGE_OFFER` }}",
     "azure_image_sku": "{{ env `AZURE_IMAGE_SKU` }}",
@@ -86,141 +90,17 @@
     "csp_build_number": "{{ env `CSP_BUILD_NUMBER` }}",
     "profiler_build_number": "{{ env `PROFILER_BUILD_NUMBER` }}",
     "spark3_build_number": "{{ env `SPARK3_BUILD_NUMBER` }}",
+    "csa_build_number": "{{ env `CSA_BUILD_NUMBER` }}",
     "metadata_filename_postfix": "{{ env `METADATA_FILENAME_POSTFIX` }}"
   },
   "builders": [
-    {
-      "name": "gov-aws-amazonlinux",
-      "type": "amazon-ebs",
-      "region": "us-gov-west-1",
-      "ami_regions": "{{ user `aws_ami_regions` }}",
-      "ssh_pty": true,
-      "source_ami": "ami-f562ee94",
-      "instance_type": "{{ user `aws_instance_type` }}",
-      "ssh_username": "ec2-user",
-      "ena_support": true,
-      "iam_instance_profile": "{{ user `aws_instance_profile` }}",
-      "skip_region_validation": true,
-      "tags": {
-        "builder": "packer",
-        "version": "{{user `version`}}",
-        "cb-creation-timestamp": "{{timestamp}}",
-        "Owner": "{{ user `image_owner` }}",
-        "Customer Delivered": "{{user `tag_customer_delivered`}}"
-      },
-      "ami_block_device_mappings": [
-        {
-          "device_name": "/dev/sda1",
-          "volume_type": "gp2",
-          "delete_on_termination": true,
-          "volume_size": "{{user `image_size`}}"
-        }
-      ],
-      "launch_block_device_mappings": [
-        {
-          "device_name": "/dev/sda1",
-          "volume_type": "gp2",
-          "delete_on_termination": true,
-          "volume_size": "{{user `image_size`}}"
-        }
-      ],
-      "ami_name": "{{ user `image_name`}}",
-      "subnet_id": "{{ user `subnet_id`}}",
-      "vpc_id": "{{ user `vpc_id`}}"
-    },
-    {
-      "name": "aws-amazonlinux",
-      "type": "amazon-ebs",
-      "region": "eu-west-1",
-      "ami_regions": "{{ user `aws_ami_regions` }}",
-      "ssh_pty": true,
-      "source_ami": "ami-1a962263",
-      "instance_type": "{{ user `aws_instance_type` }}",
-      "ssh_username": "ec2-user",
-      "ena_support": true,
-      "skip_region_validation": true,
-      "tags": {
-        "builder": "packer",
-        "version": "{{user `version`}}",
-        "cb-creation-timestamp": "{{timestamp}}",
-        "Owner": "{{ user `image_owner` }}",
-        "Customer Delivered": "{{user `tag_customer_delivered`}}"
-      },
-      "ami_block_device_mappings": [
-        {
-          "device_name": "/dev/sda1",
-          "volume_type": "gp2",
-          "delete_on_termination": true,
-          "volume_size": "{{user `image_size`}}"
-        }
-      ],
-      "launch_block_device_mappings": [
-        {
-          "device_name": "/dev/sda1",
-          "volume_type": "gp2",
-          "delete_on_termination": true,
-          "volume_size": "{{user `image_size`}}"
-        }
-      ],
-      "run_tags": {
-        "Owner": "{{ user `image_owner` }}"
-      },
-      "snapshot_groups": "{{ user `aws_snapshot_groups`}}",
-      "ami_groups": "{{ user `aws_ami_groups` }}",
-      "ami_name": "{{ user `image_name`}}",
-      "subnet_id": "{{ user `subnet_id`}}",
-      "vpc_id": "{{ user `vpc_id`}}"
-    },
-    {
-      "name": "aws-centos6",
-      "type": "amazon-ebs",
-      "region": "eu-west-1",
-      "ami_regions": "{{ user `aws_ami_regions` }}",
-      "ssh_pty": true,
-      "source_ami": "ami-edb9069e",
-      "instance_type": "{{ user `aws_instance_type` }}",
-      "ssh_username": "centos",
-      "ena_support": false,
-      "skip_region_validation": true,
-      "tags": {
-        "builder": "packer",
-        "version": "{{user `version`}}",
-        "cb-creation-timestamp": "{{timestamp}}",
-        "Owner": "{{ user `image_owner` }}",
-        "Customer Delivered": "{{user `tag_customer_delivered`}}"
-      },
-      "run_tags": {
-        "Owner": "{{ user `image_owner` }}"
-      },
-      "ami_block_device_mappings": [
-        {
-          "device_name": "/dev/sda1",
-          "volume_type": "gp2",
-          "delete_on_termination": true,
-          "volume_size": "{{user `image_size`}}"
-        }
-      ],
-      "launch_block_device_mappings": [
-        {
-          "device_name": "/dev/sda1",
-          "volume_type": "gp2",
-          "delete_on_termination": true,
-          "volume_size": "{{user `image_size`}}"
-        }
-      ],
-      "snapshot_groups": "{{ user `aws_snapshot_groups` }}",
-      "ami_groups": "{{ user `aws_ami_groups` }}",
-      "ami_name": "{{ user `image_name`}}",
-      "subnet_id": "{{ user `subnet_id`}}",
-      "vpc_id": "{{ user `vpc_id`}}"
-    },
     {
       "name": "aws-centos7",
       "type": "amazon-ebs",
       "region": "us-west-1",
       "ami_regions": "{{ user `aws_ami_regions` }}",
       "ssh_pty": true,
-      "source_ami": "ami-074e2d6769f445be5",
+      "source_ami": "ami-098f55b4287a885ba",
       "instance_type": "{{ user `aws_instance_type` }}",
       "ssh_username": "centos",
       "ena_support": true,
@@ -254,406 +134,6 @@
       "ami_name": "{{ user `image_name`}}",
       "subnet_id": "{{ user `subnet_id`}}",
       "vpc_id": "{{ user `vpc_id`}}"
-    },
-    {
-      "name": "aws-rhel7",
-      "type": "amazon-ebs",
-      "region": "eu-west-1",
-      "ssh_pty": true,
-      "source_ami": "ami-7c491f05",
-      "ami_regions": "{{ user `aws_ami_regions` }}",
-      "instance_type": "{{ user `aws_instance_type` }}",
-      "ssh_username": "ec2-user",
-      "ena_support": true,
-      "skip_region_validation": true,
-      "tags": {
-        "builder": "packer",
-        "version": "{{user `version`}}",
-        "cb-creation-timestamp": "{{timestamp}}",
-        "Owner": "{{ user `image_owner` }}",
-        "Customer Delivered": "{{user `tag_customer_delivered`}}"
-      },
-      "run_tags": {
-        "Owner": "{{ user `image_owner` }}"
-      },
-      "ami_block_device_mappings": [
-        {
-          "device_name": "/dev/sda1",
-          "volume_type": "gp2",
-          "delete_on_termination": true,
-          "volume_size": "{{user `image_size`}}"
-        }
-      ],
-      "launch_block_device_mappings": [
-        {
-          "device_name": "/dev/sda1",
-          "volume_type": "gp2",
-          "delete_on_termination": true,
-          "volume_size": "{{user `image_size`}}"
-        }
-      ],
-      "snapshot_groups": "{{ user `aws_snapshot_groups` }}",
-      "ami_groups": "{{ user `aws_ami_groups` }}",
-      "ami_name": "{{ user `image_name`}}",
-      "subnet_id": "{{ user `subnet_id`}}",
-      "vpc_id": "{{ user `vpc_id`}}"
-    },
-    {
-      "name": "aws-amazonlinux2",
-      "type": "amazon-ebs",
-      "region": "eu-west-1",
-      "ssh_pty": true,
-      "source_ami": "ami-776a659d",
-      "ami_regions": "{{ user `aws_ami_regions` }}",
-      "instance_type": "{{ user `aws_instance_type` }}",
-      "ssh_username": "ec2-user",
-      "ena_support": true,
-      "skip_region_validation": true,
-      "tags": {
-        "builder": "packer",
-        "version": "{{user `version`}}",
-        "cb-creation-timestamp": "{{timestamp}}",
-        "Owner": "{{ user `image_owner` }}",
-        "Customer Delivered": "{{user `tag_customer_delivered`}}"
-      },
-      "run_tags": {
-        "Owner": "{{ user `image_owner` }}"
-      },
-      "ami_block_device_mappings": [
-        {
-          "device_name": "/dev/xvda",
-          "volume_type": "gp2",
-          "delete_on_termination": true,
-          "volume_size": "{{user `image_size`}}"
-        }
-      ],
-      "launch_block_device_mappings": [
-        {
-          "device_name": "/dev/xvda",
-          "volume_type": "gp2",
-          "delete_on_termination": true,
-          "volume_size": "{{user `image_size`}}"
-        }
-      ],
-      "snapshot_groups": "{{ user `aws_snapshot_groups` }}",
-      "ami_groups": "{{ user `aws_ami_groups` }}",
-      "ami_name": "{{ user `image_name`}}",
-      "subnet_id": "{{ user `subnet_id`}}",
-      "vpc_id": "{{ user `vpc_id`}}"
-    },
-    {
-      "name": "aws-sles12sp3",
-      "type": "amazon-ebs",
-      "region": "eu-west-1",
-      "ssh_pty": true,
-      "source_ami": "ami-05cb27bf88cff8239",
-      "ami_regions": "{{ user `aws_ami_regions` }}",
-      "instance_type": "{{ user `aws_instance_type` }}",
-      "ssh_username": "ec2-user",
-      "ena_support": false,
-      "skip_region_validation": true,
-      "tags": {
-        "builder": "packer",
-        "version": "{{user `version`}}",
-        "cb-creation-timestamp": "{{timestamp}}",
-        "Owner": "{{ user `image_owner` }}",
-        "Customer Delivered": "{{user `tag_customer_delivered`}}"
-      },
-      "run_tags": {
-        "Owner": "{{ user `image_owner` }}"
-      },
-      "ami_block_device_mappings": [
-        {
-          "device_name": "/dev/xvda",
-          "volume_type": "gp2",
-          "delete_on_termination": true,
-          "volume_size": "{{user `image_size`}}"
-        }
-      ],
-      "launch_block_device_mappings": [
-        {
-          "device_name": "/dev/xvda",
-          "volume_type": "gp2",
-          "delete_on_termination": true,
-          "volume_size": "{{user `image_size`}}"
-        }
-      ],
-      "snapshot_groups": "{{ user `aws_snapshot_groups` }}",
-      "ami_groups": "{{ user `aws_ami_groups` }}",
-      "ami_name": "{{ user `image_name`}}",
-      "subnet_id": "{{ user `subnet_id`}}",
-      "vpc_id": "{{ user `vpc_id`}}"
-    },
-    {
-      "name": "aws-ubuntu16",
-      "type": "amazon-ebs",
-      "region": "eu-west-1",
-      "ssh_pty": true,
-      "source_ami": "ami-05e2fa3e100f8d881",
-      "ami_regions": "{{ user `aws_ami_regions` }}",
-      "instance_type": "{{ user `aws_instance_type` }}",
-      "ssh_username": "ubuntu",
-      "ena_support": false,
-      "skip_region_validation": true,
-      "tags": {
-        "builder": "packer",
-        "version": "{{user `version`}}",
-        "cb-creation-timestamp": "{{timestamp}}",
-        "Owner": "{{ user `image_owner` }}",
-        "Customer Delivered": "{{user `tag_customer_delivered`}}"
-      },
-      "run_tags": {
-        "Owner": "{{ user `image_owner` }}"
-      },
-      "ami_block_device_mappings": [
-        {
-          "device_name": "/dev/xvda",
-          "volume_type": "gp2",
-          "delete_on_termination": true,
-          "volume_size": "{{user `image_size`}}"
-        }
-      ],
-      "launch_block_device_mappings": [
-        {
-          "device_name": "/dev/xvda",
-          "volume_type": "gp2",
-          "delete_on_termination": true,
-          "volume_size": "{{user `image_size`}}"
-        }
-      ],
-      "snapshot_groups": "{{ user `aws_snapshot_groups` }}",
-      "ami_groups": "{{ user `aws_ami_groups` }}",
-      "ami_name": "{{ user `image_name`}}",
-      "subnet_id": "{{ user `subnet_id`}}",
-      "vpc_id": "{{ user `vpc_id`}}"
-    },
-    {
-      "name": "os-centos6",
-      "type": "openstack",
-      "username": "{{user `os_username`}}",
-      "password": "{{user `os_password`}}",
-      "tenant_name": "{{user `os_tenant_name`}}",
-      "ssh_username": "centos",
-      "ssh_pty": "true",
-      "image_name": "{{user `image_name`}}",
-      "source_image": "69feee3a-d63f-4a9d-8251-d2df9f7a6905",
-      "flavor": "m1.medium",
-      "endpoint_type": "internalURL",
-      "networks": [
-        "a5ad7a1d-d3a6-4180-8d61-07a23f6fb449"
-      ]
-    },
-    {
-      "name": "os-ubuntu12",
-      "type": "openstack",
-      "username": "{{user `os_username`}}",
-      "password": "{{user `os_password`}}",
-      "tenant_name": "{{user `os_tenant_name`}}",
-      "ssh_username": "ubuntu",
-      "ssh_pty": "true",
-      "image_name": "{{user `image_name`}}",
-      "source_image": "7d373eab-68bc-44f2-b659-a2876880f8f6",
-      "flavor": "m1.medium",
-      "endpoint_type": "internalURL",
-      "networks": [
-        "a5ad7a1d-d3a6-4180-8d61-07a23f6fb449"
-      ]
-    },
-    {
-      "name": "os-ubuntu14",
-      "type": "openstack",
-      "username": "{{user `os_username`}}",
-      "password": "{{user `os_password`}}",
-      "tenant_name": "{{user `os_tenant_name`}}",
-      "ssh_username": "ubuntu",
-      "ssh_pty": "true",
-      "image_name": "{{user `image_name`}}",
-      "source_image": "da160394-ed99-46aa-88b3-37dbf0a96d32",
-      "flavor": "m1.medium",
-      "endpoint_type": "internalURL",
-      "networks": [
-        "a5ad7a1d-d3a6-4180-8d61-07a23f6fb449"
-      ]
-    },
-    {
-      "name": "os-ubuntu16",
-      "type": "openstack",
-      "username": "{{user `os_username`}}",
-      "password": "{{user `os_password`}}",
-      "tenant_name": "{{user `os_tenant_name`}}",
-      "ssh_username": "ubuntu",
-      "ssh_pty": "true",
-      "image_name": "{{user `image_name`}}",
-      "source_image": "232ae194-37ef-41d5-8438-a4d32c9ae8e8",
-      "flavor": "m1.medium",
-      "endpoint_type": "internalURL",
-      "networks": [
-        "a5ad7a1d-d3a6-4180-8d61-07a23f6fb449"
-      ]
-    },
-    {
-      "name": "os-ubuntu18",
-      "type": "openstack",
-      "username": "{{user `os_username`}}",
-      "password": "{{user `os_password`}}",
-      "tenant_name": "{{user `os_tenant_name`}}",
-      "ssh_username": "ubuntu",
-      "ssh_pty": "true",
-      "image_name": "{{user `image_name`}}",
-      "source_image": "32664a4e-8307-4e07-9515-f00a75170982",
-      "flavor": "m1.medium",
-      "endpoint_type": "internalURL",
-      "networks": [
-        "a5ad7a1d-d3a6-4180-8d61-07a23f6fb449"
-      ]
-    },
-    {
-      "name": "os-debian9",
-      "type": "openstack",
-      "username": "{{user `os_username`}}",
-      "password": "{{user `os_password`}}",
-      "tenant_name": "{{user `os_tenant_name`}}",
-      "ssh_username": "debian",
-      "ssh_pty": "true",
-      "image_name": "{{user `image_name`}}",
-      "source_image": "b9d23657-f8ef-49cd-a262-48bd597234ec",
-      "flavor": "m2.xlarge",
-      "endpoint_type": "internalURL",
-      "networks": [
-        "a5ad7a1d-d3a6-4180-8d61-07a23f6fb449"
-      ]
-    },
-    {
-      "name": "os-centos7",
-      "type": "openstack",
-      "username": "{{user `os_username`}}",
-      "password": "{{user `os_password`}}",
-      "tenant_name": "{{user `os_tenant_name`}}",
-      "ssh_username": "centos",
-      "ssh_pty": "true",
-      "image_name": "{{user `image_name`}}",
-      "source_image": "7f9af29f-489a-4ba2-837b-70f708be7bc7",
-      "flavor": "m1.medium",
-      "endpoint_type": "internalURL",
-      "networks": [
-        "a5ad7a1d-d3a6-4180-8d61-07a23f6fb449"
-      ]
-    },
-    {
-      "name": "os-sles12sp3",
-      "type": "openstack",
-      "username": "{{user `os_username`}}",
-      "password": "{{user `os_password`}}",
-      "tenant_name": "{{user `os_tenant_name`}}",
-      "ssh_username": "root",
-      "ssh_pty": "true",
-      "image_name": "{{user `image_name`}}",
-      "source_image": "82a163d6-7632-4b9c-a609-e42db3fb9590",
-      "flavor": "m1.medium",
-      "endpoint_type": "internalURL",
-      "networks": [
-        "a5ad7a1d-d3a6-4180-8d61-07a23f6fb449"
-      ]
-    },
-    {
-      "name": "gc-centos7",
-      "type": "googlecompute",
-      "disable_default_service_account" : true,
-      "account_file": "{{user `gcp_account_file`}}",
-      "source_image": "centos-7-v20190916",
-      "zone": "us-central1-b",
-      "project_id": "siq-haas",
-      "ssh_username": "centos",
-      "ssh_pty": "true",
-      "machine_type": "n1-standard-2",
-      "image_name": "{{user `image_name`}}",
-      "disk_size": "{{user `image_size`}}",
-      "state_timeout": "15m",
-      "tags": [
-        "packer", "imagebuild-hortonworks"
-      ],
-      "labels": {
-        "owner": "{{ user `image_owner` | clean_image_name }}",
-        "cb-creation-timestamp": "{{timestamp}}"
-      }
-    },
-    {
-      "name": "gc-sles12sp3",
-      "type": "googlecompute",
-      "disable_default_service_account" : true,
-      "account_file": "{{user `gcp_account_file`}}",
-      "source_image": "sles-12-sp3-v20180814",
-      "zone": "us-central1-b",
-      "project_id": "siq-haas",
-      "ssh_username": "root",
-      "ssh_pty": "true",
-      "machine_type": "n1-standard-2",
-      "image_name": "{{user `image_name`}}",
-      "disk_size": "{{user `image_size`}}",
-      "state_timeout": "15m",
-      "tags": [
-        "packer", "imagebuild-hortonworks"
-      ],
-      "labels": {
-        "owner": "{{ user `image_owner` | clean_image_name }}",
-        "cb-creation-timestamp": "{{timestamp}}"
-      }
-    },
-
-    {
-      "name": "gc-ubuntu16",
-      "type": "googlecompute",
-      "disable_default_service_account" : true,
-      "account_file": "{{user `gcp_account_file`}}",
-      "source_image": "ubuntu-1604-xenial-v20180522",
-      "zone": "us-central1-b",
-      "project_id": "siq-haas",
-      "ssh_username": "root",
-      "ssh_pty": "true",
-      "machine_type": "n1-standard-2",
-      "image_name": "{{user `image_name`}}",
-      "disk_size": "{{user `image_size`}}",
-      "state_timeout": "15m",
-      "tags": [
-        "packer", "imagebuild-hortonworks"
-      ],
-      "labels": {
-        "owner": "{{ user `image_owner` | clean_image_name }}",
-        "cb-creation-timestamp": "{{timestamp}}"
-      }
-    },
-    {
-      "name": "arm-rhel6",
-      "type": "azure-arm",
-      "client_id": "{{user `client_id`}}",
-      "client_secret": "{{user `client_secret`}}",
-      "subscription_id": "{{user `subscription_id`}}",
-      "tenant_id": "{{user `tenant_id`}}",
-      "resource_group_name": "{{user `resource_group_name`}}",
-      "storage_account": "{{user `storage_account`}}",
-      "capture_container_name": "packer",
-      "capture_name_prefix": "{{user `image_name`}}",
-      "image_publisher": "{{user `azure_image_publisher`}}",
-      "image_offer": "{{user `azure_image_offer`}}",
-      "image_sku": "{{user `azure_image_sku`}}",
-      "ssh_pty": "true",
-      "username": "{{user `os_user`}}",
-      "os_type": "Linux",
-      "ssh_username": "centos",
-      "ssh_password": "{{user `ssh_password`}}",
-      "location": "{{user `arm_build_region`}}",
-      "vm_size": "Standard_D4",
-      "os_disk_size_gb": "{{user `image_size`}}",
-      "virtual_network_resource_group_name":"{{user `virtual_network_resource_group_name`}}",      
-      "virtual_network_name": "{{user `vpc_id`}}",
-      "virtual_network_subnet_name": "{{user `subnet_id`}}",
-      "azure_tags": {
-        "builder": "packer",
-        "version": "{{user `version`}}",
-        "cb-creation-timestamp": "{{timestamp}}",
-        "Owner": "{{ user `image_owner` }}",
-        "Customer Delivered": "{{user `tag_customer_delivered`}}"
-      }
     },
     {
       "name": "arm-centos7",
@@ -680,7 +160,7 @@
       "virtual_network_resource_group_name":"{{user `virtual_network_resource_group_name`}}",
       "virtual_network_name": "{{user `vpc_id`}}",
       "virtual_network_subnet_name": "{{user `subnet_id`}}",
-      "private_virtual_network_with_public_ip": true,
+      "private_virtual_network_with_public_ip": false,
       "azure_tags": {
         "builder": "packer",
         "version": "{{user `version`}}",
@@ -690,70 +170,25 @@
       }
     },
     {
-      "name": "arm-sles12sp3",
-      "type": "azure-arm",
-      "client_id": "{{user `client_id`}}",
-      "client_secret": "{{user `client_secret`}}",
-      "subscription_id": "{{user `subscription_id`}}",
-      "tenant_id": "{{user `tenant_id`}}",
-      "resource_group_name": "{{user `resource_group_name`}}",
-      "storage_account": "{{user `storage_account`}}",
-      "capture_container_name": "packer",
-      "capture_name_prefix": "{{user `image_name`}}",
-      "image_publisher": "{{user `azure_image_publisher`}}",
-      "image_offer": "{{user `azure_image_offer`}}",
-      "image_sku": "{{user `azure_image_sku`}}",
+      "name": "gc-centos7",
+      "type": "googlecompute",
+      "disable_default_service_account" : true,
+      "account_file": "{{user `gcp_account_file`}}",
+      "source_image": "centos-7-v20200811",
+      "zone": "us-central1-b",
+      "project_id": "gcp-dev-cloudbreak",
+      "ssh_username": "centos",
       "ssh_pty": "true",
-      "username": "{{user `os_user`}}",
-      "os_type": "Linux",
-      "ssh_username": "suse",
-      "ssh_password": "{{user `ssh_password`}}",
-      "location": "{{user `arm_build_region`}}",
-      "vm_size": "Standard_D4",
-      "os_disk_size_gb": "{{user `image_size`}}",
-      "virtual_network_resource_group_name":"{{user `virtual_network_resource_group_name`}}",      
-      "virtual_network_name": "{{user `vpc_id`}}",
-      "virtual_network_subnet_name": "{{user `subnet_id`}}",      
-      "azure_tags": {
-        "builder": "packer",
-        "version": "{{user `version`}}",
-        "cb-creation-timestamp": "{{timestamp}}",
-        "Owner": "{{ user `image_owner` }}",
-        "Customer Delivered": "{{user `tag_customer_delivered`}}"
-      }
-    },
-    {
-      "name": "arm-ubuntu16",
-      "type": "azure-arm",
-      "client_id": "{{user `client_id`}}",
-      "client_secret": "{{user `client_secret`}}",
-      "subscription_id": "{{user `subscription_id`}}",
-      "tenant_id": "{{user `tenant_id`}}",
-      "resource_group_name": "{{user `resource_group_name`}}",
-      "storage_account": "{{user `storage_account`}}",
-      "capture_container_name": "packer",
-      "capture_name_prefix": "{{user `image_name`}}",
-      "image_publisher": "{{user `azure_image_publisher`}}",
-      "image_offer": "{{user `azure_image_offer`}}",
-      "image_sku": "{{user `azure_image_sku`}}",
-      "ssh_pty": "true",
-      "username": "{{user `os_user`}}",
-      "os_type": "Linux",
-      "ssh_username": "ubuntu",
-      "ssh_password": "{{user `ssh_password`}}",
-      "location": "{{user `arm_build_region`}}",
-      "vm_size": "Standard_D4",
-      "os_disk_size_gb": "{{user `image_size`}}",
-      "virtual_network_resource_group_name":"{{user `virtual_network_resource_group_name`}}",      
-      "virtual_network_name": "{{user `vpc_id`}}",
-      "virtual_network_subnet_name": "{{user `subnet_id`}}",     
-      "azure_tags": {
-        "builder": "packer",
-        "version": "{{user `version`}}",
-        "cb-creation-timestamp": "{{timestamp}}",
-        "Owner": "{{ user `image_owner` }}",
-        "Customer Delivered": "{{user `tag_customer_delivered`}}"
-      }
+      "machine_type": "n1-standard-2",
+      "image_name": "{{user `image_name`}}",
+      "disk_size": "{{user `image_size`}}",
+      "state_timeout": "15m",
+      "tags": [
+        "builder--packer",
+        "cb-creation-timestamp--{{timestamp}}",
+        "owner--{{ user `image_owner` | clean_resource_name }}",
+        "customer-delivered--{{user `tag_customer_delivered` | clean_resource_name}}"
+      ]
     }
   ],
   "provisioners": [
@@ -808,7 +243,10 @@
         "HDPUTIL_VERSION={{user `hdputil_version`}}",
         "HDPUTIL_REPOID={{user `hdputil_repoid`}}",
         "HDPUTIL_BASEURL={{user `hdputil_baseurl`}}",
+        "PREWARM_TAG={{user `prewarm_tag` }}",
         "INCLUDE_FLUENT={{user `include_fluent`}}",
+        "FLUENT_PREWARM_TAG={{ user `fluent_prewarm_tag` }}",
+        "METERING_PREWARM_TAG={{ user `metering_prewarm_tag` }}",
         "INCLUDE_METERING={{user `include_metering`}}",
         "VDF={{user `vdf`}}",
         "OS={{user `os`}}",
@@ -880,6 +318,7 @@
         "aws_ami_regions={{ user `aws_ami_regions` }}",
         "azure_storage_accounts={{ user `azure_storage_accounts` }}",
         "gcp_storage_bundle={{ user `gcp_storage_bundle` }}",
+        "gcp_ami_regions={{ user `gcp_ami_regions` }}",
         "local_url_ambari={{user `local_url_ambari`}}",
         "local_url_hdp={{user `local_url_hdp`}}",
         "local_url_hdp_utils={{user `local_url_hdp_utils`}}",
@@ -893,6 +332,7 @@
         "csp_build_number={{ user `csp_build_number` }}",
         "profiler_build_number={{ user `profiler_build_number` }}",
         "spark3_build_number={{ user `spark3_build_number` }}",
+        "csa_build_number={{ user `csa_build_number` }}",
         "metadata_filename_postfix={{ user `metadata_filename_postfix` }}"
       ]
     }

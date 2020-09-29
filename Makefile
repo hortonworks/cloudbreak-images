@@ -16,11 +16,19 @@ AZURE_IMAGE_PUBLISHER ?= OpenLogic
 AZURE_IMAGE_OFFER ?= CentOS
 AZURE_IMAGE_SKU ?= 7.6
 ARM_BUILD_REGION ?= northeurope
+GCP_STORAGE_BUNDLE ?= cdp-freeipa-images
+GCP_STORAGE_BUNDLE_LOG ?= cdp-freeipa-images
 
 DOCKER_REPOSITORY ?= registry.eng.hortonworks.com
 DOCKER_REPO_USERNAME ?= "ztorok"
 DOCKER_REPO_PASSWORD ?= "JCnvWff6iFSfD5QgYt66"
 
+# This needs to be changed if there is a version change in fluent components. See usage in the salt files in the Cloudbreak repo.
+FLUENT_PREWARM_TAG ?= "fluent_prewarmed_v1"
+# This needs to be changed if there is a version change in metering heartbeat component. See usage in the salt files in the Cloudbreak repo.
+METERING_PREWARM_TAG ?= "metering_prewarmed_v2"
+# This needs to be changed if there is a version change in components other than fluent, or if there are relevant changes to the salt scripts in Cloudbreak.
+PREWARM_TAG ?= "prewarmed_v1"
 
 ###############################
 # DO NOT EDIT BELOW THIS LINE #
@@ -54,7 +62,7 @@ INCLUDE_METERING ?= "Yes"
 
 METADATA_FILENAME_POSTFIX ?= $(shell date +%s)
 
-ENVS=METADATA_FILENAME_POSTFIX=$(METADATA_FILENAME_POSTFIX) DESCRIPTION=$(DESCRIPTION) STACK_TYPE=$(STACK_TYPE) MPACK_URLS=$(MPACK_URLS) HDP_VERSION=$(HDP_VERSION) BASE_NAME=$(BASE_NAME) IMAGE_NAME=$(IMAGE_NAME) IMAGE_SIZE=$(IMAGE_SIZE) INCLUDE_FLUENT=$(INCLUDE_FLUENT) INCLUDE_METERING=$(INCLUDE_METERING) ENABLE_POSTPROCESSORS=$(ENABLE_POSTPROCESSORS) CUSTOM_IMAGE_TYPE=$(CUSTOM_IMAGE_TYPE) OPTIONAL_STATES=$(OPTIONAL_STATES) ORACLE_JDK8_URL_RPM=$(ORACLE_JDK8_URL_RPM) PREINSTALLED_JAVA_HOME=${PREINSTALLED_JAVA_HOME} IMAGE_OWNER=${IMAGE_OWNER} REPOSITORY_TYPE=${REPOSITORY_TYPE} PACKAGE_VERSIONS=$(PACKAGE_VERSIONS) SALT_VERSION=$(SALT_VERSION) SALT_PATH=$(SALT_PATH) PYZMQ_VERSION=$(PYZMQ_VERSION) PYTHON_APT_VERSION=$(PYTHON_APT_VERSION) AWS_MAX_ATTEMPTS=$(AWS_MAX_ATTEMPTS) TRACE=1 AWS_SNAPSHOT_GROUPS=$(AWS_SNAPSHOT_GROUPS) AWS_AMI_GROUPS=$(AWS_AMI_GROUPS) TAG_CUSTOMER_DELIVERED=$(TAG_CUSTOMER_DELIVERED) VERSION=$(VERSION) PARCELS_NAME=$(PARCELS_NAME) PARCELS_ROOT=$(PARCELS_ROOT) SUBNET_ID=$(SUBNET_ID) VPC_ID=$(VPC_ID) VIRTUAL_NETWORK_RESOURCE_GROUP_NAME=$(VIRTUAL_NETWORK_RESOURCE_GROUP_NAME) ARM_BUILD_REGION=$(ARM_BUILD_REGION) PRE_WARM_PARCELS=$(PRE_WARM_PARCELS) PRE_WARM_CSD=$(PRE_WARM_CSD) SLES_REGISTRATION_CODE=$(SLES_REGISTRATION_CODE)
+ENVS=METADATA_FILENAME_POSTFIX=$(METADATA_FILENAME_POSTFIX) DESCRIPTION=$(DESCRIPTION) STACK_TYPE=$(STACK_TYPE) MPACK_URLS=$(MPACK_URLS) HDP_VERSION=$(HDP_VERSION) BASE_NAME=$(BASE_NAME) IMAGE_NAME=$(IMAGE_NAME) IMAGE_SIZE=$(IMAGE_SIZE) INCLUDE_FLUENT=$(INCLUDE_FLUENT) INCLUDE_METERING=$(INCLUDE_METERING) ENABLE_POSTPROCESSORS=$(ENABLE_POSTPROCESSORS) CUSTOM_IMAGE_TYPE=$(CUSTOM_IMAGE_TYPE) OPTIONAL_STATES=$(OPTIONAL_STATES) ORACLE_JDK8_URL_RPM=$(ORACLE_JDK8_URL_RPM) PREINSTALLED_JAVA_HOME=${PREINSTALLED_JAVA_HOME} IMAGE_OWNER=${IMAGE_OWNER} REPOSITORY_TYPE=${REPOSITORY_TYPE} PACKAGE_VERSIONS=$(PACKAGE_VERSIONS) SALT_VERSION=$(SALT_VERSION) SALT_PATH=$(SALT_PATH) PYZMQ_VERSION=$(PYZMQ_VERSION) PYTHON_APT_VERSION=$(PYTHON_APT_VERSION) AWS_MAX_ATTEMPTS=$(AWS_MAX_ATTEMPTS) TRACE=1 AWS_SNAPSHOT_GROUPS=$(AWS_SNAPSHOT_GROUPS) AWS_AMI_GROUPS=$(AWS_AMI_GROUPS) TAG_CUSTOMER_DELIVERED=$(TAG_CUSTOMER_DELIVERED) VERSION=$(VERSION) PARCELS_NAME=$(PARCELS_NAME) PARCELS_ROOT=$(PARCELS_ROOT) SUBNET_ID=$(SUBNET_ID) VPC_ID=$(VPC_ID) VIRTUAL_NETWORK_RESOURCE_GROUP_NAME=$(VIRTUAL_NETWORK_RESOURCE_GROUP_NAME) ARM_BUILD_REGION=$(ARM_BUILD_REGION) PRE_WARM_PARCELS=$(PRE_WARM_PARCELS) PRE_WARM_CSD=$(PRE_WARM_CSD) SLES_REGISTRATION_CODE=$(SLES_REGISTRATION_CODE) FLUENT_PREWARM_TAG=$(FLUENT_PREWARM_TAG) METERING_PREWARM_TAG=$(METERING_PREWARM_TAG) PREWARM_TAG=$(PREWARM_TAG)
 
 GITHUB_ORG ?= hortonworks
 GITHUB_REPO ?= cloudbreak-images-metadata
@@ -79,106 +87,60 @@ ifeq ($(CUSTOM_IMAGE_TYPE),freeipa)
 	BASE_NAME=freeipa
 endif
 
+GCP_STORAGE_BUNDLE ?= cdp-$(BASE_NAME)-images
+GCP_STORAGE_BUNDLE_LOG ?= cdp-$(BASE_NAME)-images
+
+define GCP_AMI_REGIONS
+asia-east1,asia-east2,australia-southeast1,europe-west2,europe-west3,europe-west4,us-west2,southamerica-east1,asia-southeast1,us-central1,europe-west1,europe-north1,us-west1,northamerica-northeast1,us-east4,asia-south1,us-east1,asia-northeast1
+endef
+
 define AWS_AMI_REGIONS
 ap-northeast-1,ap-northeast-2,ap-south-1,ap-southeast-1,ap-southeast-2,ca-central-1,eu-central-1,eu-west-1,eu-west-2,eu-west-3,sa-east-1,us-east-1,us-east-2,us-west-1,us-west-2,eu-north-1
 endef
 
-define AWS_GOV_AMI_REGIONS
-us-gov-west-1
-endef
-
-define AWS_GOV_INSTANCE_PROFILE
-packer
-endef
-
 define AZURE_STORAGE_ACCOUNTS
-East Asia:sequenceiqeastasia2,\
-East US:sequenceiqeastus12,\
-Central US:sequenceiqcentralus2,\
-North Europe:sequenceiqnortheurope2,\
-South Central US:sequenceiqouthcentralus2,\
-North Central US:sequenceiqorthcentralus2,\
-East US 2:sequenceiqeastus22,\
-Japan East:sequenceiqjapaneast2,\
-Japan West:sequenceiqjapanwest2,\
-South East Asia:sequenceiqsoutheastasia2,\
-West US:sequenceiqwestus2,\
-West Europe:sequenceiqwesteurope2,\
-Brazil South:sequenceiqbrazilsouth2,\
-Canada East:sequenceiqcanadaeast,\
-Canada Central:sequenceiqcanadacentral,\
-Australia East:hwxaustraliaeast,\
-Australia Southeast:hwxaustralisoutheast,\
-Central India:hwxcentralindia,\
-Korea Central:hwxkoreacentral,\
-Korea South:hwxkoreasouth,\
-South India:hwxsouthindia,\
-UK South:hwxsouthuk,\
-West Central US:hwxwestcentralus,\
-UK West:hwxwestuk,\
-West US 2:hwxwestus2,\
-West India:hwxwestindia,\
-Australia Central:hwxaustraliacentral,\
-UAE North:hwxuaenorth,\
-UAE Central:hwxuaecentral,\
-South Africa North:hwxsouthafricanorth,\
-South Africa West:hwxsouthafricawest,\
-France Central:hwxfrancecentral,\
-Switzerland North:hwxswitzerlandnorth,\
-Switzerland West:hwxswitzerlandwest,\
-Germany North :hwxgermanynorth,\
-Germany West Central:hwxgermanywestcentral,\
-Norway West:hwxnorwaywest,\
-Norway East:hwxnorwayeast
+East Asia:cldreastasia,\
+East US:cldreastus,\
+Central US:cldrcentralus,\
+North Europe:cldrnortheurope,\
+South Central US:cldrsouthcentralus,\
+North Central US:cldrnorthcentralus,\
+East US 2:cldreastus2,\
+Japan East:cldrjapaneast,\
+Japan West:cldrjapanwest,\
+South East Asia:cldrsoutheastasia,\
+West US:cldrwestus,\
+West Europe:cldrwesteurope,\
+Brazil South:cldrbrazilsouth,\
+Canada East:cldrcanadaeast,\
+Canada Central:cldrcanadacentral,\
+Australia East:cldraustraliaeast,\
+Australia Southeast:cldraustralisoutheast,\
+Central India:cldrcentralindia,\
+Korea Central:cldrkoreacentral,\
+Korea South:cldrkoreasouth,\
+South India:cldrsouthindia,\
+UK South:cldruksouth,\
+West Central US:cldrwestcentralus,\
+UK West:cldrukwest,\
+West US 2:cldrwestus2,\
+West India:cldrwestindia,\
+Australia Central:cldraustraliacentral,\
+UAE North:cldruaenorth,\
+South Africa North:cldrsouthafricanorth,\
+South Africa West:cldrsouthafricawest,\
+France Central:cldrfrancecentral,\
+Switzerland North:cldrswitzerlandnorth,\
+Germany North:cldrgermanynorth,\
+Germany West Central:cldrgermanywestcentral,\
+Norway West:cldrnorwaywest,\
+Norway East:cldrnorwayeast
 endef
-
-GCP_STORAGE_BUNDLE ?= "sequenceiqimage"
-GCP_STORAGE_BUNDLE_LOG ?= "sequenceiqimagelog"
 
 S3_TARGET ?= "s3://public-repo-1.hortonworks.com/HDP/cloudbreak"
 
 show-image-name:
 	@echo IMAGE_NAME=$(IMAGE_NAME)
-
-build-aws-amazonlinux:
-	$(ENVS) \
-	AWS_AMI_REGIONS="$(AWS_AMI_REGIONS)" \
-	AWS_INSTANCE_PROFILE="$(AWS_GOV_INSTANCE_PROFILE)" \
-	OS=amazonlinux \
-	OS_TYPE=redhat6 \
-	ATLAS_ARTIFACT_TYPE=amazon \
-	SALT_INSTALL_OS=amazon \
-	SALT_REPO_FILE="salt-repo-amzn.repo" \
-	./scripts/packer.sh build -only=aws-amazonlinux $(PACKER_OPTS)
-
-build-gov-aws-amazonlinux:
-	$(ENVS) \
-	AWS_AMI_REGIONS="$(AWS_GOV_AMI_REGIONS)" \
-	OS=amazonlinux \
-	OS_TYPE=redhat6 \
-	ATLAS_ARTIFACT_TYPE=amazon \
-	SALT_INSTALL_OS=amazon \
-	SALT_REPO_FILE="salt-repo-amzn.repo" \
-	./scripts/packer.sh build -only=gov-aws-amazonlinux $(PACKER_OPTS)
-
-build-aws-amazonlinux2:
-	$(ENVS) \
-	AWS_AMI_REGIONS="$(AWS_AMI_REGIONS)" \
-	OS=amazonlinux2 \
-	OS_TYPE=amazonlinux2 \
-	ATLAS_ARTIFACT_TYPE=amazon \
-	SALT_INSTALL_OS=amazon \
-	./scripts/packer.sh build -only=aws-amazonlinux2 $(PACKER_OPTS)
-
-build-aws-centos6:
-	$(ENVS) \
-	AWS_AMI_REGIONS="$(AWS_AMI_REGIONS)" \
-	OS=centos6 \
-	OS_TYPE=redhat6 \
-	ATLAS_ARTIFACT_TYPE=amazon \
-	SALT_INSTALL_OS=centos \
-	SALT_REPO_FILE="salt-repo-el6.repo" \
-	./scripts/packer.sh build -only=aws-centos6 $(PACKER_OPTS)
 
 build-aws-centos7-base:
 	$(ENVS) \
@@ -189,33 +151,6 @@ build-aws-centos7-base:
 	SALT_INSTALL_OS=centos \
 	./scripts/packer.sh build -only=aws-centos7 $(PACKER_OPTS)
 
-build-aws-redhat7:
-	$(ENVS) \
-	AWS_AMI_REGIONS="$(AWS_AMI_REGIONS)" \
-	OS=redhat7 \
-	OS_TYPE=redhat7 \
-	ATLAS_ARTIFACT_TYPE=amazon \
-	SALT_INSTALL_OS=redhat \
-	./scripts/packer.sh build -only=aws-rhel7 $(PACKER_OPTS)
-
-build-aws-sles12sp3:
-	$(ENVS) \
-	AWS_AMI_REGIONS="$(AWS_AMI_REGIONS)" \
-	OS=sles12 \
-	OS_TYPE=sles12 \
-	ATLAS_ARTIFACT_TYPE=amazon \
-	SALT_INSTALL_OS=suse \
-	./scripts/packer.sh build -only=aws-sles12sp3 $(PACKER_OPTS)
-
-build-aws-ubuntu16:
-	$(ENVS) \
-	AWS_AMI_REGIONS="$(AWS_AMI_REGIONS)" \
-	OS=ubuntu16 \
-	OS_TYPE=ubuntu16 \
-	ATLAS_ARTIFACT_TYPE=amazon \
-	SALT_INSTALL_OS=ubuntu \
-	./scripts/packer.sh build -only=aws-ubuntu16 $(PACKER_OPTS)
-
 build-aws-centos7: export IMAGE_NAME := $(IMAGE_NAME)
 
 build-aws-centos7:
@@ -224,107 +159,25 @@ build-aws-centos7:
 	AWS_AMI_REGIONS="$(AWS_AMI_REGIONS)" \
 	./scripts/sparseimage/packer.sh build -force $(PACKER_OPTS)
 
-build-os-centos6:
+build-gc-tar-file: 
 	$(ENVS) \
-	ATLAS_ARTIFACT_TYPE=openstack \
-	SALT_INSTALL_OS=centos \
-	./scripts/packer.sh build -only=os-centos6 $(PACKER_OPTS)
-
-build-os-centos7:
-	$(ENVS) \
-	OS=centos7 \
-	OS_TYPE=redhat7 \
-	ATLAS_ARTIFACT_TYPE=openstack \
-	SALT_INSTALL_OS=centos \
-	./scripts/packer.sh build -only=os-centos7 $(PACKER_OPTS)
-
-build-os-debian9:
-	$(ENVS) \
-	OS=debian9 \
-	OS_TYPE=debian9 \
-	ATLAS_ARTIFACT_TYPE=openstack \
-	SALT_INSTALL_OS=debian \
-	./scripts/packer.sh build -only=os-debian9 $(PACKER_OPTS)
-
-build-os-ubuntu12:
-	$(ENVS) \
-	OS=ubuntu12 \
-	OS_TYPE=ubuntu12 \
-	ATLAS_ARTIFACT_TYPE=openstack \
-	SALT_INSTALL_OS=ubuntu \
-	./scripts/packer.sh build -only=os-ubuntu12 $(PACKER_OPTS)
-
-build-os-ubuntu14:
-	$(ENVS) \
-	OS=ubuntu14 \
-	OS_TYPE=ubuntu14 \
-	ATLAS_ARTIFACT_TYPE=openstack \
-	SALT_INSTALL_OS=ubuntu \
-	./scripts/packer.sh build -only=os-ubuntu14 $(PACKER_OPTS)
-
-build-os-ubuntu16:
-	$(ENVS) \
-	OS=ubuntu16 \
-	OS_TYPE=ubuntu16 \
-	ATLAS_ARTIFACT_TYPE=openstack \
-	SALT_INSTALL_OS=ubuntu \
-	./scripts/packer.sh build -only=os-ubuntu16 $(PACKER_OPTS)
-
-build-os-ubuntu18:
-	$(ENVS) \
-        OS=ubuntu18 \
-        OS_TYPE=ubuntu18 \
-        ATLAS_ARTIFACT_TYPE=openstack \
-        SALT_INSTALL_OS=ubuntu \
-        ./scripts/packer.sh build -only=os-ubuntu18 $(PACKER_OPTS)
-
-build-os-sles12sp3:
-	$(ENVS) \
-	OS=sles12 \
-	OS_TYPE=sles12 \
-	ATLAS_ARTIFACT_TYPE=openstack \
-	SALT_INSTALL_OS=suse \
-	./scripts/packer.sh build -only=os-sles12sp3 $(PACKER_OPTS)
-
-build-gc-centos7:
-	$(ENVS) \
+	GCP_AMI_REGIONS=$(GCP_AMI_REGIONS) \
 	GCP_STORAGE_BUNDLE=$(GCP_STORAGE_BUNDLE) \
+	GCP_STORAGE_BUNDLE_LOG=$(GCP_STORAGE_BUNDLE_LOG) \
+	./scripts/bundle-gcp-image.sh
+
+build-gc-centos7: export IMAGE_NAME := $(IMAGE_NAME)
+
+build-gc-centos7: 
+	@ METADATA_FILENAME_POSTFIX=$(METADATA_FILENAME_POSTFIX)
+	$(ENVS) \
 	OS=centos7 \
 	OS_TYPE=redhat7 \
-	ATLAS_ARTIFACT_TYPE=googlecompute \
+	GCP_AMI_REGIONS=$(GCP_AMI_REGIONS) \
+	GCP_STORAGE_BUNDLE=$(GCP_STORAGE_BUNDLE) \
+	GCP_STORAGE_BUNDLE_LOG=$(GCP_STORAGE_BUNDLE_LOG) \
 	SALT_INSTALL_OS=centos \
 	./scripts/packer.sh build -only=gc-centos7 $(PACKER_OPTS)
-
-build-gc-sles12sp3:
-	$(ENVS) \
-	GCP_STORAGE_BUNDLE=$(GCP_STORAGE_BUNDLE) \
-	OS=sles12 \
-	OS_TYPE=sles12 \
-	ATLAS_ARTIFACT_TYPE=googlecompute \
-	SALT_INSTALL_OS=suse \
-	./scripts/packer.sh build -only=gc-sles12sp3 $(PACKER_OPTS)
-
-build-gc-ubuntu16:
-	$(ENVS) \
-	GCP_STORAGE_BUNDLE=$(GCP_STORAGE_BUNDLE) \
-	OS=ubuntu16 \
-	OS_TYPE=ubuntu16 \
-	ATLAS_ARTIFACT_TYPE=googlecompute \
-	SALT_INSTALL_OS=ubuntu \
-	./scripts/packer.sh build -only=gc-ubuntu16 $(PACKER_OPTS)
-
-build-azure-redhat6:
-	$(ENVS) \
-	AZURE_STORAGE_ACCOUNTS="$(AZURE_STORAGE_ACCOUNTS)" \
-	OS=redhat6 \
-	OS_TYPE=redhat6 \
-	ATLAS_ARTIFACT_TYPE=azure-arm \
-	SALT_INSTALL_OS=redhat \
-	AZURE_IMAGE_PUBLISHER=RedHat \
-	AZURE_IMAGE_OFFER=RHEL \
-	AZURE_IMAGE_SKU=6.8 \
-	SALT_REPO_FILE="salt-repo-el6.repo" \
-	./scripts/packer.sh build -only=arm-rhel6 $(PACKER_OPTS)
 
 build-azure-centos7:
 	$(ENVS) \
@@ -338,42 +191,12 @@ build-azure-centos7:
 	AZURE_IMAGE_SKU=$(AZURE_IMAGE_SKU) \
 	./scripts/packer.sh build -only=arm-centos7 $(PACKER_OPTS)
 
-build-azure-sles12sp3:
-	$(ENVS) \
-	AZURE_STORAGE_ACCOUNTS="$(AZURE_STORAGE_ACCOUNTS)" \
-	OS=sles12 \
-	OS_TYPE=sles12 \
-	ATLAS_ARTIFACT_TYPE=azure-arm \
-	SALT_INSTALL_OS=suse \
-	AZURE_IMAGE_PUBLISHER=SUSE \
-	AZURE_IMAGE_OFFER=SLES \
-	AZURE_IMAGE_SKU=12-SP3 \
-	./scripts/packer.sh build -only=arm-sles12sp3 $(PACKER_OPTS)
-
-build-azure-ubuntu16:
-	$(ENVS) \
-	AZURE_STORAGE_ACCOUNTS="$(AZURE_STORAGE_ACCOUNTS)" \
-	OS=ubuntu16 \
-	OS_TYPE=ubuntu16 \
-	ATLAS_ARTIFACT_TYPE=azure-arm \
-	SALT_INSTALL_OS=ubuntu \
-	AZURE_IMAGE_PUBLISHER=Canonical \
-	AZURE_IMAGE_OFFER=UbuntuServer \
-	AZURE_IMAGE_SKU=16.04-LTS \
-	./scripts/packer.sh build -only=arm-ubuntu16 $(PACKER_OPTS)
-
 copy-azure-images:
-	AZURE_STORAGE_ACCOUNTS="$(AZURE_STORAGE_ACCOUNTS)" AZURE_IMAGE_NAME="$(AZURE_IMAGE_NAME)" ./scripts/azure-copy.sh
+	TRACE=1 AZURE_STORAGE_ACCOUNTS="$(AZURE_STORAGE_ACCOUNTS)" AZURE_IMAGE_NAME="$(AZURE_IMAGE_NAME)" ./scripts/azure-copy.sh
 	make check-azure-images
 
 check-azure-images:
 	AZURE_STORAGE_ACCOUNTS="$(AZURE_STORAGE_ACCOUNTS)" AZURE_IMAGE_NAME="$(AZURE_IMAGE_NAME)" ./scripts/azure-image-check.sh
-
-bundle-googlecompute:
-	$(ENVS) GCP_STORAGE_BUNDLE=$(GCP_STORAGE_BUNDLE) GCP_STORAGE_BUNDLE_LOG=$(GCP_STORAGE_BUNDLE_LOG) ./scripts/bundle-gcp-image.sh
-
-upload-openstack-image:
-	S3_TARGET=$(S3_TARGET) ./scripts/openstack-upload.sh
 
 docker-build-centos7:
 	@ OS=centos7 OS_TYPE=redhat7 TAG=centos-7 DIR=centos7.3 JAVA_VERSION=8 make docker-build

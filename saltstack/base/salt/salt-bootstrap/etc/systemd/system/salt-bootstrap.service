@@ -13,7 +13,7 @@ Wants=waagent.service
 Wants=google-startup-scripts.service
 
 [Service]
-Restart=on-failure
+Restart=always
 TimeoutSec=15s
 RestartSec=5s
 ExecStart=/usr/sbin/salt-bootstrap
