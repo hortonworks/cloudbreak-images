@@ -21,9 +21,11 @@ echo "pre_warm_parcels: ${pre_warm_parcels}"
 
 pre_warm_parcels=${pre_warm_parcels:-[ [ \"\" ] ]}
 pre_warm_csd=${pre_warm_csd:-[ \"\" ]}
+uuid=$(cat /proc/sys/kernel/random/uuid)
 
 cat  > ${image_name}_$metadata_filename_postfix.json <<EOF
 {
+"uuid": ${uuid},
 "created_at": ${created_at},
 "prometheus": ${prometheus},
 "created": "${created}",
@@ -44,7 +46,6 @@ cat  > ${image_name}_$metadata_filename_postfix.json <<EOF
 "cm_version": "${clustermanager_version}",
 "cm_os_type": "${clustermanager_os_type}",
 "cm_baseurl": "${clustermanager_baseurl}",
-"cm_gpgkey": "${clustermanager_gpgkey}",
 "hdp_version": "${stack_version}",
 "hdp_os_type": "${stack_os_type}",
 "hdp_baseurl": "$([ "$repository_type" == "local" ] && echo "${local_url_hdp}" || echo "${stack_baseurl}")",
