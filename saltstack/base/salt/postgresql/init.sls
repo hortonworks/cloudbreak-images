@@ -121,6 +121,8 @@ install_openjdk11-headless_for_postgres:
     - mode: 755
      {% if pillar['OS'] == 'sles12' %}
     - target: /usr/pgsql-10/bin/initdb
+     {% elif pillar['OS'] == 'debian9' %}
+    - target: /usr/lib/postgresql/9.6/bin/initdb
      {% else %}
     - target: /usr/pgsql-9.6/bin/initdb
      {% endif %}

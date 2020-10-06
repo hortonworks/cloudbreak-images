@@ -1,4 +1,4 @@
-{% if pillar['OS'] != 'ubuntu18' %}
+{% if grains['os_family'] != 'Debian' %}
 install_haveged_packages:
   pkg.installed:
     - pkgs:

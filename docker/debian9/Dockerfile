@@ -34,7 +34,9 @@ ENV PS1 "[\u@cloudbreak \W]\$ "
 SHELL ["/bin/bash", "-c"]
 
 # Install packages
-RUN apt-get update && \
+RUN echo "deb http://deb.debian.org/debian stretch-backports main contrib non-free" >> /etc/apt/sources.list && \
+    echo "deb-src http://deb.debian.org/debian stretch-backports main contrib non-free" >> /etc/apt/sources.list  && \
+    apt-get update && \
     apt-get install -y --no-install-recommends \
         apt-transport-https \
         ca-certificates \
@@ -115,7 +117,7 @@ RUN chown root:nogroup /bootstrap/start-systemd && \
 
 #Temporary fix until salt fix not reach prod
 RUN mkdir  /cloudbreak-salt-fix && chmod 755 /cloudbreak-salt-fix
-COPY docker/sles12sp5/cloudbreak-salt-fix/ /cloudbreak-salt-fix/
+COPY docker/debian9/cloudbreak-salt-fix/ /cloudbreak-salt-fix/
 RUN chmod 755 -R /cloudbreak-salt-fix
 RUN echo "* *    * * *   root    /cloudbreak-salt-fix/fix-cloudbreak-salt.sh" >> /etc/crontab
 

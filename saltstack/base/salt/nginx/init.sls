@@ -23,7 +23,7 @@ enable_nginx:
     - require:
       - pkg: install_nginx
 
-{% if pillar['OS'] != 'ubuntu18' %}
+{% if pillar['OS'] != 'ubuntu18' and pillar['OS'] != 'ubuntu16' and  pillar['OS'] != 'debian9' %}
 
 nginxRestart:
   file.line:

@@ -117,5 +117,5 @@ add_prewarmed_roles
 echo "Running validation and cleanup"
 highstate "final"
 
-echo "Deleting some  unnecessary files ..."
-delete_unnecessary_files
+#echo "Deleting some  unnecessary files ..."
+#delete_unnecessary_files
