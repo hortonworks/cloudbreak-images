@@ -25,7 +25,7 @@ uuid=$(cat /proc/sys/kernel/random/uuid)
 
 cat  > ${image_name}_$metadata_filename_postfix.json <<EOF
 {
-"uuid": ${uuid},
+"uuid": "${uuid}",
 "created_at": ${created_at},
 "prometheus": ${prometheus},
 "created": "${created}",
