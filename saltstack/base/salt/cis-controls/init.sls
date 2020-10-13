@@ -1,3 +1,6 @@
+#CentOS 1.1.1 Disable unused filesystems
+#https://jira.cloudera.com/browse/CB-8897
+
 {% set filesystems = ['cramfs', 'freevxfs', 'jffs2', 'hfs', 'hfsplus', 'squashfs', 'udf', 'fat'] %}
 
 {% for fs in filesystems %}
