@@ -15,4 +15,5 @@ base:
     - fluent
 {% endif %}
     - ccm-client
+    - cis-controls
     - custom
