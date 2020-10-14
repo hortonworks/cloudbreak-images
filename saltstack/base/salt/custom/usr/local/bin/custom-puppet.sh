@@ -14,7 +14,7 @@ yum install -y puppet-agent
 # Pull Puppet modules from Git
 # Note: It would be preferrable to use Puppetlabs r10k but baseline does not include required Ruby version
 mkdir /tmp/puppet-examples
-git clone https://github.com/gitowner/puppet-examples.git /tmp/puppet-examples
+git clone https://github.com/cloudera/puppet-examples.git /tmp/puppet-examples
 
 cd /tmp/puppet-examples/variables
 
