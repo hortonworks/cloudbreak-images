@@ -8,7 +8,7 @@ yum -y install ansible
 
 # Pull Ansible Playbooks from Git
 mkdir /tmp/ansible-playbooks
-git clone https://github.com/gitowner/ansible-playbooks.git /tmp/ansible-playbooks
+git clone https://github.com/cloudera/ansible-playbooks.git /tmp/ansible-playbooks
 
 # Create Ansible Inventory file that evaluates all in Playbook to localhost.
 # Note: Any variables needed by script go on end of line.
