@@ -1,9 +1,13 @@
 {% set os = salt['environ.get']('OS') %}
 {% set cloudera_public_gem_repo = 'https://repository.cloudera.com/cloudera/api/gems/cloudera-gems/' %}
-{% set cloudera_azure_plugin_version = '1.0.1' %}
+{% set cloudera_s3_service_delivery_cache_prefix = 'https://cloudera-service-delivery-cache.s3.amazonaws.com/fluent-plugins/' %}
+{% set cloudera_azure_plugin_version = '1.0.2' %}
 {% set cloudera_azure_gen2_plugin_version = '0.3.1' %}
 {% set cloudera_databus_plugin_version = '1.0.5' %}
 {% set redaction_plugin_version = '0.1.2' %}
+
+{% set cloudera_databus_plugin_url = cloudera_s3_service_delivery_cache_prefix + 'fluent-plugin-databus/fluent-plugin-databus-' + cloudera_databus_plugin_version + '.gem' %}
+{% set cloudera_azurestorage_plugin_url = cloudera_s3_service_delivery_cache_prefix + 'fluent-plugin-azurestorage/fluent-plugin-azurestorage-' + cloudera_azure_plugin_version + '.gem' %}
 
 {% if os.startswith("centos") or os.startswith("redhat") %}
 install_fluentd_yum:
@@ -65,7 +69,10 @@ install_fluentd_plugins:
       - /opt/td-agent/embedded/bin/fluent-gem source -a {{ cloudera_public_gem_repo }}
       - /opt/td-agent/embedded/bin/fluent-gem install fluent-plugin-cloudwatch-logs fluent-plugin-detect-exceptions 
       - /opt/td-agent/embedded/bin/fluent-gem install fluent-plugin-redaction -v {{ redaction_plugin_version }}
-      - /opt/td-agent/embedded/bin/fluent-gem install fluent-plugin-databus -v {{ cloudera_databus_plugin_version }}
-      - /opt/td-agent/embedded/bin/fluent-gem install fluent-plugin-azurestorage -v {{ cloudera_azure_plugin_version }} -s {{ cloudera_public_gem_repo }}
+      #- /opt/td-agent/embedded/bin/fluent-gem install fluent-plugin-databus -v {{ cloudera_databus_plugin_version }}
+      #- /opt/td-agent/embedded/bin/fluent-gem install fluent-plugin-azurestorage -v {{ cloudera_azure_plugin_version }} -s {{ cloudera_public_gem_repo }}
       - /opt/td-agent/embedded/bin/fluent-gem install fluent-plugin-azurestorage-gen2 -v {{ cloudera_azure_gen2_plugin_version }}
+      - curl -k -L -o /tmp/fluent-plugin-databus-{{ cloudera_databus_plugin_version }}.gem {{ cloudera_databus_plugin_url }} && gem install /tmp/fluent-plugin-databus*.gem
+      - curl -k -L -o /tmp/fluent-plugin-azurestorage-{{ cloudera_azure_plugin_version }}.gem {{ cloudera_azurestorage_plugin_url }} && gem install /tmp/fluent-plugin-azurestorage*.gem
+      - rm -rf /tmp/fluent*.gem
     - onlyif: test -d /opt/td-agent/embedded/bin/
