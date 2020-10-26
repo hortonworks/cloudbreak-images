@@ -20,7 +20,9 @@ verify_parcel_checksum() {
 
   echo "Downloading sha file from $STACK_BASEURL/${PARCELS_NAME}.$SHA_TYPE"
    curl -s -S "${STACK_BASEURL}/${PARCELS_NAME}.${SHA_TYPE}" -o "$PARCEL_REPO/$PARCELS_NAME.$SHA_TYPE"
-   cp "$PARCEL_REPO/$PARCELS_NAME.$SHA_TYPE" "$PARCEL_REPO/$PARCELS_NAME.sha"
+   if [ "$SHA_TYPE" != "sha" ]; then
+     cp "$PARCEL_REPO/$PARCELS_NAME.$SHA_TYPE" "$PARCEL_REPO/$PARCELS_NAME.sha"
+   fi
    sed "s/$/  ${PARCELS_NAME}/" "$PARCEL_REPO/$PARCELS_NAME.$SHA_TYPE" |
      tee "$PARCEL_REPO/$PARCELS_NAME.shacheck" > /dev/null
 
