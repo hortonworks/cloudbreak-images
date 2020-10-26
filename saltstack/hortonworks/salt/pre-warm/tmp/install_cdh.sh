@@ -20,9 +20,7 @@ verify_parcel_checksum() {
 
   echo "Downloading sha file from $STACK_BASEURL/${PARCELS_NAME}.$SHA_TYPE"
    curl -s -S "${STACK_BASEURL}/${PARCELS_NAME}.${SHA_TYPE}" -o "$PARCEL_REPO/$PARCELS_NAME.$SHA_TYPE"
-   if [ "$SHA_TYPE" != "sha" ]; then
-     cp "$PARCEL_REPO/$PARCELS_NAME.$SHA_TYPE" "$PARCEL_REPO/$PARCELS_NAME.sha"
-   fi
+   cp "$PARCEL_REPO/$PARCELS_NAME.$SHA_TYPE" "$PARCEL_REPO/$PARCELS_NAME.sha"
    sed "s/$/  ${PARCELS_NAME}/" "$PARCEL_REPO/$PARCELS_NAME.$SHA_TYPE" |
      tee "$PARCEL_REPO/$PARCELS_NAME.shacheck" > /dev/null
 
@@ -48,8 +46,6 @@ download_cdh_parcel() {
     verify_parcel_checksum "sha1"
   elif  curl -sLf "${STACK_BASEURL}/${PARCELS_NAME}.sha256" -o /dev/null; then
     verify_parcel_checksum "sha256"
-  elif  curl -sLf "${STACK_BASEURL}/${PARCELS_NAME}.sha" -o /dev/null; then
-    verify_parcel_checksum "sha"
   else
     echo "Unable to locate sha file."
     exit 1
