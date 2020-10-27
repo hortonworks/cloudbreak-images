@@ -15,5 +15,7 @@ base:
     - fluent
 {% endif %}
     - ccm-client
+{% if salt['environ.get']('INCLUDE_CIS') == 'Yes' %}
     - cis-controls
+{% endif %}
     - custom
