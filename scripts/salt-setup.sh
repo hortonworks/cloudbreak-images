@@ -60,6 +60,10 @@ function add_prewarmed_roles {
     add_single_role_for_cluster_salt ${fluent_prewarmed}
   fi
 
+  local cdp_telemetry_prewarmed=${CDP_TELEMETRY_PREWARM_TAG}
+  echo "Adding ${cdp_telemetry_prewarmed} to the list of roles for the final image"
+  add_single_role_for_cluster_salt ${cdp_telemetry_prewarmed}
+
   if  [ "${STACK_TYPE}" == "CDH" -a ! -z "${CLUSTERMANAGER_VERSION}" -a ! -z "${CLUSTERMANAGER_BASEURL}" -a ! -z "${CLUSTERMANAGER_GPGKEY}" -a ! -z "${STACK_VERSION}" -a ! -z "${STACK_BASEURL}" -a ! -z "${STACK_REPOID}" ]; then
     local prewarmed=${PREWARM_TAG}
     echo "Adding ${prewarmed} to the list of roles for the final image"
