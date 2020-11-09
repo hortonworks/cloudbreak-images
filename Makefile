@@ -16,8 +16,8 @@ AZURE_IMAGE_PUBLISHER ?= OpenLogic
 AZURE_IMAGE_OFFER ?= CentOS
 AZURE_IMAGE_SKU ?= 7.6
 ARM_BUILD_REGION ?= northeurope
-GCP_STORAGE_BUNDLE ?= cdp-freeipa-images
-GCP_STORAGE_BUNDLE_LOG ?= cdp-freeipa-images
+GCP_STORAGE_BUNDLE ?= cloudera-freeipa-images
+GCP_STORAGE_BUNDLE_LOG ?= cloudera-freeipa-images
 
 DOCKER_REPOSITORY ?= registry.eng.hortonworks.com
 DOCKER_REPO_USERNAME ?= ""
@@ -89,8 +89,8 @@ ifeq ($(CUSTOM_IMAGE_TYPE),freeipa)
 	BASE_NAME=freeipa
 endif
 
-GCP_STORAGE_BUNDLE ?= cdp-$(BASE_NAME)-images
-GCP_STORAGE_BUNDLE_LOG ?= cdp-$(BASE_NAME)-images
+GCP_STORAGE_BUNDLE ?= cloudera-$(BASE_NAME)-images
+GCP_STORAGE_BUNDLE_LOG ?= cloudera-$(BASE_NAME)-images
 
 define GCP_AMI_REGIONS
 asia-east1,asia-east2,australia-southeast1,europe-west2,europe-west3,europe-west4,us-west2,southamerica-east1,asia-southeast1,us-central1,europe-west1,europe-north1,us-west1,northamerica-northeast1,us-east4,asia-south1,us-east1,asia-northeast1
