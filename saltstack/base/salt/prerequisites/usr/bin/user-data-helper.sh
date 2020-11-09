@@ -199,6 +199,8 @@ main() {
       INSTANCE_ID="`wget -q -O - http://169.254.169.254/latest/meta-data/instance-id`"
     elif [[ "$CLOUD_PLATFORM" == "AZURE" ]]; then
       INSTANCE_ID="`wget -q -O - --header="Metadata: true" 'http://169.254.169.254/metadata/instance/compute/name?api-version=2017-08-01&format=text'`"
+    elif [[ "$CLOUD_PLATFORM" == "GCP" ]]; then
+      INSTANCE_ID="`wget -q -O - --header="Metadata-Flavor: Google" 'http://metadata.google.internal/computeMetadata/v1/instance/name'`"
     fi
 
     if [[ "$IS_CCM_ENABLED" == "true" ]]; then
