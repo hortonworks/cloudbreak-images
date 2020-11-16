@@ -16,8 +16,6 @@ AZURE_IMAGE_PUBLISHER ?= OpenLogic
 AZURE_IMAGE_OFFER ?= CentOS
 AZURE_IMAGE_SKU ?= 7.6
 ARM_BUILD_REGION ?= northeurope
-GCP_STORAGE_BUNDLE ?= cloudera-freeipa-images
-GCP_STORAGE_BUNDLE_LOG ?= cloudera-freeipa-images
 
 DOCKER_REPOSITORY ?= registry.eng.hortonworks.com
 DOCKER_REPO_USERNAME ?= ""
