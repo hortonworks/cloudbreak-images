@@ -61,7 +61,6 @@
     "salt_path": "{{ env `SALT_PATH` }}",
     "pyzmq_version": "{{ env `PYZMQ_VERSION` }}",
     "aws_instance_type": "t3.2xlarge",
-    "aws_spot_price": "0.3328",
     "aws_ami_regions": "{{ env `AWS_AMI_REGIONS` }}",
     "aws_instance_profile": "{{ env `AWS_INSTANCE_PROFILE` }}",
     "custom_image_type": "{{ env `CUSTOM_IMAGE_TYPE` }}",
@@ -103,11 +102,9 @@
       "ami_regions": "{{ user `aws_ami_regions` }}",
       "ssh_pty": true,
       "source_ami": "ami-098f55b4287a885ba",
-      "spot_price": "{{ user `aws_spot_price` }}",
-      "spot_instance_types": [
-        "{{ user `aws_instance_type` }}"
-      ],
+      "instance_type": "{{ user `aws_instance_type` }}",
       "ssh_username": "centos",
+      "ena_support": true,
       "skip_region_validation": true,
       "tags": {
         "builder": "packer",
@@ -185,7 +182,6 @@
       "ssh_username": "centos",
       "ssh_pty": "true",
       "machine_type": "n1-standard-2",
-      "preemptible": true,
       "omit_external_ip": "true",
       "use_internal_ip": "true",
       "network": "{{user `vpc_id`}}",
