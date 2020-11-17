@@ -12,7 +12,8 @@
     - [Azure](#azure)
     - [Running packer in debug mode](#running-packer-in-debug-mode)
     - [Check the logs without debug mode](#check-the-logs-without-debug-mode)
-    - [Advanced topics](#advanced-topics)
+  - [Advanced topics](#advanced-topics)
+  - [Image content](#image-content)
 
 
 # Custom Images for Cloudbreak
@@ -220,6 +221,10 @@ E.g. on Azure:
 
 ## Advanced topics
 
-You can read more about postprocessors and customizing your base image with custom scripts and logic 
-[here](README.dev.md).
+You can read more about postprocessors and customizing your base image with custom scripts and logic [here](README.dev.md).
+
+## Image content
+
+You can find more information about the packages of specified images to be installed [here](README.image-content.md).
+If new package needs to be added to the different images or deleted for any reason, the package in the file above must be changed in the appropriate section.
 
