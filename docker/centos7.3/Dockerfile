@@ -84,7 +84,7 @@ COPY docker/centos7.3/files/image-prep-scripts/hwx-internal-setup.sh /tmp/image-
 RUN /tmp/image-build-space/image-prep-scripts/hwx-internal-setup.sh
 #################################################################################
 
-# install iproute explicitly on centos7, it's present by default in centos6, debian7
+# install iproute explicitly on centos7, it's present by default in debian7
 RUN yum -y install iproute
 
 #################################################################################
