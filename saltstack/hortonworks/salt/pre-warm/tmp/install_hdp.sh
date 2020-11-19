@@ -7,7 +7,6 @@ check_prerequisites() {
   : ${STACK_VERSION:? reqired}
   : ${STACK_BASEURL:? reqired}
   : ${STACK_REPOID:? required}
-  : ${VDF:? required}
   : ${STACK_REPOSITORY_VERSION:? required}
   : ${CLUSTERMANAGER_VERSION:? reqired}
   : ${OS:? reqired}
@@ -68,18 +67,6 @@ set_repos() {
   chmod -R 755 /var/www/html
 }
 
-download_vdf() {
-  # VDF URL sample
-  # http://private-repo-1.hortonworks.com/HDP/centos7/2.x/updates/2.6.4.5-2/HDP-2.6.4.5-2.xml
-  VDF_FILE=/var/www/html/${STACK_TYPE}-${STACK_VERSION}.xml
-  curl ${VDF} -o ${VDF_FILE}
-  HDP_URL=$(grep -Pho "(?<=\<baseurl\>).*/${STACK_TYPE}/.*(?=\<\/baseurl\>)" ${VDF_FILE})
-  HDP_UTILS_URL=$(grep -Pho "(?<=\<baseurl\>).*/HDP-UTILS.*(?=\<\/baseurl\>)" ${VDF_FILE})
-  sed -i "s;${HDP_URL};${LOCAL_URL_HDP};g" ${VDF_FILE}
-  sed -i "s;${HDP_UTILS_URL};${LOCAL_URL_HDP_UTILS};g" ${VDF_FILE}
-  export VDF=${LOCAL_URL_VDF}
-}
-
 install_hdp_without_ambari() {
   set_hdp_repo
   #REPOSITORY_NAME=$(tr '[:upper:]' '[:lower:]' <<< ${STACK_TYPE})bn
@@ -108,7 +95,6 @@ main() {
     exec 1>/var/log/install_hdp.log 2>&1
     if [[ "$REPOSITORY_TYPE" == "local" ]]; then
       set_repos
-      download_vdf
     fi
     install_hdp_without_ambari
     install_mpacks

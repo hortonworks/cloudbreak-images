@@ -9,7 +9,6 @@
     + [Custom Base Image](#custom-base-image)
       - [AWS Example](#aws-example)
     + [Custom repositories](#custom-repositories)
-    + [No internet install](#no-internet-install)
     + [Custom Script](#custom-script)
     + [Oracle JDK](#oracle-jdk)
     + [Using preinstalled JDK](#using-preinstalled-jdk)
@@ -110,11 +109,6 @@ The following table lists the property to be modified to be able to start from a
 
 There is the possibility in Cloudbreak to use custom repositories to install Ambari and the HDP cluster, the easiest way to configure these is to place the necessary repo files (ambari.repo and hdp.repo files are necessary for installing the cluster) to your image and start the custom image creation by setting that image [as base image](#customizing-the-base-image). <br/>
 For more information on how to set up a local repository please refer to the [documentation](https://docs.hortonworks.com/HDPDocuments/Ambari-2.6.1.0/bk_ambari-installation/content/setting_up_a_local_repository.html).
-
-### No internet install
-
-Cloudbreak supports cluster installation in a secured subnet with no internet access, to be able to do so you have to [set custom repositories](#custom-repositories), create and host a custom VDF file and update the Base URL-s of the repositories in the VDF file as well. All these resouces should be accessible by the cluster.<br/>
-For more information on the VDF file refer to the [documentation](https://docs.hortonworks.com/HDPDocuments/Ambari-2.6.1.0/bk_ambari-installation/content/hdp_26_repositories.html).  
 
 ### Custom Script
 
