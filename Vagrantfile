@@ -42,14 +42,6 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
         :salt_install_os => "centos"
       },
       {
-        :hostname => "centos6",
-        :box => "centos/6",
-        :ram => 1536,
-        :cpu => 2,
-        :custom_image_type => "hortonworks",
-        :salt_install_os => "centos"
-      },
-      {
         :hostname => "debian9",
         :box => "debian/stretch64",
         :ram => 1536,

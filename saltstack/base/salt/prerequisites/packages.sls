@@ -45,7 +45,7 @@ packages_install:
       - deltarpm
       - nvme-cli
       - openssl
-  {% if pillar['OS'] in ('centos7', 'centos6', 'redhat7') %}
+  {% if pillar['OS'] in ('centos7', 'redhat7') %}
       - vim-common
   {% else %}
       - vim
