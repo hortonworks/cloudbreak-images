@@ -1,4 +1,4 @@
-#CentOS 1.1.1 Disable unused filesystems
+#CentOS Disable unused filesystems
 #https://jira.cloudera.com/browse/CB-8897
 
 {% if pillar['OS'] == 'centos7' %}
@@ -6,12 +6,12 @@
 
 {% for fs in filesystems %}
 
-{{ rule }} {{ fs }} create modrobe blacklist:
+{{ fs }} create modrobe blacklist:
     cmd.run:
         - name: touch /etc/modprobe.d/salt_cis.conf
         - unless: test -f /etc/modprobe.d/salt_cis.conf
 
-{{ rule }} {{ fs }} disabled:
+{{ fs }} disabled:
     file.replace:
         - name: /etc/modprobe.d/salt_cis.conf
         - pattern: "^install {{ fs }} /bin/true"
