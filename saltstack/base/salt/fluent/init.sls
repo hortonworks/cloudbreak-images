@@ -1,5 +1,5 @@
 {% set os = salt['environ.get']('OS') %}
-{% set cdp_logging_agent_version = '0.2.6' %}
+{% set cdp_logging_agent_version = '0.2.8' %}
 {% set cdp_logging_agent_rpm_location = 'https://cloudera-service-delivery-cache.s3.amazonaws.com/telemetry/cdp-logging-agent/'%}
 {% set cdp_logging_agent_rpm_repo_url = cdp_logging_agent_rpm_location + cdp_logging_agent_version + '/cdp_logging_agent-' + cdp_logging_agent_version + '.x86_64.rpm' %}
 
