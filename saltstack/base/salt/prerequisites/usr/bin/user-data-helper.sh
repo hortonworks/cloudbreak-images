@@ -35,7 +35,7 @@ setup_tmp_ssh() {
 
 format_disks() {
   lazy_format_disks
-  cd /hadoopfs/fs1 && mkdir logs logs/consul-watch logs/kerberos
+  cd /hadoopfs/fs1 && mkdir logs logs/ambari-server logs/ambari-agent logs/consul-watch logs/kerberos
 }
 
 lazy_format_disks() {

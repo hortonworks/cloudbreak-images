@@ -21,6 +21,24 @@ done
 echo "nameserver 127.0.0.1" >/etc/resolv.conf
 
 ###
+# Set container limits for Ambari
+###
+if [ -f container_limits ]; then
+    cpu=$(awk -F= '/vcores=/{print $2}' container_limits)
+    memory=$(awk -F= '/memory=/{print $2*1024}' container_limits)
+    mkdir -p /etc/resource_overrides
+    cat >/etc/resource_overrides/ycloud.json <<EOF
+{
+    "processorcount": "$cpu",
+    "physicalprocessorcount": "$cpu",
+    "memorysize": "$memory",
+    "memoryfree": "$memory",
+    "memorytotal": "$memory"
+}
+EOF
+fi
+
+###
 # CloudBreak provides a configuration file called cloudbreak-config.props
 # when starting a deployment on Yarn. This is the method how it emulates
 # user-data functionality of cloud-init.
