@@ -34,9 +34,6 @@ From bird's-eye view, images contain the following:
 - Standard configuration (disabled SE Linux, permissive iptables, best practice configs, etc.)
 - Standard tooling (bootstrap scripts, bootstrap binaries)
 
-> Important: Ambari and HDP packages are not part of the image and the desired version of Ambari and HDP packages
-  are downloaded during provision time. This makes the images agnostic to the version of Ambari and HDP that can be installed by Cloudbreak.
-
 The following **Standard Default** images and Linux versions are available for each Cloudbreak version:
 - Amazon: CentOS 7.6
 - Azure: CentOS 7.6

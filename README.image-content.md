@@ -107,8 +107,6 @@ This section provides information about the packages of specified images to be i
 - krb5 (Suse)
 - krb5-client (Suse)
 - metering-heartbeat-rpm (centos, redhat, amazonlinux2)
-- ambari-server
-- ambari-agent
 - mktorrent
 - cdh
 - cloudera-manager-daemons
@@ -118,7 +116,6 @@ This section provides information about the packages of specified images to be i
 - yum-utils
 - createrepo
 - httpd
-- hdp
 - nodejs
 - smartsense-hst
 - resolvconf (Debian)
@@ -132,7 +129,6 @@ This section provides information about the packages of specified images to be i
 - krb5-workstation
 - yum-utils
 - httpd
-- hdp
 - ntp
 - ipa-server
 - ipa-server-dns

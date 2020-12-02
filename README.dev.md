@@ -8,7 +8,6 @@
   * [Customizing the Base Image](#customizing-the-base-image)
     + [Custom Base Image](#custom-base-image)
       - [AWS Example](#aws-example)
-    + [Custom repositories](#custom-repositories)
     + [Custom Script](#custom-script)
     + [Oracle JDK](#oracle-jdk)
     + [Using preinstalled JDK](#using-preinstalled-jdk)
@@ -104,11 +103,6 @@ The following table lists the property to be modified to be able to start from a
 4. Modify the properties `source_ami` and `region` to match the AMI in your AWS account.
 5. Save the [packer.json](packer.json) file.
 6. Proceed to [AWS](README.md#aws) and run the **Build Command** for CentOS 7.
-
-### Custom repositories
-
-There is the possibility in Cloudbreak to use custom repositories to install Ambari and the HDP cluster, the easiest way to configure these is to place the necessary repo files (ambari.repo and hdp.repo files are necessary for installing the cluster) to your image and start the custom image creation by setting that image [as base image](#customizing-the-base-image). <br/>
-For more information on how to set up a local repository please refer to the [documentation](https://docs.hortonworks.com/HDPDocuments/Ambari-2.6.1.0/bk_ambari-installation/content/setting_up_a_local_repository.html).
 
 ### Custom Script
 
