@@ -18,7 +18,7 @@
         - repl: install {{ fs }} /bin/true
         - append_if_not_found: True
     cmd.run:
-        - name: modprobe -r {{ fs }} && rmmod {{ fs }}
+        - name: modprobe -r {{ fs }} && rmmod {{ fs }} > /dev/null 2>&1
         - onlyif: "lsmod | grep {{ fs }}"
 {% endfor %}
 {% endif %}
