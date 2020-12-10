@@ -96,12 +96,12 @@
     {
       "name": "aws-centos7",
       "type": "amazon-ebs",
-      "region": "us-west-1",
+      "region": "us-west-2",
       "ami_regions": "{{ user `aws_ami_regions` }}",
       "ssh_pty": true,
-      "source_ami": "ami-098f55b4287a885ba",
+      "source_ami": "ami-0e472933a1395e172",
       "instance_type": "{{ user `aws_instance_type` }}",
-      "ssh_username": "centos",
+      "ssh_username": "ec2-user",
       "ena_support": true,
       "skip_region_validation": true,
       "tags": {

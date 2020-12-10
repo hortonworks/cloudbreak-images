@@ -95,7 +95,7 @@ asia-east1,asia-east2,australia-southeast1,europe-west2,europe-west3,europe-west
 endef
 
 define AWS_AMI_REGIONS
-ap-northeast-1,ap-northeast-2,ap-south-1,ap-southeast-1,ap-southeast-2,ca-central-1,eu-central-1,eu-west-1,eu-west-2,eu-west-3,sa-east-1,us-east-1,us-east-2,us-west-1,us-west-2,eu-north-1
+us-west-2
 endef
 
 define AZURE_STORAGE_ACCOUNTS
@@ -144,11 +144,11 @@ show-image-name:
 
 build-aws-centos7-base:
 	$(ENVS) \
-	AWS_AMI_REGIONS="us-west-1" \
-	OS=centos7 \
-	OS_TYPE=redhat7 \
+	AWS_AMI_REGIONS="us-west-2" \
+	OS=amazonlinux2 \
+	OS_TYPE=amazonlinux2 \
 	ATLAS_ARTIFACT_TYPE=amazon \
-	SALT_INSTALL_OS=centos \
+	SALT_INSTALL_OS=amazon \
 	./scripts/packer.sh build -only=aws-centos7 $(PACKER_OPTS)
 
 build-aws-centos7: export IMAGE_NAME := $(IMAGE_NAME)

@@ -8,6 +8,7 @@ set -ex -o pipefail -o errexit
 function install_salt_with_pip() {
   echo "Installing salt with version: $SALT_VERSION"
   pip install --upgrade pip
+  ln -s /usr/local/bin/pip /usr/bin/pip
   pip install virtualenv
   # fix pip3 not installing virtualenv for root
   ln -s /usr/local/bin/virtualenv /usr/bin/virtualenv
@@ -88,8 +89,8 @@ function install_python_pip() {
   if [ "${OS_TYPE}" == "amazonlinux" ]; then
     yum install -y python27-devel python27-pip
   elif [ "${OS_TYPE}" == "redhat7" ] || [ "${OS_TYPE}" == "amazonlinux2" ] ; then
-    echo "Installing python36 with deps"
-    yum install -y python36 python36-pip python36-devel python36-setuptools
+    echo "Installing python3 with deps"
+    yum install -y python3 python3-pip python3-devel python3-setuptools
     make_pip3_default_pip
   else
     yum install -y python-pip python-devel
@@ -103,7 +104,7 @@ function make_pip3_default_pip() {
   fi
   mv /bin/pip3 /bin/pip
   if [ -f "$FILE" ]; then
-      mv /bin/pip3.6 /bin/pip
+      mv /bin/pip3.7 /bin/pip
   fi
 }
 
