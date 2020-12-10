@@ -47,8 +47,6 @@ packages_install:
       - openssl
   {% if pillar['OS'] in ('centos7', 'redhat7') %}
       - vim-common
-  {% else %}
-      - vim
   {% endif %}
   {% if grains['os_family'] != 'Suse' and grains['osmajorrelease'] |int != 12 %}
       - autossh
