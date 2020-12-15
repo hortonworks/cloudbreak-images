@@ -78,13 +78,13 @@ function add_prewarmed_roles {
 }
 
 function delete_unnecessary_files() {
-  # Salt (version as of this change: 3000.2) ends up taking a long time to load modules. vspere is an especially slow one taking 3 seconds.
+  # Salt (version as of this change: 3000.5) ends up taking a long time to load modules. vspere is an especially slow one taking 3 seconds.
   # Salt does not seem to allow skipping module load ('disable_modules' only disables module usage, not module loading)
   # So, deleting some modules which are not used, and tend to cause Exceptions / delays
-  find /opt/salt_3000.2/lib/python3.6/site-packages/salt/modules/ -name "*lxd*" -exec rm -f {} \;
-  find /opt/salt_3000.2/lib/python3.6/site-packages/salt/modules/ -name "*vsphere*" -exec rm -f {} \;
-  find /opt/salt_3000.2/lib/python3.6/site-packages/salt/modules/ -name "*boto3_elasticsearch*" -exec rm -f {} \;
-  find /opt/salt_3000.2/lib/python3.6/site-packages/salt/modules/ -name "*win_*" -exec rm -f {} \;
+  find /opt/salt_3000.5/lib/python3.6/site-packages/salt/modules/ -name "*lxd*" -exec rm -f {} \;
+  find /opt/salt_3000.5/lib/python3.6/site-packages/salt/modules/ -name "*vsphere*" -exec rm -f {} \;
+  find /opt/salt_3000.5/lib/python3.6/site-packages/salt/modules/ -name "*boto3_elasticsearch*" -exec rm -f {} \;
+  find /opt/salt_3000.5/lib/python3.6/site-packages/salt/modules/ -name "*win_*" -exec rm -f {} \;
 }
 
 : ${CUSTOM_IMAGE_TYPE:=$1}
