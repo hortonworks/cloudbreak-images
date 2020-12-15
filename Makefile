@@ -95,7 +95,7 @@ asia-east1,asia-east2,australia-southeast1,europe-west2,europe-west3,europe-west
 endef
 
 define AWS_AMI_REGIONS
-us-west-2
+us-west-1
 endef
 
 define AZURE_STORAGE_ACCOUNTS
@@ -144,7 +144,7 @@ show-image-name:
 
 build-aws-centos7-base:
 	$(ENVS) \
-	AWS_AMI_REGIONS="us-west-2" \
+	AWS_AMI_REGIONS="us-west-1" \
 	OS=amazonlinux2 \
 	OS_TYPE=amazonlinux2 \
 	ATLAS_ARTIFACT_TYPE=amazon \
