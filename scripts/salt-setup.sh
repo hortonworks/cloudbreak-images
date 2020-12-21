@@ -52,6 +52,15 @@ function add_single_role_for_cluster_salt {
   echo "${role}" >> /etc/salt/prewarmed_roles
 }
 
+function add_builder_type_grain {
+  echo "Adding ${PACKER_BUILDER_TYPE} to the grains"
+cat << EOF >> /tmp/saltstack/config/minion
+grains:
+  builder_type:
+    - ${PACKER_BUILDER_TYPE}
+EOF
+}
+
 function add_prewarmed_roles {
   if [ "${INCLUDE_FLUENT}" == "Yes" ]; then
     # Note: This will need to be changed if making changes to versions etc in the prewarmed image.
@@ -89,6 +98,7 @@ function delete_unnecessary_files() {
 
 : ${CUSTOM_IMAGE_TYPE:=$1}
 
+add_builder_type_grain
 case ${CUSTOM_IMAGE_TYPE} in
   base|"")
     echo "Running highstate for Base.."

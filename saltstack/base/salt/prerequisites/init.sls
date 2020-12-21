@@ -1,4 +1,5 @@
 include:
+  - {{ slspath }}.user_uid
   - {{ slspath }}.repository
   - {{ slspath }}.packages
   - {{ slspath }}.sudo
@@ -16,9 +17,9 @@ include:
   - {{ slspath }}.umask
   - {{ slspath }}.jinja
   - {{ slspath }}.corkscrew
-{% if  pillar['OS'].startswith('ubuntu') %}
+{% if pillar['OS'].startswith('ubuntu') %}
   - {{ slspath }}.disable-unattended-upgrades
- {% endif %}
+{% endif %}
 
 /usr/bin/:
   file.recurse:
