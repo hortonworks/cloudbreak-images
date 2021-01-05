@@ -102,4 +102,24 @@ sshd_harden_WarnBanner2:
     - repl: "Banner /etc/issue"
     - append_if_not_found: True
 
+sshd_harden_ApprovedCiphers:
+  file.replace:
+    - name: /etc/ssh/sshd_config
+    - pattern: "^Ciphers"
+    - repl: "Ciphers aes256-ctr,aes192-ctr,aes128-ctr"
+    - append_if_not_found: True
+
+sshd_harden_ApprovedMACs:
+  file.replace:
+    - name: /etc/ssh/sshd_config
+    - pattern: "^MACs"
+    - repl: "MACs hmac-sha2-512-etm@openssh.com,hmac-sha2-256-etm@openssh.com,umac-128-etm@openssh.com,hmac-sha2-512,hmac-sha2-256,umac-128@openssh.com"
+    - append_if_not_found: True
+
+sshd_harden_LogLevel:
+  file.replace:
+    - name: /etc/ssh/sshd_config
+    - pattern: "^LogLevel"
+    - repl: "LogLevel INFO"
+    - append_if_not_found: True
 {% endif %}
