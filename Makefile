@@ -24,7 +24,7 @@ DOCKER_REPO_PASSWORD ?= ""
 # This needs to be changed if there is a version change in fluent components. See usage in the salt files in the Cloudbreak repo.
 FLUENT_PREWARM_TAG ?= "fluent_prewarmed_v2"
 # This needs to be changed if there is a version change in metering heartbeat component. See usage in the salt files in the Cloudbreak repo.
-METERING_PREWARM_TAG ?= "metering_prewarmed_v2"
+METERING_PREWARM_TAG ?= "metering_prewarmed_v3"
 # This needs to be changed if there is a version change in cdp-telemetry cli component. See usage in the salt files in the Cloudbreak repo.
 CDP_TELEMETRY_PREWARM_TAG ?= "cdp_telemetry_prewarmed_v1"
 # This needs to be changed if there is a version change in components other than fluent, or if there are relevant changes to the salt scripts in Cloudbreak.
@@ -37,7 +37,7 @@ PREWARM_TAG ?= "prewarmed_v1"
 ## https://github.com/hashicorp/packer/issues/6536
 AWS_MAX_ATTEMPTS ?= 300
 PACKAGE_VERSIONS ?= ""
-SALT_VERSION ?= 3000.2
+SALT_VERSION ?= 3000.5
 SALT_PATH ?= /opt/salt_$(SALT_VERSION)
 PYZMQ_VERSION ?= 19.0
 PYTHON_APT_VERSION ?= 1.1.0_beta1ubuntu0.16.04.1
