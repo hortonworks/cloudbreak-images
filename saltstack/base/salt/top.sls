@@ -15,4 +15,8 @@ base:
     - fluent
 {% endif %}
     - ccm-client
+    - ccmv2-inverting-proxy-agent
+{% if salt['environ.get']('INCLUDE_CIS') == 'Yes' %}
+    - cis-controls
+{% endif %}
     - custom

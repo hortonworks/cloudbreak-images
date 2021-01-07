@@ -147,6 +147,41 @@ setup_ccm() {
   fi
 }
 
+setup_ccmv2() {
+  : ${CCM_V2_INVERTING_PROXY_CERTIFICATE:? required}
+  : ${CCM_V2_INVERTING_PROXY_HOST:? required}
+  : ${CCM_V2_AGENT_CERTIFICATE:? required}
+  : ${CCM_V2_AGENT_ENCIPHERED_KEY:? required}
+  : ${CCM_V2_AGENT_KEY_ID:? required}
+  : ${CCM_V2_AGENT_CRN:? required}
+  : ${CCM_V2_AGENT_BACKEND_ID_PREFIX:? required}
+
+  BACKEND_ID="${CCM_V2_AGENT_BACKEND_ID_PREFIX}${INSTANCE_ID}"
+  BACKEND_HOST="localhost"
+  BACKEND_PORT="9443"
+
+  mkdir -p /etc/ccmv2
+
+  IV=436c6f7564657261436c6f7564657261
+  AGENT_KEY_PATH=/etc/ccmv2/ccmv2-key.enc
+  echo ${CCM_V2_AGENT_ENCIPHERED_KEY} | openssl enc -aes-128-cbc -d -A -a -K ${CCM_V2_AGENT_KEY_ID} -iv ${IV} > ${AGENT_KEY_PATH}
+  chmod 400 "$AGENT_KEY_PATH"
+
+  AGENT_CERT_PATH=/etc/ccmv2/ccmv2-cert.enc
+  echo "$CCM_V2_AGENT_CERTIFICATE" | base64 --decode > "$AGENT_CERT_PATH"
+  chmod 400 "$AGENT_CERT_PATH"
+
+  TRUSTED_BACKEND_CERT_PATH="/etc/certs/cluster.pem"
+
+  TRUSTED_PROXY_CERT_PATH=/etc/ccmv2/ccmv2-proxy-cert.enc
+  echo "$CCM_V2_INVERTING_PROXY_CERTIFICATE" | base64 --decode > "$TRUSTED_PROXY_CERT_PATH"
+  chmod 400 "$TRUSTED_PROXY_CERT_PATH"
+
+  INVERTING_PROXY_URL="$CCM_V2_INVERTING_PROXY_HOST"
+
+  update-inverting-proxy-agent-values.sh "$BACKEND_ID" "$BACKEND_HOST" "$BACKEND_PORT" "$AGENT_KEY_PATH" "$AGENT_CERT_PATH" "$TRUSTED_BACKEND_CERT_PATH" "$TRUSTED_PROXY_CERT_PATH" "$INVERTING_PROXY_URL"
+}
+
 setup_ssh_proxy() {
   : ${PROXY_HOST:? required}
   : ${PROXY_PORT:? required}
@@ -195,7 +230,10 @@ main() {
 
     if [[ "$IS_CCM_ENABLED" == "true" ]]; then
       setup_ccm
+    elif [[ "$IS_CCM_V2_ENABLED" == "true" ]]; then
+      setup_ccmv2
     fi
+
     echo $(date +%Y-%m-%d:%H:%M:%S) >> /var/cb-init-executed
   fi
   [ -e /usr/bin/ssh-aliases ] && /usr/bin/ssh-aliases create
