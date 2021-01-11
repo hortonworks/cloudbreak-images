@@ -1,0 +1,14 @@
+[Unit]
+Description= ClusterConnectivityManagementV2 Inverting proxy agent service for user %i
+ConditionPathExists=/cdp/bin/ccmv2/inverting-proxy-agent-values-%i.sh
+ConditionPathExists=/cdp/bin/ccmv2/inverting-proxy-agent
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+ExecStart=/cdp/bin/ccmv2/run-inverting-proxy-agent.sh %i
+Restart=always
+TimeoutStopSec=10
+
+[Install]
+WantedBy=multi-user.target
