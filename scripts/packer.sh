@@ -51,6 +51,9 @@ packer_in_container() {
   ${DRY_RUN:+echo ===} docker run -i $TTY_OPTS --rm \
     -e MOCK=$MOCK \
     -e ORIG_USER=$USER \
+    -e GIT_REV=$GIT_REV \
+    -e GIT_BRANCH=$GIT_BRANCH \
+    -e GIT_TAG=$GIT_TAG \
     -e OS=$OS \
     -e OS_TYPE=$OS_TYPE \
     -e CHECKPOINT_DISABLE=1 \
@@ -145,6 +148,11 @@ packer_in_container() {
     -e PROFILER_BUILD_NUMBER="$PROFILER_BUILD_NUMBER" \
     -e SPARK3_BUILD_NUMBER="$SPARK3_BUILD_NUMBER" \
     -e CSA_BUILD_NUMBER="$CSA_BUILD_NUMBER" \
+    -e COMPOSITE_GBN="$COMPOSITE_GBN" \
+    -e CSA_GBN="$CSA_GBN" \
+    -e PROFILER_GBN="$PROFILER_GBN" \
+    -e CFM_GBN="$CFM_GBN" \
+    -e SPARK3_GBN="$SPARK3_GBN" \
     -e METADATA_FILENAME_POSTFIX="$METADATA_FILENAME_POSTFIX" \
     -v /var/run/docker.sock:/var/run/docker.sock \
     -v $PWD:$PWD \

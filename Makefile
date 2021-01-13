@@ -149,6 +149,9 @@ build-aws-centos7-base:
 	OS_TYPE=redhat7 \
 	ATLAS_ARTIFACT_TYPE=amazon \
 	SALT_INSTALL_OS=centos \
+	GIT_REV=$(GIT_REV) \
+	GIT_BRANCH=$(GIT_BRANCH) \
+	GIT_TAG=$(GIT_TAG) \
 	./scripts/packer.sh build -only=aws-centos7 $(PACKER_OPTS)
 
 build-aws-centos7: export IMAGE_NAME := $(IMAGE_NAME)
@@ -157,6 +160,9 @@ build-aws-centos7:
 	@ METADATA_FILENAME_POSTFIX=$(METADATA_FILENAME_POSTFIX) make build-aws-centos7-base
 	$(ENVS) \
 	AWS_AMI_REGIONS="$(AWS_AMI_REGIONS)" \
+	GIT_REV=$(GIT_REV) \
+	GIT_BRANCH=$(GIT_BRANCH) \
+	GIT_TAG=$(GIT_TAG) \
 	./scripts/sparseimage/packer.sh build -force $(PACKER_OPTS)
 
 build-gc-tar-file: 
@@ -177,6 +183,9 @@ build-gc-centos7:
 	GCP_STORAGE_BUNDLE=$(GCP_STORAGE_BUNDLE) \
 	GCP_STORAGE_BUNDLE_LOG=$(GCP_STORAGE_BUNDLE_LOG) \
 	SALT_INSTALL_OS=centos \
+	GIT_REV=$(GIT_REV) \
+	GIT_BRANCH=$(GIT_BRANCH) \
+	GIT_TAG=$(GIT_TAG) \
 	./scripts/packer.sh build -only=gc-centos7 $(PACKER_OPTS)
 
 build-azure-centos7:
@@ -189,6 +198,9 @@ build-azure-centos7:
 	AZURE_IMAGE_PUBLISHER=$(AZURE_IMAGE_PUBLISHER) \
 	AZURE_IMAGE_OFFER=$(AZURE_IMAGE_OFFER) \
 	AZURE_IMAGE_SKU=$(AZURE_IMAGE_SKU) \
+	GIT_REV=$(GIT_REV) \
+	GIT_BRANCH=$(GIT_BRANCH) \
+	GIT_TAG=$(GIT_TAG) \
 	./scripts/packer.sh build -only=arm-centos7 $(PACKER_OPTS)
 
 copy-azure-images:
