@@ -27,6 +27,9 @@ packer_in_container() {
 
   [[ "$TRACE" ]] && set -x
   ${DRY_RUN:+echo ===} docker run -i $TTY_OPTS --rm \
+    -e GIT_REV=$GIT_REV \
+    -e GIT_BRANCH=$GIT_BRANCH \
+    -e GIT_TAG=$GIT_TAG \
     -e AWS_ACCESS_KEY_ID=$AWS_ACCESS_KEY_ID \
     -e AWS_SECRET_ACCESS_KEY=$AWS_SECRET_ACCESS_KEY \
     -e AWS_SECURITY_TOKEN=$AWS_SECURITY_TOKEN \

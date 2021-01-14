@@ -90,6 +90,11 @@
     "profiler_build_number": "{{ env `PROFILER_BUILD_NUMBER` }}",
     "spark3_build_number": "{{ env `SPARK3_BUILD_NUMBER` }}",
     "csa_build_number": "{{ env `CSA_BUILD_NUMBER` }}",
+    "composite_gbn": "{{ env `COMPOSITE_GBN` }}",
+    "cfm_gbn": "{{ env `CFM_GBN` }}",
+    "profiler_gbn": "{{ env `PROFILER_GBN` }}",
+    "spark3_gbn": "{{ env `SPARK3_GBN` }}",
+    "csa_gbn": "{{ env `CSA_GBN` }}",
     "metadata_filename_postfix": "{{ env `METADATA_FILENAME_POSTFIX` }}"
   },
   "builders": [
@@ -338,6 +343,11 @@
         "profiler_build_number={{ user `profiler_build_number` }}",
         "spark3_build_number={{ user `spark3_build_number` }}",
         "csa_build_number={{ user `csa_build_number` }}",
+        "composite_gbn={{ user `composite_gbn` }}",
+        "cfm_gbn={{ user `cfm_gbn` }}",
+        "profiler_gbn={{ user `profiler_gbn` }}",
+        "spark3_gbn={{ user `spark3_gbn` }}",
+        "csa_gbn={{ user `csa_gbn` }}",
         "metadata_filename_postfix={{ user `metadata_filename_postfix` }}"
       ]
     }
