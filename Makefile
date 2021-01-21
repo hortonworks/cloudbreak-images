@@ -26,7 +26,7 @@ FLUENT_PREWARM_TAG ?= "fluent_prewarmed_v2"
 # This needs to be changed if there is a version change in metering heartbeat component. See usage in the salt files in the Cloudbreak repo.
 METERING_PREWARM_TAG ?= "metering_prewarmed_v3"
 # This needs to be changed if there is a version change in cdp-telemetry cli component. See usage in the salt files in the Cloudbreak repo.
-CDP_TELEMETRY_PREWARM_TAG ?= "cdp_telemetry_prewarmed_v2"
+CDP_TELEMETRY_PREWARM_TAG ?= "cdp_telemetry_prewarmed_v3"
 # This needs to be changed if there is a version change in components other than fluent, or if there are relevant changes to the salt scripts in Cloudbreak.
 PREWARM_TAG ?= "prewarmed_v1"
 
