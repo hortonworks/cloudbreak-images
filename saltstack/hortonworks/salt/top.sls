@@ -15,7 +15,6 @@ hortonworks:
     - java
 {% endif %}
     - pre-warm
-    - ccmv2-inverting-proxy-agent
 {% if salt['environ.get']('INCLUDE_METERING') == 'Yes' %}
     - metering
 {% if grains['os_family'] == 'Suse' and grains['osmajorrelease'] | int == 12 %}
