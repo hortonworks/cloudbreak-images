@@ -165,6 +165,18 @@ build-aws-centos7:
 	GIT_TAG=$(GIT_TAG) \
 	./scripts/sparseimage/packer.sh build -force $(PACKER_OPTS)
 
+copy-aws-images:
+	docker run -i --rm \
+		-v "${PWD}/scripts:/scripts" \
+		-w /scripts \
+		-e AWS_ACCESS_KEY_ID=$(AWS_ACCESS_KEY_ID) \
+		-e AWS_SECRET_ACCESS_KEY=$(AWS_SECRET_ACCESS_KEY) \
+		-e AWS_AMI_REGIONS=$(AWS_AMI_REGIONS) \
+		-e IMAGE_NAME=$(IMAGE_NAME) \
+		-e SOURCE_LOCATION=$(SOURCE_LOCATION) \
+		--entrypoint="/bin/bash" \
+		amazon/aws-cli -c "./aws-copy.sh"
+
 build-gc-tar-file: 
 	$(ENVS) \
 	GCP_AMI_REGIONS=$(GCP_AMI_REGIONS) \
