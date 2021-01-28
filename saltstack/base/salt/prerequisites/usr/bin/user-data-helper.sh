@@ -170,7 +170,9 @@ setup_ccmv2() {
 
   IV=436c6f7564657261436c6f7564657261
   AGENT_KEY_PATH=/etc/ccmv2/ccmv2-key.enc
-  echo ${CCM_V2_AGENT_ENCIPHERED_KEY} | openssl enc -aes-128-cbc -d -A -a -K ${CCM_V2_AGENT_KEY_ID} -iv ${IV} > ${AGENT_KEY_PATH}
+
+  CCM_V2_AGENT_KEY_HEX=$(xxd -pu -l 16 <<< $CCM_V2_AGENT_KEY_ID)
+  echo ${CCM_V2_AGENT_ENCIPHERED_KEY} | openssl enc -aes-128-cbc -d -A -a -K ${CCM_V2_AGENT_KEY_HEX} -iv ${IV} > ${AGENT_KEY_PATH}
   chmod 400 "$AGENT_KEY_PATH"
 
   AGENT_CERT_PATH=/etc/ccmv2/ccmv2-cert.enc
@@ -184,8 +186,11 @@ setup_ccmv2() {
   chmod 400 "$TRUSTED_PROXY_CERT_PATH"
 
   INVERTING_PROXY_URL="$CCM_V2_INVERTING_PROXY_HOST"
+  
+  # A more sophisticated solution might need to be patched in later - tbh the script originally expected a full url with protocol scheme and closing slash
+  INVERTING_PROXY_FULL_URL="https://$INVERTING_PROXY_URL/"
 
-  /cdp/bin/ccmv2/update-inverting-proxy-agent-values.sh "$BACKEND_ID" "$BACKEND_HOST" "$BACKEND_PORT" "$AGENT_KEY_PATH" "$AGENT_CERT_PATH" "$TRUSTED_BACKEND_CERT_PATH" "$TRUSTED_PROXY_CERT_PATH" "$INVERTING_PROXY_URL"
+  /cdp/bin/ccmv2/update-inverting-proxy-agent-values.sh "$BACKEND_ID" "$BACKEND_HOST" "$BACKEND_PORT" "$AGENT_KEY_PATH" "$AGENT_CERT_PATH" "$TRUSTED_BACKEND_CERT_PATH" "$TRUSTED_PROXY_CERT_PATH" "$INVERTING_PROXY_FULL_URL"
 }
 
 setup_ssh_proxy() {
