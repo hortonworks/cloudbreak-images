@@ -118,9 +118,9 @@ setup_tls() {
   fi
 
   if [[ "$IS_CCM_V2_ENABLED" == "true" ]]; then
-    echo "CCMv2 is enabled while creating an environment so ssl client verification is turned off and localhost:9443 used"
+    echo "CCMv2 is enabled while creating an environment so ssl client verification is turned off and 127.0.0.1:9443 used"
     sed -i -E "s/ssl_verify_client(\s)+on;/ssl_verify_client off;/" /etc/nginx/sites-enabled/ssl-template
-    sed -i -E "s/listen(\s)+9443;/listen       localhost:9443;/" /etc/nginx/sites-enabled/ssl-template
+    sed -i -E "s/listen(\s)+9443;/listen       127.0.0.1:9443;/" /etc/nginx/sites-enabled/ssl-template
   fi
 }
 
