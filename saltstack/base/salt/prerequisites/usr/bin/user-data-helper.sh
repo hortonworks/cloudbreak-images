@@ -190,7 +190,11 @@ setup_ccmv2() {
   # A more sophisticated solution might need to be patched in later - tbh the script originally expected a full url with protocol scheme and closing slash
   INVERTING_PROXY_FULL_URL="https://$INVERTING_PROXY_URL/"
 
-  /cdp/bin/ccmv2/update-inverting-proxy-agent-values.sh "$BACKEND_ID" "$BACKEND_HOST" "$BACKEND_PORT" "$AGENT_KEY_PATH" "$AGENT_CERT_PATH" "$TRUSTED_BACKEND_CERT_PATH" "$TRUSTED_PROXY_CERT_PATH" "$INVERTING_PROXY_FULL_URL"
+  if [[ "$IS_PROXY_ENABLED" == "true" ]]; then
+    HTTP_PROXY_URL="http://$PROXY_HOST:$PROXY_PORT"
+  fi
+
+  /cdp/bin/ccmv2/update-inverting-proxy-agent-values.sh "$BACKEND_ID" "$BACKEND_HOST" "$BACKEND_PORT" "$AGENT_KEY_PATH" "$AGENT_CERT_PATH" "$TRUSTED_BACKEND_CERT_PATH" "$TRUSTED_PROXY_CERT_PATH" "$INVERTING_PROXY_FULL_URL" "$HTTP_PROXY_URL"
 }
 
 setup_ssh_proxy() {
