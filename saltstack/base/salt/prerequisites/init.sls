@@ -1,5 +1,4 @@
 include:
-  - {{ slspath }}.networkmanager
   - {{ slspath }}.user_uid
   - {{ slspath }}.repository
   - {{ slspath }}.packages
