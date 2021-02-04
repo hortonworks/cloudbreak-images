@@ -20,7 +20,9 @@ for sa in "${STORAGE_ACCOUNTS[@]}"; do
 	echo "Check URL: $url"
 	size=$(curl -sI "$url" | grep -i Content-Length | awk '{print $2}' | tr -d '\r')
 	echo "Size: $size"
-	if (( size >= min_image_size_in_bytes )); then
+	if [[ -z "$size" ]]; then
+		echo "Cannot determine size for: $account_name . Skipping it and proceeding..."		
+	elif (( size >= min_image_size_in_bytes )); then
 		echo "File in account: $account_name is larger than $AZURE_IMAGE_SIZE_GB GB"
 	else
 		echo "File in account: $account_name is smaller than $AZURE_IMAGE_SIZE_GB GB"
