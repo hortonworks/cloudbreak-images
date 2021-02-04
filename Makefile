@@ -14,7 +14,7 @@ SLES_REGISTRATION_CODE ?= "73D5EBB68CB348"
 # Azure VM image specifications
 AZURE_IMAGE_PUBLISHER ?= OpenLogic
 AZURE_IMAGE_OFFER ?= CentOS
-AZURE_IMAGE_SKU ?= 7_9
+AZURE_IMAGE_SKU ?= 7.6
 ARM_BUILD_REGION ?= northeurope
 
 DOCKER_REPOSITORY ?= registry.eng.hortonworks.com
