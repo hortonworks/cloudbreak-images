@@ -2,7 +2,10 @@
 #https://jira.cloudera.com/browse/CB-8897
 
 {% if pillar['OS'] == 'centos7' %}
-{% set filesystems = ['cramfs', 'freevxfs', 'jffs2', 'hfs', 'hfsplus', 'squashfs', 'udf'] %}
+
+# fat is required
+# udf is required for Azure to mount cdrom - See CB-11012
+{% set filesystems = ['cramfs', 'freevxfs', 'jffs2', 'hfs', 'hfsplus', 'squashfs'] %}
 
 {% for fs in filesystems %}
 
