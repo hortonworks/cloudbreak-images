@@ -74,6 +74,13 @@ sshd_harden_addressLoginGraceTime:
     - repl: "LoginGraceTime 60"
     - append_if_not_found: True
 
+sshd_harden_sshIdealTime:
+  file.replace:
+    - name: /etc/ssh/sshd_config
+    - pattern: "^ClientAliveInterval.*"
+    - repl: "ClientAliveInterval 600 ClientAliveCountMax 0"
+    - append_if_not_found: True
+
 sshd_harden_ssh2:
   file.replace:
     - name: /etc/ssh/sshd_config
