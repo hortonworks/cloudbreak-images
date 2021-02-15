@@ -22,7 +22,7 @@ DOCKER_REPO_USERNAME ?= ""
 DOCKER_REPO_PASSWORD ?= ""
 
 # This needs to be changed if there is a version change in fluent components. See usage in the salt files in the Cloudbreak repo.
-FLUENT_PREWARM_TAG ?= "fluent_prewarmed_v2"
+FLUENT_PREWARM_TAG ?= "fluent_prewarmed_v3"
 # This needs to be changed if there is a version change in metering heartbeat component. See usage in the salt files in the Cloudbreak repo.
 METERING_PREWARM_TAG ?= "metering_prewarmed_v3"
 # This needs to be changed if there is a version change in cdp-telemetry cli component. See usage in the salt files in the Cloudbreak repo.
