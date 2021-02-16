@@ -126,4 +126,12 @@ sshd_harden_LogLevel:
     - pattern: "^LogLevel"
     - repl: "LogLevel INFO"
     - append_if_not_found: True
+
+# CIS - Ensure unnecessary services/softwareClients are removed
+# https://jira.cloudera.com/browse/CB-8926
+
+Ensure_X_Window_System_is_not_installed:
+  cmd.run:
+        - name: yum remove xorg-x11*
+
 {% endif %}
