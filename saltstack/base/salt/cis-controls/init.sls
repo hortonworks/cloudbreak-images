@@ -1,4 +1,4 @@
-#CentOS Disable unused filesystems
+#### CIS: Disable unused filesystems
 #https://jira.cloudera.com/browse/CB-8897
 
 {% if pillar['OS'] == 'centos7' %}
@@ -25,7 +25,7 @@
         - onlyif: "lsmod | grep {{ fs }}"
 {% endfor %}
 
-#CentOS - Harden SSH Configurations
+#### CIS: Harden SSH Configurations
 #https://jira.cloudera.com/browse/CB-8933
 
 sshd_harden_addressX11:
@@ -127,14 +127,14 @@ sshd_harden_LogLevel:
     - repl: "LogLevel INFO"
     - append_if_not_found: True
 
-# CIS - Ensure unnecessary services/softwareClients are removed
+#### CIS: Ensure unnecessary services/softwareClients are removed
 # https://jira.cloudera.com/browse/CB-8926
 
 Ensure_X_Window_System_is_not_installed:
   cmd.run:
         - name: yum remove xorg-x11*
 
-# CIS - Ensure core dumps are restricted
+#### CIS: Ensure core dumps are restricted
 # https://jira.cloudera.com/browse/CB-8925
 
 #Restrict_Core_dumps_part1:
@@ -145,10 +145,9 @@ Create_limits.conf:
 Update_limits.conf:
   file.replace:
     - name: /etc/security/limits.conf
-    - pattern: "* hard core 0"
+    - pattern: "\* hard core 0"
     - repl: "* hard core 0"
     - append_if_not_found: True
-
 #Restrict_Core_dumps_part2:
 Create_sysctl.conf:
   cmd.run:
