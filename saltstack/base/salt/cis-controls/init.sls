@@ -134,4 +134,21 @@ Ensure_X_Window_System_is_not_installed:
   cmd.run:
         - name: yum remove xorg-x11*
 
+# CIS - Ensure core dumps are restricted
+# https://jira.cloudera.com/browse/CB-8925
+
+Restrict_Core_dumps:
+  file.replace:
+    - name: /etc/security/limits.conf
+    - pattern: "* hard core 0"
+    - repl: "* hard core 0"
+    - append_if_not_found: True
+  file.replace:
+    - name: /etc/sysctl.conf
+    - pattern: "fs.suid_dumpable = 0"
+    - repl: "fs.suid_dumpable = 0"
+    - append_if_not_found: True
+  cmd.run:
+    - name: sysctl -w fs.suid_dumpable=0
+
 {% endif %}
