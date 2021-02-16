@@ -137,12 +137,13 @@ Ensure_X_Window_System_is_not_installed:
 # CIS - Ensure core dumps are restricted
 # https://jira.cloudera.com/browse/CB-8925
 
-Restrict_Core_dumps:
+Restrict_Core_dumps_part1:
   file.replace:
     - name: /etc/security/limits.conf
     - pattern: "* hard core 0"
     - repl: "* hard core 0"
     - append_if_not_found: True
+Restrict_Core_dumps_part2:
   file.replace:
     - name: /etc/sysctl.conf
     - pattern: "fs.suid_dumpable = 0"
