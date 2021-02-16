@@ -145,8 +145,8 @@ Create_limits.conf:
 Update_limits.conf:
   file.replace:
     - name: /etc/security/limits.conf
-    - pattern: "\* hard core 0"
-    - repl: "* hard core 0"
+    - pattern: '\* hard core 0'
+    - repl: '* hard core 0'
     - append_if_not_found: True
 #Restrict_Core_dumps_part2:
 Create_sysctl.conf:
