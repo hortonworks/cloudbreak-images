@@ -132,7 +132,7 @@ sshd_harden_LogLevel:
 
 Ensure_X_Window_System_is_not_installed:
   cmd.run:
-        - name: yum remove xorg-x11*
+    - name: yum remove xorg-x11*
 
 #### CIS: Ensure core dumps are restricted
 # https://jira.cloudera.com/browse/CB-8925
