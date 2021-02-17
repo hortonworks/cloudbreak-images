@@ -221,6 +221,20 @@
       "destination": "/tmp/salt_requirements.txt"
     },
     {
+      "type": "file",
+      "source": "scripts/hardcoded-packages.csv",
+      "destination": "/tmp/hardcoded-packages.csv"
+    },
+    {
+      "type": "shell",
+      "script": "scripts/generate-delta-package-list.sh",
+      "environment_vars": [
+        "SALT_INSTALL_OS={{ user `salt_install_os` }}",
+        "INSTALLATION_STATE=base"
+      ],
+      "execute_command": "chmod +x {{ .Path }}; sudo {{ .Vars }} {{ .Path }}"
+    },
+    {
       "type": "shell",
       "script": "scripts/salt-install.sh",
       "environment_vars": [
@@ -283,9 +297,29 @@
       ]
     },
     {
+      "type": "shell",
+      "script": "scripts/generate-delta-package-list.sh",
+      "environment_vars": [
+        "SALT_INSTALL_OS={{ user `salt_install_os` }}",
+        "INSTALLATION_STATE=complete",
+        "SALT_PATH={{user `salt_path`}}",
+        "PARCELS_NAME={{ user `parcels_name` }}",
+        "STACK_BASEURL={{user `stack_baseurl`}}",
+        "PRE_WARM_PARCELS={{ user `pre_warm_parcels` }}",
+        "PRE_WARM_CSD={{ user `pre_warm_csd` }}"
+      ],
+      "execute_command": "chmod +x {{ .Path }}; sudo {{ .Vars }} {{ .Path }}"
+    },
+    {
       "type": "file",
       "source": "/tmp/package-versions.json",
       "destination": "package-versions.json",
+      "direction" : "download"
+    },
+    {
+      "type": "file",
+      "source": "/tmp/installed-delta-packages.csv",
+      "destination": "installed-delta-packages.csv",
       "direction" : "download"
     }
   ],
