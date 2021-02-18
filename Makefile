@@ -94,10 +94,13 @@ define GCP_AMI_REGIONS
 asia-east1,asia-east2,australia-southeast1,europe-west2,europe-west3,europe-west4,us-west2,southamerica-east1,asia-southeast1,us-central1,europe-west1,europe-north1,us-west1,northamerica-northeast1,us-east4,asia-south1,us-east1,asia-northeast1
 endef
 
+ifndef AWS_AMI_REGIONS
 define AWS_AMI_REGIONS
 ap-northeast-1,ap-northeast-2,ap-south-1,ap-southeast-1,ap-southeast-2,ca-central-1,eu-central-1,eu-west-1,eu-west-2,eu-west-3,sa-east-1,us-east-1,us-east-2,us-west-1,us-west-2,eu-north-1
 endef
+endif
 
+ifndef AZURE_STORAGE_ACCOUNTS
 define AZURE_STORAGE_ACCOUNTS
 East Asia:cldreastasia,\
 East US:cldreastus,\
@@ -136,6 +139,7 @@ Germany West Central:cldrgermanywestcentral,\
 Norway West:cldrnorwaywest,\
 Norway East:cldrnorwayeast
 endef
+endif
 
 S3_TARGET ?= "s3://public-repo-1.hortonworks.com/HDP/cloudbreak"
 
