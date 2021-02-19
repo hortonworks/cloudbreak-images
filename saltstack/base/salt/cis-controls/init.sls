@@ -136,7 +136,6 @@ Ensure_X_Window_System_is_not_installed:
 
 #### CIS: Ensure core dumps are restricted
 # https://jira.cloudera.com/browse/CB-8925
-
 #Restrict_Core_dumps_part1:
 Create_limits.conf:
   cmd.run:
@@ -163,13 +162,11 @@ Disable_dump:
   cmd.run:
     - name: sysctl -w fs.suid_dumpable=0
 
-
 #### CIS: Log configurations
 # https://jira.cloudera.com/browse/CB-8928
 Logfile_permission:
   cmd.run:
     - name: find -L /var/log -type f -exec chmod g-wx,o-rwx {} +
-
 
 #### CIS: Network Configurations
 # https://jira.cloudera.com/browse/CB-8927
@@ -286,7 +283,6 @@ Ensure TIPC is disabled:
     - pattern: "^install tipc /bin/true"
     - repl: install tipc /bin/true
     - append_if_not_found: True
-
 
 #### CIS: Enable filesystem Integrity Checking
 # https://jira.cloudera.com/browse/CB-8919
