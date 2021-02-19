@@ -162,4 +162,155 @@ Update_sysctl.conf:
 Disable_dump:  
   cmd.run:
     - name: sysctl -w fs.suid_dumpable=0
+
+
+#### CIS: Log configurations
+# https://jira.cloudera.com/browse/CB-8928
+Logfile_permission:
+  cmd.run:
+    - name: find -L /var/log -type f -exec chmod g-wx,o-rwx {} +
+
+
+#### CIS: Network Configurations
+# https://jira.cloudera.com/browse/CB-8927
+#3.1.2_Disabling_sending_packet_redirect:
+Update_sysctl1:
+  file.replace:
+    - name: /etc/sysctl.conf
+    - pattern: "^net.ipv4.conf.all.send_redirects = 0.*"
+    - repl: "net.ipv4.conf.all.send_redirects = 0"
+    - append_if_not_found: True      
+Update_sysctl2:
+  file.replace:
+    - name: /etc/sysctl.conf
+    - pattern: "^net.ipv4.conf.default.send_redirects = 0.*"
+    - repl: "net.ipv4.conf.default.send_redirects = 0"
+    - append_if_not_found: True
+Execute1:
+  cmd.run:
+    - name: sysctl -w net.ipv4.conf.all.send_redirects=0
+Execute2:
+  cmd.run:
+    - name: sysctl -w net.ipv4.conf.default.send_redirects=0
+Execute3:
+  cmd.run:
+    - name: sysctl -w net.ipv4.route.flush=1
+#3.2.2_Ensure_ICMP_redirects_are_not_accepted
+Update_sysctl3:
+  file.replace:
+    - name: /etc/sysctl.conf
+    - pattern: "^net.ipv4.conf.all.accept_redirects = 0.*"
+    - repl: "net.ipv4.conf.all.accept_redirects = 0"
+    - append_if_not_found: True
+Update_sysctl4:
+  file.replace:
+    - name: /etc/sysctl.conf
+    - pattern: "^net.ipv4.conf.default.accept_redirects = 0.*"
+    - repl: "net.ipv4.conf.default.accept_redirects = 0"
+    - append_if_not_found: True
+Execute4:
+  cmd.run:
+    - name: sysctl -w net.ipv4.conf.all.accept_redirects=0
+Execute5:
+  cmd.run:
+    - name: sysctl -w net.ipv4.conf.default.accept_redirects=0
+Execute6:
+  cmd.run:
+    - name: sysctl -w net.ipv4.route.flush=1
+#3.2.3_Ensure_Secure_ICMP_redirects_are_not_accepted
+Update_sysctl5:
+  file.replace:
+    - name: /etc/sysctl.conf
+    - pattern: "^net.ipv4.conf.all.secure_redirects = 0.*"
+    - repl: "net.ipv4.conf.all.secure_redirects = 0"
+    - append_if_not_found: True
+Update_sysctl6:
+  file.replace:
+    - name: /etc/sysctl.conf
+    - pattern: "^net.ipv4.conf.default.secure_redirects = 0.*"
+    - repl: "net.ipv4.conf.default.secure_redirects = 0"
+    - append_if_not_found: True
+Execute7:
+  cmd.run:
+    - name: sysctl -w net.ipv4.conf.all.secure_redirects=0
+Execute8:
+  cmd.run:
+    - name: sysctl -w net.ipv4.conf.default.secure_redirects=0
+Execute9:
+  cmd.run:
+    - name: sysctl -w net.ipv4.route.flush=1
+#3.2.4_Ensure_suspicious_packets_are_logged
+Update_sysctl7:
+  file.replace:
+    - name: /etc/sysctl.conf
+    - pattern: "^net.ipv4.conf.all.log_martians = 1.*"
+    - repl: "net.ipv4.conf.all.log_martians = 1"
+    - append_if_not_found: True
+Update_sysctl8:
+  file.replace:
+    - name: /etc/sysctl.conf
+    - pattern: "^net.ipv4.conf.default.log_martians = 1.*"
+    - repl: "net.ipv4.conf.default.log_martians = 1"
+    - append_if_not_found: True
+Execute10:
+  cmd.run:
+    - name: sysctl -w net.ipv4.conf.all.log_martians=1
+Execute11:
+  cmd.run:
+    - name: sysctl -w net.ipv4.conf.default.log_martians=1
+Execute12:
+  cmd.run:
+    - name: sysctl -w net.ipv4.route.flush=1
+#3.5.1-4_Ensure_DCCP/SCTP/RDS/TIPC are disabled
+Ensure DCCP is disabled:
+  file.replace:
+    - name: /etc/modprobe.d/salt_cis.conf
+    - pattern: "^install dccp /bin/true"
+    - repl: install dccp /bin/true
+    - append_if_not_found: True
+Ensure SCTP is disabled:
+  file.replace:
+    - name: /etc/modprobe.d/salt_cis.conf
+    - pattern: "^install sctp /bin/true"
+    - repl: install sctp /bin/true
+    - append_if_not_found: True
+Ensure RDS is disabled:
+  file.replace:
+    - name: /etc/modprobe.d/salt_cis.conf
+    - pattern: "^install rds /bin/true"
+    - repl: install rds /bin/true
+    - append_if_not_found: True
+Ensure TIPC is disabled:
+  file.replace:
+    - name: /etc/modprobe.d/salt_cis.conf
+    - pattern: "^install tipc /bin/true"
+    - repl: install tipc /bin/true
+    - append_if_not_found: True
+
+
+#### CIS: Enable filesystem Integrity Checking
+# https://jira.cloudera.com/browse/CB-8919
+packages_install_aide:
+  pkg.installed:
+    - refresh: False
+    - pkgs:
+      - aide
+Initialize_aide:
+  cmd.run:
+    - name: aide --init
+AIDE_db_setup:
+  cmd.run:
+    - name: mv /var/lib/aide/aide.db.new.gz /var/lib/aide/aide.db.gz
+#1.3.2 Ensure filesystem integrity is regularly checked
+Create_crontab:
+  cmd.run:
+    - name: touch /etc/crontab
+    - unless: test -f /etc/crontab
+update_aide_cronjob:
+  file.replace:
+    - name: /etc/crontab
+    - pattern: '^\d.*\/usr\/sbin\/aide.*'
+    - repl: '0 5 * * * /usr/sbin/aide --check'
+    - append_if_not_found: True
+
 {% endif %}
