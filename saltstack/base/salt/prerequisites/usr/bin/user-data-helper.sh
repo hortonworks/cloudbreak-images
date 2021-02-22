@@ -191,7 +191,11 @@ setup_ccmv2() {
   INVERTING_PROXY_FULL_URL="https://$INVERTING_PROXY_URL/"
 
   if [[ "$IS_PROXY_ENABLED" == "true" ]]; then
-    HTTP_PROXY_URL="http://$PROXY_HOST:$PROXY_PORT"
+    if [[ -z ${PROXY_USER} ]]; then
+      HTTP_PROXY_URL="http://$PROXY_HOST:$PROXY_PORT"
+    else
+      HTTP_PROXY_URL="http://${PROXY_USER}:${PROXY_PASSWORD}@$PROXY_HOST:$PROXY_PORT"
+    fi
   fi
 
   /cdp/bin/ccmv2/update-inverting-proxy-agent-values.sh "$BACKEND_ID" "$BACKEND_HOST" "$BACKEND_PORT" "$AGENT_KEY_PATH" "$AGENT_CERT_PATH" "$TRUSTED_BACKEND_CERT_PATH" "$TRUSTED_PROXY_CERT_PATH" "$INVERTING_PROXY_FULL_URL" "$HTTP_PROXY_URL"
