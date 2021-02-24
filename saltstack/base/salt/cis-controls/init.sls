@@ -166,7 +166,7 @@ Disable_dump:
 # https://jira.cloudera.com/browse/CB-8928
 Logfile_permission:
   cmd.run:
-    - name: find -L /var/log -type f -exec chmod g-wx,o-rwx {} +
+    - name: "find -L /var/log -type f -exec chmod g-wx,o-rwx {} +"
 
 #### CIS: Network Configurations
 # https://jira.cloudera.com/browse/CB-8927
@@ -409,11 +409,11 @@ Permission_etc/at.allow:
 #Ensure no world writable files exist
 Find_Delete_WWFiles:
   cmd.run:
-    - name: find / -xdev -type f -perm -0002 -exec chmod o-w {} \;
+    - name: "find / -xdev -type f -perm -0002 -exec chmod o-w {} \;"
 #Ensure no unowned files or directories exist
 Fine_own_unowned_files:
   cmd.run:
-    - name: find / -xdev -nouser -exec chown root:root {} \;
+    - name: "find / -xdev -nouser -exec chown root:root {} \;"
 
 ####CIS: Strengthen the password policy
 #https://jira.cloudera.com/browse/CB-8935
