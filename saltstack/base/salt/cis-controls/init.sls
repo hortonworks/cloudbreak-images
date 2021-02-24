@@ -384,7 +384,7 @@ Create_cron.ALLOW:
     - unless: test -f /etc/cron.allow
 Permission_etc/cron.allow:
   file.managed:
-    - name: etc/cron.allow
+    - name: /etc/cron.allow
     - user: root
     - group: root
     - mode: 600
@@ -399,7 +399,7 @@ Create_at.ALLOW:
     - unless: test -f /etc/at.allow
 Permission_etc/at.allow:
   file.managed:
-    - name: etc/at.allow
+    - name: /etc/at.allow
     - user: root
     - group: root
     - mode: 600
