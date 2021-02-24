@@ -294,7 +294,7 @@ Loopback_Interface_output:
     - chain: OUTPUT
     - out-interface: lo
     - jump: ACCEPT
-Loopback_Interface_input1:
+Loopback_Interface_input2:
   iptables.append:
     - chain: INPUT
     - source: 127.0.0.0/8
