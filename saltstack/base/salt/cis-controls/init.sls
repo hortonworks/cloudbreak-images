@@ -339,34 +339,40 @@ Grub.cfg_permission:
 #Cron permission
 Permission_etc/crontab:
   file.managed:
+    - name: /etc/crontab
     - user: root
     - group: root
-    - mode: '0600'
+    - mode: 600
 Permission_/etc/cron.hourly:
   file.directory:
+    - name: /etc/cron.hourly
     - user: root
     - group: root
-    - mode: '0700'
+    - mode: 700
 Permission_/etc/cron.daily:
   file.directory:
+    - name: /etc/cron.daily
     - user: root
     - group: root
-    - mode: '0700'
+    - mode: 700
 Permission_/etc/cron.weekly:
   file.directory:
+    - name: /etc/cron.weekly
     - user: root
     - group: root
-    - mode: '0700'
+    - mode: 700
 Permission_/etc/cron.monthly:
   file.directory:
+    - name: /etc/cron.monthly
     - user: root
     - group: root
-    - mode: '0700'
-Permission_/etc/cron.d  :
+    - mode: 700
+Permission_/etc/cron.d:
   file.directory:
+    - name: /etc/cron.d
     - user: root
     - group: root
-    - mode: '0700'
+    - mode: 700
 #Ensure cron is restricted to authorized users
 Delete_cron.DENY:
   cmd.run:
@@ -378,9 +384,10 @@ Create_cron.ALLOW:
     - unless: test -f /etc/cron.allow
 Permission_etc/cron.allow:
   file.managed:
+    - name: etc/cron.allow
     - user: root
     - group: root
-    - mode: '0600'
+    - mode: 600
 #Ensure at is restricted to authorized users
 Delete_at.DENY:
   cmd.run:
@@ -392,9 +399,10 @@ Create_at.ALLOW:
     - unless: test -f /etc/at.allow
 Permission_etc/at.allow:
   file.managed:
+    - name: etc/at.allow
     - user: root
     - group: root
-    - mode: '0600'
+    - mode: 600
 
 #### CIS - Strengthen the System file permissions
 # https://jira.cloudera.com/browse/CB-8934
@@ -413,14 +421,14 @@ Fine_own_unowned_files:
 PASS_MAX_DAYS:
   file.replace:
     - name: /etc/login.defs
-    - pattern: "^\s*PASS_MAX_DAYS.*"
+    - pattern: '^\s*PASS_MAX_DAYS.*'
     - repl: PASS_MAX_DAYS 180
     - append_if_not_found: True
 #Ensure minimum days between password changes is 7 or more
 PASS_MIN_DAYS:
   file.replace:
     - name: /etc/login.defs
-    - pattern: "^\s*PASS_MIN_DAYS.*"
+    - pattern: '^\s*PASS_MIN_DAYS.*'
     - repl: PASS_MIN_DAYS 1
     - append_if_not_found: True
 #Ensure inactive password lock is 30 days or less
