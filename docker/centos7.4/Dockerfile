@@ -1,4 +1,4 @@
-FROM registry.eng.hortonworks.com/hortonworks/base-centos7.4:0.1.0.0-69
+FROM docker-sandbox.infra.cloudera.com/cloudbreak/base-centos7.4:0.1.0.0-69
 
 ARG SALT_VERSION
 ARG SALT_PATH
