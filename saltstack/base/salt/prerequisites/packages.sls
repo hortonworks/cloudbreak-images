@@ -57,6 +57,8 @@ packages_install:
       - openldap
       - openldap-clients
       - awscli
+      - nmap-ncat
+      - telnet
 
 {% if pillar['subtype'] != 'Docker' %}
 
