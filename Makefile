@@ -17,7 +17,7 @@ AZURE_IMAGE_OFFER ?= CentOS
 AZURE_IMAGE_SKU ?= 7.6
 ARM_BUILD_REGION ?= northeurope
 
-DOCKER_REPOSITORY ?= registry.eng.hortonworks.com
+DOCKER_REPOSITORY ?= docker-sandbox.infra.cloudera.com
 DOCKER_REPO_USERNAME ?= ""
 DOCKER_REPO_PASSWORD ?= ""
 

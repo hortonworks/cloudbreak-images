@@ -38,4 +38,4 @@ export PRE_WARM_CSD="[\"http://s3.amazonaws.com/dev.hortonworks.com/CSP/centos7/
 
 DOCKER_ENVS="PARCELS_NAME=${PARCELS_NAME} STACK_REPOSITORY_VERSION=${STACK_REPOSITORY_VERSION} STACK_TYPE=${STACK_TYPE} CLUSTERMANAGER_VERSION=${CLUSTERMANAGER_VERSION} CLUSTERMANAGER_BASEURL=${CLUSTERMANAGER_BASEURL} CLUSTERMANAGER_GPGKEY=${CLUSTERMANAGER_GPGKEY} OS=${OS} OS_TYPE=${OS_TYPE} SALT_VERSION=${SALT_VERSION} SALT_PATH=${SALT_PATH} PYZMQ_VERSION=${PYZMQ_VERSION} PYTHON_APT_VERSION=${PYTHON_APT_VERSION} TRACE=1"
 DOCKER_BUILD_ARGS=$(echo ${DOCKER_ENVS} | xargs -n 1 echo "--build-arg " | xargs)
-docker build --build-arg PRE_WARM_PARCELS="${PRE_WARM_PARCELS}" --build-arg PRE_WARM_CSD="${PRE_WARM_CSD}" ${DOCKER_BUILD_ARGS} -t registry.eng.hortonworks.com/cloudbreak/${TAG}:$(date +%Y-%m-%d) -f docker/${DIR}/Dockerfile . | tee build.log
+docker build --build-arg PRE_WARM_PARCELS="${PRE_WARM_PARCELS}" --build-arg PRE_WARM_CSD="${PRE_WARM_CSD}" ${DOCKER_BUILD_ARGS} -t docker-sandbox.infra.cloudera.com/cloudbreak/${TAG}:$(date +%Y-%m-%d) -f docker/${DIR}/Dockerfile . | tee build.log
