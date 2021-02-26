@@ -258,6 +258,20 @@ Execute11:
 Execute12:
   cmd.run:
     - name: sysctl -w net.ipv4.route.flush=1
+#Ensure IPv6 router advertisements are not accepted
+net.ipv6.conf.all.accept_ra:
+  sysctl.present:
+    - value: 0
+net.ipv6.conf.default.accept_ra:
+  sysctl.present:
+    - value: 0
+#Ensure IPv6 redirects are not accepted
+net.ipv6.conf.all.accept_redirects:
+  sysctl.present:
+    - value: 0
+net.ipv6.conf.default.accept_redirects:
+  sysctl.present:
+    - value: 0
 #3.5.1-4_Ensure_DCCP/SCTP/RDS/TIPC are disabled
 Ensure DCCP is disabled:
   file.replace:
@@ -409,11 +423,11 @@ Permission_etc/at.allow:
 #Ensure no world writable files exist
 Find_Delete_WWFiles:
   cmd.run:
-    - name: "find / -xdev -type f -perm -0002 -exec chmod o-w {} \;"
+    - name: 'find / -xdev -type f -perm -0002 -exec chmod o-w {} \;'
 #Ensure no unowned files or directories exist
 Fine_own_unowned_files:
   cmd.run:
-    - name: "find / -xdev -nouser -exec chown root:root {} \;"
+    - name: 'find / -xdev -nouser -exec chown root:root {} \;'
 
 ####CIS: Strengthen the password policy
 #https://jira.cloudera.com/browse/CB-8935
