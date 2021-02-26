@@ -133,6 +133,10 @@ sshd_harden_LogLevel:
 Ensure_X_Window_System_is_not_installed:
   cmd.run:
     - name: yum remove xorg-x11*
+Ensure_X_Window_System_not_installed:
+  cmd.run:
+    - name: yum remove -q -y xorg-x11-server*
+
 
 #### CIS: Ensure core dumps are restricted
 # https://jira.cloudera.com/browse/CB-8925
@@ -166,7 +170,7 @@ Disable_dump:
 # https://jira.cloudera.com/browse/CB-8928
 Logfile_permission:
   cmd.run:
-    - name: find -L /var/log -type f -exec chmod g-wx,o-rwx {} +
+    - name: "find -L /var/log -type f -exec chmod g-wx,o-rwx {} +"
 
 #### CIS: Network Configurations
 # https://jira.cloudera.com/browse/CB-8927
@@ -258,6 +262,23 @@ Execute11:
 Execute12:
   cmd.run:
     - name: sysctl -w net.ipv4.route.flush=1
+#Ensure IPv6 router advertisements are not accepted
+net.ipv6.conf.all.accept_ra:
+  sysctl.present:
+    - value: 0
+net.ipv6.conf.default.accept_ra:
+  sysctl.present:
+    - value: 0
+#Ensure IPv6 redirects are not accepted
+net.ipv6.conf.all.accept_redirects:
+  sysctl.present:
+    - value: 0
+net.ipv6.conf.default.accept_redirects:
+  sysctl.present:
+    - value: 0
+net.ipv6.route.flush:
+  sysctl.present:
+    - value: 1
 #3.5.1-4_Ensure_DCCP/SCTP/RDS/TIPC are disabled
 Ensure DCCP is disabled:
   file.replace:
@@ -283,20 +304,38 @@ Ensure TIPC is disabled:
     - pattern: "^install tipc /bin/true"
     - repl: install tipc /bin/true
     - append_if_not_found: True
+#Ensure loopback traffic is configured
+Loopback_Interface_input1:
+  iptables.append:
+    - chain: INPUT
+    - in-interface: lo
+    - jump: ACCEPT
+Loopback_Interface_output:
+  iptables.append:
+    - chain: OUTPUT
+    - out-interface: lo
+    - jump: ACCEPT
+Loopback_Interface_input2:
+  iptables.append:
+    - chain: INPUT
+    - source: 127.0.0.0/8
+    - jump: DROP
+
 
 #### CIS: Enable filesystem Integrity Checking
 # https://jira.cloudera.com/browse/CB-8919
 packages_install_aide:
   pkg.installed:
-    - refresh: False
-    - pkgs:
-      - aide
+    - name: aide
 Initialize_aide:
   cmd.run:
     - name: aide --init
 AIDE_db_setup:
   cmd.run:
     - name: mv /var/lib/aide/aide.db.new.gz /var/lib/aide/aide.db.gz
+    - unless: 'test -f /var/lib/aide/aide.db.gz'
+    - require:
+      - pkg: aide
 #1.3.2 Ensure filesystem integrity is regularly checked
 Create_crontab:
   cmd.run:
@@ -308,5 +347,206 @@ update_aide_cronjob:
     - pattern: '^\d.*\/usr\/sbin\/aide.*'
     - repl: '0 5 * * * /usr/sbin/aide --check'
     - append_if_not_found: True
+
+#### CIS: Secure the Bootloader
+# https://jira.cloudera.com/browse/CB-8920
+# Ensure permissions on bootloader config are configured
+Grub.cfg_permission:
+  cmd.run:
+    - name: chmod og-rwx /boot/grub2/grub.cfg
+
+#### CIS: Strengthen the ownership for job Scheduler
+# https://jira.cloudera.com/browse/CB-8932
+#Cron permission
+Permission_etc/crontab:
+  file.managed:
+    - name: /etc/crontab
+    - user: root
+    - group: root
+    - mode: 600
+Permission_/etc/cron.hourly:
+  file.directory:
+    - name: /etc/cron.hourly
+    - user: root
+    - group: root
+    - mode: 700
+Permission_/etc/cron.daily:
+  file.directory:
+    - name: /etc/cron.daily
+    - user: root
+    - group: root
+    - mode: 700
+Permission_/etc/cron.weekly:
+  file.directory:
+    - name: /etc/cron.weekly
+    - user: root
+    - group: root
+    - mode: 700
+Permission_/etc/cron.monthly:
+  file.directory:
+    - name: /etc/cron.monthly
+    - user: root
+    - group: root
+    - mode: 700
+Permission_/etc/cron.d:
+  file.directory:
+    - name: /etc/cron.d
+    - user: root
+    - group: root
+    - mode: 700
+#Ensure cron is restricted to authorized users
+Delete_cron.DENY:
+  cmd.run:
+    - name: rm /etc/cron.deny
+    - onlyif: "test -f /etc/cron.deny"
+Create_cron.ALLOW:
+  cmd.run:
+    - name: touch /etc/cron.allow
+    - unless: test -f /etc/cron.allow
+Permission_etc/cron.allow:
+  file.managed:
+    - name: /etc/cron.allow
+    - user: root
+    - group: root
+    - mode: 600
+#Ensure at is restricted to authorized users
+Delete_at.DENY:
+  cmd.run:
+    - name: rm /etc/at.deny
+    - onlyif: "ls /etc/at.deny"
+Create_at.ALLOW:
+  cmd.run:
+    - name: touch /etc/at.allow
+    - unless: test -f /etc/at.allow
+Permission_etc/at.allow:
+  file.managed:
+    - name: /etc/at.allow
+    - user: root
+    - group: root
+    - mode: 600
+
+#### CIS - Filesystem Configurations
+#Ensure noexec option set on /dev/shm partition
+dev_shm_noexec:
+  cmd.run:
+    - name: 'mount -o remount,noexec,nodev,nosuid /dev/shm'
+
+#### CIS - Strengthen the System file permissions
+# https://jira.cloudera.com/browse/CB-8934
+#Ensure no world writable files exist
+Find_Delete_WWFiles:
+  cmd.run:
+    - name: 'find / -xdev -type f -perm -0002 -exec chmod o-w {} \;'
+#Ensure no unowned files or directories exist
+Fine_own_unowned_files:
+  cmd.run:
+    - name: 'find / -xdev -nouser -exec chown root:root {} \;'
+
+####CIS: Strengthen the password policy
+#https://jira.cloudera.com/browse/CB-8935
+#Ensure password expiration is 180 Days (This setting should be reviewed as per organization policy)
+PASS_MAX_DAYS:
+  file.replace:
+    - name: /etc/login.defs
+    - pattern: '^\s*PASS_MAX_DAYS.*'
+    - repl: PASS_MAX_DAYS 180
+    - append_if_not_found: True
+#Ensure minimum days between password changes is 7 or more
+PASS_MIN_DAYS:
+  file.replace:
+    - name: /etc/login.defs
+    - pattern: '^\s*PASS_MIN_DAYS.*'
+    - repl: PASS_MIN_DAYS 1
+    - append_if_not_found: True
+#Ensure inactive password lock is 30 days or less
+INACTIVE:
+  cmd.run:
+    - name: useradd -D -f 30
+
+
+####CIS: Strengthening the PAM
+#https://jira.cloudera.com/browse/CB-8936
+#Ensure password creation requirements are configured
+Minlength:
+  file.replace:
+    - name: /etc/security/pwquality.conf
+    - pattern: "^minlen = 14.*"
+    - repl: minlen = 14
+    - append_if_not_found: True
+dcredit:
+  file.replace:
+    - name: /etc/security/pwquality.conf
+    - pattern: "^dcredit = -1"
+    - repl: dcredit = -1
+    - append_if_not_found: True
+ucredit:
+  file.replace:
+    - name: /etc/security/pwquality.conf
+    - pattern: "^ucredit = -1"
+    - repl: ucredit = -1
+    - append_if_not_found: True
+ocredit:
+  file.replace:
+    - name: /etc/security/pwquality.conf
+    - pattern: "^ocredit = -1"
+    - repl: ocredit = -1
+    - append_if_not_found: True
+lcredit:
+  file.replace:
+    - name: /etc/security/pwquality.conf
+    - pattern: "^lcredit = -1"
+    - repl: lcredit = -1
+    - append_if_not_found: True
+password-auth:
+  file.replace:
+    - name: /etc/pam.d/password-auth
+    - pattern: '^password\s*requisite\s*pam_pwquality\.so\s*try_first_pass\s*local_users_only\s*retry=.*'
+    - repl: 'password    requisite     pam_pwquality.so try_first_pass local_users_only retry=3'
+    - append_if_not_found: True
+system-auth:
+  file.replace:
+    - name: /etc/pam.d/system-auth
+    - pattern: '^password\s*requisite\s*pam_pwquality\.so\s*try_first_pass\s*local_users_only\s*retry=.*'
+    - repl: 'password    requisite     pam_pwquality.so try_first_pass local_users_only retry=3'
+    - append_if_not_found: True
+#Ensure lockout for failed password attempts is configured
+pam_faildelay:
+  cmd.run:
+    - name: 'for PAM in "password" "system"; do sed -i "s|auth.*required.*pam_faildelay.so|auth        required      pam_faillock.so preauth silent audit deny=5 unlock_time=900|g" "/etc/pam.d/${PAM}-auth"'
+pam_unix:
+  cmd.run:
+    - name: 'for PAM in "password" "system"; do sed -i "/auth.*sufficient.*pam_unix.so.*/a auth        [default=die] pam_faillock.so authfail audit deny=5 unlock_time=900" "/etc/pam.d/${PAM}-auth"'
+account_required_pam_unix:
+  cmd.run:
+    - name: 'for PAM in "password" "system"; do sed -i /account.*required.*pam_unix.so.*/i account     required      pam_faillock.so" "/etc/pam.d/${PAM}-auth"'
+
+#Ensure password reuse is limited
+PassReuse_password-auth:
+  file.replace:
+    - name: /etc/pam.d/password-auth
+    - pattern: '^password\s*sufficient\s*pam_unix\.so\s*remember=.*'
+    - repl: 'password    sufficient     pam_unix.so remember=5'
+    - append_if_not_found: True
+PassReuse_system-auth:
+  file.replace:
+    - name: /etc/pam.d/system-auth
+    - pattern: '^password\s*sufficient\s*pam_unix\.so\s*remember=.*'
+    - repl: 'password    sufficient     pam_unix.so remember=5'
+    - append_if_not_found: True
+#Ensure system accounts are non-login
+Unassign_shell_postgres:
+  cmd.run:
+    - name: usermod -s /sbin/nologin postgres
+#Ensure default user umask is 027 or more restrictive
+Umask027:
+  cmd.run:
+    - name: "for TEMPLATE in 'bashrc' 'profile'; do sed -i 's|umask 002|umask 027|g' /etc/${TEMPLATE} done"
+Umask077:
+  cmd.run:
+    - name: "for TEMPLATE in 'bashrc' 'profile'; do sed -i 's|umask 022|umask 077|g' /etc/${TEMPLATE}; done"
+#Ensure default user shell timeout is 900 seconds or less
+TMOUT:
+  cmd.run:
+    - name: printf "TMOUT=900\\nreadonly TMOUT\\nexport TMOUT\\n" >> /etc/profile
 
 {% endif %}
