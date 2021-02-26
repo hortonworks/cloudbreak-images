@@ -512,13 +512,13 @@ system-auth:
 #Ensure lockout for failed password attempts is configured
 pam_faildelay:
   cmd.run:
-    - name: 'for PAM in "password" "system"; do sed -i "s|auth.*required.*pam_faildelay.so|auth        required      pam_faillock.so preauth silent audit deny=5 unlock_time=900|g" "/etc/pam.d/${PAM}-auth"'
+    - name: 'for PAM in "password" "system"; do sed -i "s|auth.*required.*pam_faildelay.so|auth        required      pam_faillock.so preauth silent audit deny=5 unlock_time=900|g" "/etc/pam.d/${PAM}-auth"; done'
 pam_unix:
   cmd.run:
-    - name: 'for PAM in "password" "system"; do sed -i "/auth.*sufficient.*pam_unix.so.*/a auth        [default=die] pam_faillock.so authfail audit deny=5 unlock_time=900" "/etc/pam.d/${PAM}-auth"'
+    - name: 'for PAM in "password" "system"; do sed -i "/auth.*sufficient.*pam_unix.so.*/a auth        [default=die] pam_faillock.so authfail audit deny=5 unlock_time=900" "/etc/pam.d/${PAM}-auth"; done'
 account_required_pam_unix:
   cmd.run:
-    - name: 'for PAM in "password" "system"; do sed -i /account.*required.*pam_unix.so.*/i account     required      pam_faillock.so" "/etc/pam.d/${PAM}-auth"'
+    - name: 'for PAM in "password" "system"; do sed -i "/account.*required.*pam_unix.so.*/i account     required      pam_faillock.so" "/etc/pam.d/${PAM}-auth"; done'
 
 #Ensure password reuse is limited
 PassReuse_password-auth:
@@ -540,13 +540,13 @@ Unassign_shell_postgres:
 #Ensure default user umask is 027 or more restrictive
 Umask027:
   cmd.run:
-    - name: "for TEMPLATE in 'bashrc' 'profile'; do sed -i 's|umask 002|umask 027|g' /etc/${TEMPLATE} done"
+    - name: "for TEMPLATE in 'bashrc' 'profile'; do sed -i 's|umask 002|umask 027|g' /etc/${TEMPLATE}; done"
 Umask077:
   cmd.run:
     - name: "for TEMPLATE in 'bashrc' 'profile'; do sed -i 's|umask 022|umask 077|g' /etc/${TEMPLATE}; done"
 #Ensure default user shell timeout is 900 seconds or less
 TMOUT:
   cmd.run:
-    - name: printf "TMOUT=900\\nreadonly TMOUT\\nexport TMOUT\\n" >> /etc/profile
+    - name: printf 'TMOUT=900\\nreadonly TMOUT\\nexport TMOUT\\n' >> /etc/profile
 
 {% endif %}
