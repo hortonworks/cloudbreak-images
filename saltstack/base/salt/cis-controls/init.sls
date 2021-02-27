@@ -92,19 +92,26 @@ sshd_harden_ssh2:
     - repl: "Protocol 2"
     - append_if_not_found: True
 
-sshd_harden_WarnBanner1:
+sshd_local_WarnBanner1:
   file.managed:
     - name: /etc/issue
     - contents: |
         Corporate computer security personnel monitor this system for security purposes to ensure it remains available to all users and to protect information in the system. By accessing this system, you are expressly consenting to these monitoring activities.
         Unauthorized attempts to defeat or circumvent security features, to use the system for other than intended purposes, to deny service to authorized users, to access, obtain, alter, damage, or destroy information, or otherwise to interfere with the system or its operation are prohibited. Evidence of such acts may be disclosed to law enforcement authorities and result in criminal prosecution under the Computer Fraud and Abuse Act of 1986 (Pub. L. 99-474) and the National Information Infrastructure Protection Act of 1996 (Pub. L. 104-294), (18 U.S.C. 1030), or other applicable criminal laws.
-        
-sshd_harden_WarnBanner2:
+
+sshd_local_WarnBanner2:
   file.replace:
     - name: /etc/ssh/sshd_config
     - pattern: "^Banner.*"
     - repl: "Banner /etc/issue"
     - append_if_not_found: True
+
+sshd_remote_WarnBanner:
+  file.managed:
+    - name: /etc/issue.net
+    - contents: |
+        Corporate computer security personnel monitor this system for security purposes to ensure it remains available to all users and to protect information in the system. By accessing this system, you are expressly consenting to these monitoring activities.
+        Unauthorized attempts to defeat or circumvent security features, to use the system for other than intended purposes, to deny service to authorized users, to access, obtain, alter, damage, or destroy information, or otherwise to interfere with the system or its operation are prohibited. Evidence of such acts may be disclosed to law enforcement authorities and result in criminal prosecution under the Computer Fraud and Abuse Act of 1986 (Pub. L. 99-474) and the National Information Infrastructure Protection Act of 1996 (Pub. L. 104-294), (18 U.S.C. 1030), or other applicable criminal laws.
 
 sshd_harden_ApprovedCiphers:
   file.replace:
@@ -132,10 +139,7 @@ sshd_harden_LogLevel:
 
 Ensure_X_Window_System_is_not_installed:
   cmd.run:
-    - name: yum remove xorg-x11*
-Ensure_X_Window_System_not_installed:
-  cmd.run:
-    - name: yum remove -q -y xorg-x11-server*
+    - name: sudo yum remove -y xorg-x11*
 
 
 #### CIS: Ensure core dumps are restricted
@@ -162,7 +166,7 @@ Update_sysctl.conf:
     - pattern: "fs.suid_dumpable = 0"
     - repl: "fs.suid_dumpable = 0"
     - append_if_not_found: True
-Disable_dump:  
+Disable_dump:
   cmd.run:
     - name: sysctl -w fs.suid_dumpable=0
 
@@ -170,7 +174,7 @@ Disable_dump:
 # https://jira.cloudera.com/browse/CB-8928
 Logfile_permission:
   cmd.run:
-    - name: "find -L /var/log -type f -exec chmod g-wx,o-rwx {} +"
+    - name: 'sudo find /var/log -type f -exec chmod g-wx,o-rwx "{}" + -o -type d -exec chmod g-wx,o-rwx "{}" +'
 
 #### CIS: Network Configurations
 # https://jira.cloudera.com/browse/CB-8927
@@ -180,7 +184,7 @@ Update_sysctl1:
     - name: /etc/sysctl.conf
     - pattern: "^net.ipv4.conf.all.send_redirects = 0.*"
     - repl: "net.ipv4.conf.all.send_redirects = 0"
-    - append_if_not_found: True      
+    - append_if_not_found: True
 Update_sysctl2:
   file.replace:
     - name: /etc/sysctl.conf
@@ -306,20 +310,14 @@ Ensure TIPC is disabled:
     - append_if_not_found: True
 #Ensure loopback traffic is configured
 Loopback_Interface_input1:
-  iptables.append:
-    - chain: INPUT
-    - in-interface: lo
-    - jump: ACCEPT
+  cmd.run:
+    - name: sudo iptables -A INPUT -i lo -j ACCEPT
 Loopback_Interface_output:
-  iptables.append:
-    - chain: OUTPUT
-    - out-interface: lo
-    - jump: ACCEPT
+  cmd.run:
+    - name: sudo iptables -A OUTPUT -o lo -j ACCEPT
 Loopback_Interface_input2:
-  iptables.append:
-    - chain: INPUT
-    - source: 127.0.0.0/8
-    - jump: DROP
+  cmd.run:
+    - name: sudo iptables -A INPUT -s 127.0.0.0/8 -j DROP
 
 
 #### CIS: Enable filesystem Integrity Checking
@@ -429,18 +427,18 @@ Permission_etc/at.allow:
 #Ensure noexec option set on /dev/shm partition
 dev_shm_noexec:
   cmd.run:
-    - name: 'mount -o remount,noexec,nodev,nosuid /dev/shm'
+    - name: 'sudo mount -o remount,noexec,nodev,nosuid /dev/shm'
 
 #### CIS - Strengthen the System file permissions
 # https://jira.cloudera.com/browse/CB-8934
 #Ensure no world writable files exist
 Find_Delete_WWFiles:
   cmd.run:
-    - name: 'find / -xdev -type f -perm -0002 -exec chmod o-w {} \;'
+    - name: "sudo find / -xdev -type f -perm -0002 -exec chmod o-w {} \\;"
 #Ensure no unowned files or directories exist
 Fine_own_unowned_files:
   cmd.run:
-    - name: 'find / -xdev -nouser -exec chown root:root {} \;'
+    - name: "sudo find / -xdev -nouser -exec chown root:root {} \\;"
 
 ####CIS: Strengthen the password policy
 #https://jira.cloudera.com/browse/CB-8935
@@ -462,7 +460,6 @@ PASS_MIN_DAYS:
 INACTIVE:
   cmd.run:
     - name: useradd -D -f 30
-
 
 ####CIS: Strengthening the PAM
 #https://jira.cloudera.com/browse/CB-8936
@@ -510,16 +507,24 @@ system-auth:
     - repl: 'password    requisite     pam_pwquality.so try_first_pass local_users_only retry=3'
     - append_if_not_found: True
 #Ensure lockout for failed password attempts is configured
-pam_faildelay:
+pam.faildelay_system_auth:
   cmd.run:
-    - name: 'for PAM in "password" "system"; do sed -i "s|auth.*required.*pam_faildelay.so|auth        required      pam_faillock.so preauth silent audit deny=5 unlock_time=900|g" "/etc/pam.d/${PAM}-auth"; done'
-pam_unix:
+    - name: sudo sed -i 's|auth.*required.*pam_faildelay.so|auth        required      pam_faillock.so preauth silent audit deny=5 unlock_time=900|g' '/etc/pam.d/system-auth'
+pam.faildelay_password_auth:
   cmd.run:
-    - name: 'for PAM in "password" "system"; do sed -i "/auth.*sufficient.*pam_unix.so.*/a auth        [default=die] pam_faillock.so authfail audit deny=5 unlock_time=900" "/etc/pam.d/${PAM}-auth"; done'
-account_required_pam_unix:
+    - name: sudo sed -i 's|auth.*required.*pam_faildelay.so|auth        required     pam_faillock.so preauth silent audit deny=5 unlock_time=900|g' '/etc/pam.d/password-auth'
+pam.faillock_system_auth:
   cmd.run:
-    - name: 'for PAM in "password" "system"; do sed -i "/account.*required.*pam_unix.so.*/i account     required      pam_faillock.so" "/etc/pam.d/${PAM}-auth"; done'
-
+    - name: sudo sed -i '/auth.*sufficient.*pam_unix.so.*/a auth        [default=die] pam_faillock.so authfail audit deny=5 unlock_time=900' '/etc/pam.d/system-auth'
+pam.faillock_password_auth:
+  cmd.run:
+    - name: sudo sed -i '/auth.*sufficient.*pam_unix.so.*/a auth        [default=die] pam_faillock.so authfail audit deny=5 unlock_time=900' '/etc/pam.d/password-auth'
+pam.account_system_auth:
+  cmd.run:
+    - name: sudo sed -i '/account.*required.*pam_unix.so.*/i account     required      pam_faillock.so' '/etc/pam.d/system-auth'
+pam.account_password_auth:
+  cmd.run:
+    - name: sudo sed -i '/account.*required.*pam_unix.so.*/i account     required      pam_faillock.so' '/etc/pam.d/password-auth'
 #Ensure password reuse is limited
 PassReuse_password-auth:
   file.replace:
@@ -534,9 +539,9 @@ PassReuse_system-auth:
     - repl: 'password    sufficient     pam_unix.so remember=5'
     - append_if_not_found: True
 #Ensure system accounts are non-login
-Unassign_shell_postgres:
-  cmd.run:
-    - name: usermod -s /sbin/nologin postgres
+#Unassign_shell_postgres: [e2e test failed as it tries to connect with postgres]
+#  cmd.run:
+#    - name: usermod -s /sbin/nologin postgres
 #Ensure default user umask is 027 or more restrictive
 Umask027:
   cmd.run:
@@ -545,8 +550,11 @@ Umask077:
   cmd.run:
     - name: "for TEMPLATE in 'bashrc' 'profile'; do sed -i 's|umask 022|umask 077|g' /etc/${TEMPLATE}; done"
 #Ensure default user shell timeout is 900 seconds or less
-TMOUT:
+TMOUT_profile:
   cmd.run:
-    - name: printf 'TMOUT=900\\nreadonly TMOUT\\nexport TMOUT\\n' >> /etc/profile
+    - name: printf "TMOUT=900\\\\nreadonly TMOUT\\\\nexport TMOUT\\\\n" >> /etc/profile
+TMOUT_bashrc:
+  cmd.run:
+    - name: printf "TMOUT=900\\\\nreadonly TMOUT\\\\nexport TMOUT\\\\n" >> /etc/bashrc
 
 {% endif %}
