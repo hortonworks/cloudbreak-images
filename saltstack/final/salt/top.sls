@@ -7,3 +7,4 @@ final:
     - waagent
 {% endif %}
     - cleanup
+    - cis-controls
