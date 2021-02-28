@@ -172,9 +172,14 @@ Disable_dump:
 
 #### CIS: Log configurations
 # https://jira.cloudera.com/browse/CB-8928
-Logfile_permission:
-  cmd.run:
-    - name: 'sudo find /var/log -type f -exec chmod g-wx,o-rwx "{}" + -o -type d -exec chmod g-wx,o-rwx "{}" +'
+/var/log:
+  file.directory:
+    - user: root
+    - group: root
+    - file_mode: 640
+    - dir_mode: 755
+    - recurse:
+      - mode
 
 #### CIS: Network Configurations
 # https://jira.cloudera.com/browse/CB-8927
@@ -309,6 +314,9 @@ Ensure TIPC is disabled:
     - repl: install tipc /bin/true
     - append_if_not_found: True
 #Ensure loopback traffic is configured
+Install_iptable:
+  cmd.run:
+    - name: sudo yum install -y iptables-services
 Loopback_Interface_input1:
   cmd.run:
     - name: sudo iptables -A INPUT -i lo -j ACCEPT
@@ -318,7 +326,6 @@ Loopback_Interface_output:
 Loopback_Interface_input2:
   cmd.run:
     - name: sudo iptables -A INPUT -s 127.0.0.0/8 -j DROP
-
 
 #### CIS: Enable filesystem Integrity Checking
 # https://jira.cloudera.com/browse/CB-8919
@@ -426,6 +433,12 @@ Permission_etc/at.allow:
 #### CIS - Filesystem Configurations
 #Ensure noexec option set on /dev/shm partition
 dev_shm_noexec:
+  file.replace:
+    - name: /etc/fstab
+    - pattern: '^tmpfs\s*\/dev\/shm\s*.*'
+    - repl: 'tmpfs                   /dev/shm                tmpfs   defaults,nodev,nosuid,noexec        0 0'
+    - append_if_not_found: True
+dev_shm_remount:
   cmd.run:
     - name: 'sudo mount -o remount,noexec,nodev,nosuid /dev/shm'
 
@@ -434,11 +447,11 @@ dev_shm_noexec:
 #Ensure no world writable files exist
 Find_Delete_WWFiles:
   cmd.run:
-    - name: "sudo find / -xdev -type f -perm -0002 -exec chmod o-w {} \\;"
+    - name: 'sudo find / -xdev -type f -perm -0002 -exec chmod o-w {} \;'
 #Ensure no unowned files or directories exist
 Fine_own_unowned_files:
   cmd.run:
-    - name: "sudo find / -xdev -nouser -exec chown root:root {} \\;"
+    - name: 'sudo find / -xdev -nouser -exec chown root:root {} \;'
 
 ####CIS: Strengthen the password policy
 #https://jira.cloudera.com/browse/CB-8935
@@ -460,6 +473,7 @@ PASS_MIN_DAYS:
 INACTIVE:
   cmd.run:
     - name: useradd -D -f 30
+
 
 ####CIS: Strengthening the PAM
 #https://jira.cloudera.com/browse/CB-8936
@@ -508,23 +522,41 @@ system-auth:
     - append_if_not_found: True
 #Ensure lockout for failed password attempts is configured
 pam.faildelay_system_auth:
-  cmd.run:
-    - name: sudo sed -i 's|auth.*required.*pam_faildelay.so|auth        required      pam_faillock.so preauth silent audit deny=5 unlock_time=900|g' '/etc/pam.d/system-auth'
+  file.replace:
+    - name: /etc/pam.d/system-auth
+    - pattern: '^auth\s*required\s*pam_faildelay.so\s*delay=.*'
+    - repl: 'auth        required      pam_faillock.so preauth silent audit deny=5 unlock_time=900'
+    - append_if_not_found: True
 pam.faildelay_password_auth:
-  cmd.run:
-    - name: sudo sed -i 's|auth.*required.*pam_faildelay.so|auth        required     pam_faillock.so preauth silent audit deny=5 unlock_time=900|g' '/etc/pam.d/password-auth'
+  file.replace:
+    - name: /etc/pam.d/password-auth
+    - pattern: '^auth\s*required\s*pam_faildelay.so\s*delay=.*'
+    - repl: 'auth        required      pam_faillock.so preauth silent audit deny=5 unlock_time=900'
+    - append_if_not_found: True
 pam.faillock_system_auth:
-  cmd.run:
-    - name: sudo sed -i '/auth.*sufficient.*pam_unix.so.*/a auth        [default=die] pam_faillock.so authfail audit deny=5 unlock_time=900' '/etc/pam.d/system-auth'
+  file.replace:
+    - name: /etc/pam.d/system-auth
+    - pattern: '^auth\s*\[default=die]\s*pam_faillock.so\s*authfail\s*audit\s*deny=5\s*unlock_time=.*'
+    - repl: 'auth        [default=die] pam_faillock.so authfail audit deny=5 unlock_time=900'
+    - append_if_not_found: True
 pam.faillock_password_auth:
-  cmd.run:
-    - name: sudo sed -i '/auth.*sufficient.*pam_unix.so.*/a auth        [default=die] pam_faillock.so authfail audit deny=5 unlock_time=900' '/etc/pam.d/password-auth'
+  file.replace:
+    - name: /etc/pam.d/password-auth
+    - pattern: '^auth\s*\[default=die]\s*pam_faillock.so\s*authfail\s*audit\s*deny=5\s*unlock_time=.*'
+    - repl: 'auth        [default=die] pam_faillock.so authfail audit deny=5 unlock_time=900'
+    - append_if_not_found: True
 pam.account_system_auth:
-  cmd.run:
-    - name: sudo sed -i '/account.*required.*pam_unix.so.*/i account     required      pam_faillock.so' '/etc/pam.d/system-auth'
+  file.replace:
+    - name: /etc/pam.d/system-auth
+    - pattern: '^account\s*required\s*pam_faillock.so.*'
+    - repl: 'account     required      pam_faillock.so'
+    - append_if_not_found: True
 pam.account_password_auth:
-  cmd.run:
-    - name: sudo sed -i '/account.*required.*pam_unix.so.*/i account     required      pam_faillock.so' '/etc/pam.d/password-auth'
+  file.replace:
+    - name: /etc/pam.d/password-auth
+    - pattern: '^account\s*required\s*pam_faillock.so.*'
+    - repl: 'account     required      pam_faillock.so'
+    - append_if_not_found: True
 #Ensure password reuse is limited
 PassReuse_password-auth:
   file.replace:
@@ -552,9 +584,24 @@ Umask077:
 #Ensure default user shell timeout is 900 seconds or less
 TMOUT_profile:
   cmd.run:
-    - name: printf "TMOUT=900\\\\nreadonly TMOUT\\\\nexport TMOUT\\\\n" >> /etc/profile
+    - name: printf "readonly TMOUT=900 ; export TMOUT" >> /etc/profile
 TMOUT_bashrc:
   cmd.run:
-    - name: printf "TMOUT=900\\\\nreadonly TMOUT\\\\nexport TMOUT\\\\n" >> /etc/bashrc
+    - name: printf "readonly TMOUT=900 ; export TMOUT" >> /etc/bashrc
+
+#### CIS: Ensure access to the su command is restricted
+#https://jira.cloudera.com/browse/CB-8929
+wheel_group_add:
+  file.replace:
+    - name: /etc/group
+    - pattern: '^wheel:x:10:.*'
+    - repl: 'wheel:x:10:centos,cloudbreak,saltuser,root'
+    - append_if_not_found: True
+update_pam.d_su:
+  file.replace:
+    - name: /etc/pam.d/su
+    - pattern: '^auth\s*required\s*pam_wheel\.so.*'
+    - repl: 'auth required pam_wheel.so use_uid'
+    - append_if_not_found: True
 
 {% endif %}
