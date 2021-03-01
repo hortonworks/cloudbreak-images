@@ -139,7 +139,7 @@ sshd_harden_LogLevel:
 
 Ensure_X_Window_System_is_not_installed:
   cmd.run:
-    - name: sudo yum remove -y xorg-x11*
+    - name: sudo yum remove -y xorg-x11-server*
 
 
 #### CIS: Ensure core dumps are restricted
