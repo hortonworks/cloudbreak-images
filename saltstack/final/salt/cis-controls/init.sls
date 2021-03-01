@@ -172,14 +172,9 @@ Disable_dump:
 
 #### CIS: Log configurations
 # https://jira.cloudera.com/browse/CB-8928
-/var/log:
-  file.directory:
-    - user: root
-    - group: root
-    - file_mode: 640
-    - dir_mode: 755
-    - recurse:
-      - mode
+/var/log_permission:
+  cmd.run:
+    - name: find /var/log -type f -exec chmod g-wx,o-rwx "{}" + -o -type d -exec chmod g- wx,o-rwx "{}" +
 
 #### CIS: Network Configurations
 # https://jira.cloudera.com/browse/CB-8927
