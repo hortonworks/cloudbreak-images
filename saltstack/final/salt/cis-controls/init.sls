@@ -314,9 +314,6 @@ Ensure TIPC is disabled:
     - repl: install tipc /bin/true
     - append_if_not_found: True
 #Ensure loopback traffic is configured
-Install_iptable:
-  cmd.run:
-    - name: sudo yum install -y iptables-services
 Loopback_Interface_input1:
   cmd.run:
     - name: sudo iptables -A INPUT -i lo -j ACCEPT
@@ -524,31 +521,31 @@ system-auth:
 pam.faildelay_system_auth:
   file.replace:
     - name: /etc/pam.d/system-auth
-    - pattern: '^auth\s*required\s*pam_faildelay.so\s*delay=.*'
+    - pattern: '^auth\s*required\s*pam_faillock\.so\s*delay=.*'
     - repl: 'auth        required      pam_faillock.so preauth silent audit deny=5 unlock_time=900'
     - append_if_not_found: True
 pam.faildelay_password_auth:
   file.replace:
     - name: /etc/pam.d/password-auth
-    - pattern: '^auth\s*required\s*pam_faildelay.so\s*delay=.*'
+    - pattern: '^auth\s*required\s*pam_faillock\.so\s*delay=.*'
     - repl: 'auth        required      pam_faillock.so preauth silent audit deny=5 unlock_time=900'
     - append_if_not_found: True
 pam.faillock_system_auth:
   file.replace:
     - name: /etc/pam.d/system-auth
-    - pattern: '^auth\s*\[default=die]\s*pam_faillock.so\s*authfail\s*audit\s*deny=5\s*unlock_time=.*'
+    - pattern: '^auth\s*\[default\=die\]\s*pam_faillock\.so\s*authfail\s*audit\s*deny=5\s*unlock_time=.*'
     - repl: 'auth        [default=die] pam_faillock.so authfail audit deny=5 unlock_time=900'
     - append_if_not_found: True
 pam.faillock_password_auth:
   file.replace:
     - name: /etc/pam.d/password-auth
-    - pattern: '^auth\s*\[default=die]\s*pam_faillock.so\s*authfail\s*audit\s*deny=5\s*unlock_time=.*'
+    - pattern: '^auth\s*\[default\=die\]\s*pam_faillock\.so\s*authfail\s*audit\s*deny=5\s*unlock_time=.*'
     - repl: 'auth        [default=die] pam_faillock.so authfail audit deny=5 unlock_time=900'
     - append_if_not_found: True
 pam.account_system_auth:
   file.replace:
     - name: /etc/pam.d/system-auth
-    - pattern: '^account\s*required\s*pam_faillock.so.*'
+    - pattern: '^account\s*required\s*pam_faillock\.so.*'
     - repl: 'account     required      pam_faillock.so'
     - append_if_not_found: True
 pam.account_password_auth:
