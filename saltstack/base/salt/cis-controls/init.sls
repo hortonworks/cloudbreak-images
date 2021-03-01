@@ -139,7 +139,7 @@ sshd_harden_LogLevel:
 
 Ensure_X_Window_System_is_not_installed:
   cmd.run:
-    - name: sudo yum remove -y xorg-x11*
+    - name: sudo yum remove -y xorg-x11-server*
 
 
 #### CIS: Ensure core dumps are restricted
@@ -447,11 +447,11 @@ dev_shm_remount:
 #Ensure no world writable files exist
 Find_Delete_WWFiles:
   cmd.run:
-    - name: 'sudo find / -xdev -type f -perm -0002 -exec chmod o-w {} \;'
+    - name: sudo find / -xdev -type f -perm -0002 -exec chmod o-w {} \;
 #Ensure no unowned files or directories exist
 Fine_own_unowned_files:
   cmd.run:
-    - name: 'sudo find / -xdev -nouser -exec chown root:root {} \;'
+    - name: "sudo find / -xdev -nouser -exec chown root:root {} \\;"
 
 ####CIS: Strengthen the password policy
 #https://jira.cloudera.com/browse/CB-8935
@@ -582,20 +582,50 @@ Umask077:
   cmd.run:
     - name: "for TEMPLATE in 'bashrc' 'profile'; do sed -i 's|umask 022|umask 077|g' /etc/${TEMPLATE}; done"
 #Ensure default user shell timeout is 900 seconds or less
-TMOUT_profile:
-  cmd.run:
-    - name: printf "readonly TMOUT=900 ; export TMOUT" >> /etc/profile
-TMOUT_bashrc:
-  cmd.run:
-    - name: printf "readonly TMOUT=900 ; export TMOUT" >> /etc/bashrc
+TMOUT900_profile:
+  file.replace:
+    - name: /etc/profile
+    - pattern: "^TMOUT=.*"
+    - repl:  TMOUT=900
+    - append_if_not_found: True
+TMOUTReadonly_profile:
+  file.replace:
+    - name: /etc/profile
+    - pattern: "^readonly TMOUT"
+    - repl:  readonly TMOUT
+    - append_if_not_found: True
+TMOUTExport_profile:
+  file.replace:
+    - name: /etc/profile
+    - pattern: "^export TMOUT"
+    - repl:  export TMOUT
+    - append_if_not_found: True
+TMOUT900_bashrc:
+  file.replace:
+    - name: /etc/bashrc
+    - pattern: "^TMOUT=.*"
+    - repl:  TMOUT=900
+    - append_if_not_found: True
+TMOUTReadonly_bashrc:
+  file.replace:
+    - name: /etc/bashrc
+    - pattern: "^readonly TMOUT"
+    - repl:  readonly TMOUT
+    - append_if_not_found: True
+TMOUTExport_bashrc:
+  file.replace:
+    - name: /etc/bashrc
+    - pattern: "^export TMOUT"
+    - repl:  export TMOUT
+    - append_if_not_found: True
 
 #### CIS: Ensure access to the su command is restricted
 #https://jira.cloudera.com/browse/CB-8929
 wheel_group_add:
   file.replace:
     - name: /etc/group
-    - pattern: '^wheel:x:10:.*'
-    - repl: 'wheel:x:10:centos,cloudbreak,saltuser,root'
+    - pattern: "^wheel:x:10:.*"
+    - repl: "wheel:x:10:centos,cloudbreak,saltuser,root"
     - append_if_not_found: True
 update_pam.d_su:
   file.replace:
