@@ -447,11 +447,11 @@ dev_shm_remount:
 #Ensure no world writable files exist
 Find_Delete_WWFiles:
   cmd.run:
-    - name: sudo find / -xdev -type f -perm -0002 -exec chmod o-w {} \;
+    - name: 'sudo find / -xdev -type f -perm -0002 -exec chmod o-w {} \;'
 #Ensure no unowned files or directories exist
 Fine_own_unowned_files:
   cmd.run:
-    - name: "sudo find / -xdev -nouser -exec chown root:root {} \\;"
+    - name: 'sudo find / -xdev -nouser -exec chown root:root {} \;'
 
 ####CIS: Strengthen the password policy
 #https://jira.cloudera.com/browse/CB-8935
@@ -624,8 +624,8 @@ TMOUTExport_bashrc:
 wheel_group_add:
   file.replace:
     - name: /etc/group
-    - pattern: "^wheel:x:10:.*"
-    - repl: "wheel:x:10:centos,cloudbreak,saltuser,root"
+    - pattern: '^wheel:x:10:.*'
+    - repl: 'wheel:x:10:centos,cloudbreak,saltuser,root'
     - append_if_not_found: True
 update_pam.d_su:
   file.replace:
