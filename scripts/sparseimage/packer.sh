@@ -3,7 +3,7 @@
 packer_in_container() {
   local dockerOpts=""
   local packerFile="./scripts/sparseimage/packer.json"
-  PACKER_VERSION="1.4.2"
+  PACKER_VERSION="1.7.0"
 
   # Figure out the AMI of the previous build
   if [[ -f $(ls -1tr *_manifest.json | tail -1) ]]; then
