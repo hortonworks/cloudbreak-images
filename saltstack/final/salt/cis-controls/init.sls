@@ -308,7 +308,7 @@ Ensure TIPC is disabled:
     - pattern: "^install tipc /bin/true"
     - repl: install tipc /bin/true
     - append_if_not_found: True
-#Ensure loopback traffic is configured
+#3.6.3 Ensure loopback traffic is configured
 Loopback_Interface_input1:
   cmd.run:
     - name: sudo iptables -A INPUT -i lo -j ACCEPT
@@ -318,7 +318,12 @@ Loopback_Interface_output:
 Loopback_Interface_input2:
   cmd.run:
     - name: sudo iptables -A INPUT -s 127.0.0.0/8 -j DROP
-
+Loopback_save_config:
+  cmd.run:
+    - name: sudo service iptables save
+Iptables_enable_onboot:
+  cmd.run:
+    - name: sudo systemctl enable iptables   
 #### CIS: Enable filesystem Integrity Checking
 # https://jira.cloudera.com/browse/CB-8919
 packages_install_aide:
@@ -528,13 +533,13 @@ pam.faildelay_password_auth:
 pam.faillock_system_auth:
   file.replace:
     - name: /etc/pam.d/system-auth
-    - pattern: '^auth\s*\[default\=die\]\s*pam_faillock\.so\s*authfail\s*audit\s*deny=5\s*unlock_time=.*'
+    - pattern: '^auth\s+\[default=die]\s+pam_faillock\.so\s+authfail\s+audit\s+deny=.*'
     - repl: 'auth        [default=die] pam_faillock.so authfail audit deny=5 unlock_time=900'
     - append_if_not_found: True
 pam.faillock_password_auth:
   file.replace:
     - name: /etc/pam.d/password-auth
-    - pattern: '^auth\s*\[default\=die\]\s*pam_faillock\.so\s*authfail\s*audit\s*deny=5\s*unlock_time=.*'
+    - pattern: '^auth\s+\[default=die]\s+pam_faillock\.so\s+authfail\s+audit\s+deny=.*'
     - repl: 'auth        [default=die] pam_faillock.so authfail audit deny=5 unlock_time=900'
     - append_if_not_found: True
 pam.account_system_auth:
