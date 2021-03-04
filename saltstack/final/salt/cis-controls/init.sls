@@ -93,7 +93,7 @@ sshd_harden_sshIdealTime_ClientAliveInterval:
   file.replace:
     - name: /etc/ssh/sshd_config
     - pattern: "^ClientAliveInterval.*"
-    - repl: "ClientAliveInterval 1200"
+    - repl: "ClientAliveInterval 1800"
     - append_if_not_found: True
 sshd_harden_sshIdealTime_ClientAliveCountMax:
   file.replace:
@@ -367,7 +367,7 @@ net.ipv4.tcp_syncookies:
   sysctl.present:
     - value: 1
 net.ipv4.route.flush:
-sysctl.present:
+  sysctl.present:
     - value: 1
     
 #3.5.1-4_Ensure_DCCP/SCTP/RDS/TIPC are disabled
