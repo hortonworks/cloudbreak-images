@@ -82,7 +82,7 @@ sshd_harden_sshIdealTime:
   file.replace:
     - name: /etc/ssh/sshd_config
     - pattern: "^ClientAliveInterval.*"
-    - repl: "ClientAliveInterval 600 ClientAliveCountMax 3"
+    - repl: "ClientAliveInterval 1200 ClientAliveCountMax 3"
     - append_if_not_found: True
 
 sshd_harden_ssh2:
