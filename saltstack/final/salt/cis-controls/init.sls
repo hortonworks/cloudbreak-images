@@ -78,12 +78,12 @@ sshd_harden_addressLoginGraceTime:
     - append_if_not_found: True
 
 # Broken in e2e tests - see CB-8933 / CB-10728
-#sshd_harden_sshIdealTime:
-#  file.replace:
-#    - name: /etc/ssh/sshd_config
-#    - pattern: "^ClientAliveInterval.*"
-#    - repl: "ClientAliveInterval 600 ClientAliveCountMax 0"
-#    - append_if_not_found: True
+sshd_harden_sshIdealTime:
+  file.replace:
+    - name: /etc/ssh/sshd_config
+    - pattern: "^ClientAliveInterval.*"
+    - repl: "ClientAliveInterval 600 ClientAliveCountMax 3"
+    - append_if_not_found: True
 
 sshd_harden_ssh2:
   file.replace:
@@ -531,17 +531,21 @@ pam.faildelay_password_auth:
     - repl: 'auth        required      pam_faillock.so preauth silent audit deny=5 unlock_time=900'
     - append_if_not_found: True
 pam.faillock_system_auth:
-  file.replace:
-    - name: /etc/pam.d/system-auth
-    - pattern: '^auth\s+\[default=die]\s+pam_faillock\.so\s+authfail\s+audit\s+deny=.*'
-    - repl: 'auth        [default=die] pam_faillock.so authfail audit deny=5 unlock_time=900'
-    - append_if_not_found: True
+  cmd.run:
+    - name: sudo sed -i '/auth.*sufficient.*pam_unix.so.*/a auth        [default=die] pam_faillock.so authfail audit deny=5 unlock_time=900' "/etc/pam.d/system-auth"
+#  file.replace:
+#    - name: /etc/pam.d/system-auth
+#    - pattern: '^auth\s+\[default=die]\s+pam_faillock\.so\s+authfail\s+audit\s+deny=.*'
+#    - repl: 'auth        [default=die] pam_faillock.so authfail audit deny=5 unlock_time=900'
+#    - append_if_not_found: True
 pam.faillock_password_auth:
-  file.replace:
-    - name: /etc/pam.d/password-auth
-    - pattern: '^auth\s+\[default=die]\s+pam_faillock\.so\s+authfail\s+audit\s+deny=.*'
-    - repl: 'auth        [default=die] pam_faillock.so authfail audit deny=5 unlock_time=900'
-    - append_if_not_found: True
+  cmd.run:
+    - name: sudo sed -i '/auth.*sufficient.*pam_unix.so.*/a auth        [default=die] pam_faillock.so authfail audit deny=5 unlock_time=900' "/etc/pam.d/password-auth"
+#  file.replace:
+#    - name: /etc/pam.d/password-auth
+#    - pattern: '^auth\s+\[default=die]\s+pam_faillock\.so\s+authfail\s+audit\s+deny=.*'
+#    - repl: 'auth        [default=die] pam_faillock.so authfail audit deny=5 unlock_time=900'
+#    - append_if_not_found: True
 pam.account_system_auth:
   file.replace:
     - name: /etc/pam.d/system-auth
