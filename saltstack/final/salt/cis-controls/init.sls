@@ -78,13 +78,18 @@ sshd_harden_addressLoginGraceTime:
     - append_if_not_found: True
 
 # Broken in e2e tests - see CB-8933 / CB-10728
-sshd_harden_sshIdealTime:
+sshd_harden_sshIdealTime_ClientAliveInterval:
   file.replace:
     - name: /etc/ssh/sshd_config
     - pattern: "^ClientAliveInterval.*"
-    - repl: "ClientAliveInterval 1200 ClientAliveCountMax 3"
+    - repl: "ClientAliveInterval 1800"
     - append_if_not_found: True
-
+sshd_harden_sshIdealTime_ClientAliveCountMax:
+  file.replace:
+    - name: /etc/ssh/sshd_config
+    - pattern: "^ClientAliveCountMax.*"
+    - repl: "ClientAliveCountMax 3"
+    - append_if_not_found: True
 sshd_harden_ssh2:
   file.replace:
     - name: /etc/ssh/sshd_config
