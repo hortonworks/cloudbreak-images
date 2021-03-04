@@ -25,6 +25,18 @@
         - onlyif: "lsmod | grep {{ fs }}"
 {% endfor %}
 
+#1.1.24 Disable USB Storage
+Disable_USB:
+  file.replace:
+    - name: /etc/modprobe.d/salt_cis.conf
+    - pattern: '^install usb-storage /bin/true'
+    - repl: install usb-storage /bin/true
+    - append_if_not_found: True
+Unload_usb:
+  cmd.run:
+    - name: rmmod usb-storage
+    - onlyif: lsmod | grep usb-storage
+
 #### CIS: Harden SSH Configurations
 #https://jira.cloudera.com/browse/CB-8933
 
@@ -77,12 +89,17 @@ sshd_harden_addressLoginGraceTime:
     - repl: "LoginGraceTime 60"
     - append_if_not_found: True
 
-# Broken in e2e tests - see CB-8933 / CB-10728
-sshd_harden_sshIdealTime:
+sshd_harden_sshIdealTime_ClientAliveInterval:
   file.replace:
     - name: /etc/ssh/sshd_config
     - pattern: "^ClientAliveInterval.*"
-    - repl: "ClientAliveInterval 1200 ClientAliveCountMax 3"
+    - repl: "ClientAliveInterval 1200"
+    - append_if_not_found: True
+sshd_harden_sshIdealTime_ClientAliveCountMax:
+  file.replace:
+    - name: /etc/ssh/sshd_config
+    - pattern: "^ClientAliveCountMax.*"
+    - repl: "ClientAliveCountMax 3"
     - append_if_not_found: True
 
 sshd_harden_ssh2:
@@ -103,7 +120,7 @@ sshd_local_WarnBanner2:
   file.replace:
     - name: /etc/ssh/sshd_config
     - pattern: "^Banner.*"
-    - repl: "Banner /etc/issue"
+    - repl: "Banner /etc/issue.net"
     - append_if_not_found: True
 
 sshd_remote_WarnBanner:
@@ -117,14 +134,21 @@ sshd_harden_ApprovedCiphers:
   file.replace:
     - name: /etc/ssh/sshd_config
     - pattern: "^Ciphers"
-    - repl: "Ciphers aes256-ctr,aes192-ctr,aes128-ctr"
+    - repl: "Ciphers chacha20-poly1305@openssh.com,aes256-gcm@openssh.com,aes128-gcm@openssh.com,aes256-ctr,aes192-ctr,aes128-ctr"
     - append_if_not_found: True
 
 sshd_harden_ApprovedMACs:
   file.replace:
     - name: /etc/ssh/sshd_config
     - pattern: "^MACs"
-    - repl: "MACs hmac-sha2-512-etm@openssh.com,hmac-sha2-256-etm@openssh.com,umac-128-etm@openssh.com,hmac-sha2-512,hmac-sha2-256,umac-128@openssh.com"
+    - repl: "MACs hmac-sha2-512-etm@openssh.com,hmac-sha2-256-etm@openssh.com,hmac-sha2-512,hmac-sha2-256"
+    - append_if_not_found: True
+
+sshd_Exchange_algorithms:
+  file.replace:
+    - name: /etc/ssh/sshd_config
+    - pattern: "^KexAlgorithms .*"
+    - repl: "KexAlgorithms curve25519-sha256,curve25519-sha256@libssh.org,diffie-hellman-group14-sha256,diffie-hellman-group16-sha512,diffie-hellman-group18-sha512,ecdh-sha2-nistp521,ecdh-sha2-nistp384,ecdh-sha2-nistp256,diffie-hellman-group-exchange-sha256"
     - append_if_not_found: True
 
 sshd_harden_LogLevel:
@@ -133,6 +157,36 @@ sshd_harden_LogLevel:
     - pattern: "^LogLevel"
     - repl: "LogLevel INFO"
     - append_if_not_found: True
+#5.2.21 Ensure SSH MaxStartups is configured
+sshd_harden_MaxStartups:
+  file.replace:
+    - name: /etc/ssh/sshd_config
+    - pattern: "^maxstartups .*"
+    - repl: "maxstartups 10:30:60"
+    - append_if_not_found: True
+
+#### CIS: Sudo Configuration
+#1.3.2 Ensure sudo commands use pty
+sudo_pty:
+  file.replace:
+    - name: /etc/sudoers
+    - pattern: "^Defaults use_pty"
+    - repl: "Defaults use_pty"
+    - append_if_not_found: True
+
+#1.3.3 Ensure sudo log file exists
+sudo_log:
+  file.replace:
+    - name: /etc/sudoers
+    - pattern: "^Defaults logfile=.*"
+    - repl: 'Defaults logfile="/var/log/sudo.log"'
+    - append_if_not_found: True
+
+#### CIS: Service hardening
+#2.2.17 Ensure rsync is not installed or the rsyncd service is masked
+mask_rsyncd:
+  cmd.run:
+    - name: sudo systemctl --now mask rsyncd
 
 #### CIS: Ensure unnecessary services/softwareClients are removed
 # https://jira.cloudera.com/browse/CB-8926
@@ -140,7 +194,6 @@ sshd_harden_LogLevel:
 Ensure_X_Window_System_is_not_installed:
   cmd.run:
     - name: sudo yum remove -y xorg-x11-server*
-
 
 #### CIS: Ensure core dumps are restricted
 # https://jira.cloudera.com/browse/CB-8925
@@ -283,6 +336,40 @@ net.ipv6.conf.default.accept_redirects:
 net.ipv6.route.flush:
   sysctl.present:
     - value: 1
+#3.2.1 Ensure IP forwarding is disabled
+net.ipv4.ip_forward:
+  sysctl.present:
+    - value: 0
+#3.3.1 Ensure source routed packets are not accepted
+net.ipv4.conf.all.accept_source_route:
+  sysctl.present:
+    - value: 0
+net.ipv4.conf.default.accept_source_route:
+  sysctl.present:
+    - value: 0
+#3.3.5 Ensure broadcast ICMP requests are ignored
+net.ipv4.icmp_echo_ignore_broadcasts:
+  sysctl.present:
+    - value: 1
+#3.3.6 Ensure bogus ICMP responses are ignored 
+net.ipv4.icmp_ignore_bogus_error_responses:
+  sysctl.present:
+    - value: 1
+#3.3.7 Ensure Reverse Path Filtering is enabled
+net.ipv4.conf.all.rp_filter:
+  sysctl.present:
+    - value: 1
+net.ipv4.conf.default.rp_filter:
+  sysctl.present:
+    - value: 1
+#3.3.8 Ensure TCP SYN Cookies is enabled
+net.ipv4.tcp_syncookies:
+  sysctl.present:
+    - value: 1
+net.ipv4.route.flush:
+sysctl.present:
+    - value: 1
+    
 #3.5.1-4_Ensure_DCCP/SCTP/RDS/TIPC are disabled
 Ensure DCCP is disabled:
   file.replace:
@@ -323,7 +410,8 @@ Loopback_save_config:
     - name: sudo service iptables save
 Iptables_enable_onboot:
   cmd.run:
-    - name: sudo systemctl enable iptables   
+    - name: sudo systemctl enable iptables
+    
 #### CIS: Enable filesystem Integrity Checking
 # https://jira.cloudera.com/browse/CB-8919
 packages_install_aide:
@@ -470,7 +558,6 @@ PASS_MIN_DAYS:
 INACTIVE:
   cmd.run:
     - name: useradd -D -f 30
-
 
 ####CIS: Strengthening the PAM
 #https://jira.cloudera.com/browse/CB-8936
