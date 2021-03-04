@@ -82,7 +82,7 @@ sshd_harden_sshIdealTime_ClientAliveInterval:
   file.replace:
     - name: /etc/ssh/sshd_config
     - pattern: "^ClientAliveInterval.*"
-    - repl: "ClientAliveInterval 1800"
+    - repl: "ClientAliveInterval 1200"
     - append_if_not_found: True
 sshd_harden_sshIdealTime_ClientAliveCountMax:
   file.replace:
@@ -122,14 +122,14 @@ sshd_harden_ApprovedCiphers:
   file.replace:
     - name: /etc/ssh/sshd_config
     - pattern: "^Ciphers"
-    - repl: "Ciphers aes256-ctr,aes192-ctr,aes128-ctr"
+    - repl: "Ciphers chacha20-poly1305@openssh.com,aes256-gcm@openssh.com,aes128- gcm@openssh.com,aes256-ctr,aes192-ctr,aes128-ctr"
     - append_if_not_found: True
 
 sshd_harden_ApprovedMACs:
   file.replace:
     - name: /etc/ssh/sshd_config
     - pattern: "^MACs"
-    - repl: "MACs hmac-sha2-512-etm@openssh.com,hmac-sha2-256-etm@openssh.com,umac-128-etm@openssh.com,hmac-sha2-512,hmac-sha2-256,umac-128@openssh.com"
+    - repl: "MACs hmac-sha2-512-etm@openssh.com,hmac-sha2-256-etm@openssh.com,hmac-sha2- 512,hmac-sha2-256"
     - append_if_not_found: True
 
 sshd_harden_LogLevel:
