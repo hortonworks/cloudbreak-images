@@ -91,7 +91,7 @@ sshd_harden_addressLoginGraceTime:
 
 #the value was kept as high as 1800, otherwise e2e test fails.
 sshd_harden_sshIdealTime_ClientAliveInterval:
-file.replace:
+  file.replace:
     - name: /etc/ssh/sshd_config
     - pattern: "^ClientAliveInterval.*"
     - repl: "ClientAliveInterval 1800"
