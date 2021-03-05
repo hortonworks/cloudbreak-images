@@ -89,8 +89,9 @@ sshd_harden_addressLoginGraceTime:
     - repl: "LoginGraceTime 60"
     - append_if_not_found: True
 
+#the value was kept as high as 1800, otherwise e2e test fails.
 sshd_harden_sshIdealTime_ClientAliveInterval:
-  file.replace:
+file.replace:
     - name: /etc/ssh/sshd_config
     - pattern: "^ClientAliveInterval.*"
     - repl: "ClientAliveInterval 1800"
@@ -369,7 +370,15 @@ net.ipv4.tcp_syncookies:
 net.ipv4.route.flush:
   sysctl.present:
     - value: 1
-    
+
+#2.2.1.2 Ensure chrony is configured
+Chrony_config:
+  file.replace:
+    - name: /etc/sysconfig/chronyd 
+    - pattern: "^OPTIONS=.*"
+    - repl: 'OPTIONS="-u chrony"'
+    - append_if_not_found: True
+
 #3.5.1-4_Ensure_DCCP/SCTP/RDS/TIPC are disabled
 Ensure DCCP is disabled:
   file.replace:
@@ -514,6 +523,33 @@ Permission_etc/at.allow:
     - user: root
     - group: root
     - mode: 600
+
+#1.1.21 Ensure sticky bit is set on all world-writable directories
+StickyBit_WW:
+  cmd.run:
+    - name: sudo df --local -P | awk {'if (NR!=1) print $6'} | xargs -I '{}' find '{}' -xdev -type d -perm -0002 2>/dev/null | xargs chmod a+t
+    - onlyif: sudo df --local -P | awk {'if (NR!=1) print $6'} | xargs -I '{}' find '{}' -xdev -type d \( -perm -0002 -a ! -perm -1000 \) 2>/dev/null
+
+#1.2.3 Ensure gpgcheck is globally activated
+gpgcheck_clustermanager:
+  file.replace:
+    - name: /etc/yum.repos.d/clustermanager.repo
+    - pattern: '^gpgcheck=0'
+    - repl: 'gpgcheck=1'
+    - append_if_not_found: True
+
+#1.6.3 Ensure address space layout randomization (ASLR) is enabled
+Enable_ASLR:
+  file.replace:
+    - name: /etc/sysctl.conf
+    - pattern: '^kernel.randomize_va_space =.*'
+    - repl: 'kernel.randomize_va_space = 2'
+    - append_if_not_found: True
+
+#6.2.6 Ensure users' home directories permissions are 750 or more restrictive
+Home_directory_permission:
+  cmd.run:
+    - name: find /home -mindepth 1 -maxdepth 1 -type d -exec chmod -v 0750 {} \;
 
 #### CIS - Filesystem Configurations
 #Ensure noexec option set on /dev/shm partition
