@@ -116,7 +116,6 @@ sshd_local_WarnBanner1:
     - contents: |
         Corporate computer security personnel monitor this system for security purposes to ensure it remains available to all users and to protect information in the system. By accessing this system, you are expressly consenting to these monitoring activities.
         Unauthorized attempts to defeat or circumvent security features, to use the system for other than intended purposes, to deny service to authorized users, to access, obtain, alter, damage, or destroy information, or otherwise to interfere with the system or its operation are prohibited. Evidence of such acts may be disclosed to law enforcement authorities and result in criminal prosecution under the Computer Fraud and Abuse Act of 1986 (Pub. L. 99-474) and the National Information Infrastructure Protection Act of 1996 (Pub. L. 104-294), (18 U.S.C. 1030), or other applicable criminal laws.
-
 sshd_local_WarnBanner2:
   file.replace:
     - name: /etc/ssh/sshd_config
@@ -130,7 +129,6 @@ sshd_remote_WarnBanner:
     - contents: |
         Corporate computer security personnel monitor this system for security purposes to ensure it remains available to all users and to protect information in the system. By accessing this system, you are expressly consenting to these monitoring activities.
         Unauthorized attempts to defeat or circumvent security features, to use the system for other than intended purposes, to deny service to authorized users, to access, obtain, alter, damage, or destroy information, or otherwise to interfere with the system or its operation are prohibited. Evidence of such acts may be disclosed to law enforcement authorities and result in criminal prosecution under the Computer Fraud and Abuse Act of 1986 (Pub. L. 99-474) and the National Information Infrastructure Protection Act of 1996 (Pub. L. 104-294), (18 U.S.C. 1030), or other applicable criminal laws.
-
 sshd_harden_ApprovedCiphers:
   file.replace:
     - name: /etc/ssh/sshd_config
@@ -229,7 +227,6 @@ Disable_dump:
 /var/log_permission:
   cmd.run:
     - name: find /var/log -type f -exec chmod g-wx,o-rwx "{}" + -o -type d -exec chmod g-wx,o-rwx "{}" +
-
 #### CIS: Network Configurations
 # https://jira.cloudera.com/browse/CB-8927
 #3.1.2_Disabling_sending_packet_redirect:
@@ -352,7 +349,7 @@ net.ipv4.conf.default.accept_source_route:
 net.ipv4.icmp_echo_ignore_broadcasts:
   sysctl.present:
     - value: 1
-#3.3.6 Ensure bogus ICMP responses are ignored 
+#3.3.6 Ensure bogus ICMP responses are ignored
 net.ipv4.icmp_ignore_bogus_error_responses:
   sysctl.present:
     - value: 1
@@ -370,11 +367,10 @@ net.ipv4.tcp_syncookies:
 net.ipv4.route.flush:
   sysctl.present:
     - value: 1
-
 #2.2.1.2 Ensure chrony is configured
 Chrony_config:
   file.replace:
-    - name: /etc/sysconfig/chronyd 
+    - name: /etc/sysconfig/chronyd
     - pattern: "^OPTIONS=.*"
     - repl: 'OPTIONS="-u chrony"'
     - append_if_not_found: True
@@ -420,7 +416,7 @@ Loopback_save_config:
 Iptables_enable_onboot:
   cmd.run:
     - name: sudo systemctl enable iptables
-    
+
 #### CIS: Enable filesystem Integrity Checking
 # https://jira.cloudera.com/browse/CB-8919
 packages_install_aide:
@@ -527,17 +523,14 @@ Permission_etc/at.allow:
 #1.1.21 Ensure sticky bit is set on all world-writable directories
 StickyBit_WW:
   cmd.run:
-    - name: sudo df --local -P | awk {'if (NR!=1) print $6'} | xargs -I '{}' find '{}' -xdev -type d -perm -0002 2>/dev/null | xargs chmod a+t
-    - onlyif: sudo df --local -P | awk {'if (NR!=1) print $6'} | xargs -I '{}' find '{}' -xdev -type d \( -perm -0002 -a ! -perm -1000 \) 2>/dev/null
-
+    - name: sudo df --local -P | awk '{if (NR!=1) print $6}' | xargs -I '{}' find '{}' -xdev -type d \( -perm -0002 -a ! -perm -1000 \) 2>/dev/null | xargs -I '{}' chmod a+t '{}'
 #1.2.3 Ensure gpgcheck is globally activated
 gpgcheck_clustermanager:
   file.replace:
     - name: /etc/yum.repos.d/clustermanager.repo
-    - pattern: '^gpgcheck=0'
+    - pattern: '^gpgcheck=.*'
     - repl: 'gpgcheck=1'
     - append_if_not_found: True
-
 #1.6.3 Ensure address space layout randomization (ASLR) is enabled
 Enable_ASLR:
   file.replace:
@@ -545,8 +538,7 @@ Enable_ASLR:
     - pattern: '^kernel.randomize_va_space =.*'
     - repl: 'kernel.randomize_va_space = 2'
     - append_if_not_found: True
-
-#6.2.6 Ensure users' home directories permissions are 750 or more restrictive
+#6.2.6 Ensure users home directories permissions are 750 or more restrictive
 Home_directory_permission:
   cmd.run:
     - name: find /home -mindepth 1 -maxdepth 1 -type d -exec chmod -v 0750 {} \;
@@ -727,5 +719,35 @@ update_pam.d_su:
     - pattern: '^auth\s*required\s*pam_wheel\.so.*'
     - repl: 'auth required pam_wheel.so use_uid'
     - append_if_not_found: True
+
+
+#Script to create systemd service.
+home/cloudbreak/cis.sh:
+  file.managed:
+    - name: /home/cloudbreak/cis.sh
+    - makedirs: True
+    - source: salt://{{ slspath }}/home/cloudbreak/cis.sh
+    - mode: 740
+    - user: root
+    - group: root
+
+#Create new systemd service
+etc/systemd/system/cis.service:
+  file.managed:
+    - name: /etc/systemd/system/cis.service
+    - makedirs: True
+    - source: salt://{{ slspath }}/etc/systemd/system/cis.service
+    - user: root
+    - group: root
+
+systemd_reload:
+  cmd.run:
+    - name: sudo systemctl daemon-reload
+Auto_startup:
+  cmd.run:
+    - name: sudo systemctl enable cis.service
+Start_cis.service:
+  cmd.run:
+    - name: sudo systemctl start cis.service
 
 {% endif %}
