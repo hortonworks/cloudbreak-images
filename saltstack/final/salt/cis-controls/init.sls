@@ -726,7 +726,7 @@ home/cloudbreak/cis.sh:
   file.managed:
     - name: /home/cloudbreak/cis.sh
     - makedirs: True
-    - source: salt://{{ slspath }}/home/cloudbreak/cis.sh
+    - source: salt://cis-controls/home/cloudbreak/cis.sh
     - mode: 740
     - user: root
     - group: root
@@ -736,7 +736,7 @@ etc/systemd/system/cis.service:
   file.managed:
     - name: /etc/systemd/system/cis.service
     - makedirs: True
-    - source: salt://{{ slspath }}/etc/systemd/system/cis.service
+    - source: salt://cis-controls/etc/systemd/system/cis.service
     - user: root
     - group: root
 
