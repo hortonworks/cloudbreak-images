@@ -1,0 +1,10 @@
+ [Unit]
+Description=Script to update permission
+
+ [Service]
+Type=simple
+User=root
+ExecStart=/home/cloudbreak/cis.sh
+
+ [Install]
+WantedBy=default.target
