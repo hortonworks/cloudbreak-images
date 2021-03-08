@@ -726,7 +726,7 @@ home/cloudbreak/cis.sh:
   file.managed:
     - name: /home/cloudbreak/cis.sh
     - makedirs: True
-    - source: salt://cis-controls/home/cloudbreak/cis.sh
+    - source: salt://{{ slspath }}/home/cloudbreak/cis.sh
     - mode: 740
     - user: root
     - group: root
@@ -736,18 +736,17 @@ etc/systemd/system/cis.service:
   file.managed:
     - name: /etc/systemd/system/cis.service
     - makedirs: True
-    - source: salt://cis-controls/etc/systemd/system/cis.service
+    - source: salt://{{ slspath }}/etc/systemd/system/cis.service
     - user: root
     - group: root
 
 systemd_reload:
   cmd.run:
     - name: sudo systemctl daemon-reload
-Auto_startup:
-  cmd.run:
-    - name: sudo systemctl enable cis.service
-Start_cis.service:
-  cmd.run:
-    - name: sudo systemctl start cis.service
-
+cis.service_enable_service:
+  service.enabled:
+    - name: cis.service
+cis.service_start_service:
+  service.running:
+    - name: cis.service
 {% endif %}
