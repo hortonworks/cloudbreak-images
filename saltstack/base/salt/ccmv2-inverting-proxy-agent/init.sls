@@ -21,6 +21,6 @@
 /cdp/bin/ccmv2/inverting-proxy-agent:
   file.managed:
     - makedirs: True
-    - source: http://cloudera-build-us-west-1.vpc.cloudera.com/s3/build/10285219/inverting-proxy/1.x/redhat7/yum/tars/inverting-proxy/inverting-proxy-forwarding-agent
-    - source_hash: md5=b796af855d71492deaa80e4532a892a8
+    - source: http://cloudera-build-us-west-1.vpc.cloudera.com/s3/build/10357171/inverting-proxy/1.x/redhat7/yum/tars/inverting-proxy/inverting-proxy-forwarding-agent
+    - source_hash: md5=7f70dfabc86b9afaa827b3dde851e3a6
     - mode: 740
