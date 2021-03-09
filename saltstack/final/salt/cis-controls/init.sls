@@ -526,11 +526,8 @@ StickyBit_WW:
     - name: sudo df --local -P | awk '{if (NR!=1) print $6}' | xargs -I '{}' find '{}' -xdev -type d \( -perm -0002 -a ! -perm -1000 \) 2>/dev/null | xargs -I '{}' chmod a+t '{}'
 #1.2.3 Ensure gpgcheck is globally activated
 gpgcheck_clustermanager:
-  file.replace:
-    - name: /etc/yum.repos.d/clustermanager.repo
-    - pattern: '^gpgcheck=.*'
-    - repl: 'gpgcheck=1'
-    - append_if_not_found: True
+  cmd.run:
+    - name: sudo sed -i 's|gpgcheck=0|gpgcheck=1|g' /etc/yum.repos.d/clustermanager.repo
 #1.6.3 Ensure address space layout randomization (ASLR) is enabled
 Enable_ASLR:
   file.replace:
