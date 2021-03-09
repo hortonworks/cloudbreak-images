@@ -593,100 +593,27 @@ Minlength:
     - pattern: "^minlen = 14.*"
     - repl: minlen = 14
     - append_if_not_found: True
-dcredit:
+minclass:
   file.replace:
     - name: /etc/security/pwquality.conf
-    - pattern: "^dcredit = -1"
-    - repl: dcredit = -1
+    - pattern: "^minclass.*"
+    - repl: minclass = 4
     - append_if_not_found: True
-ucredit:
-  file.replace:
-    - name: /etc/security/pwquality.conf
-    - pattern: "^ucredit = -1"
-    - repl: ucredit = -1
-    - append_if_not_found: True
-ocredit:
-  file.replace:
-    - name: /etc/security/pwquality.conf
-    - pattern: "^ocredit = -1"
-    - repl: ocredit = -1
-    - append_if_not_found: True
-lcredit:
-  file.replace:
-    - name: /etc/security/pwquality.conf
-    - pattern: "^lcredit = -1"
-    - repl: lcredit = -1
-    - append_if_not_found: True
-password-auth:
-  file.replace:
-    - name: /etc/pam.d/password-auth
-    - pattern: '^password\s*requisite\s*pam_pwquality\.so\s*try_first_pass\s*local_users_only\s*retry=.*'
-    - repl: 'password    requisite     pam_pwquality.so try_first_pass local_users_only retry=3'
-    - append_if_not_found: True
-system-auth:
-  file.replace:
+etc/pam.d/system-auth:
+  file.managed:
     - name: /etc/pam.d/system-auth
-    - pattern: '^password\s*requisite\s*pam_pwquality\.so\s*try_first_pass\s*local_users_only\s*retry=.*'
-    - repl: 'password    requisite     pam_pwquality.so try_first_pass local_users_only retry=3'
-    - append_if_not_found: True
-#Ensure lockout for failed password attempts is configured
-pam.faildelay_system_auth:
-  file.replace:
-    - name: /etc/pam.d/system-auth
-    - pattern: '^auth\s*required\s*pam_faillock\.so\s*delay=.*'
-    - repl: 'auth        required      pam_faillock.so preauth silent audit deny=5 unlock_time=900'
-    - append_if_not_found: True
-pam.faildelay_password_auth:
-  file.replace:
+    - makedirs: True
+    - source: salt://{{ slspath }}/etc/pam.d/system-auth
+    - user: root
+    - group: root
+etc/pam.d/password-auth:
+  file.managed:
     - name: /etc/pam.d/password-auth
-    - pattern: '^auth\s*required\s*pam_faillock\.so\s*delay=.*'
-    - repl: 'auth        required      pam_faillock.so preauth silent audit deny=5 unlock_time=900'
-    - append_if_not_found: True
-pam.faillock_system_auth:
-  cmd.run:
-    - name: sudo sed -i '/auth.*sufficient.*pam_unix.so.*/a auth        [default=die] pam_faillock.so authfail audit deny=5 unlock_time=900' "/etc/pam.d/system-auth"
-#  file.replace:
-#    - name: /etc/pam.d/system-auth
-#    - pattern: '^auth\s+\[default=die]\s+pam_faillock\.so\s+authfail\s+audit\s+deny=.*'
-#    - repl: 'auth        [default=die] pam_faillock.so authfail audit deny=5 unlock_time=900'
-#    - append_if_not_found: True
-pam.faillock_password_auth:
-  cmd.run:
-    - name: sudo sed -i '/auth.*sufficient.*pam_unix.so.*/a auth        [default=die] pam_faillock.so authfail audit deny=5 unlock_time=900' "/etc/pam.d/password-auth"
-#  file.replace:
-#    - name: /etc/pam.d/password-auth
-#    - pattern: '^auth\s+\[default=die]\s+pam_faillock\.so\s+authfail\s+audit\s+deny=.*'
-#    - repl: 'auth        [default=die] pam_faillock.so authfail audit deny=5 unlock_time=900'
-#    - append_if_not_found: True
-pam.account_system_auth:
-  file.replace:
-    - name: /etc/pam.d/system-auth
-    - pattern: '^account\s*required\s*pam_faillock\.so.*'
-    - repl: 'account     required      pam_faillock.so'
-    - append_if_not_found: True
-pam.account_password_auth:
-  file.replace:
-    - name: /etc/pam.d/password-auth
-    - pattern: '^account\s*required\s*pam_faillock.so.*'
-    - repl: 'account     required      pam_faillock.so'
-    - append_if_not_found: True
-#Ensure password reuse is limited
-PassReuse_password-auth:
-  file.replace:
-    - name: /etc/pam.d/password-auth
-    - pattern: '^password\s*sufficient\s*pam_unix\.so\s*remember=.*'
-    - repl: 'password    sufficient     pam_unix.so remember=5'
-    - append_if_not_found: True
-PassReuse_system-auth:
-  file.replace:
-    - name: /etc/pam.d/system-auth
-    - pattern: '^password\s*sufficient\s*pam_unix\.so\s*remember=.*'
-    - repl: 'password    sufficient     pam_unix.so remember=5'
-    - append_if_not_found: True
-#Ensure system accounts are non-login
-#Unassign_shell_postgres: [e2e test failed as it tries to connect with postgres]
-#  cmd.run:
-#    - name: usermod -s /sbin/nologin postgres
+    - makedirs: True
+    - source: salt://{{ slspath }}/etc/pam.d/password-auth
+    - user: root
+    - group: root
+
 #Ensure default user umask is 027 or more restrictive
 Umask027:
   cmd.run:
@@ -717,33 +644,4 @@ update_pam.d_su:
     - repl: 'auth required pam_wheel.so use_uid'
     - append_if_not_found: True
 
-
-#Script to create systemd service.
-home/cloudbreak/cis.sh:
-  file.managed:
-    - name: /home/cloudbreak/cis.sh
-    - makedirs: True
-    - source: salt://{{ slspath }}/home/cloudbreak/cis.sh
-    - mode: 740
-    - user: root
-    - group: root
-
-#Create new systemd service
-etc/systemd/system/cis.service:
-  file.managed:
-    - name: /etc/systemd/system/cis.service
-    - makedirs: True
-    - source: salt://{{ slspath }}/etc/systemd/system/cis.service
-    - user: root
-    - group: root
-
-systemd_reload:
-  cmd.run:
-    - name: sudo systemctl daemon-reload
-cis.service_enable_service:
-  service.enabled:
-    - name: cis.service
-cis.service_start_service:
-  service.running:
-    - name: cis.service
 {% endif %}
