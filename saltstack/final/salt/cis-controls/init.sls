@@ -1,9 +1,15 @@
+#########################################################################################
+# This script will enforce CIS L1 controls mentioned in the following two jira.         #
+# https://jira.cloudera.com/browse/CB-11455                                             #
+# https://jira.cloudera.com/browse/CB-8896                                              #
+#########################################################################################
+
 #### CIS: Disable unused filesystems
 #https://jira.cloudera.com/browse/CB-8897
 
 {% if pillar['OS'] == 'centos7' %}
 
-# fat is required
+# fat is required for gcp image
 # udf is required for Azure to mount cdrom - See CB-11012
 {% set filesystems = ['cramfs', 'freevxfs', 'jffs2', 'hfs', 'hfsplus', 'squashfs'] %}
 
