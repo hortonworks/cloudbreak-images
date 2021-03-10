@@ -16,5 +16,4 @@ base:
 {% endif %}
     - ccm-client
     - ccmv2-inverting-proxy-agent
-#    - cis-controls
     - custom
