@@ -6,6 +6,4 @@ final:
 {% if salt['file.file_exists']('/etc/waagent.conf') %}
     - waagent
 {% endif %}
-    - cis-controls
     - cleanup
-
