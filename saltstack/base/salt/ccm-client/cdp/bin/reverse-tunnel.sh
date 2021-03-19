@@ -16,13 +16,17 @@ ROOT_FOLDER=/etc/autossh
 mkdir -p $ROOT_FOLDER
 PRIVATE_KEY=${ROOT_FOLDER}/pk.key
 
-if grep -q "BEGIN" ${CCM_ENCIPHERED_PRIVATE_KEY_FILE}; then
-    cat ${CCM_ENCIPHERED_PRIVATE_KEY_FILE} > ${PRIVATE_KEY}
+if [ ! -f ${PRIVATE_KEY} ]; then
+    if grep -q "BEGIN" ${CCM_ENCIPHERED_PRIVATE_KEY_FILE}; then
+        cat ${CCM_ENCIPHERED_PRIVATE_KEY_FILE} > ${PRIVATE_KEY}
+    else
+        IV=436c6f7564657261436c6f7564657261
+        cat ${CCM_ENCIPHERED_PRIVATE_KEY_FILE} | openssl enc -aes-128-cbc -d -A -a \
+            -K $(xxd -pu <<< $(echo ${CCM_KEY_ID} | cut -c1-16) | cut -c1-32) \
+            -iv ${IV} > ${PRIVATE_KEY}
+    fi
 else
-    IV=436c6f7564657261436c6f7564657261
-    cat ${CCM_ENCIPHERED_PRIVATE_KEY_FILE} | openssl enc -aes-128-cbc -d -A -a \
-        -K $(xxd -pu <<< $(echo ${CCM_KEY_ID} | cut -c1-16) | cut -c1-32) \
-        -iv ${IV} > ${PRIVATE_KEY}
+    echo "Private key file already exists at ${PRIVATE_KEY}. Would continue with restart. "
 fi
 
 chmod 400 ${PRIVATE_KEY}
