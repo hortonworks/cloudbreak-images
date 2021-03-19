@@ -26,7 +26,7 @@ if [ ! -f ${PRIVATE_KEY} ]; then
             -iv ${IV} > ${PRIVATE_KEY}
     fi
 else
-    echo "Private key file already exists at ${PRIVATE_KEY}"
+    echo "Private key file already exists at ${PRIVATE_KEY}. Would continue with restart. "
 fi
 
 chmod 400 ${PRIVATE_KEY}
