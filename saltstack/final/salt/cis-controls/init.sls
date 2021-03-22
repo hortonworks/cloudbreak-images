@@ -632,9 +632,6 @@ Umask077:
 TMOUT_profile:
   cmd.run:
     - name: printf "readonly TMOUT=900 ; export TMOUT" >> /etc/profile
-TMOUT_bashrc:
-  cmd.run:
-    - name: printf "readonly TMOUT=900 ; export TMOUT" >> /etc/bashrc
 
 #### CIS: Ensure access to the su command is restricted
 #https://jira.cloudera.com/browse/CB-8929
