@@ -49,3 +49,7 @@ vm.dirty_background_ratio:
 vm.dirty_ratio:
   sysctl.present:
     - value: 80
+
+net.ipv4.tcp_retries2:
+  sysctl.present:
+    - value: 7
