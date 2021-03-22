@@ -272,7 +272,10 @@ cleanup-metadata-repo:
 
 push-to-metadata-repo: cleanup-metadata-repo
 	git clone git@github.com:$(GITHUB_ORG)/$(GITHUB_REPO).git
-	cp $(shell (ls -1tr *_manifest.json | tail -1 | sed "s/_manifest//")) $(GITHUB_REPO)
+	$(eval FILE=$(shell (ls -1tr *_manifest.json | tail -1 | sed "s/_manifest//")))
+	cp $(FILE) $(GITHUB_REPO)
+	$(eval UUID=$(shell (cat $(FILE) | jq .uuid)))
+	mkdir -p "${GITHUB_REPO}/manifest" && cp installed-delta-packages.csv "${GITHUB_REPO}/manifest/${UUID}-manifest.csv"
 	cd $(GITHUB_REPO) && git add -A && git commit -am"Upload new metadata file" && git push
 	make cleanup-metadata-repo
 
