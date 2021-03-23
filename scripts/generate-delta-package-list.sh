@@ -62,6 +62,7 @@ function collect_rpm_packages() {
       echo "Filterable package found: ${line}"
     fi
   done
+  cat "$file"
   RPM_PACKAGE_NUMBER=$(wc -l < "$file")
   echo "Found ${RPM_PACKAGE_NUMBER} rpm related package(s)"
   echo "The list of installed rpm packages was saved under ${file}"
@@ -71,6 +72,7 @@ function collect_python_packages() {
   file=$1
   echo "Collecting installed python packages"
   pip list --format json | jq -r '.[].name' | sort >> "$file"
+  cat "$file"
   PYTHON_PACKAGE_NUMBER=$(wc -l < "$file")
   echo "Found ${PYTHON_PACKAGE_NUMBER} python related package(s)"
   echo "The list of installed python packages was saved under ${file}"
@@ -82,6 +84,7 @@ function collect_virtualenv_python_packages() {
   virtualenv ${SALT_PATH}
   source ${SALT_PATH}/bin/activate
   pip list --format json | jq -r '.[].name' | sort >> "$file"
+  cat "$file"
   PYTHON_PACKAGE_NUMBER=$(wc -l < "$file")
   echo "Found ${PYTHON_PACKAGE_NUMBER} python related package(s) in virtualenv"
   echo "The list of installed virtualenv python packages was saved under ${file}"

@@ -1,3 +1,4 @@
 freeipa:
   '*':
     - freeipa
+    - ipaconsistency

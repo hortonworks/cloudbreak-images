@@ -56,6 +56,7 @@ packages_install:
       - ipa-client
       - openldap
       - openldap-clients
+      - openldap-devel
       - awscli
       - nmap-ncat
       - telnet
