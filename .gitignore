@@ -17,4 +17,3 @@ build.sh
 !.dockerignore
 packer_no_pp.json
 test-folder
-*.code-workspace

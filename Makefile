@@ -241,10 +241,6 @@ docker-build-centos76:
 	echo "Building image for ycloud2"
 	@ OS=centos7 OS_TYPE=redhat7 TAG=centos-76 DIR=centos7.6 make docker-build
 
-docker-build-yarn-loadbalancer:
-	echo "Building loadbalancer image for ycloud2"
-	@ OS=centos7 OS_TYPE=redhat7 TAG=yarn-loadbalancer DIR=yarn-loadbalancer make docker-build
-
 docker-build:
 	$(eval DOCKER_ENVS="OS=$(OS) OS_TYPE=$(OS_TYPE) SALT_VERSION=$(SALT_VERSION) SALT_PATH=$(SALT_PATH) PYZMQ_VERSION=$(PYZMQ_VERSION) PYTHON_APT_VERSION=$(PYTHON_APT_VERSION) TRACE=1")
 	$(eval DOCKER_BUILD_ARGS=$(shell echo ${DOCKER_ENVS} | xargs -n 1 echo "--build-arg " | xargs))
