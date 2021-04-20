@@ -43,7 +43,7 @@ PYZMQ_VERSION ?= 19.0
 PYTHON_APT_VERSION ?= 1.1.0_beta1ubuntu0.16.04.1
 STACK_VERSION_SHORT=$(STACK_TYPE)-$(shell echo $(STACK_VERSION) | tr -d . | cut -c1-3 )
 ifndef IMAGE_NAME
-	IMAGE_NAME ?= $(BASE_NAME)-$(shell echo $(STACK_VERSION_SHORT) | tr '[:upper:]' '[:lower:]')-$(shell date +%y%m%d%H%M%S)$(IMAGE_NAME_SUFFIX)
+	IMAGE_NAME ?= $(BASE_NAME)-$(shell echo $(STACK_VERSION_SHORT) | tr '[:upper:]' '[:lower:]')-$(shell date +%s)$(IMAGE_NAME_SUFFIX)
 endif
 
 IMAGE_SIZE ?= 30
