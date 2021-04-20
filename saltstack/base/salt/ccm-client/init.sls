@@ -19,6 +19,13 @@
     - source: salt://{{ slspath }}/cdp/bin/update-reverse-tunnel-values.sh
     - mode: 740
 
+/cdp/bin/ccm_debugger.sh:
+  file.managed:
+    - name: /cdp/bin/ccm_debugger.sh
+    - makedirs: True
+    - source: salt://{{ slspath }}/cdp/bin/ccm_debugger.sh
+    - mode: 740
+
 /etc/systemd/system/ccm-tunnel@.service:
   file.managed:
     - name: /etc/systemd/system/ccm-tunnel@.service
