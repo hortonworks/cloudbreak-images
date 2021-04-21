@@ -17,6 +17,7 @@ echo -en "NLB Host: ${NLB_HOST}\n\n" >> tunnel_metadata.txt
 for tunnel_initiator in ${TUNNEL_INITIATORS[*]}; do
   echo -en "Tunnel Initiator Id: ${tunnel_initiator}\n\n" >> tunnel_metadata.txt
 done
+echo -en "Timezone: $(date +"%Z %z")\n\n" >> tunnel_metadata.txt
 
 echo "Collecting nslookup output ..."
 nslookup "${NLB_HOST}" >> nslookup_output.txt
