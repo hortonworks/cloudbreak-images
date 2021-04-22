@@ -14,6 +14,10 @@ net.ipv4.ip_local_port_range:
   sysctl.present:
     - value: "32768 61000"
 
+net.ipv4.tcp_keepalive_time:
+  sysctl.present:
+    - value: 300
+
 net.core.netdev_max_backlog:
    sysctl.present:
     - value: 20000
