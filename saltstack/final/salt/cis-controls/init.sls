@@ -232,7 +232,7 @@ Disable_dump:
 # https://jira.cloudera.com/browse/CB-8928
 /var/log_permission:
   cmd.run:
-    - name: find /var/log -type f -exec chmod g-wx,o-rwx "{}" + -o -type d -exec chmod g-wx,o-rwx "{}" +
+    - name: find /var/log -type f -exec chmod g-wx,o-rwx "{}" +
 #### CIS: Network Configurations
 # https://jira.cloudera.com/browse/CB-8927
 #3.1.2_Disabling_sending_packet_redirect:
