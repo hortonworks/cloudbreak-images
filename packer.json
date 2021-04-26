@@ -102,7 +102,6 @@
       "name": "aws-centos7",
       "type": "amazon-ebs",
       "region": "us-west-1",
-      "ami_regions": "{{ user `aws_ami_regions` }}",
       "ssh_pty": true,
       "source_ami": "ami-098f55b4287a885ba",
       "instance_type": "{{ user `aws_instance_type` }}",

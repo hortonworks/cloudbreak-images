@@ -30,7 +30,6 @@
         "instance_type": "{{user `instance_size`}}",
         "ssh_username": "{{user `aws_ssh_username`}}",
         "ami_name": "{{user `aws_target_ami`}}",
-        "ami_regions": "{{ user `aws_ami_regions` }}",
         "ami_virtualization_type": "{{user `ami_virtualization_type`}}",
         "ssh_timeout": "60m",
         "ena_support": "{{user `aws_ena_support`}}",
