@@ -1,3 +1,13 @@
+#!/bin/bash
+
+if [ -z "$AZURE_IMAGE_NAME" ]; then
+  AZURE_IMAGE_NAME=$(ls *_manifest.json | grep -q -E '_[0-9]*_manifest.json' && ls *_manifest.json | sed 's/_[0-9]*_manifest.json//' || ls *_manifest.json | sed 's/_manifest.json//')
+  if [ -z "$AZURE_IMAGE_NAME" ]; then
+    echo "Image name was not provided and could not be guessed from manifest.json"
+    exit 1
+  fi
+fi
+
 docker run -i --rm \
     -v $PWD:/work \
     -w /work \
@@ -22,3 +32,33 @@ docker run -i --rm \
     --entrypoint pollprogress \
     hortonworks/cloudbreak-azure-cli-tools:1.17.0 \
     checks.yml
+
+set -e
+
+[[ $DEBUG ]] && set -x
+
+: "${AZURE_STORAGE_ACCOUNTS:?Storage account list must be provided}"
+: "${AZURE_IMAGE_NAME:?Image name must be specified}"
+: ${AZURE_IMAGE_SIZE_GB:=30}
+
+min_image_size_in_bytes=$((AZURE_IMAGE_SIZE_GB*1024*1024*1024))
+echo "Min size: $min_image_size_in_bytes"
+
+IFS=',' read -ra STORAGE_ACCOUNTS <<< "$AZURE_STORAGE_ACCOUNTS"
+
+for sa in "${STORAGE_ACCOUNTS[@]}"; do
+	account_name=$(echo "$sa" | cut -d":" -f 2)
+	url="https://${account_name}.blob.core.windows.net/images/${AZURE_IMAGE_NAME}.vhd"
+	echo "==================="
+	echo "Check URL: $url"
+	size=$(curl -sI "$url" | grep -i Content-Length | awk '{print $2}' | tr -d '\r')
+	echo "Size: $size"
+	if [[ -z "$size" ]]; then
+		echo "Cannot determine size for: $account_name . Skipping it and proceeding..."
+	elif (( size >= min_image_size_in_bytes )); then
+		echo "File in account: $account_name is larger than $AZURE_IMAGE_SIZE_GB GB"
+	else
+		echo "File in account: $account_name is smaller than $AZURE_IMAGE_SIZE_GB GB"
+		exit 1
+	fi
+done
