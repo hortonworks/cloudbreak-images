@@ -218,6 +218,9 @@ build-azure-centos7:
 	GIT_BRANCH=$(GIT_BRANCH) \
 	GIT_TAG=$(GIT_TAG) \
 	./scripts/packer.sh build -only=arm-centos7 $(PACKER_OPTS)
+	AZURE_IMAGE_NAME=$(ls *_manifest.json | grep -q -E '_[0-9]*_manifest.json' && ls *_manifest.json | sed 's/_[0-9]*_manifest.json//' || ls *_manifest.json | sed 's/_manifest.json//')
+	TRACE=1 AZURE_STORAGE_ACCOUNTS="$(AZURE_STORAGE_ACCOUNTS)" AZURE_IMAGE_NAME="$(AZURE_IMAGE_NAME)" ./scripts/azure-copy.sh
+	AZURE_STORAGE_ACCOUNTS="$(AZURE_STORAGE_ACCOUNTS)" AZURE_IMAGE_NAME="$(AZURE_IMAGE_NAME)" ./scripts/azure-image-check.sh
 
 copy-azure-images:
 	TRACE=1 AZURE_STORAGE_ACCOUNTS="$(AZURE_STORAGE_ACCOUNTS)" AZURE_IMAGE_NAME="$(AZURE_IMAGE_NAME)" ./scripts/azure-copy.sh
