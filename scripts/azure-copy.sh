@@ -45,10 +45,13 @@ min_image_size_in_bytes=$((AZURE_IMAGE_SIZE_GB*1024*1024*1024))
 echo "Min size: $min_image_size_in_bytes"
 
 IFS=',' read -ra STORAGE_ACCOUNTS <<< "$AZURE_STORAGE_ACCOUNTS"
+images=""
 
 for sa in "${STORAGE_ACCOUNTS[@]}"; do
+	region=$(echo "$sa" | cut -d":" -f 1)
 	account_name=$(echo "$sa" | cut -d":" -f 2)
 	url="https://${account_name}.blob.core.windows.net/images/${AZURE_IMAGE_NAME}.vhd"
+	images+="${region}=${url},"
 	echo "==================="
 	echo "Check URL: $url"
 	size=$(curl -sI "$url" | grep -i Content-Length | awk '{print $2}' | tr -d '\r')
@@ -62,3 +65,7 @@ for sa in "${STORAGE_ACCOUNTS[@]}"; do
 		exit 1
 	fi
 done
+
+images=${images%?} # remove trailing comma
+echo "Image copied to regions: $images"
+echo "IMAGES_IN_REGIONS=$images" > images_in_regions
