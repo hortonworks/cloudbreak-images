@@ -68,4 +68,4 @@ done
 
 images=${images%?} # remove trailing comma
 echo "Image copied to regions: $images"
-echo "IMAGES_IN_REGIONS=$images" > images_in_regions
+echo "IMAGES_IN_REGIONS=$images" > scripts/images_in_regions
