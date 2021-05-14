@@ -18,3 +18,4 @@ build.sh
 packer_no_pp.json
 test-folder
 *.code-workspace
+scripts/images_in_regions

@@ -24,13 +24,13 @@ docker run -i --rm \
     -e AZURE_STORAGE_ACCOUNTS="$AZURE_STORAGE_ACCOUNTS" \
     -e AZURE_IMAGE_NAME="$AZURE_IMAGE_NAME" \
     --entrypoint azure-copy \
-    hortonworks/cloudbreak-azure-cli-tools:1.17.0
+    hortonworks/cloudbreak-azure-cli-tools:1.18.0
 
 docker run -i --rm \
     -v $PWD:/work \
     -w /work \
     --entrypoint pollprogress \
-    hortonworks/cloudbreak-azure-cli-tools:1.17.0 \
+    hortonworks/cloudbreak-azure-cli-tools:1.18.0 \
     checks.yml
 
 set -e
@@ -48,7 +48,7 @@ IFS=',' read -ra STORAGE_ACCOUNTS <<< "$AZURE_STORAGE_ACCOUNTS"
 images=""
 
 for sa in "${STORAGE_ACCOUNTS[@]}"; do
-	region=$(echo "$sa" | cut -d":" -f 1)
+	region=$(echo "$sa" | cut -d":" -f 1 | sed -e 's/^[[:space:]]*//')
 	account_name=$(echo "$sa" | cut -d":" -f 2)
 	url="https://${account_name}.blob.core.windows.net/images/${AZURE_IMAGE_NAME}.vhd"
 	images+="${region}=${url},"
