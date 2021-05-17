@@ -60,6 +60,7 @@ packages_install:
       - awscli
       - nmap-ncat
       - telnet
+      - tcpdump
 
 {% if pillar['subtype'] != 'Docker' %}
 
