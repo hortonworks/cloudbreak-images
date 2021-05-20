@@ -34,8 +34,18 @@ function wait_for_image() {
     fi
   fi
 
+  log "Querying snapshots in region $REGION for image $AMI_IN_REGION"
+  SNAPSHOT_IDS=$(aws ec2 describe-images --image-ids $AMI_IN_REGION --region $REGION --query "Images[*].BlockDeviceMappings[*].Ebs.SnapshotId" --output "text")
+
+  echo $SNAPSHOT_IDS | while read SNAPSHOT_ID
+  do
+    log "Setting snapshot $SNAPSHOT_ID visibility to public in region $REGION for image $AMI_IN_REGION"
+    aws ec2 modify-snapshot-attribute --snapshot-id $SNAPSHOT_ID --region $REGION --create-volume-permission "Add=[{Group=all}]"
+  done
+
   log "Setting launch permissions to public in region $REGION for image $AMI_IN_REGION"
   aws ec2 modify-image-attribute --image-id $AMI_IN_REGION --region $REGION --launch-permission "Add=[{Group=all}]"
+
   log "Copy operation in region $REGION for image $AMI_IN_REGION finished"
 }
 
