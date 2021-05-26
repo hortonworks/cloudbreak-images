@@ -1,0 +1,12 @@
+/var/log/jumpgate/output.log {
+    missingok
+    notifempty
+    size 128M
+    rotate 6
+}
+/var/log/jumpgate/access.log {
+    missingok
+    notifempty
+    size 128M
+    rotate 6
+}
