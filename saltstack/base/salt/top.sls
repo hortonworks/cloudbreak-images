@@ -15,5 +15,5 @@ base:
     - fluent
 {% endif %}
     - ccm-client
-    - ccmv2-inverting-proxy-agent
+    - ccmv2
     - custom
