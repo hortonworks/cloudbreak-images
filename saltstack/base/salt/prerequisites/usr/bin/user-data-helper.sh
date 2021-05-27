@@ -122,6 +122,11 @@ setup_tls() {
     sed -i -E "s/ssl_verify_client(\s)+on;/ssl_verify_client off;/" /etc/nginx/sites-enabled/ssl-template
     sed -i -E "s/listen(\s)+9443;/listen       127.0.0.1:9443;/" /etc/nginx/sites-enabled/ssl-template
   fi
+
+  if [[ "$IS_CCM_V2_JUMPGATE_ENABLED" == "true" ]]; then
+    echo "CCMv2 Jumpgate is enabled while creating an environment so ssl client verification is turned off"
+    sed -i -E "s/ssl_verify_client(\s)+on;/ssl_verify_client off;/" /etc/nginx/sites-enabled/ssl-template
+  fi
 }
 
 setup_ccm() {
@@ -186,7 +191,7 @@ setup_ccmv2() {
   chmod 400 "$TRUSTED_PROXY_CERT_PATH"
 
   INVERTING_PROXY_URL="$CCM_V2_INVERTING_PROXY_HOST"
-  
+
   # A more sophisticated solution might need to be patched in later - tbh the script originally expected a full url with protocol scheme and closing slash
   INVERTING_PROXY_FULL_URL="https://$INVERTING_PROXY_URL/"
 
@@ -196,9 +201,14 @@ setup_ccmv2() {
     else
       HTTP_PROXY_URL="http://${PROXY_USER}:${PROXY_PASSWORD}@$PROXY_HOST:$PROXY_PORT"
     fi
+    PROXY_ENV_FILE=/etc/cdp/proxy.env
+    echo http_proxy=$HTTP_PROXY_URL > $PROXY_ENV_FILE
+    if  [[ ! -z ${PROXY_NO_PROXY_HOSTS} ]]; then
+      echo no_proxy=${PROXY_NO_PROXY_HOSTS} >> $PROXY_ENV_FILE
+    fi
   fi
 
-  /cdp/bin/ccmv2/generate-config.sh "$BACKEND_ID" "$BACKEND_HOST" "$BACKEND_PORT" "$AGENT_KEY_PATH" "$AGENT_CERT_PATH" "$TRUSTED_BACKEND_CERT_PATH" "$TRUSTED_PROXY_CERT_PATH" "$INVERTING_PROXY_FULL_URL" "$HTTP_PROXY_URL"
+  /cdp/bin/ccmv2/generate-config.sh "$BACKEND_ID" "$BACKEND_HOST" "$BACKEND_PORT" "$AGENT_KEY_PATH" "$AGENT_CERT_PATH" "$TRUSTED_BACKEND_CERT_PATH" "$TRUSTED_PROXY_CERT_PATH" "$INVERTING_PROXY_FULL_URL"
 }
 
 setup_ssh_proxy() {
