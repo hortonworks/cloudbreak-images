@@ -131,12 +131,9 @@ West India:cldrwestindia,\
 Australia Central:cldraustraliacentral,\
 UAE North:cldruaenorth,\
 South Africa North:cldrsouthafricanorth,\
-South Africa West:cldrsouthafricawest,\
 France Central:cldrfrancecentral,\
 Switzerland North:cldrswitzerlandnorth,\
-Germany North:cldrgermanynorth,\
 Germany West Central:cldrgermanywestcentral,\
-Norway West:cldrnorwaywest,\
 Norway East:cldrnorwayeast
 endef
 endif
