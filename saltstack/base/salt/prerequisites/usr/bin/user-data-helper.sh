@@ -202,11 +202,12 @@ setup_ccmv2() {
       HTTP_PROXY_URL="http://${PROXY_USER}:${PROXY_PASSWORD}@$PROXY_HOST:$PROXY_PORT"
     fi
     PROXY_ENV_FILE=/etc/cdp/proxy.env
+    mkdir -p /etc/cdp
     echo http_proxy=$HTTP_PROXY_URL > $PROXY_ENV_FILE
     if  [[ ! -z ${PROXY_NO_PROXY_HOSTS} ]]; then
       echo no_proxy=${PROXY_NO_PROXY_HOSTS} >> $PROXY_ENV_FILE
     fi
-    chmod 644 $PROXY_ENV_FILE
+    chmod 640 $PROXY_ENV_FILE
   fi
 
   /cdp/bin/ccmv2/generate-config.sh "$BACKEND_ID" "$BACKEND_HOST" "$BACKEND_PORT" "$AGENT_KEY_PATH" "$AGENT_CERT_PATH" "$TRUSTED_BACKEND_CERT_PATH" "$TRUSTED_PROXY_CERT_PATH" "$INVERTING_PROXY_FULL_URL"
