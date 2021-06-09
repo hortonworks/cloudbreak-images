@@ -8,6 +8,10 @@ if [ -z "$AZURE_IMAGE_NAME" ]; then
   fi
 fi
 
+set -e
+
+[[ $DEBUG ]] && set -x
+
 docker run -i --rm \
     -v $PWD:/work \
     -w /work \
@@ -24,18 +28,14 @@ docker run -i --rm \
     -e AZURE_STORAGE_ACCOUNTS="$AZURE_STORAGE_ACCOUNTS" \
     -e AZURE_IMAGE_NAME="$AZURE_IMAGE_NAME" \
     --entrypoint azure-copy \
-    hortonworks/cloudbreak-azure-cli-tools:1.18.0
+    hortonworks/cloudbreak-azure-cli-tools:1.19.0
 
 docker run -i --rm \
     -v $PWD:/work \
     -w /work \
     --entrypoint pollprogress \
-    hortonworks/cloudbreak-azure-cli-tools:1.18.0 \
+    hortonworks/cloudbreak-azure-cli-tools:1.19.0 \
     checks.yml
-
-set -e
-
-[[ $DEBUG ]] && set -x
 
 : "${AZURE_STORAGE_ACCOUNTS:?Storage account list must be provided}"
 : "${AZURE_IMAGE_NAME:?Image name must be specified}"
