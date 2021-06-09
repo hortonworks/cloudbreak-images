@@ -28,13 +28,13 @@ docker run -i --rm \
     -e AZURE_STORAGE_ACCOUNTS="$AZURE_STORAGE_ACCOUNTS" \
     -e AZURE_IMAGE_NAME="$AZURE_IMAGE_NAME" \
     --entrypoint azure-copy \
-    hortonworks/cloudbreak-azure-cli-tools:1.19.0
+    hortonworks/cloudbreak-azure-cli-tools:1.20.0
 
 docker run -i --rm \
     -v $PWD:/work \
     -w /work \
     --entrypoint pollprogress \
-    hortonworks/cloudbreak-azure-cli-tools:1.19.0 \
+    hortonworks/cloudbreak-azure-cli-tools:1.20.0 \
     checks.yml
 
 : "${AZURE_STORAGE_ACCOUNTS:?Storage account list must be provided}"
