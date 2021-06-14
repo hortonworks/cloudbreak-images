@@ -138,6 +138,8 @@ Norway East:cldrnorwayeast
 endef
 endif
 
+AZURE_BUILD_STORAGE_ACCOUNT = "West US 2:cldrwestus2"
+
 S3_TARGET ?= "s3://public-repo-1.hortonworks.com/HDP/cloudbreak"
 
 show-image-name:
@@ -203,7 +205,7 @@ build-gc-centos7:
 
 build-azure-centos7:
 	$(ENVS) \
-	AZURE_STORAGE_ACCOUNTS="$(AZURE_STORAGE_ACCOUNTS)" \
+	AZURE_STORAGE_ACCOUNTS="$(AZURE_BUILD_STORAGE_ACCOUNT)" \
 	OS=centos7 \
 	OS_TYPE=redhat7 \
 	ATLAS_ARTIFACT_TYPE=azure-arm \
@@ -215,7 +217,7 @@ build-azure-centos7:
 	GIT_BRANCH=$(GIT_BRANCH) \
 	GIT_TAG=$(GIT_TAG) \
 	./scripts/packer.sh build -only=arm-centos7 $(PACKER_OPTS)
-	TRACE=1 AZURE_STORAGE_ACCOUNTS="West US 2:cldrwestus2" ./scripts/azure-copy.sh
+	TRACE=1 AZURE_STORAGE_ACCOUNTS="$(AZURE_BUILD_STORAGE_ACCOUNT)" ./scripts/azure-copy.sh
 
 copy-azure-images:
 	TRACE=1 AZURE_STORAGE_ACCOUNTS="$(AZURE_STORAGE_ACCOUNTS)" AZURE_IMAGE_NAME="$(AZURE_IMAGE_NAME)" ./scripts/azure-copy.sh
