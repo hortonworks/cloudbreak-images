@@ -205,7 +205,7 @@ build-gc-centos7:
 
 build-azure-centos7:
 	$(ENVS) \
-	AZURE_STORAGE_ACCOUNTS="$(AZURE_BUILD_STORAGE_ACCOUNT)" \
+	AZURE_STORAGE_ACCOUNTS=$(AZURE_BUILD_STORAGE_ACCOUNT) \
 	OS=centos7 \
 	OS_TYPE=redhat7 \
 	ATLAS_ARTIFACT_TYPE=azure-arm \
