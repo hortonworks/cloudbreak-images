@@ -10,8 +10,9 @@ base:
     - postgresql
     - monitoring
     - performance
+{% if salt['environ.get']('INCLUDE_CDP_TELEMETRY') == 'Yes' %}
     - telemetry
-{% if salt['environ.get']('INCLUDE_FLUENT') == 'Yes' %}
+{% endif %}{% if salt['environ.get']('INCLUDE_FLUENT') == 'Yes' %}
     - fluent
 {% endif %}
     - ccm-client

@@ -46,6 +46,20 @@ packer_in_container() {
     jq 'del(."post-processors")' packer.json > packer_no_pp.json
     packerFile="packer_no_pp.json"
   fi
+  if [[ "$INCLUDE_CDP_TELEMETRY" == "Yes" ]]; then
+    CDP_TELEMETRY_BASE_URL="https://cloudera-service-delivery-cache.s3.amazonaws.com/telemetry/cdp-telemetry/"
+    if [[ "$CDP_TELEMETRY_VERSION" == "" ]]; then
+      CDP_TELEMETRY_VERSION=$(curl -L -k -s ${CDP_TELEMETRY_BASE_URL}AVAILABLE_VERSIONS | head -1)
+    fi
+    CDP_TELEMETRY_RPM_URL="${CDP_TELEMETRY_BASE_URL}cdp_telemetry-${CDP_TELEMETRY_VERSION}.x86_64.rpm"
+  fi
+  if [[ "$INCLUDE_FLUENT" == "Yes" ]]; then
+    CDP_LOGGING_AGENT_BASE_URL="https://cloudera-service-delivery-cache.s3.amazonaws.com/telemetry/cdp-logging-agent/"
+    if [[ "$CDP_LOGGING_AGENT_VERSION" == "" ]]; then
+      CDP_LOGGING_AGENT_VERSION=$(curl -L -k -s ${CDP_LOGGING_AGENT_BASE_URL}AVAILABLE_VERSIONS | head -1)
+    fi
+    CDP_LOGGING_AGENT_RPM_URL="${CDP_LOGGING_AGENT_BASE_URL}${CDP_LOGGING_AGENT_VERSION}/cdp_logging_agent-${CDP_LOGGING_AGENT_VERSION}.x86_64.rpm"
+  fi
 
   [[ "$TRACE" ]] && set -x
   ${DRY_RUN:+echo ===} docker run -i $TTY_OPTS --rm \
@@ -99,6 +113,7 @@ packer_in_container() {
     -e IMAGE_SIZE=$IMAGE_SIZE \
     -e PREWARM_TAG=$PREWARM_TAG \
     -e INCLUDE_FLUENT=$INCLUDE_FLUENT \
+    -e INCLUDE_CDP_TELEMETRY=$INCLUDE_CDP_TELEMETRY \
     -e FLUENT_PREWARM_TAG=$FLUENT_PREWARM_TAG \
     -e METERING_PREWARM_TAG=$METERING_PREWARM_TAG \
     -e CDP_TELEMETRY_PREWARM_TAG=$CDP_TELEMETRY_PREWARM_TAG \
@@ -154,6 +169,10 @@ packer_in_container() {
     -e CFM_GBN="$CFM_GBN" \
     -e SPARK3_GBN="$SPARK3_GBN" \
     -e METADATA_FILENAME_POSTFIX="$METADATA_FILENAME_POSTFIX" \
+    -e CDP_TELEMETRY_VERSION="$CDP_TELEMETRY_VERSION" \
+    -e CDP_TELEMETRY_RPM_URL="$CDP_TELEMETRY_RPM_URL" \
+    -e CDP_LOGGING_AGENT_VERSION="$CDP_LOGGING_AGENT_VERSION" \
+    -e CDP_LOGGING_AGENT_RPM_URL="$CDP_LOGGING_AGENT_RPM_URL" \
     -v /var/run/docker.sock:/var/run/docker.sock \
     -v $PWD:$PWD \
     -w $PWD \
