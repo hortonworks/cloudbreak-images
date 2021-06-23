@@ -51,7 +51,7 @@ ifndef IMAGE_NAME
 @echo IMAGE_NAME was not defined as an environment variable. Generated value: $(IMAGE_NAME)
 endif
 
-IMAGE_SIZE ?= 30
+IMAGE_SIZE ?= 64
 
 ifdef MAKE_PUBLIC_SNAPSHOTS
 	AWS_SNAPSHOT_GROUPS = "all"
