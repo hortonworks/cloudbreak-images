@@ -48,7 +48,7 @@ ifndef IMAGE_NAME
 	IMAGE_NAME ?= $(BASE_NAME)-$(shell echo $(STACK_VERSION_SHORT) | tr '[:upper:]' '[:lower:]')-$(shell date +%s)$(IMAGE_NAME_SUFFIX)
 endif
 
-IMAGE_SIZE ?= 30
+IMAGE_SIZE ?= 64
 
 ifdef MAKE_PUBLIC_SNAPSHOTS
 	AWS_SNAPSHOT_GROUPS = "all"
