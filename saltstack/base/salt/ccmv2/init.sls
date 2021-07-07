@@ -16,4 +16,4 @@
 install_jumpgate_agent:
   pkg.installed:
     - sources:
-      - jumpgate-agent: https://cloudera-build-us-west-1.vpc.cloudera.com/s3/build/14365581/inverting-proxy/1.x/redhat7/yum/tars/inverting-proxy/jumpgate-agent.rpm
+      - jumpgate-agent: https://cloudera-build-us-west-1.vpc.cloudera.com/s3/build/15246760/inverting-proxy/1.x/redhat7/yum/tars/inverting-proxy/jumpgate-agent.rpm
