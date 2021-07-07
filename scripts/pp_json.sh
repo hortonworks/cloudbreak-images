@@ -3,18 +3,19 @@
 set -xe
 
 if [ -f package-versions.json -a "$stack_version" != "" -a "$clustermanager_version" != "" ]; then
-	apk update && apk add jq
-	cat package-versions.json
-	if [ "$stack_type" == "CDH" ]; then
-        if [ -z "$csp_build_number" ]; then
-            cat package-versions.json | jq --arg stack_version $stack_version --arg clustermanager_version $clustermanager_version --arg cfm_build_number $cfm_build_number --arg profiler_build_number $profiler_build_number --arg spark3_build_number $spark3_build_number --arg csa_build_number $csa_build_number --arg cm_build_number $cm_build_number --arg stack_build_number $stack_build_number --arg composite_gbn "$composite_gbn" --arg cfm_gbn "$cfm_gbn" --arg profiler_gbn "$profiler_gbn" --arg spark3_gbn "$spark3_gbn" --arg csa_gbn "$csa_gbn" --arg cloudbreak_images "$git_rev" '. += {"stack" : $stack_version,  "cm" : $clustermanager_version,  "cm-build-number" : $cm_build_number,  "cdh-build-number" : $stack_build_number, "cfm" : $cfm_build_number, "profiler" : $profiler_build_number, "spark3": $spark3_build_number, "csa": $csa_build_number, "composite_gbn": $composite_gbn, "cfm_gbn": $cfm_gbn, "profiler_gbn": $profiler_gbn, "spark3_gbn": $spark3_gbn, "csa_gbn": $csa_gbn, "cloudbreak_images": $cloudbreak_images}' > package-versions-tmp.json && mv package-versions-tmp.json package-versions.json
-        else
-            cat package-versions.json | jq --arg stack_version $stack_version --arg clustermanager_version $clustermanager_version --arg cfm_build_number $cfm_build_number --arg csp_build_number $csp_build_number --arg profiler_build_number $profiler_build_number --arg spark3_build_number $spark3_build_number --arg csa_build_number $csa_build_number --arg cm_build_number $cm_build_number --arg stack_build_number $stack_build_number --arg composite_gbn "$composite_gbn" --arg cfm_gbn "$cfm_gbn" --arg profiler_gbn "$profiler_gbn" --arg spark3_gbn "$spark3_gbn" --arg csa_gbn "$csa_gbn" --arg cloudbreak_images "$git_rev" '. += {"stack" : $stack_version,  "cm" : $clustermanager_version,  "cm-build-number" : $cm_build_number,  "cdh-build-number" : $stack_build_number, "cfm" : $cfm_build_number, "csp" : $csp_build_number, "profiler" : $profiler_build_number, "spark3": $spark3_build_number, "csa": $csa_build_number, "composite_gbn": $composite_gbn, "cfm_gbn": $cfm_gbn, "profiler_gbn": $profiler_gbn, "spark3_gbn": $spark3_gbn, "csa_gbn": $csa_gbn, "cloudbreak_images": $cloudbreak_images}' > package-versions-tmp.json && mv package-versions-tmp.json package-versions.json
-        fi
-	else
-		cat package-versions.json | jq --arg stack_version $stack_version --arg clustermanager_version $clustermanager_version '. += {"stack" : $stack_version,  "ambari" : $clustermanager_version}' > package-versions-tmp.json && mv package-versions-tmp.json package-versions.json
-	fi
-	cat package-versions.json
+    apk update && apk add jq
+    cat package-versions.json
+    if [ "$stack_type" == "CDH" ]; then
+        cat package-versions.json | jq --arg stack_version $stack_version --arg clustermanager_version $clustermanager_version --arg cm_build_number $cm_build_number --arg stack_build_number $stack_build_number --arg composite_gbn "$composite_gbn" --arg cloudbreak_images "$git_rev" '. += {"stack" : $stack_version,  "cm" : $clustermanager_version,  "cm-build-number" : $cm_build_number,  "cdh-build-number" : $stack_build_number, "composite_gbn": $composite_gbn, "cloudbreak_images": $cloudbreak_images}' > package-versions-tmp.json && mv package-versions-tmp.json package-versions.json
+
+        for parcel in ${parcel_list_with_versions//,/ } ; do 
+            parcel_versions=(`echo $parcel | tr ':' ' '`)
+            cat package-versions.json | jq --arg parcel "${parcel_versions[0]}" --arg version "${parcel_versions[1]}" --arg parcel_gbn "${parcel_versions[0]}_gbn" --arg gbn "${parcel_versions[2]}" '. += {($parcel) : $version, ($parcel_gbn) : $gbn}' >> package-versions-tmp.json && mv package-versions-tmp.json package-versions.json
+        done
+    else
+        cat package-versions.json | jq --arg stack_version $stack_version --arg clustermanager_version $clustermanager_version '. += {"stack" : $stack_version,  "ambari" : $clustermanager_version}' >> package-versions-tmp.json && mv package-versions-tmp.json package-versions.json
+    fi
+    cat package-versions.json
 fi
 
 echo "pre_warm_parcels: ${pre_warm_parcels}"
