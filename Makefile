@@ -12,10 +12,22 @@ ORACLE_JDK8_URL_RPM ?= ""
 SLES_REGISTRATION_CODE ?= "73D5EBB68CB348"
 
 # Azure VM image specifications
-AZURE_IMAGE_PUBLISHER ?= RedHat
-AZURE_IMAGE_OFFER ?= RHEL
-AZURE_IMAGE_SKU ?= 7.8
 ARM_BUILD_REGION ?= northeurope
+ifeq ($(CLOUD_PROVIDER),Azure)
+	ifeq ($(OS),redhat7)
+		AZURE_IMAGE_PUBLISHER ?= RedHat
+		AZURE_IMAGE_OFFER ?= RHEL
+		AZURE_IMAGE_SKU ?= 7.8
+		IMAGE_SIZE ?= 64
+	else ifeq ($(OS),centos7)
+		AZURE_IMAGE_PUBLISHER ?= OpenLogic
+		AZURE_IMAGE_OFFER ?= CentOS
+		AZURE_IMAGE_SKU ?= 7.6
+		IMAGE_SIZE ?= 30
+	else
+		$(error Unexpected OS type $(OS) for Azure)
+	endif
+endif
 
 DOCKER_REPOSITORY ?= docker-sandbox.infra.cloudera.com
 DOCKER_REPO_USERNAME ?= ""
@@ -223,6 +235,22 @@ build-azure-centos7:
 	GIT_BRANCH=$(GIT_BRANCH) \
 	GIT_TAG=$(GIT_TAG) \
 	./scripts/packer.sh build -only=arm-centos7 $(PACKER_OPTS)
+	TRACE=1 AZURE_STORAGE_ACCOUNTS=$(AZURE_BUILD_STORAGE_ACCOUNT) ./scripts/azure-copy.sh
+
+build-azure-redhat7:
+	$(ENVS) \
+	AZURE_STORAGE_ACCOUNTS=$(AZURE_BUILD_STORAGE_ACCOUNT) \
+	OS=redhat7 \
+	OS_TYPE=redhat7 \
+	ATLAS_ARTIFACT_TYPE=azure-arm \
+	SALT_INSTALL_OS=redhat \
+	AZURE_IMAGE_PUBLISHER=$(AZURE_IMAGE_PUBLISHER) \
+	AZURE_IMAGE_OFFER=$(AZURE_IMAGE_OFFER) \
+	AZURE_IMAGE_SKU=$(AZURE_IMAGE_SKU) \
+	GIT_REV=$(GIT_REV) \
+	GIT_BRANCH=$(GIT_BRANCH) \
+	GIT_TAG=$(GIT_TAG) \
+	./scripts/packer.sh build -only=arm-redhat7 $(PACKER_OPTS)
 	TRACE=1 AZURE_STORAGE_ACCOUNTS=$(AZURE_BUILD_STORAGE_ACCOUNT) ./scripts/azure-copy.sh
 
 copy-azure-images:
