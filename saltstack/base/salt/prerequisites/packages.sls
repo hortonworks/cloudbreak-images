@@ -57,7 +57,7 @@ packages_install:
       - openldap
       - openldap-clients
       - openldap-devel
-      - awscli
+#      - awscli
       - nmap-ncat
       - telnet
       - tcpdump

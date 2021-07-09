@@ -17,7 +17,7 @@ ifeq ($(CLOUD_PROVIDER),Azure)
 	ifeq ($(OS),redhat7)
 		AZURE_IMAGE_PUBLISHER ?= RedHat
 		AZURE_IMAGE_OFFER ?= RHEL
-		AZURE_IMAGE_SKU ?= 7.9
+		AZURE_IMAGE_SKU ?= 7_9
 		IMAGE_SIZE ?= 64
 	else ifeq ($(OS),centos7)
 		AZURE_IMAGE_PUBLISHER ?= OpenLogic
