@@ -17,7 +17,7 @@ ifeq ($(CLOUD_PROVIDER),Azure)
 	ifeq ($(OS),redhat7)
 		AZURE_IMAGE_PUBLISHER ?= RedHat
 		AZURE_IMAGE_OFFER ?= RHEL
-		AZURE_IMAGE_SKU ?= 7.9
+		AZURE_IMAGE_SKU ?= 7_9
 		IMAGE_SIZE ?= 64
 	else ifeq ($(OS),centos7)
 		AZURE_IMAGE_PUBLISHER ?= OpenLogic
@@ -250,7 +250,7 @@ build-azure-redhat7:
 	GIT_REV=$(GIT_REV) \
 	GIT_BRANCH=$(GIT_BRANCH) \
 	GIT_TAG=$(GIT_TAG) \
-	./scripts/packer.sh build -only=arm-redhat7 $(PACKER_OPTS)
+	./scripts/packer.sh build -only=arm-redhat7 -on-error=abort $(PACKER_OPTS)
 	TRACE=1 AZURE_STORAGE_ACCOUNTS=$(AZURE_BUILD_STORAGE_ACCOUNT) ./scripts/azure-copy.sh
 
 copy-azure-images:

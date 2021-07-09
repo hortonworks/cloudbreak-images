@@ -7,14 +7,20 @@ set -ex -o pipefail -o errexit
 
 function install_salt_with_pip() {
   echo "Installing salt with version: $SALT_VERSION"
-  pip install --upgrade pip
-  pip install virtualenv
+  PREFIX=""
+  if [ "${OS}" == "redhat7" ] ; then
+    PREFIX="python3.6 -m"
+  else
+    pip install --upgrade pip
+  fi
+  $PREFIX pip install virtualenv
   # fix pip3 not installing virtualenv for root
   ln -s /usr/local/bin/virtualenv /usr/bin/virtualenv
   mkdir ${SALT_PATH}
-  virtualenv ${SALT_PATH}
+  $PREFIX virtualenv ${SALT_PATH}
   source ${SALT_PATH}/bin/activate
-  pip install -r /tmp/salt_requirements.txt
+  $PREFIX pip install --upgrade pip
+  $PREFIX pip install -r /tmp/salt_requirements.txt
 }
 
 function install_with_apt() {
@@ -89,8 +95,13 @@ function install_python_pip() {
     yum install -y python27-devel python27-pip
   elif [ "${OS_TYPE}" == "redhat7" ] || [ "${OS_TYPE}" == "amazonlinux2" ] ; then
     echo "Installing python36 with deps"
-    yum install -y python36 python36-pip python36-devel python36-setuptools
-    make_pip3_default_pip
+    if [ "${OS}" == "redhat7" ] ; then
+      yum -y install rh-python36
+      source scl_source enable rh-python36 || :
+    else
+      yum install -y python36 python36-pip python36-devel python36-setuptools
+      make_pip3_default_pip
+    fi
   else
     yum install -y python-pip python-devel
   fi

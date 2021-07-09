@@ -16,6 +16,12 @@ update_python_pip3:
     - name: pip3 install --upgrade --index=https://pypi.python.org/simple/ pip==9.0.3
     - onlyif: pip3 -V
 
+{% elif grains['os'] == 'redhat7' %}
+
+activate_rh_python:
+  cmd.run:
+    - name: source scl_source enable rh-python36
+
 {% elif grains['os'] != 'Amazon' %}
 update_python_pip2:
   cmd.run:
