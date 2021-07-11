@@ -19,6 +19,10 @@ function install_salt_with_pip() {
   mkdir ${SALT_PATH}
   $PREFIX virtualenv ${SALT_PATH}
   source ${SALT_PATH}/bin/activate
+  if [ "${OS}" == "redhat7" ] ; then
+    # can't install this via salt_requirements.txt and I dunno why...
+    $PREFIX pip install pbr
+  fi
   $PREFIX pip install --upgrade pip
   $PREFIX pip install -r /tmp/salt_requirements.txt
 }
