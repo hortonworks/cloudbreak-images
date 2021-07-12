@@ -1,3 +1,3 @@
 install_jinja2:
   cmd.run:
-    - name: pip install jinja2
+    - name: source scl_source enable rh-python36 && python3.6 -m pip install jinja2

@@ -22,8 +22,10 @@ function install_salt_with_pip() {
   if [ "${OS}" == "redhat7" ] ; then
     # can't install this via salt_requirements.txt and I dunno why...
     $PREFIX pip install pbr
+    echo "source scl_source enable rh-python36 && echo profile && python -V >> /var/log/rhpython.log" > /etc/profile.d/rhpython.sh
+    chmod +x /etc/profile.d/rhpython.sh
+    echo "source scl_source enable rh-python36 && echo bashrc && python -V >> /var/log/rhpython.log" >> ~/.bashrc
   fi
-  $PREFIX pip install --upgrade pip
   $PREFIX pip install -r /tmp/salt_requirements.txt
 }
 
