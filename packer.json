@@ -259,6 +259,7 @@
       "type": "shell",
       "script": "scripts/generate-delta-package-list.sh",
       "environment_vars": [
+        "OS={{user `os`}}",
         "SALT_INSTALL_OS={{ user `salt_install_os` }}",
         "INSTALLATION_STATE=base"
       ],
@@ -335,6 +336,7 @@
       "type": "shell",
       "script": "scripts/generate-delta-package-list.sh",
       "environment_vars": [
+        "OS={{user `os`}}",
         "SALT_INSTALL_OS={{ user `salt_install_os` }}",
         "INSTALLATION_STATE=complete",
         "SALT_PATH={{user `salt_path`}}",
