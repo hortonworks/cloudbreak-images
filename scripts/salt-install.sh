@@ -5,6 +5,8 @@
 
 set -ex -o pipefail -o errexit
 
+cp /etc/yum.conf /etc/yum.conf.backup
+
 function install_salt_with_pip() {
   echo "Installing salt with version: $SALT_VERSION"
   PREFIX=""
@@ -22,6 +24,19 @@ function install_salt_with_pip() {
   if [ "${OS}" == "redhat7" ] ; then
     # can't install this via salt_requirements.txt and I dunno why...
     $PREFIX pip install pbr
+
+    # -- hacky workaround for duplicate keys
+    uniq /etc/yum.conf > /tmp/yum.conf
+    mv -f /tmp/yum.conf /etc/yum.conf
+    chmod 644 /etc/yum.conf
+    chown root:root /etc/yum.conf
+    # --
+
+    # -- hacky workaround for not enough space in /opt
+    mkdir /mnt/cloudera
+    chmod 777 /mnt/cloudera
+    ln -s /mnt/cloudera /opt/cloudera
+    # --
   fi
   $PREFIX pip install --upgrade pip
   $PREFIX pip install -r /tmp/salt_requirements.txt
