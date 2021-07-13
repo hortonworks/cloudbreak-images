@@ -43,7 +43,7 @@ function execute() {
       echo "Skipping search for Python 2.7 packages because this is an RHEL based image."
       # This will enable Python 3.6 instead...
       echo "Enabling using Python 3 virtualenvs instead."
-      source scl_source enable rh-python36
+      source scl_source enable rh-python36 || :
       echo "Enabled using Python 3 virtualenvs."
     else
       collect_python_packages $PYTHON_PACKAGE_LIST_PATH
