@@ -31,8 +31,8 @@ update_python_pip3:
 
 install_pyyaml:
   cmd.run:
-    - name: source scl_source enable rh-python36 && python3.6 -m pip install PyYAML --ignore-installed
-    - unless: source scl_source enable rh-python36 && python3.6 -m pip list | grep -E 'PyYAML'
+    - name: pip install PyYAML --ignore-installed
+    - unless: pip list | grep -E 'PyYAML'
 
 install_jq:
   file.managed:

@@ -39,15 +39,7 @@ function execute() {
     collect_rpm_packages $BASE_RPM_PACKAGE_LIST_PATH
   elif [ "${INSTALLATION_STATE}" == $COMPLETE_STATE ] ; then
     collect_rpm_packages $COMPLETE_RPM_PACKAGE_LIST_PATH
-    if [ "${OS}" == "redhat7" ] ; then
-      echo "Skipping search for Python 2.7 packages because this is an RHEL based image."
-      # This will enable Python 3.6 instead...
-      echo "Enabling using Python 3 virtualenvs instead."
-      source scl_source enable rh-python36 || :
-      echo "Enabled using Python 3 virtualenvs."
-    else
-      collect_python_packages $PYTHON_PACKAGE_LIST_PATH
-    fi
+    collect_python_packages $PYTHON_PACKAGE_LIST_PATH
     collect_virtualenv_python_packages $VIRTUALENV_PYTHON_PACKAGE_LIST_PATH
     check_parcels
     check_hardcoded_packages
@@ -89,13 +81,9 @@ function collect_python_packages() {
 function collect_virtualenv_python_packages() {
   file=$1
   echo "Collecting installed python packages in virtualenv used by Salt"
-  PREFIX=""
-  if [ "${OS}" == "redhat7" ] ; then
-    PREFIX="python3.6 -m"
-  fi
-  $PREFIX virtualenv ${SALT_PATH}
+  virtualenv ${SALT_PATH}
   source ${SALT_PATH}/bin/activate
-  $PREFIX pip list --format json | jq -r '.[].name' | sort >> "$file"
+  pip list --format json | jq -r '.[].name' | sort >> "$file"
   cat "$file"
   PYTHON_PACKAGE_NUMBER=$(wc -l < "$file")
   echo "Found ${PYTHON_PACKAGE_NUMBER} python related package(s) in virtualenv"
@@ -173,7 +161,7 @@ function add_python_package_to_csv_list() {
         DETAIL_MAP[$key]=$value
       fi
     fi
-  done <<< "$($PREFIX pip show -v "$package")"
+  done <<< "$(pip show -v "$package")"
   PYTHON_PACKAGE_DETAIL="${DETAIL_MAP["Name"]}|${DETAIL_MAP["Version"]}|$SOURCE_PYTHON|${DETAIL_MAP["License"]}|${DETAIL_MAP["Author"]}|${DETAIL_MAP["Home-page"]}|${DETAIL_MAP["Summary"]}"
   PYTHON_PACKAGE_DETAIL=$(echo $PYTHON_PACKAGE_DETAIL | sed -e "s/;/,/g")
   PYTHON_PACKAGE_DETAIL=$(echo $PYTHON_PACKAGE_DETAIL | sed -e "s/|/;/g")
@@ -235,11 +223,7 @@ function construct_detailed_packages_csv {
     done < "$PYTHON_PACKAGE_LIST_PATH"
   fi
   if [ -f $VIRTUALENV_PYTHON_PACKAGE_LIST_PATH ] ; then
-    PREFIX=""
-    if [ "${OS}" == "redhat7" ] ; then
-      PREFIX="python3.6 -m"
-    fi
-    $PREFIX virtualenv ${SALT_PATH}
+    virtualenv ${SALT_PATH}
     source ${SALT_PATH}/bin/activate
     while read package; do
       if ! contains "$package" "${PYTHON_PACKAGE_ARRAY[@]}" ; then

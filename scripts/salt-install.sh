@@ -9,21 +9,22 @@ cp /etc/yum.conf /etc/yum.conf.backup
 
 function install_salt_with_pip() {
   echo "Installing salt with version: $SALT_VERSION"
-  PREFIX=""
-  if [ "${OS}" == "redhat7" ] ; then
-    PREFIX="python3.6 -m"
-  else
-    pip install --upgrade pip
-  fi
-  $PREFIX pip install virtualenv
+  pip install --upgrade pip
+  pip install virtualenv
+
   # fix pip3 not installing virtualenv for root
-  ln -s /usr/local/bin/virtualenv /usr/bin/virtualenv
+  if [ "${OS}" != "redhat7" ] ; then
+    ln -s /usr/local/bin/virtualenv /usr/bin/virtualenv
+  else
+    echo "source scl_source enable rh-python36; python3.6 -m virtualenv \$@" > /usr/bin/virtualenv
+    chmod +x /usr/bin/virtualenv
+  fi
   mkdir ${SALT_PATH}
-  $PREFIX virtualenv ${SALT_PATH}
+  virtualenv ${SALT_PATH}
   source ${SALT_PATH}/bin/activate
   if [ "${OS}" == "redhat7" ] ; then
     # can't install this via salt_requirements.txt and I dunno why...
-    $PREFIX pip install pbr
+    pip install pbr
 
     # -- hacky workaround for duplicate keys
     uniq /etc/yum.conf > /tmp/yum.conf
@@ -38,8 +39,8 @@ function install_salt_with_pip() {
     ln -s /mnt/cloudera /opt/cloudera
     # --
   fi
-  $PREFIX pip install --upgrade pip
-  $PREFIX pip install -r /tmp/salt_requirements.txt
+  pip install --upgrade pip
+  pip install -r /tmp/salt_requirements.txt
 }
 
 function install_with_apt() {
@@ -116,7 +117,9 @@ function install_python_pip() {
     echo "Installing python36 with deps"
     if [ "${OS}" == "redhat7" ] ; then
       yum -y install rh-python36
-      source scl_source enable rh-python36 || :
+      # pip workaround
+      echo "source scl_source enable rh-python36; python3.6 -m pip \$@" > /usr/bin/pip
+      chmod +x /usr/bin/pip
     else
       yum install -y python36 python36-pip python36-devel python36-setuptools
       make_pip3_default_pip
