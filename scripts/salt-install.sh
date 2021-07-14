@@ -33,10 +33,9 @@ function install_salt_with_pip() {
     chown root:root /etc/yum.conf
     # --
 
-    # -- hacky workaround for not enough space in /opt
-    mkdir /mnt/cloudera
-    chmod 777 /mnt/cloudera
-    ln -s /mnt/cloudera /opt/cloudera
+    # -- extending space of /opt to 25GB (currently it takes up ~19GB in centos7 images)
+    lvextend -L25G /dev/mapper/rootvg-optlv
+    xfs_growfs /dev/mapper/rootvg-optlv
     # --
   fi
   pip install --upgrade pip
