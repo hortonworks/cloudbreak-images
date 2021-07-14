@@ -14,6 +14,7 @@ function install_salt_with_pip() {
   mkdir ${SALT_PATH}
   virtualenv ${SALT_PATH}
   source ${SALT_PATH}/bin/activate
+  export LC_ALL=en_US.UTF-8
   pip install -r /tmp/salt_requirements.txt
 }
 
