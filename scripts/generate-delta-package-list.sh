@@ -149,7 +149,6 @@ function add_rpm_package_to_csv_list() {
 }
 
 function add_python_package_to_csv_list() {
-  
   local package=$1
   declare -A DETAIL_MAP=()
   while IFS= read -r line ; do

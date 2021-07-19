@@ -5,8 +5,6 @@
 
 set -ex -o pipefail -o errexit
 
-cp /etc/yum.conf /etc/yum.conf.backup
-
 function install_salt_with_pip() {
   echo "Installing salt with version: $SALT_VERSION"
   pip install --upgrade pip

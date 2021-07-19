@@ -250,7 +250,7 @@ build-azure-redhat7:
 	GIT_REV=$(GIT_REV) \
 	GIT_BRANCH=$(GIT_BRANCH) \
 	GIT_TAG=$(GIT_TAG) \
-	./scripts/packer.sh build -only=arm-redhat7 -on-error=abort $(PACKER_OPTS)
+	./scripts/packer.sh build -only=arm-redhat7 $(PACKER_OPTS)
 	TRACE=1 AZURE_STORAGE_ACCOUNTS=$(AZURE_BUILD_STORAGE_ACCOUNT) ./scripts/azure-copy.sh
 
 copy-azure-images:

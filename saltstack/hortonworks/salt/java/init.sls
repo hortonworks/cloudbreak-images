@@ -19,6 +19,15 @@ remove_openjdk17:
     - name: java-1.7.0-openjdk
 {% endif %}
 
+{% if grains['os'] == 'RedHat' and grains['osmajorrelease'] | int == 7 %}
+enable_redhat_rhui_repos:
+  file.replace:
+    - name: /etc/yum.repos.d/redhat-rhui.repo
+    - pattern: '^enabled=[0,1]'
+    - repl: 'enabled=1'
+    - ignore_if_missing: True
+{% endif %}
+
 install_openjdk:
   pkg.installed:
     - pkgs: {{ pillar['openjdk_packages'] }}
