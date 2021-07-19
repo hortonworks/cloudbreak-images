@@ -18,3 +18,4 @@ base:
     - ccm-client
     - ccmv2
     - custom
+    - mount
