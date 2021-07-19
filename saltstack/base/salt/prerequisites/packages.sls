@@ -57,7 +57,6 @@ packages_install:
       - openldap
       - openldap-clients
       - openldap-devel
-#      - awscli
       - nmap-ncat
       - telnet
       - tcpdump
@@ -65,6 +64,23 @@ packages_install:
       - goaccess
 
 {% if pillar['subtype'] != 'Docker' %}
+
+download_awscli:
+  archive.extracted:
+    - name: /tmp/awscli
+    - source: https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip
+    - archive_format: zip
+    - skip_verify: true
+    - enforce_toplevel: false
+
+install_awscli:
+  cmd.run:
+    - name: /tmp/awscli/aws/install -b /usr/bin
+
+remove_awscli_extract:
+  file.directory:
+    - name: /tmp/awscli
+    - clean: True
 
 download_azcopy:
   archive.extracted:
