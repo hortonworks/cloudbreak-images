@@ -9,11 +9,34 @@ function install_salt_with_pip() {
   echo "Installing salt with version: $SALT_VERSION"
   pip install --upgrade pip
   pip install virtualenv
+
   # fix pip3 not installing virtualenv for root
-  ln -s /usr/local/bin/virtualenv /usr/bin/virtualenv
+  if [ "${OS}" != "redhat7" ] ; then
+    ln -s /usr/local/bin/virtualenv /usr/bin/virtualenv
+  else
+    echo "source scl_source enable rh-python36; python3.6 -m virtualenv \$@" > /usr/bin/virtualenv
+    chmod +x /usr/bin/virtualenv
+  fi
   mkdir ${SALT_PATH}
   virtualenv ${SALT_PATH}
   source ${SALT_PATH}/bin/activate
+  if [ "${OS}" == "redhat7" ] ; then
+    # can't install this via salt_requirements.txt and I dunno why...
+    pip install pbr
+
+    # -- hacky workaround for duplicate keys
+    uniq /etc/yum.conf > /tmp/yum.conf
+    mv -f /tmp/yum.conf /etc/yum.conf
+    chmod 644 /etc/yum.conf
+    chown root:root /etc/yum.conf
+    # --
+
+    # -- extending space of /opt to 25GB (currently it takes up ~19GB in centos7 images)
+    lvextend -L25G /dev/mapper/rootvg-optlv
+    xfs_growfs /dev/mapper/rootvg-optlv
+    # --
+  fi
+  pip install --upgrade pip
   pip install -r /tmp/salt_requirements.txt
 }
 
@@ -89,8 +112,15 @@ function install_python_pip() {
     yum install -y python27-devel python27-pip
   elif [ "${OS_TYPE}" == "redhat7" ] || [ "${OS_TYPE}" == "amazonlinux2" ] ; then
     echo "Installing python36 with deps"
-    yum install -y python36 python36-pip python36-devel python36-setuptools
-    make_pip3_default_pip
+    if [ "${OS}" == "redhat7" ] ; then
+      yum -y install rh-python36
+      # pip workaround
+      echo "source scl_source enable rh-python36; python3.6 -m pip \$@" > /usr/bin/pip
+      chmod +x /usr/bin/pip
+    else
+      yum install -y python36 python36-pip python36-devel python36-setuptools
+      make_pip3_default_pip
+    fi
   else
     yum install -y python-pip python-devel
   fi
