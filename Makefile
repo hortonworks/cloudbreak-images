@@ -161,7 +161,7 @@ Norway East:cldrnorwayeast
 endef
 endif
 
-AZURE_BUILD_STORAGE_ACCOUNT = "West US 2:cldrwestus2"
+AZURE_BUILD_STORAGE_ACCOUNT ?= "West US 2:cldrwestus2"
 
 S3_TARGET ?= "s3://public-repo-1.hortonworks.com/HDP/cloudbreak"
 
