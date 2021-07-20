@@ -63,7 +63,7 @@ if os.environ.get("PRE_WARM_PARCELS", "[]"):
 
     @retry(5, 2)
     def download(source, dest):
-        cmd = "curl -s -S --create-dirs {0} -o {1} --fail".format(source, dest)
+        cmd = "curl -s -S --create-dirs {0} -o {1} -L --fail".format(source, dest)
         if os.path.exists(dest):
             os.unlink(dest)
         subprocess.check_call(cmd, shell=True, stderr=subprocess.STDOUT)
