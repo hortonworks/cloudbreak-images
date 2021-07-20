@@ -28,4 +28,10 @@ register_sle-sdk:
     - name: SUSEConnect -p sle-sdk/12.3/x86_64
     - unless: SUSEConnect -s | grep -q \"sle-sdk\"
 
+{% elif pillar['OS'] == 'redhat7' %}
+
+remove_duplicates_from_yum_conf:
+  cmd.run:
+    - name: uniq /etc/yum.conf > /tmp/yum.conf && mv -f /tmp/yum.conf /etc/yum.conf && chmod 644 /etc/yum.conf && chown root:root /etc/yum.conf
+
 {% endif %}
