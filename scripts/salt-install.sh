@@ -23,18 +23,6 @@ function install_salt_with_pip() {
   if [ "${OS}" == "redhat7" ] ; then
     # can't install this via salt_requirements.txt and I dunno why...
     pip install pbr
-
-    # -- hacky workaround for duplicate keys
-    uniq /etc/yum.conf > /tmp/yum.conf
-    mv -f /tmp/yum.conf /etc/yum.conf
-    chmod 644 /etc/yum.conf
-    chown root:root /etc/yum.conf
-    # --
-
-    # -- extending space of /opt to 25GB (currently it takes up ~19GB in centos7 images)
-    lvextend -L25G /dev/mapper/rootvg-optlv
-    xfs_growfs /dev/mapper/rootvg-optlv
-    # --
   fi
   pip install --upgrade pip
   pip install -r /tmp/salt_requirements.txt

@@ -14,11 +14,7 @@ remove_ip6tables:
   pkg.purged:
     - name: ip6tables
 
-{% elif grains['os_family'] == 'RedHat' and grains['osmajorrelease'] | int == 7  %}
-
-#enable_port_9443:
-#  cmd.run:
-#    - name: firewall-cmd --add-port=9443/tcp --permanent
+{% elif pillar['OS'] == 'redhat7' %}
 
 disable_firewalld_service:
   service.dead:
