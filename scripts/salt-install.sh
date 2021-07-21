@@ -56,10 +56,12 @@ function install_nvme-cli () {
 }
 
 function install_with_yum() {
+  rm -fr /var/cache/yum/*
+  yum clean all
   yum update -y python
   yum install -y yum-utils yum-plugin-versionlock
-  yum clean metadata
   enable_epel_repository
+  yum clean metadata
   yum groupinstall -y 'Development Tools'
   if [ "${OS_TYPE}" == "redhat6" ] ; then
     cp /tmp/repos/${SALT_REPO_FILE} /etc/yum.repos.d/${SALT_REPO_FILE}
