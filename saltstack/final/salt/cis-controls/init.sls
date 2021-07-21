@@ -425,29 +425,29 @@ Iptables_enable_onboot:
 
 #### CIS: Enable filesystem Integrity Checking
 # https://jira.cloudera.com/browse/CB-8919
-# packages_install_aide:
-#   pkg.installed:
-#     - name: aide
-# Initialize_aide:
-#   cmd.run:
-#     - name: aide --init
-# AIDE_db_setup:
-#   cmd.run:
-#     - name: mv /var/lib/aide/aide.db.new.gz /var/lib/aide/aide.db.gz
-#     - unless: 'test -f /var/lib/aide/aide.db.gz'
-#     - require:
-#       - pkg: aide
+packages_install_aide:
+  pkg.installed:
+    - name: aide
+Initialize_aide:
+  cmd.run:
+    - name: aide --init
+AIDE_db_setup:
+  cmd.run:
+    - name: mv /var/lib/aide/aide.db.new.gz /var/lib/aide/aide.db.gz
+    - unless: 'test -f /var/lib/aide/aide.db.gz'
+    - require:
+      - pkg: aide
 #1.3.2 Ensure filesystem integrity is regularly checked
-# Create_crontab:
-#   cmd.run:
-#     - name: touch /etc/crontab
-#     - unless: test -f /etc/crontab
-# update_aide_cronjob:
-#   file.replace:
-#     - name: /etc/crontab
-#     - pattern: '^\d.*\/usr\/sbin\/aide.*'
-#     - repl: '0 5 * * * /usr/sbin/aide --check'
-#     - append_if_not_found: True
+Create_crontab:
+  cmd.run:
+    - name: touch /etc/crontab
+    - unless: test -f /etc/crontab
+update_aide_cronjob:
+  file.replace:
+    - name: /etc/crontab
+    - pattern: '^\d.*\/usr\/sbin\/aide.*'
+    - repl: '0 5 * * * /usr/sbin/aide --check'
+    - append_if_not_found: True
 
 #### CIS: Secure the Bootloader
 # https://jira.cloudera.com/browse/CB-8920
