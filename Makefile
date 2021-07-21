@@ -224,7 +224,7 @@ build-azure-centos7:
 	GIT_REV=$(GIT_REV) \
 	GIT_BRANCH=$(GIT_BRANCH) \
 	GIT_TAG=$(GIT_TAG) \
-	./scripts/packer.sh build -only=arm-centos7 $(PACKER_OPTS)
+	./scripts/packer.sh build -only=arm-centos7 -on-error=abort $(PACKER_OPTS)
 	TRACE=1 AZURE_STORAGE_ACCOUNTS=$(AZURE_BUILD_STORAGE_ACCOUNT) ./scripts/azure-copy.sh
 
 copy-azure-images:
