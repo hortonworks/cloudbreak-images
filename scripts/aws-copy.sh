@@ -73,6 +73,13 @@ do
     continue
   fi
 
+  AMI_IN_REGION=$(aws ec2 describe-images --owners self --filters "Name=name,Values=$IMAGE_NAME" --region $REGION --query "Images[*].[ImageId]" --output "text")
+  if [ -n "$AMI_IN_REGION" ]
+  then
+    log "Image is already copied to region $REGION as $AMI_IN_REGION"
+    continue
+  fi
+
   AMI_IN_REGION=$(aws ec2 copy-image --source-image-id $AMI_ID --source-region $SOURCE_LOCATION --region $REGION --name $IMAGE_NAME --output "text")
   log "Image copy started to region $REGION as $AMI_IN_REGION, waiting for its completion"
 
