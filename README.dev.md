@@ -93,8 +93,9 @@ The following table lists the property to be modified to be able to start from a
  ---- | ---- | ----
  AWS | aws-centos7 | `source_ami: "ami-061b1560"` and `"region": "..."`
  Azure | arm-centos7 |  driven by input parameters:`image_publisher`, ` image_offer` and `image_sku`
+ Azure | arm-redhat7 | driven by either input parameter `image_url` for vhd image, or `image_publisher`, ` image_offer` and `image_sku` for Marketplace image
 
-> Note: For Azure, you can list popular images as written in [documentation](https://docs.microsoft.com/en-us/azure/virtual-machines/linux/cli-ps-findimage#list-popular-images), but please note that only CentOS is supported.
+> Note: For Azure, you can list popular images as written in [documentation](https://docs.microsoft.com/en-us/azure/virtual-machines/linux/cli-ps-findimage#list-popular-images), but please note that only CentOS and RedHat is supported.
 
 #### AWS Example
 
