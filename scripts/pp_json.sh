@@ -22,11 +22,15 @@ echo "pre_warm_parcels: ${pre_warm_parcels}"
 
 pre_warm_parcels=${pre_warm_parcels:-[ [ \"\" ] ]}
 pre_warm_csd=${pre_warm_csd:-[ \"\" ]}
-uuid=$(cat /proc/sys/kernel/random/uuid)
+
+if [ -z "$image_uuid" ]; then
+  image_uuid=$(cat /proc/sys/kernel/random/uuid)
+fi
+
 
 cat  > ${image_name}_$metadata_filename_postfix.json <<EOF
 {
-"uuid": "${uuid}",
+"uuid": "${image_uuid}",
 "created_at": ${created_at},
 "prometheus": ${prometheus},
 "created": "${created}",

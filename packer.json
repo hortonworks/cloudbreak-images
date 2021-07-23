@@ -92,7 +92,8 @@
     "cdp_telemetry_rpm_url": "{{ env `CDP_TELEMETRY_RPM_URL` }}",
     "cdp_logging_agent_version": "{{ env `CDP_LOGGING_AGENT_VERSION` }}",
     "cdp_logging_agent_rpm_url": "{{ env `CDP_LOGGING_AGENT_RPM_URL` }}",
-    "metadata_filename_postfix": "{{ env `METADATA_FILENAME_POSTFIX` }}"
+    "metadata_filename_postfix": "{{ env `METADATA_FILENAME_POSTFIX` }}",
+    "image_uuid": "{{ env `IMAGE_UUID` }}"
   },
   "builders": [
     {
@@ -375,7 +376,8 @@
         "stack_build_number={{ user `stack_build_number` }}",
         "composite_gbn={{ user `composite_gbn` }}",
         "parcel_list_with_versions={{ user `parcel_list_with_versions` }}",
-        "metadata_filename_postfix={{ user `metadata_filename_postfix` }}"
+        "metadata_filename_postfix={{ user `metadata_filename_postfix` }}",
+        "image_uuid={{user `image_uuid`}}"
       ]
     }
   ]
