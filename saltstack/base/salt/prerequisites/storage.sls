@@ -4,10 +4,6 @@
 
 extend_opt_logical_volume:
   cmd.run:
-    - name: lvextend -L25G /dev/mapper/rootvg-optlv
-
-grow_opt_partition:
-  cmd.run:
-    - name: xfs_growfs /dev/mapper/rootvg-optlv
+    - name: lvextend -L25G -r /dev/mapper/rootvg-optlv
 
 {% endif %}
