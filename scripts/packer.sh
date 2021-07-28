@@ -166,6 +166,7 @@ packer_in_container() {
     -e CDP_TELEMETRY_RPM_URL="$CDP_TELEMETRY_RPM_URL" \
     -e CDP_LOGGING_AGENT_VERSION="$CDP_LOGGING_AGENT_VERSION" \
     -e CDP_LOGGING_AGENT_RPM_URL="$CDP_LOGGING_AGENT_RPM_URL" \
+    -e JUMPGATE_AGENT_RPM_URL="$JUMPGATE_AGENT_RPM_URL" \
     -v /var/run/docker.sock:/var/run/docker.sock \
     -v $PWD:$PWD \
     -w $PWD \
