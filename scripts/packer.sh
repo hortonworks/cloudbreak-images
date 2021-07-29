@@ -167,7 +167,10 @@ packer_in_container() {
     -e CDP_LOGGING_AGENT_VERSION="$CDP_LOGGING_AGENT_VERSION" \
     -e CDP_LOGGING_AGENT_RPM_URL="$CDP_LOGGING_AGENT_RPM_URL" \
     -e JUMPGATE_AGENT_RPM_URL="$JUMPGATE_AGENT_RPM_URL" \
+<<<<<<< HEAD
     -e IMAGE_UUID="$IMAGE_UUID" \
+=======
+>>>>>>> CDPR-16: Provide jumpgate agent rpm url as an input parameter (#608)
     -v /var/run/docker.sock:/var/run/docker.sock \
     -v $PWD:$PWD \
     -w $PWD \

@@ -15,9 +15,19 @@
     - group: root
     - mode: 644
 
+<<<<<<< HEAD
 {% if jumpgate_agent_rpm_repo_url %}
 install_jumpgate_agent:
   pkg.installed:
     - sources:
       - jumpgate-agent: {{ jumpgate_agent_rpm_repo_url }}
 {% endif %}
+=======
+{% set jumpgate_agent_rpm_url = salt['environ.get']('JUMPGATE_AGENT_RPM_URL') %}
+{% if jumpgate_agent_rpm_url %}
+install_jumpgate_agent:
+  pkg.installed:
+    - sources:
+      - jumpgate-agent: {{ jumpgate_agent_rpm_url }}
+{% endif %}
+>>>>>>> CDPR-16: Provide jumpgate agent rpm url as an input parameter (#608)
