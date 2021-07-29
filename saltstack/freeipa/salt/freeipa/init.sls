@@ -1,14 +1,5 @@
-{% set freeipa_plugin_base_url = 'https://cloudera-service-delivery-cache.s3.amazonaws.com/cdp-hashed-pwd/workloads/' %}
-{% set freeipa_plugin_version = '1.0-20200319002729gitc964030' %}
-{% set freeipa_plugin_rpm_url = freeipa_plugin_base_url
-      + 'cdp-hashed-pwd-' + freeipa_plugin_version
-      + '.x86_64.rpm' %}
-
-{% set freeipa_healthagent_base_url = 'https://cloudera-service-delivery-cache.s3.amazonaws.com/freeipa-health-agent/packages/' %}
-{% set freeipa_healthagent_version = '0.1-20210517150203gitab017e0' %}
-{% set freeipa_healthagent_rpm_url = freeipa_healthagent_base_url
-      + 'freeipa-health-agent-' + freeipa_healthagent_version
-      + '.x86_64.rpm' %}
+{% set freeipa_plugin_rpm_url = salt['environ.get']('FREEIPA_PLUGIN_RPM_URL') %}
+{% set freeipa_healthagent_rpm_url = salt['environ.get']('FREEIPA_HEALTH_AGENT_RPM_URL') %}
 
 disable_postfix:
   service.disabled:
@@ -25,19 +16,23 @@ freeipa-install:
         - ipa-server
         - ipa-server-dns
 
+{% if freeipa_plugin_rpm_url %}
 install_freeipa_plugin_rpm:
   pkg.installed:
     - sources:
       - cdp-hashed-pwd: {{ freeipa_plugin_rpm_url }}
     - require:
       - freeipa-install
+{% endif %}
 
+{% if freeipa_healthagent_rpm_url %}
 install_freeipa_healthagent_rpm:
   pkg.installed:
     - sources:
       - freeipa-health-agent: {{ freeipa_healthagent_rpm_url }}
     - require:
       - freeipa-install
+{% endif %}
 
 net.ipv6.conf.lo.disable_ipv6:
   sysctl.present:
