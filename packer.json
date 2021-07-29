@@ -93,6 +93,7 @@
     "cdp_telemetry_rpm_url": "{{ env `CDP_TELEMETRY_RPM_URL` }}",
     "cdp_logging_agent_version": "{{ env `CDP_LOGGING_AGENT_VERSION` }}",
     "cdp_logging_agent_rpm_url": "{{ env `CDP_LOGGING_AGENT_RPM_URL` }}",
+    "jumpgate_agent_rpm_url": "{{ env `JUMPGATE_AGENT_RPM_URL` }}",
     "metadata_filename_postfix": "{{ env `METADATA_FILENAME_POSTFIX` }}"
   },
   "builders": [
@@ -331,7 +332,8 @@
         "PARCELS_ROOT={{ user `parcels_root` }}",
         "PARCELS_NAME={{ user `parcels_name` }}",
         "PRE_WARM_PARCELS={{ user `pre_warm_parcels` }}",
-        "PRE_WARM_CSD={{ user `pre_warm_csd` }}"
+        "PRE_WARM_CSD={{ user `pre_warm_csd` }}",
+        "JUMPGATE_AGENT_RPM_URL={{ user `jumpgate_agent_rpm_url` }}"
       ]
     },
     {

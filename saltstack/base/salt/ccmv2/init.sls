@@ -13,7 +13,10 @@
     - group: root
     - mode: 644
 
+{% set jumpgate_agent_rpm_url = salt['environ.get']('JUMPGATE_AGENT_RPM_URL') %}
+{% if jumpgate_agent_rpm_url %}
 install_jumpgate_agent:
   pkg.installed:
     - sources:
-      - jumpgate-agent: https://cloudera-build-us-west-1.vpc.cloudera.com/s3/build/15246760/inverting-proxy/1.x/redhat7/yum/tars/inverting-proxy/jumpgate-agent.rpm
+      - jumpgate-agent: {{ jumpgate_agent_rpm_url }}
+{% endif %}
