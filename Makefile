@@ -45,7 +45,9 @@ PYZMQ_VERSION ?= 19.0
 PYTHON_APT_VERSION ?= 1.1.0_beta1ubuntu0.16.04.1
 STACK_VERSION_SHORT=$(STACK_TYPE)-$(shell echo $(STACK_VERSION) | tr -d . | cut -c1-3 )
 ifndef IMAGE_NAME
+	echo "Generating IMAGE_NAME"
 	IMAGE_NAME ?= $(BASE_NAME)-$(shell echo $(STACK_VERSION_SHORT) | tr '[:upper:]' '[:lower:]')-$(shell date +%s)$(IMAGE_NAME_SUFFIX)
+	echo "IMAGE_NAME=$(IMAGE_NAME)"
 endif
 
 IMAGE_SIZE ?= 30
@@ -288,5 +290,5 @@ push-to-metadata-repo: cleanup-metadata-repo
 generate-last-metadata-url-file:
 	echo "METADATA_URL=https://raw.githubusercontent.com/$(GITHUB_ORG)/$(GITHUB_REPO)/master/$(shell (ls -1tr *_manifest.json | tail -1 | sed "s/_manifest//"))" > last_md
 ifdef IMAGE_NAME
-	echo "IMAGE_NAME=$(IMAGE_NAME)" >> last_md
+	echo "IMAGE_NAME=$(shell (ls -1tr *_manifest.json | tail -1 | sed "s/_.*_manifest.json//"))" >> last_md
 endif
