@@ -46,14 +46,14 @@ packer_in_container() {
     jq 'del(."post-processors")' packer.json > packer_no_pp.json
     packerFile="packer_no_pp.json"
   fi
-  if [[ "$INCLUDE_CDP_TELEMETRY" == "Yes" ]]; then
+  if [[ "$INCLUDE_CDP_TELEMETRY" == "Yes" && -z "$CDP_TELEMETRY_RPM_URL" ]]; then
     CDP_TELEMETRY_BASE_URL="https://cloudera-service-delivery-cache.s3.amazonaws.com/telemetry/cdp-telemetry/"
     if [[ "$CDP_TELEMETRY_VERSION" == "" ]]; then
       CDP_TELEMETRY_VERSION=$(curl -L -k -s ${CDP_TELEMETRY_BASE_URL}AVAILABLE_VERSIONS | head -1)
     fi
     CDP_TELEMETRY_RPM_URL="${CDP_TELEMETRY_BASE_URL}cdp_telemetry-${CDP_TELEMETRY_VERSION}.x86_64.rpm"
   fi
-  if [[ "$INCLUDE_FLUENT" == "Yes" ]]; then
+  if [[ "$INCLUDE_FLUENT" == "Yes" && -z "$CDP_LOGGING_AGENT_RPM_URL" ]]; then
     CDP_LOGGING_AGENT_BASE_URL="https://cloudera-service-delivery-cache.s3.amazonaws.com/telemetry/cdp-logging-agent/"
     if [[ "$CDP_LOGGING_AGENT_VERSION" == "" ]]; then
       CDP_LOGGING_AGENT_VERSION=$(curl -L -k -s ${CDP_LOGGING_AGENT_BASE_URL}AVAILABLE_VERSIONS | head -1)
