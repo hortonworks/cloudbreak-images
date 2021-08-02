@@ -1,8 +1,9 @@
 ## see more at internal repo: thunderhead/fluent-service-packager
 {% set os = salt['environ.get']('OS') %}
 {% set cdp_logging_agent_rpm_repo_url = salt['environ.get']('CDP_LOGGING_AGENT_RPM_URL') %}
+{% set include_fluent = salt['environ.get']('INCLUDE_FLUENT') %}
 
-{% if cdp_logging_agent_rpm_repo_url %}
+{% if cdp_logging_agent_rpm_repo_url and include_fluent == "Yes" %}
 {% if os.startswith("centos") or os.startswith("redhat") %}
 # this will install redhat-lsb-core on freeipa images
 install_lsb_core_for_fluent:
