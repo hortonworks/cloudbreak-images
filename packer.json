@@ -96,6 +96,9 @@
     "cdp_logging_agent_version": "{{ env `CDP_LOGGING_AGENT_VERSION` }}",
     "cdp_logging_agent_rpm_url": "{{ env `CDP_LOGGING_AGENT_RPM_URL` }}",
     "jumpgate_agent_rpm_url": "{{ env `JUMPGATE_AGENT_RPM_URL` }}",
+    "metering_agent_rpm_url": "{{ env `METERING_AGENT_RPM_URL` }}",
+    "freeipa_plugin_rpm_url": "{{ env `FREEIPA_PLUGIN_RPM_URL` }}",
+    "freeipa_healthagent_rpm_url": "{{ env `FREEIPA_HEALTH_AGENT_RPM_URL` }}",
     "metadata_filename_postfix": "{{ env `METADATA_FILENAME_POSTFIX` }}"
   },
   "builders": [
@@ -337,7 +340,10 @@
         "PARCELS_NAME={{ user `parcels_name` }}",
         "PRE_WARM_PARCELS={{ user `pre_warm_parcels` }}",
         "PRE_WARM_CSD={{ user `pre_warm_csd` }}",
-        "JUMPGATE_AGENT_RPM_URL={{ user `jumpgate_agent_rpm_url` }}"
+        "JUMPGATE_AGENT_RPM_URL={{ user `jumpgate_agent_rpm_url` }}",
+        "METERING_AGENT_RPM_URL={{ user `metering_agent_rpm_url` }}",
+        "FREEIPA_PLUGIN_RPM_URL={{ user `freeipa_plugin_rpm_url` }}",
+        "FREEIPA_HEALTH_AGENT_RPM_URL={{ user `freeipa_healthagent_rpm_url` }}"
       ]
     },
     {
