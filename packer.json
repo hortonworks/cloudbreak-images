@@ -182,7 +182,7 @@
       "ssh_username": "centos",
       "ssh_pty": "true",
       "machine_type": "n1-standard-2",
-      "preemptible": true,
+      "preemptible": false,
       "omit_external_ip": "true",
       "use_internal_ip": "true",
       "network": "{{user `vpc_id`}}",
