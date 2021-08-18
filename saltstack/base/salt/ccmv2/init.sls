@@ -1,3 +1,5 @@
+{% set jumpgate_agent_rpm_repo_url = salt['environ.get']('JUMPGATE_AGENT_RPM_URL') %}
+
 /cdp/bin/ccmv2/generate-config.sh:
   file.managed:
     - name: /cdp/bin/ccmv2/generate-config.sh
@@ -13,7 +15,9 @@
     - group: root
     - mode: 644
 
+{% if jumpgate_agent_rpm_repo_url %}
 install_jumpgate_agent:
   pkg.installed:
     - sources:
-      - jumpgate-agent: https://cloudera-build-us-west-1.vpc.cloudera.com/s3/build/15246760/inverting-proxy/1.x/redhat7/yum/tars/inverting-proxy/jumpgate-agent.rpm
+      - jumpgate-agent: {{ jumpgate_agent_rpm_repo_url }}
+{% endif %}

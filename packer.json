@@ -93,6 +93,7 @@
     "cdp_logging_agent_version": "{{ env `CDP_LOGGING_AGENT_VERSION` }}",
     "cdp_logging_agent_rpm_url": "{{ env `CDP_LOGGING_AGENT_RPM_URL` }}",
     "metadata_filename_postfix": "{{ env `METADATA_FILENAME_POSTFIX` }}",
+    "jumpgate_agent_rpm_url": "{{ env `JUMPGATE_AGENT_RPM_URL` }}",
     "image_uuid": "{{ env `IMAGE_UUID` }}"
   },
   "builders": [
@@ -278,6 +279,7 @@
         "CDP_TELEMETRY_RPM_URL={{user `cdp_telemetry_rpm_url`}}",
         "CDP_LOGGING_AGENT_VERSION={{user `cdp_logging_agent_version`}}",
         "CDP_LOGGING_AGENT_RPM_URL={{user `cdp_logging_agent_rpm_url`}}",
+        "JUMPGATE_AGENT_RPM_URL={{user `jumpgate_agent_rpm_url`}}",
         "OS={{user `os`}}",
         "STACK_REPOSITORY_VERSION={{user `repository_version`}}",
         "COPY_AWS_MARKETPLACE_EULA={{user `copy_aws_marketplace_eula`}}",
