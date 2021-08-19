@@ -281,6 +281,7 @@
         "CDP_LOGGING_AGENT_RPM_URL={{user `cdp_logging_agent_rpm_url`}}",
         "JUMPGATE_AGENT_RPM_URL={{user `jumpgate_agent_rpm_url`}}",
         "OS={{user `os`}}",
+        "GIT_REV={{user `git_rev`}}",
         "STACK_REPOSITORY_VERSION={{user `repository_version`}}",
         "COPY_AWS_MARKETPLACE_EULA={{user `copy_aws_marketplace_eula`}}",
         "ORACLE_JDK8_URL_RPM={{user `oracle_jdk8_url_rpm`}}",

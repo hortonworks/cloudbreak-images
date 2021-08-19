@@ -5,6 +5,8 @@ set -x
 echo '{}' | jq --arg sb "$(salt-bootstrap --version | awk '{print $2}')" '. + {"salt-bootstrap": $sb}' > /tmp/package-versions.json
 cat /tmp/package-versions.json | jq --arg sv "$($SALT_PATH/bin/salt-call --local grains.get saltversion --out json | jq -r .local)" '. + {"salt": $sv}' > /tmp/package-versions.json
 
+cat /tmp/package-versions.json | jq --arg git_rev ${GIT_REV} '. + {"cloudbreak_images": $git_rev}' > /tmp/package-versions.json.tmp && mv /tmp/package-versions.json.tmp /tmp/package-versions.json
+
 cat /tmp/package-versions.json | jq --arg inverting_proxy_agent_version "$(jumpgate-agent --version | awk 'NR==1{print $3}')" '. + {"inverting-proxy-agent": $inverting_proxy_agent_version}' > /tmp/package-versions.json
 JUMPGATE_AGENT_GBN_REGEX=".*\/([0-9]+)\/.*"
 if [[ $JUMPGATE_AGENT_RPM_URL =~ $JUMPGATE_AGENT_GBN_REGEX ]]; then
