@@ -6,7 +6,7 @@ if [ -f package-versions.json -a "$stack_version" != "" -a "$clustermanager_vers
     apk update && apk add jq
     cat package-versions.json
     if [ "$stack_type" == "CDH" ]; then
-        cat package-versions.json | jq --arg stack_version $stack_version --arg clustermanager_version $clustermanager_version --arg cm_build_number $cm_build_number --arg stack_build_number $stack_build_number --arg composite_gbn "$composite_gbn" --arg cloudbreak_images "$git_rev" '. += {"stack" : $stack_version,  "cm" : $clustermanager_version,  "cm-build-number" : $cm_build_number,  "cdh-build-number" : $stack_build_number, "composite_gbn": $composite_gbn, "cloudbreak_images": $cloudbreak_images}' > package-versions-tmp.json && mv package-versions-tmp.json package-versions.json
+        cat package-versions.json | jq --arg stack_version $stack_version --arg clustermanager_version $clustermanager_version --arg cm_build_number $cm_build_number --arg stack_build_number $stack_build_number --arg composite_gbn "$composite_gbn" '. += {"stack" : $stack_version,  "cm" : $clustermanager_version,  "cm-build-number" : $cm_build_number,  "cdh-build-number" : $stack_build_number, "composite_gbn": $composite_gbn}' > package-versions-tmp.json && mv package-versions-tmp.json package-versions.json
 
         for parcel in ${parcel_list_with_versions//,/ } ; do 
             parcel_versions=(`echo $parcel | tr ':' ' '`)
