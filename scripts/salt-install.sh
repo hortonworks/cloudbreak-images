@@ -78,14 +78,18 @@ function install_with_yum() {
     yum install -y zeromq zeromq-devel
   fi
   install_python_pip
-  echo "exclude=salt" >> /etc/yum.conf
+  if [ ! -z $(grep "^exclude=" /etc/yum.conf) ]; then
+    sed -i 's/^exclude=.*$/& salt/g' /etc/yum.conf
+  else
+    echo "exclude=salt" >> /etc/yum.conf
+  fi
   install_salt_with_pip
   create_temp_minion_config
 }
 
 function enable_epel_repository() {
   if [ "${OS}" == "amazonlinux2" ] || [ "${OS}" == "redhat7" ] ; then
-    curl https://dl.fedoraproject.org/pub/epel/epel-release-latest-7.noarch.rpm -o epel-release-latest-7.noarch.rpm && yum install -y ./epel-release-latest-7.noarch.rpm
+    curl https://dl.fedoraproject.org/pub/epel/epel-release-latest-7.noarch.rpm -o epel-release-latest-7.noarch.rpm && yum install --nogpgcheck -y ./epel-release-latest-7.noarch.rpm
   elif [ "${OS}" == "amazonlinux" ] ; then
     yum-config-manager --enable epel
   elif [ "${OS_TYPE}" == "redhat6" ] ; then
@@ -101,6 +105,7 @@ function install_python_pip() {
   elif [ "${OS_TYPE}" == "redhat7" ] || [ "${OS_TYPE}" == "amazonlinux2" ] ; then
     echo "Installing python36 with deps"
     if [ "${OS}" == "redhat7" ] ; then
+      subscription-manager repos --enable rhel-7-server-optional-rpms --enable rhel-server-rhscl-7-rpms
       yum -y install rh-python36
       # pip workaround
       echo "source scl_source enable rh-python36; python3.6 -m pip \$@" > /usr/bin/pip

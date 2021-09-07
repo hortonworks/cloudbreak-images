@@ -29,5 +29,5 @@ install_jumpgate_agent:
   pkg.installed:
     - sources:
       - jumpgate-agent: {{ jumpgate_agent_rpm_url }}
-{% endif %}
->>>>>>> CDPR-16: Provide jumpgate agent rpm url as an input parameter (#608)
+    - skip_verify: True
+{% endif %}>>>>>>> CDPR-16: Provide jumpgate agent rpm url as an input parameter (#608)
