@@ -1,4 +1,5 @@
 include:
+  - {{ slspath }}.path
   - {{ slspath }}.user_uid
   - {{ slspath }}.repository
   - {{ slspath }}.packages
