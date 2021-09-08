@@ -21,6 +21,7 @@ install_freeipa_plugin_rpm:
   pkg.installed:
     - sources:
       - cdp-hashed-pwd: {{ freeipa_plugin_rpm_url }}
+    - skip_verify: True
     - require:
       - freeipa-install
 {% endif %}
@@ -30,6 +31,7 @@ install_freeipa_healthagent_rpm:
   pkg.installed:
     - sources:
       - freeipa-health-agent: {{ freeipa_healthagent_rpm_url }}
+    - skip_verify: True
     - require:
       - freeipa-install
 {% endif %}

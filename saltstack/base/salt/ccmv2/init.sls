@@ -19,4 +19,5 @@ install_jumpgate_agent:
   pkg.installed:
     - sources:
       - jumpgate-agent: {{ jumpgate_agent_rpm_url }}
+    - skip_verify: True
 {% endif %}
