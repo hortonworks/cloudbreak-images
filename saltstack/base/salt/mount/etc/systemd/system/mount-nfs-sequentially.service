@@ -1,0 +1,11 @@
+[Unit]
+Description=Workaround for mounting ext4 file systems sequentially at boot time
+After=remote-fs.target
+
+[Service]
+Type=oneshot
+ExecStart=/bin/mount -avt ext4
+RemainAfterExit=yes
+
+[Install]
+WantedBy=multi-user.target

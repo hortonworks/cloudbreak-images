@@ -172,6 +172,7 @@ packer_in_container() {
     -e METERING_AGENT_RPM_URL="$METERING_AGENT_RPM_URL" \
     -e FREEIPA_PLUGIN_RPM_URL="$FREEIPA_PLUGIN_RPM_URL" \
     -e FREEIPA_HEALTH_AGENT_RPM_URL="$FREEIPA_HEALTH_AGENT_RPM_URL" \
+    -e IMAGE_UUID="$IMAGE_UUID" \
     -v /var/run/docker.sock:/var/run/docker.sock \
     -v $PWD:$PWD \
     -w $PWD \
