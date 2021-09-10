@@ -105,7 +105,7 @@ function install_python_pip() {
   elif [ "${OS_TYPE}" == "redhat7" ] || [ "${OS_TYPE}" == "amazonlinux2" ] ; then
     echo "Installing python36 with deps"
     if [ "${OS}" == "redhat7" ] ; then
-      subscription-manager repos --enable rhel-7-server-optional-rpms --enable rhel-server-rhscl-7-rpms
+      yum-config-manager --enable rhscl
       yum -y install rh-python36
       # pip workaround
       echo "source scl_source enable rh-python36; python3.6 -m pip \$@" > /usr/bin/pip
