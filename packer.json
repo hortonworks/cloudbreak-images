@@ -99,7 +99,8 @@
     "metering_agent_rpm_url": "{{ env `METERING_AGENT_RPM_URL` }}",
     "freeipa_plugin_rpm_url": "{{ env `FREEIPA_PLUGIN_RPM_URL` }}",
     "freeipa_healthagent_rpm_url": "{{ env `FREEIPA_HEALTH_AGENT_RPM_URL` }}",
-    "metadata_filename_postfix": "{{ env `METADATA_FILENAME_POSTFIX` }}"
+    "metadata_filename_postfix": "{{ env `METADATA_FILENAME_POSTFIX` }}",
+    "image_uuid": "{{ env `IMAGE_UUID` }}"
   },
   "builders": [
     {
