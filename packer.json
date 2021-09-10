@@ -99,7 +99,8 @@
     "metering_agent_rpm_url": "{{ env `METERING_AGENT_RPM_URL` }}",
     "freeipa_plugin_rpm_url": "{{ env `FREEIPA_PLUGIN_RPM_URL` }}",
     "freeipa_healthagent_rpm_url": "{{ env `FREEIPA_HEALTH_AGENT_RPM_URL` }}",
-    "metadata_filename_postfix": "{{ env `METADATA_FILENAME_POSTFIX` }}"
+    "metadata_filename_postfix": "{{ env `METADATA_FILENAME_POSTFIX` }}",
+    "image_uuid": "{{ env `IMAGE_UUID` }}"
   },
   "builders": [
     {
@@ -226,7 +227,7 @@
       "ssh_username": "centos",
       "ssh_pty": "true",
       "machine_type": "n1-standard-2",
-      "preemptible": true,
+      "preemptible": false,
       "omit_external_ip": "true",
       "use_internal_ip": "true",
       "network": "{{user `vpc_id`}}",
@@ -322,7 +323,9 @@
         "CDP_TELEMETRY_RPM_URL={{user `cdp_telemetry_rpm_url`}}",
         "CDP_LOGGING_AGENT_VERSION={{user `cdp_logging_agent_version`}}",
         "CDP_LOGGING_AGENT_RPM_URL={{user `cdp_logging_agent_rpm_url`}}",
+        "JUMPGATE_AGENT_RPM_URL={{user `jumpgate_agent_rpm_url`}}",
         "OS={{user `os`}}",
+        "GIT_REV={{user `git_rev`}}",
         "STACK_REPOSITORY_VERSION={{user `repository_version`}}",
         "COPY_AWS_MARKETPLACE_EULA={{user `copy_aws_marketplace_eula`}}",
         "ORACLE_JDK8_URL_RPM={{user `oracle_jdk8_url_rpm`}}",
@@ -424,7 +427,8 @@
         "stack_build_number={{ user `stack_build_number` }}",
         "composite_gbn={{ user `composite_gbn` }}",
         "parcel_list_with_versions={{ user `parcel_list_with_versions` }}",
-        "metadata_filename_postfix={{ user `metadata_filename_postfix` }}"
+        "metadata_filename_postfix={{ user `metadata_filename_postfix` }}",
+        "image_uuid={{user `image_uuid`}}"
       ]
     }
   ]

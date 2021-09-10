@@ -60,6 +60,8 @@ packages_install:
       - nmap-ncat
       - telnet
       - tcpdump
+      - sysstat
+      - goaccess
 
 {% if pillar['subtype'] != 'Docker' %}
 

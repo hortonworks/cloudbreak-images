@@ -48,6 +48,7 @@ packer_in_container() {
     -e AWS_TIMEOUT_SECONDS=3000 \
     -e PACKER_LOG=$PACKER_LOG \
     -e METADATA_FILENAME_POSTFIX="$METADATA_FILENAME_POSTFIX" \
+    -e IMAGE_UUID="$IMAGE_UUID" \
     -v /var/run/docker.sock:/var/run/docker.sock \
     -v $PWD:$PWD \
     -w $PWD \
