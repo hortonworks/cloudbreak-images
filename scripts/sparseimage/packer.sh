@@ -47,7 +47,7 @@ packer_in_container() {
     -e AWS_MAX_ATTEMPTS=3000 \
     -e AWS_TIMEOUT_SECONDS=3000 \
     -e PACKER_LOG=$PACKER_LOG \
-    -e METADATA_FILENAME_POSTFIX="$METADATA_FILENAME_POSTFIX" \
+    -e METADATA_FILENAME="$METADATA_FILENAME" \
     -e IMAGE_UUID="$IMAGE_UUID" \
     -v /var/run/docker.sock:/var/run/docker.sock \
     -v $PWD:$PWD \
