@@ -28,6 +28,21 @@ do
 	fi
 done
 
+if [[ "$CUSTOM_IMAGE_TYPE" == "freeipa" ]]; then
+	FREEIPA_REGEX=".*\/[_a-z\-]*\-(.*)\.x86_64\.rpm"
+	if [[ $FREEIPA_PLUGIN_RPM_URL =~ $FREEIPA_REGEX ]]; then
+		cat /tmp/package-versions.json | jq --arg freeipa_plugin_version ${BASH_REMATCH[1]} '. + {"freeipa-plugin": $freeipa_plugin_version}' > /tmp/package-versions.json.tmp && mv /tmp/package-versions.json.tmp /tmp/package-versions.json
+	fi
+	if [[ $FREEIPA_HEALTH_AGENT_RPM_URL =~ $FREEIPA_REGEX ]]; then
+		cat /tmp/package-versions.json | jq --arg freeipa_health_agent_version ${BASH_REMATCH[1]} '. + {"freeipa-health-agent": $freeipa_health_agent_version}' > /tmp/package-versions.json.tmp && mv /tmp/package-versions.json.tmp /tmp/package-versions.json
+	fi
+elif [[ "$CUSTOM_IMAGE_TYPE" == "hortonworks" ]]; then
+	METERING_REGEX=".*\/[_a-z\-]*\-(.*)\-.*\.x86_64\.rpm"
+	if [[ $METERING_AGENT_RPM_URL =~ $METERING_REGEX ]]; then
+		cat /tmp/package-versions.json | jq --arg metering_agent_version ${BASH_REMATCH[1]} '. + {"metering_agent": $metering_agent_version}' > /tmp/package-versions.json.tmp && mv /tmp/package-versions.json.tmp /tmp/package-versions.json
+	fi
+fi
+
 chmod 744 /tmp/package-versions.json
 
 exit 0
