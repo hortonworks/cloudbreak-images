@@ -1,15 +1,17 @@
-{% if '/usr/sbin' not in salt['environ.get']('PATH') %}
-set_path_sbin:
-  environ.setenv:
-    - name: PATH
-    - value: "{{ salt['environ.get']('PATH') }}:/usr/sbin"
-    - update_minion: True
+{% set path = salt['environ.get']('PATH') %}
+
+{% if '/usr/sbin' not in path %}
+  {% set path = path ~ ':/usr/sbin' %}
 {% endif %}
 
-{% if '/usr/local/sbin' not in salt['environ.get']('PATH') %}
-set_path_local_sbin:
-  environ.setenv:
-    - name: PATH
-    - value: "{{ salt['environ.get']('PATH') }}:/usr/local/sbin"
-    - update_minion: True
+{% if '/usr/local/sbin' not in path %}
+  {% set path = path ~ ':/usr/local/sbin' %}
 {% endif %}
+
+/root/.bashrc:
+  file.append:
+    - text: "export PATH={{ path }}"
+
+refresh_profile:
+  cmd.run:
+    - name: source /root/.bashrc
