@@ -323,7 +323,6 @@
         "CDP_TELEMETRY_RPM_URL={{user `cdp_telemetry_rpm_url`}}",
         "CDP_LOGGING_AGENT_VERSION={{user `cdp_logging_agent_version`}}",
         "CDP_LOGGING_AGENT_RPM_URL={{user `cdp_logging_agent_rpm_url`}}",
-        "JUMPGATE_AGENT_RPM_URL={{user `jumpgate_agent_rpm_url`}}",
         "OS={{user `os`}}",
         "GIT_REV={{user `git_rev`}}",
         "STACK_REPOSITORY_VERSION={{user `repository_version`}}",
