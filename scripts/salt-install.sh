@@ -78,10 +78,10 @@ function install_with_yum() {
     yum install -y zeromq zeromq-devel
   fi
   install_python_pip
-  if [ ! -z $(grep "^exclude=" /etc/yum.conf) ]; then
-    sed -i 's/^exclude=.*$/& salt/g' /etc/yum.conf
-  else
+  if [ -z "$(grep "^exclude=" /etc/yum.conf)" ]; then
     echo "exclude=salt" >> /etc/yum.conf
+  else
+    sed -i 's/^exclude=.*$/& salt/g' /etc/yum.conf
   fi
   install_salt_with_pip
   create_temp_minion_config
