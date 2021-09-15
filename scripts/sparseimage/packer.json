@@ -20,7 +20,7 @@
         "aws_access_key": "{{env `AWS_ACCESS_KEY_ID`}}",
         "aws_secret_key": "{{env `AWS_SECRET_ACCESS_KEY`}}",
         "aws_ami_regions": "{{ env `AWS_AMI_REGIONS` }}",
-        "metadata_filename": "{{ env `METADATA_FILENAME` }}"
+        "metadata_filename_postfix": "{{ env `METADATA_FILENAME_POSTFIX` }}"
     },
     "builders": [
     {
@@ -97,7 +97,7 @@
       "script": "scripts/sparseimage/pp_sparse_json.sh",
       "environment_vars": [
         "image_name={{ user `aws_target_ami` }}",
-        "metadata_filename={{ user `metadata_filename` }}"
+        "metadata_filename_postfix={{ user `metadata_filename_postfix` }}"
       ]
     }
 	]

@@ -92,7 +92,7 @@
     "cdp_telemetry_rpm_url": "{{ env `CDP_TELEMETRY_RPM_URL` }}",
     "cdp_logging_agent_version": "{{ env `CDP_LOGGING_AGENT_VERSION` }}",
     "cdp_logging_agent_rpm_url": "{{ env `CDP_LOGGING_AGENT_RPM_URL` }}",
-    "metadata_filename": "{{ env `METADATA_FILENAME` }}",
+    "metadata_filename_postfix": "{{ env `METADATA_FILENAME_POSTFIX` }}",
     "jumpgate_agent_rpm_url": "{{ env `JUMPGATE_AGENT_RPM_URL` }}",
     "image_uuid": "{{ env `IMAGE_UUID` }}"
   },
@@ -331,7 +331,7 @@
   "post-processors": [
     {
       "type": "manifest",
-      "output": "{{ user `metadata_filename` }}_manifest.json"
+      "output": "{{ user `image_name` }}_{{ user `metadata_filename_postfix` }}_manifest.json"
     },
     {
       "type": "shell-local",
@@ -379,7 +379,7 @@
         "stack_build_number={{ user `stack_build_number` }}",
         "composite_gbn={{ user `composite_gbn` }}",
         "parcel_list_with_versions={{ user `parcel_list_with_versions` }}",
-        "metadata_filename={{ user `metadata_filename` }}",
+        "metadata_filename_postfix={{ user `metadata_filename_postfix` }}",
         "image_uuid={{user `image_uuid`}}"
       ]
     }

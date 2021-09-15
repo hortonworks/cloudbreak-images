@@ -28,7 +28,7 @@ if [ -z "$image_uuid" ]; then
 fi
 
 
-cat  > $metadata_filename.json <<EOF
+cat  > ${image_name}_$metadata_filename_postfix.json <<EOF
 {
 "uuid": "${image_uuid}",
 "created_at": ${created_at},
@@ -72,13 +72,13 @@ cat  > $metadata_filename.json <<EOF
 "cdh_repository_version": "${stack_repository_version#*-}",
 "cm_build_number": "${cm_build_number}",
 "stack_build_number": "${stack_build_number}",
-"manifest": $(if [ -f ${metadata_filename}_manifest.json ]; then cat ${metadata_filename}_manifest.json; else echo "{}"; fi),
+"manifest": $(if [ -f ${image_name}_${metadata_filename_postfix}_manifest.json ]; then cat ${image_name}_${metadata_filename_postfix}_manifest.json; else echo "{}"; fi),
 "package_versions": $(if [ -f package-versions.json ]; then cat package-versions.json; else echo "{}"; fi),
 "pre_warm_parcels": $(if [[ -z "$pre_warm_parcels" ]]; then echo null; else echo $pre_warm_parcels; fi),
 "pre_warm_csd": $(if [[ -z "$pre_warm_csd" ]]; then echo null; else echo $pre_warm_csd; fi)
 }
 EOF
 
-cat $metadata_filename.json
+cat ${image_name}_$metadata_filename_postfix.json
 
 exit 0
