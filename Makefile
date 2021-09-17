@@ -43,12 +43,9 @@ SALT_VERSION ?= 3000.8
 SALT_PATH ?= /opt/salt_$(SALT_VERSION)
 PYZMQ_VERSION ?= 19.0
 PYTHON_APT_VERSION ?= 1.1.0_beta1ubuntu0.16.04.1
-
-# This block remains here for backward compatibility reasons when the IMAGE_NAME is not defined as an env variable
+STACK_VERSION_SHORT=$(STACK_TYPE)-$(shell echo $(STACK_VERSION) | tr -d . | cut -c1-3 )
 ifndef IMAGE_NAME
-	STACK_VERSION_SHORT=$(STACK_TYPE)-$(shell echo $(STACK_VERSION) | tr -d . | cut -c1-4 )
-	export IMAGE_NAME := $(BASE_NAME)-$(shell echo $(STACK_VERSION_SHORT) | tr '[:upper:]' '[:lower:]')-$(shell date +%s)$(IMAGE_NAME_SUFFIX)
-@echo IMAGE_NAME was not defined as an environment variable. Generated value: $(IMAGE_NAME)
+	IMAGE_NAME ?= $(BASE_NAME)-$(shell echo $(STACK_VERSION_SHORT) | tr '[:upper:]' '[:lower:]')-$(shell date +%s)$(IMAGE_NAME_SUFFIX)
 endif
 
 IMAGE_SIZE ?= 30
@@ -72,6 +69,8 @@ CDP_LOGGING_AGENT_VERSION ?= ""
 ifndef JUMPGATE_AGENT_RPM_URL
 	JUMPGATE_AGENT_RPM_URL="https://cloudera-build-us-west-1.vpc.cloudera.com/s3/build/17100017/inverting-proxy/2.x/redhat7/yum/tars/inverting-proxy/jumpgate-agent.rpm"
 endif
+
+METADATA_FILENAME_POSTFIX ?= $(shell date +%s)
 
 ENVS=METADATA_FILENAME_POSTFIX=$(METADATA_FILENAME_POSTFIX) DESCRIPTION=$(DESCRIPTION) STACK_TYPE=$(STACK_TYPE) MPACK_URLS=$(MPACK_URLS) HDP_VERSION=$(HDP_VERSION) BASE_NAME=$(BASE_NAME) IMAGE_NAME=$(IMAGE_NAME) IMAGE_SIZE=$(IMAGE_SIZE) INCLUDE_CDP_TELEMETRY=$(INCLUDE_CDP_TELEMETRY) INCLUDE_FLUENT=$(INCLUDE_FLUENT) INCLUDE_METERING=$(INCLUDE_METERING) ENABLE_POSTPROCESSORS=$(ENABLE_POSTPROCESSORS) CUSTOM_IMAGE_TYPE=$(CUSTOM_IMAGE_TYPE) OPTIONAL_STATES=$(OPTIONAL_STATES) ORACLE_JDK8_URL_RPM=$(ORACLE_JDK8_URL_RPM) PREINSTALLED_JAVA_HOME=${PREINSTALLED_JAVA_HOME} IMAGE_OWNER=${IMAGE_OWNER} REPOSITORY_TYPE=${REPOSITORY_TYPE} PACKAGE_VERSIONS=$(PACKAGE_VERSIONS) SALT_VERSION=$(SALT_VERSION) SALT_PATH=$(SALT_PATH) PYZMQ_VERSION=$(PYZMQ_VERSION) PYTHON_APT_VERSION=$(PYTHON_APT_VERSION) AWS_MAX_ATTEMPTS=$(AWS_MAX_ATTEMPTS) TRACE=1 AWS_SNAPSHOT_GROUPS=$(AWS_SNAPSHOT_GROUPS) AWS_AMI_GROUPS=$(AWS_AMI_GROUPS) TAG_CUSTOMER_DELIVERED=$(TAG_CUSTOMER_DELIVERED) VERSION=$(VERSION) PARCELS_NAME=$(PARCELS_NAME) PARCELS_ROOT=$(PARCELS_ROOT) SUBNET_ID=$(SUBNET_ID) VPC_ID=$(VPC_ID) VIRTUAL_NETWORK_RESOURCE_GROUP_NAME=$(VIRTUAL_NETWORK_RESOURCE_GROUP_NAME) ARM_BUILD_REGION=$(ARM_BUILD_REGION) PRE_WARM_PARCELS=$(PRE_WARM_PARCELS) PRE_WARM_CSD=$(PRE_WARM_CSD) SLES_REGISTRATION_CODE=$(SLES_REGISTRATION_CODE) FLUENT_PREWARM_TAG=$(FLUENT_PREWARM_TAG) METERING_PREWARM_TAG=$(METERING_PREWARM_TAG) CDP_TELEMETRY_PREWARM_TAG=$(CDP_TELEMETRY_PREWARM_TAG) PREWARM_TAG=$(PREWARM_TAG)
 
@@ -168,6 +167,8 @@ build-aws-centos7-base:
 	GIT_TAG=$(GIT_TAG) \
 	./scripts/packer.sh build -only=aws-centos7 $(PACKER_OPTS)
 
+build-aws-centos7: export IMAGE_NAME := $(IMAGE_NAME)
+
 build-aws-centos7: 
 	@ METADATA_FILENAME_POSTFIX=$(METADATA_FILENAME_POSTFIX) make build-aws-centos7-base
 	$(ENVS) \
@@ -195,6 +196,8 @@ build-gc-tar-file:
 	GCP_STORAGE_BUNDLE=$(GCP_STORAGE_BUNDLE) \
 	GCP_STORAGE_BUNDLE_LOG=$(GCP_STORAGE_BUNDLE_LOG) \
 	./scripts/bundle-gcp-image.sh
+
+build-gc-centos7: export IMAGE_NAME := $(IMAGE_NAME)
 
 build-gc-centos7: 
 	@ METADATA_FILENAME_POSTFIX=$(METADATA_FILENAME_POSTFIX)
@@ -287,17 +290,7 @@ push-to-metadata-repo: cleanup-metadata-repo
 	make cleanup-metadata-repo
 
 generate-last-metadata-url-file:
-ifdef IMAGE_NAME
-	echo "METADATA_URL=https://raw.githubusercontent.com/$(GITHUB_ORG)/$(GITHUB_REPO)/master/$(IMAGE_NAME)_$(METADATA_FILENAME_POSTFIX).json" > last_md
-	echo IMAGE_NAME=$(IMAGE_NAME) >> last_md
-else
-# This block remains here for backward compatibility reasons when the IMAGE_NAME is not defined as an env variable
 	echo "METADATA_URL=https://raw.githubusercontent.com/$(GITHUB_ORG)/$(GITHUB_REPO)/master/$(shell (ls -1tr *_manifest.json | tail -1 | sed "s/_manifest//"))" > last_md
+ifdef IMAGE_NAME
 	echo "IMAGE_NAME=$(shell (ls -1tr *_manifest.json | tail -1 | sed "s/_.*_manifest.json//"))" >> last_md
 endif
-
-generate-image-properties:
-	BASE_NAME=$(BASE_NAME) \
-	STACK_TYPE=$(STACK_TYPE) \
-	STACK_VERSION=$(STACK_VERSION) \
-	./scripts/generate-image-properties.sh
