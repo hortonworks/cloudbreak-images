@@ -291,7 +291,7 @@ ifdef IMAGE_NAME
 	echo "METADATA_URL=https://raw.githubusercontent.com/$(GITHUB_ORG)/$(GITHUB_REPO)/master/$(IMAGE_NAME)_$(METADATA_FILENAME_POSTFIX).json" > last_md
 	echo IMAGE_NAME=$(IMAGE_NAME) >> last_md
 else
-    # This block remains here for backward compatibility reasons when the IMAGE_NAME is not defined as an env variable
+# This block remains here for backward compatibility reasons when the IMAGE_NAME is not defined as an env variable
 	echo "METADATA_URL=https://raw.githubusercontent.com/$(GITHUB_ORG)/$(GITHUB_REPO)/master/$(shell (ls -1tr *_manifest.json | tail -1 | sed "s/_manifest//"))" > last_md
 	echo "IMAGE_NAME=$(shell (ls -1tr *_manifest.json | tail -1 | sed "s/_.*_manifest.json//"))" >> last_md
 endif
