@@ -48,7 +48,7 @@ PYTHON_APT_VERSION ?= 1.1.0_beta1ubuntu0.16.04.1
 ifndef IMAGE_NAME
 	STACK_VERSION_SHORT=$(STACK_TYPE)-$(shell echo $(STACK_VERSION) | tr -d . | cut -c1-4 )
 	export IMAGE_NAME := $(BASE_NAME)-$(shell echo $(STACK_VERSION_SHORT) | tr '[:upper:]' '[:lower:]')-$(shell date +%s)$(IMAGE_NAME_SUFFIX)
-	@echo IMAGE_NAME was not defined as an environment variable. Generated value: $(IMAGE_NAME)
+@echo IMAGE_NAME was not defined as an environment variable. Generated value: $(IMAGE_NAME)
 endif
 
 IMAGE_SIZE ?= 30
