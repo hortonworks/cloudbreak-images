@@ -107,7 +107,7 @@ CDP_TELEMETRY_VERSION ?= ""
 CDP_LOGGING_AGENT_VERSION ?= ""
 
 ifndef JUMPGATE_AGENT_RPM_URL
-	JUMPGATE_AGENT_RPM_URL="https://cloudera-build-us-west-1.vpc.cloudera.com/s3/build/15246760/inverting-proxy/1.x/redhat7/yum/tars/inverting-proxy/jumpgate-agent.rpm"
+	JUMPGATE_AGENT_RPM_URL="https://cloudera-build-us-west-1.vpc.cloudera.com/s3/build/17100017/inverting-proxy/2.x/redhat7/yum/tars/inverting-proxy/jumpgate-agent.rpm"
 endif
 
 METADATA_FILENAME_POSTFIX ?= $(shell date +%s)
