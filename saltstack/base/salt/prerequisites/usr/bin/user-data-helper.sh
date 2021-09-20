@@ -199,10 +199,16 @@ setup_ccmv2() {
 
   INVERTING_PROXY_URL="$CCM_V2_INVERTING_PROXY_HOST"
 
+  if [[ "$IS_CCM_V2_JUMPGATE_ENABLED" == "true" && "$IS_FREEIPA" == "true" ]]; then
+    AGENT_ENVIRONMENT_CRN="$ENVIRONMENT_CRN"
+    ACCESS_KEY_ID="$CCM_V2_AGENT_ACCESS_KEY_ID"
+    ACCESS_KEY="$(echo ${CCM_V2_AGENT_ENCIPHERED_ACCESS_KEY} | openssl enc -aes-128-cbc -d -A -a -K ${CCM_V2_AGENT_KEY_HEX} -iv ${IV})"
+  fi
+
   # A more sophisticated solution might need to be patched in later - tbh the script originally expected a full url with protocol scheme and closing slash
   INVERTING_PROXY_FULL_URL="https://$INVERTING_PROXY_URL/"
 
-  /cdp/bin/ccmv2/generate-config.sh "$BACKEND_ID" "$BACKEND_HOST" "$BACKEND_PORT" "$AGENT_KEY_PATH" "$AGENT_CERT_PATH" "$TRUSTED_BACKEND_CERT_PATH" "$TRUSTED_PROXY_CERT_PATH" "$INVERTING_PROXY_FULL_URL"
+  /cdp/bin/ccmv2/generate-config.sh "$BACKEND_ID" "$BACKEND_HOST" "$BACKEND_PORT" "$AGENT_KEY_PATH" "$AGENT_CERT_PATH" "$AGENT_ENVIRONMENT_CRN" "$ACCESS_KEY_ID" "$ACCESS_KEY" "$TRUSTED_BACKEND_CERT_PATH" "$TRUSTED_PROXY_CERT_PATH" "$INVERTING_PROXY_FULL_URL"
 }
 
 setup_proxy() {

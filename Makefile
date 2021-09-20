@@ -208,7 +208,7 @@ build-aws-centos7-base:
 	GIT_TAG=$(GIT_TAG) \
 	./scripts/packer.sh build -only=aws-centos7 $(PACKER_OPTS)
 
-build-aws-centos7: 
+build-aws-centos7:
 	@ METADATA_FILENAME_POSTFIX=$(METADATA_FILENAME_POSTFIX) make build-aws-centos7-base
 	$(ENVS) \
 	AWS_AMI_REGIONS="$(AWS_AMI_REGIONS)" \
@@ -229,14 +229,14 @@ copy-aws-images:
 		--entrypoint="/bin/bash" \
 		amazon/aws-cli -c "./aws-copy.sh"
 
-build-gc-tar-file: 
+build-gc-tar-file:
 	$(ENVS) \
 	GCP_AMI_REGIONS=$(GCP_AMI_REGIONS) \
 	GCP_STORAGE_BUNDLE=$(GCP_STORAGE_BUNDLE) \
 	GCP_STORAGE_BUNDLE_LOG=$(GCP_STORAGE_BUNDLE_LOG) \
 	./scripts/bundle-gcp-image.sh
 
-build-gc-centos7: 
+build-gc-centos7:
 	@ METADATA_FILENAME_POSTFIX=$(METADATA_FILENAME_POSTFIX)
 	$(ENVS) \
 	OS=centos7 \
