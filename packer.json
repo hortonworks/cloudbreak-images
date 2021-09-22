@@ -111,11 +111,11 @@
         "builder": "packer",
         "version": "{{user `version`}}",
         "cb-creation-timestamp": "{{timestamp}}",
-        "Owner": "{{ user `image_owner` }}",
+        "owner": "{{ user `image_owner` }}",
         "Customer Delivered": "{{user `tag_customer_delivered`}}"
       },
       "run_tags": {
-        "Owner": "{{ user `image_owner` }}"
+        "owner": "{{ user `image_owner` }}"
       },
       "ami_block_device_mappings": [
         {
@@ -167,7 +167,7 @@
         "builder": "packer",
         "version": "{{user `version`}}",
         "cb-creation-timestamp": "{{timestamp}}",
-        "Owner": "{{ user `image_owner` }}",
+        "owner": "{{ user `image_owner` }}",
         "Customer Delivered": "{{user `tag_customer_delivered`}}"
       }
     },
