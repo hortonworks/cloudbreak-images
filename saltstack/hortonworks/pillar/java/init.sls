@@ -26,6 +26,9 @@ openjdk_packages:
   - java-1_8_0-openjdk
   - java-1_8_0-openjdk-devel
   - java-1_8_0-openjdk-headless
+{% elif salt['environ.get']('OS') == 'redhat7' %}
+  - java-1.8.0-openjdk-headless
+  - java-1.8.0-openjdk-devel
 {% else %}
   - java-1.8.0-openjdk-headless
   - java-1.8.0-openjdk-devel

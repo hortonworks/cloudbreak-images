@@ -3,7 +3,10 @@
 set -xe
 
 if [ -f package-versions.json -a "$stack_version" != "" -a "$clustermanager_version" != "" ]; then
-    apk update && apk add jq
+    wget https://github.com/stedolan/jq/releases/download/jq-1.6/jq-linux64
+    chmod +x jq-linux64
+    mv jq-linux64 /bin/jq
+
     cat package-versions.json
     if [ "$stack_type" == "CDH" ]; then
         cat package-versions.json | jq --arg stack_version $stack_version --arg clustermanager_version $clustermanager_version --arg cm_build_number $cm_build_number --arg stack_build_number $stack_build_number --arg composite_gbn "$composite_gbn" '. += {"stack" : $stack_version,  "cm" : $clustermanager_version,  "cm-build-number" : $cm_build_number,  "cdh-build-number" : $stack_build_number, "composite_gbn": $composite_gbn}' > package-versions-tmp.json && mv package-versions-tmp.json package-versions.json

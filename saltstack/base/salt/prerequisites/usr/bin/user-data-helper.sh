@@ -291,6 +291,19 @@ main() {
       setup_ccmv2
     fi
 
+{% if pillar['OS'] == 'redhat7' %}
+    # Relocating backup data structures to the end of the disk
+    printf "x\ne\nw\nY\n" | gdisk /dev/sda
+    # Resize /dev/sda4 to the end of the disk
+    parted -s -a opt /dev/sda "resizepart 4 100%"
+    # Resize physical volume
+    pvresize /dev/sda4
+    # Extend logical volumes to satisfy CM free space checks
+    lvextend -L35G -r /dev/mapper/rootvg-optlv
+    lvextend -L12G -r /dev/mapper/rootvg-varlv
+    lvextend -L12G -r /dev/mapper/rootvg-tmplv
+{% endif %}
+
     echo $(date +%Y-%m-%d:%H:%M:%S) >> /var/cb-init-executed
   fi
   [ -e /usr/bin/ssh-aliases ] && /usr/bin/ssh-aliases create

@@ -1,8 +1,9 @@
 ## see more at internal repo: thunderhead/cdp-telemetry-cli
 {% set os = salt['environ.get']('OS') %}
 {% set cdp_telemetry_rpm_repo_url = salt['environ.get']('CDP_TELEMETRY_RPM_URL') %}
+{% set include_cdp_telemetry = salt['environ.get']('INCLUDE_CDP_TELEMETRY') %}
 
-{% if cdp_telemetry_rpm_repo_url %}
+{% if cdp_telemetry_rpm_repo_url and include_cdp_telemetry == "Yes" %}
 {% if os.startswith("centos") or os.startswith("redhat") or os == "amazonlinux2" %}
 install_cdp_telemetry_rpm:
   cmd.run:

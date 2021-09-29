@@ -9,11 +9,22 @@ function install_salt_with_pip() {
   echo "Installing salt with version: $SALT_VERSION"
   pip install --upgrade pip
   pip install virtualenv
+
   # fix pip3 not installing virtualenv for root
-  ln -s /usr/local/bin/virtualenv /usr/bin/virtualenv
+  if [ "${OS}" != "redhat7" ] ; then
+    ln -s /usr/local/bin/virtualenv /usr/bin/virtualenv
+  else
+    echo "source scl_source enable rh-python36; python3.6 -m virtualenv \$@" > /usr/bin/virtualenv
+    chmod +x /usr/bin/virtualenv
+  fi
   mkdir ${SALT_PATH}
   virtualenv ${SALT_PATH}
   source ${SALT_PATH}/bin/activate
+  if [ "${OS}" == "redhat7" ] ; then
+    # can't install this via salt_requirements.txt and I dunno why...
+    pip install pbr
+  fi
+  pip install --upgrade pip
   pip install -r /tmp/salt_requirements.txt
 }
 
@@ -67,14 +78,18 @@ function install_with_yum() {
     yum install -y zeromq zeromq-devel
   fi
   install_python_pip
-  echo "exclude=salt" >> /etc/yum.conf
+  if [ ! -z $(grep "^exclude=" /etc/yum.conf) ]; then
+    sed -i 's/^exclude=.*$/& salt/g' /etc/yum.conf
+  else
+    echo "exclude=salt" >> /etc/yum.conf
+  fi
   install_salt_with_pip
   create_temp_minion_config
 }
 
 function enable_epel_repository() {
   if [ "${OS}" == "amazonlinux2" ] || [ "${OS}" == "redhat7" ] ; then
-    curl https://dl.fedoraproject.org/pub/epel/epel-release-latest-7.noarch.rpm -o epel-release-latest-7.noarch.rpm && yum install -y ./epel-release-latest-7.noarch.rpm
+    curl https://dl.fedoraproject.org/pub/epel/epel-release-latest-7.noarch.rpm -o epel-release-latest-7.noarch.rpm && yum install --nogpgcheck -y ./epel-release-latest-7.noarch.rpm
   elif [ "${OS}" == "amazonlinux" ] ; then
     yum-config-manager --enable epel
   elif [ "${OS_TYPE}" == "redhat6" ] ; then
@@ -89,8 +104,16 @@ function install_python_pip() {
     yum install -y python27-devel python27-pip
   elif [ "${OS_TYPE}" == "redhat7" ] || [ "${OS_TYPE}" == "amazonlinux2" ] ; then
     echo "Installing python36 with deps"
-    yum install -y python36 python36-pip python36-devel python36-setuptools
-    make_pip3_default_pip
+    if [ "${OS}" == "redhat7" ] ; then
+      yum-config-manager --enable rhscl
+      yum -y install rh-python36
+      # pip workaround
+      echo "source scl_source enable rh-python36; python3.6 -m pip \$@" > /usr/bin/pip
+      chmod +x /usr/bin/pip
+    else
+      yum install -y python36 python36-pip python36-devel python36-setuptools
+      make_pip3_default_pip
+    fi
   else
     yum install -y python-pip python-devel
   fi
@@ -136,7 +159,7 @@ function create_temp_minion_config() {
 
 echo "Installing Salt on ${SALT_INSTALL_OS}"
 echo "Network interfaces: $(ifconfig)"
-echo "Public address: $(curl -s checkip.amazonaws.com)"
+echo "Public address: $(curl -s https://checkip.amazonaws.com)"
 
 case ${SALT_INSTALL_OS} in
   centos|redhat)

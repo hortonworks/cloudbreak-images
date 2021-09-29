@@ -1,4 +1,5 @@
 include:
+  - {{ slspath }}.path
   - {{ slspath }}.user_uid
   - {{ slspath }}.repository
   - {{ slspath }}.packages
@@ -17,6 +18,7 @@ include:
   - {{ slspath }}.umask
   - {{ slspath }}.jinja
   - {{ slspath }}.corkscrew
+  - {{ slspath }}.storage
 {% if pillar['OS'].startswith('ubuntu') %}
   - {{ slspath }}.disable-unattended-upgrades
 {% endif %}

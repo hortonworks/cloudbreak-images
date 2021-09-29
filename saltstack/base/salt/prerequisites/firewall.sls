@@ -14,6 +14,17 @@ remove_ip6tables:
   pkg.purged:
     - name: ip6tables
 
+{% elif pillar['OS'] == 'redhat7' %}
+
+disable_firewalld_service:
+  service.dead:
+    - name: firewalld
+    - enable: False
+
+mask_firewalld_service:
+  service.masked:
+    - name: firewalld
+
 {% elif grains['os_family'] == 'Suse' %}
 
 disable_susefirewall_setup_service:

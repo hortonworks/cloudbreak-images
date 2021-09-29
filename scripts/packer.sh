@@ -46,14 +46,14 @@ packer_in_container() {
     jq 'del(."post-processors")' packer.json > packer_no_pp.json
     packerFile="packer_no_pp.json"
   fi
-  if [[ "$INCLUDE_CDP_TELEMETRY" == "Yes" ]]; then
+  if [[ "$INCLUDE_CDP_TELEMETRY" == "Yes" && -z "$CDP_TELEMETRY_RPM_URL" ]]; then
     CDP_TELEMETRY_BASE_URL="https://cloudera-service-delivery-cache.s3.amazonaws.com/telemetry/cdp-telemetry/"
     if [[ "$CDP_TELEMETRY_VERSION" == "" ]]; then
       CDP_TELEMETRY_VERSION=$(curl -L -k -s ${CDP_TELEMETRY_BASE_URL}AVAILABLE_VERSIONS | head -1)
     fi
     CDP_TELEMETRY_RPM_URL="${CDP_TELEMETRY_BASE_URL}cdp_telemetry-${CDP_TELEMETRY_VERSION}.x86_64.rpm"
   fi
-  if [[ "$INCLUDE_FLUENT" == "Yes" ]]; then
+  if [[ "$INCLUDE_FLUENT" == "Yes" && -z "$CDP_LOGGING_AGENT_RPM_URL" ]]; then
     CDP_LOGGING_AGENT_BASE_URL="https://cloudera-service-delivery-cache.s3.amazonaws.com/telemetry/cdp-logging-agent/"
     if [[ "$CDP_LOGGING_AGENT_VERSION" == "" ]]; then
       CDP_LOGGING_AGENT_VERSION=$(curl -L -k -s ${CDP_LOGGING_AGENT_BASE_URL}AVAILABLE_VERSIONS | head -1)
@@ -82,6 +82,7 @@ packer_in_container() {
     -e AWS_INSTANCE_PROFILE="$AWS_INSTANCE_PROFILE" \
     -e AWS_SNAPSHOT_GROUPS="$AWS_SNAPSHOT_GROUPS" \
     -e AWS_AMI_GROUPS="$AWS_AMI_GROUPS" \
+    -e AZURE_IMAGE_VHD=$AZURE_IMAGE_VHD \
     -e AZURE_IMAGE_PUBLISHER=$AZURE_IMAGE_PUBLISHER \
     -e AZURE_IMAGE_OFFER=$AZURE_IMAGE_OFFER \
     -e AZURE_IMAGE_SKU=$AZURE_IMAGE_SKU \
@@ -166,6 +167,9 @@ packer_in_container() {
     -e CDP_LOGGING_AGENT_VERSION="$CDP_LOGGING_AGENT_VERSION" \
     -e CDP_LOGGING_AGENT_RPM_URL="$CDP_LOGGING_AGENT_RPM_URL" \
     -e JUMPGATE_AGENT_RPM_URL="$JUMPGATE_AGENT_RPM_URL" \
+    -e METERING_AGENT_RPM_URL="$METERING_AGENT_RPM_URL" \
+    -e FREEIPA_PLUGIN_RPM_URL="$FREEIPA_PLUGIN_RPM_URL" \
+    -e FREEIPA_HEALTH_AGENT_RPM_URL="$FREEIPA_HEALTH_AGENT_RPM_URL" \
     -e IMAGE_UUID="$IMAGE_UUID" \
     -v /var/run/docker.sock:/var/run/docker.sock \
     -v $PWD:$PWD \

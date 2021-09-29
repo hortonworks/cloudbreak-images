@@ -15,9 +15,10 @@
     - group: root
     - mode: 644
 
-{% if jumpgate_agent_rpm_repo_url %}
+{% set jumpgate_agent_rpm_url = salt['environ.get']('JUMPGATE_AGENT_RPM_URL') %}
+{% if jumpgate_agent_rpm_url %}
 install_jumpgate_agent:
   pkg.installed:
     - sources:
-      - jumpgate-agent: {{ jumpgate_agent_rpm_repo_url }}
+      - jumpgate-agent: {{ jumpgate_agent_rpm_url }}
 {% endif %}

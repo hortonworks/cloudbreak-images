@@ -25,6 +25,7 @@ enable_redhat_rhui_repos:
     - name: /etc/yum.repos.d/redhat-rhui.repo
     - pattern: '^enabled=[0,1]'
     - repl: 'enabled=1'
+    - ignore_if_missing: True
 {% endif %}
 
 install_openjdk:

@@ -12,10 +12,46 @@ ORACLE_JDK8_URL_RPM ?= ""
 SLES_REGISTRATION_CODE ?= "73D5EBB68CB348"
 
 # Azure VM image specifications
-AZURE_IMAGE_PUBLISHER ?= OpenLogic
-AZURE_IMAGE_OFFER ?= CentOS
-AZURE_IMAGE_SKU ?= 7.6
-ARM_BUILD_REGION ?= northeurope
+ifeq ($(CLOUD_PROVIDER),Azure)
+	PRIVATE_VIRTUAL_NETWORK_WITH_PUBLIC_IP ?= false
+	AZURE_INITIAL_COPY ?= true
+
+	ifdef BUILD_RESOURCE_GROUP_NAME
+		ifdef ARM_BUILD_REGION
+$(error BUILD_RESOURCE_GROUP_NAME and ARM_BUILD_REGION should not be set together)
+		endif
+	else
+		ARM_BUILD_REGION ?= northeurope
+	endif
+
+	ifdef AZURE_IMAGE_VHD
+		AZURE_IMAGE_MARKETPLACE_SET = false
+		ifdef AZURE_IMAGE_PUBLISHER
+			AZURE_IMAGE_MARKETPLACE_SET = true
+		endif
+		ifdef AZURE_IMAGE_OFFER
+			AZURE_IMAGE_MARKETPLACE_SET = true
+		endif
+		ifdef AZURE_IMAGE_SKU
+			AZURE_IMAGE_MARKETPLACE_SET = true
+		endif
+		ifeq ($(AZURE_IMAGE_MARKETPLACE_SET),true)
+$(error "AZURE_IMAGE_VHD and Marketplace image properties (AZURE_IMAGE_PUBLISHER, AZURE_IMAGE_OFFER, AZURE_IMAGE_SKU) should not be set together")
+		endif
+	else
+		ifeq ($(OS),redhat7)
+			AZURE_IMAGE_PUBLISHER ?= RedHat
+			AZURE_IMAGE_OFFER ?= RHEL
+			AZURE_IMAGE_SKU ?= 7_9
+		else ifeq ($(OS),centos7)
+			AZURE_IMAGE_PUBLISHER ?= OpenLogic
+			AZURE_IMAGE_OFFER ?= CentOS
+			AZURE_IMAGE_SKU ?= 7.6
+		else
+$(error Unexpected OS type $(OS) for Azure)
+		endif
+	endif
+endif
 
 DOCKER_REPOSITORY ?= docker-sandbox.infra.cloudera.com
 DOCKER_REPO_USERNAME ?= ""
@@ -51,7 +87,11 @@ ifndef IMAGE_NAME
 @echo IMAGE_NAME was not defined as an environment variable. Generated value: $(IMAGE_NAME)
 endif
 
-IMAGE_SIZE ?= 30
+ifeq ($(OS),centos7)
+	IMAGE_SIZE ?= 30
+else
+	IMAGE_SIZE ?= 64
+endif
 
 ifdef MAKE_PUBLIC_SNAPSHOTS
 	AWS_SNAPSHOT_GROUPS = "all"
@@ -149,7 +189,7 @@ Norway East:cldrnorwayeast
 endef
 endif
 
-AZURE_BUILD_STORAGE_ACCOUNT = "West US 2:cldrwestus2"
+AZURE_BUILD_STORAGE_ACCOUNT ?= "West US 2:cldrwestus2"
 
 S3_TARGET ?= "s3://public-repo-1.hortonworks.com/HDP/cloudbreak"
 
@@ -217,14 +257,40 @@ build-azure-centos7:
 	OS_TYPE=redhat7 \
 	ATLAS_ARTIFACT_TYPE=azure-arm \
 	SALT_INSTALL_OS=centos \
+	AZURE_IMAGE_VHD=$(AZURE_IMAGE_VHD) \
 	AZURE_IMAGE_PUBLISHER=$(AZURE_IMAGE_PUBLISHER) \
 	AZURE_IMAGE_OFFER=$(AZURE_IMAGE_OFFER) \
 	AZURE_IMAGE_SKU=$(AZURE_IMAGE_SKU) \
+	BUILD_RESOURCE_GROUP_NAME=$(BUILD_RESOURCE_GROUP_NAME) \
+	PRIVATE_VIRTUAL_NETWORK_WITH_PUBLIC_IP=$(PRIVATE_VIRTUAL_NETWORK_WITH_PUBLIC_IP) \
 	GIT_REV=$(GIT_REV) \
 	GIT_BRANCH=$(GIT_BRANCH) \
 	GIT_TAG=$(GIT_TAG) \
 	./scripts/packer.sh build -only=arm-centos7 $(PACKER_OPTS)
+ifeq ($(AZURE_INITIAL_COPY),true)
 	TRACE=1 AZURE_STORAGE_ACCOUNTS=$(AZURE_BUILD_STORAGE_ACCOUNT) ./scripts/azure-copy.sh
+endif
+
+build-azure-redhat7:
+	$(ENVS) \
+	AZURE_STORAGE_ACCOUNTS=$(AZURE_BUILD_STORAGE_ACCOUNT) \
+	OS=redhat7 \
+	OS_TYPE=redhat7 \
+	ATLAS_ARTIFACT_TYPE=azure-arm \
+	SALT_INSTALL_OS=redhat \
+	AZURE_IMAGE_VHD=$(AZURE_IMAGE_VHD) \
+	AZURE_IMAGE_PUBLISHER=$(AZURE_IMAGE_PUBLISHER) \
+	AZURE_IMAGE_OFFER=$(AZURE_IMAGE_OFFER) \
+	AZURE_IMAGE_SKU=$(AZURE_IMAGE_SKU) \
+	BUILD_RESOURCE_GROUP_NAME=$(BUILD_RESOURCE_GROUP_NAME) \
+	PRIVATE_VIRTUAL_NETWORK_WITH_PUBLIC_IP=$(PRIVATE_VIRTUAL_NETWORK_WITH_PUBLIC_IP) \
+	GIT_REV=$(GIT_REV) \
+	GIT_BRANCH=$(GIT_BRANCH) \
+	GIT_TAG=$(GIT_TAG) \
+	./scripts/packer.sh build -only=arm-redhat7 $(PACKER_OPTS)
+ifeq ($(AZURE_INITIAL_COPY),true)
+	TRACE=1 AZURE_STORAGE_ACCOUNTS=$(AZURE_BUILD_STORAGE_ACCOUNT) ./scripts/azure-copy.sh
+endif
 
 copy-azure-images:
 	TRACE=1 AZURE_STORAGE_ACCOUNTS="$(AZURE_STORAGE_ACCOUNTS)" AZURE_IMAGE_NAME="$(AZURE_IMAGE_NAME)" ./scripts/azure-copy.sh
