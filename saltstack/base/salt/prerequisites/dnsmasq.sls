@@ -1,3 +1,4 @@
-ensure_service_dnsmasq_disabled:
-  service.disabled:
+stop_and_disable_dnsmasq:
+  service.dead:
+    - enable: False
     - name: dnsmasq
