@@ -1,4 +1,4 @@
-{% set jumpgate_agent_rpm_repo_url = salt['environ.get']('JUMPGATE_AGENT_RPM_URL') %}
+{% set jumpgate_agent_rpm_url = salt['environ.get']('JUMPGATE_AGENT_RPM_URL') %}
 
 /cdp/bin/ccmv2/generate-config.sh:
   file.managed:
@@ -15,7 +15,6 @@
     - group: root
     - mode: 644
 
-{% set jumpgate_agent_rpm_url = salt['environ.get']('JUMPGATE_AGENT_RPM_URL') %}
 {% if jumpgate_agent_rpm_url %}
 install_jumpgate_agent:
   pkg.installed:
