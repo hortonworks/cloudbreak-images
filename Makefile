@@ -47,7 +47,7 @@ $(error "AZURE_IMAGE_VHD and Marketplace image properties (AZURE_IMAGE_PUBLISHER
 			AZURE_IMAGE_PUBLISHER ?= OpenLogic
 			AZURE_IMAGE_OFFER ?= CentOS
 			AZURE_IMAGE_SKU ?= 7.6
-		else
+		else ifdef OS
 $(error Unexpected OS type $(OS) for Azure)
 		endif
 	endif
