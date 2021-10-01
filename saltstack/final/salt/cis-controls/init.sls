@@ -170,6 +170,17 @@ sshd_harden_MaxStartups:
     - repl: "maxstartups 10:30:60"
     - append_if_not_found: True
 
+#Root user login via SSH needs to be disabled from version 7.2.8
+{% set version = salt['environ.get']('STACK_VERSION') %}
+{% if version and version.split('.') | map('int') | list >= [7, 2, 8] %}
+sshd_harden_PermitRootLogin:
+  file.replace:
+    - name: /etc/ssh/sshd_config
+    - pattern: "^PermitRootLogin.*"
+    - repl: "PermitRootLogin no"
+    - append_if_not_found: True
+{%- endif %}
+
 #### CIS: Sudo Configuration
 #1.3.2 Ensure sudo commands use pty
 sudo_pty:
