@@ -293,7 +293,7 @@ main() {
       setup_ccm
     elif [[ "$IS_CCM_V2_JUMPGATE_ENABLED" == "true" && "$IS_FREEIPA" == "true" ]]; then
       setup_ccmv2
-    elif [[ "$IS_CCM_V2_ENABLED" == "true" && "$IS_CCM_V2_JUMPGATE_ENABLED" == "false" ]]; then
+    elif [[ "$IS_CCM_V2_ENABLED" == "true" && "$IS_CCM_V2_JUMPGATE_ENABLED" != "true" ]]; then
       setup_ccmv2
     fi
 
