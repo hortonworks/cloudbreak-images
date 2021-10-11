@@ -157,7 +157,10 @@ make_resolv_conf() {
     fi
     
     log "Restart unbound"
-    systemctl restart unbound
+    log "$(ps aux | grep unbound)"
+    pkill -u unbound -SIGHUP unbound
+    log "Restarted unbound"
+    log "$(ps aux | grep unbound)"
 
     return 0
 }
