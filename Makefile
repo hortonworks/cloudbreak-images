@@ -88,6 +88,9 @@ ifndef IMAGE_NAME
 endif
 
 ifeq ($(OS),centos7)
+	ifeq ($(CLOUD_PROVIDER),GCP)
+		IMAGE_SIZE ?= 32
+	endif
 	IMAGE_SIZE ?= 30
 else
 	IMAGE_SIZE ?= 64
