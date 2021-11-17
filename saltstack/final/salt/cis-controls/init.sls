@@ -581,26 +581,26 @@ Fine_own_unowned_files:
   cmd.run:
     - name: 'sudo find / -xdev -nouser -exec chown root:root {} \;'
 
-####CIS: Strengthen the password policy
+####CIS: Strengthen the password policy - temporarily removed due to ENGESC-11486 (we need to add this back if CIS L1 becomes a hard requirement!)
 #https://jira.cloudera.com/browse/CB-8935
 #Ensure password expiration is 180 Days (This setting should be reviewed as per organization policy)
-PASS_MAX_DAYS:
-  file.replace:
-    - name: /etc/login.defs
-    - pattern: '^\s*PASS_MAX_DAYS.*'
-    - repl: PASS_MAX_DAYS 180
-    - append_if_not_found: True
+#PASS_MAX_DAYS:
+#  file.replace:
+#    - name: /etc/login.defs
+#    - pattern: '^\s*PASS_MAX_DAYS.*'
+#    - repl: PASS_MAX_DAYS 180
+#    - append_if_not_found: True
 #Ensure minimum days between password changes is 7 or more
-PASS_MIN_DAYS:
-  file.replace:
-    - name: /etc/login.defs
-    - pattern: '^\s*PASS_MIN_DAYS.*'
-    - repl: PASS_MIN_DAYS 1
-    - append_if_not_found: True
+#PASS_MIN_DAYS:
+#  file.replace:
+#    - name: /etc/login.defs
+#    - pattern: '^\s*PASS_MIN_DAYS.*'
+#    - repl: PASS_MIN_DAYS 1
+#    - append_if_not_found: True
 #Ensure inactive password lock is 30 days or less
-INACTIVE:
-  cmd.run:
-    - name: useradd -D -f 30
+#INACTIVE:
+#  cmd.run:
+#    - name: useradd -D -f 30
 
 ####CIS: Strengthening the PAM
 #https://jira.cloudera.com/browse/CB-8936
