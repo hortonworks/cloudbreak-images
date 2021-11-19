@@ -32,6 +32,14 @@ install_openjdk:
   pkg.installed:
     - pkgs: {{ pillar['openjdk_packages'] }}
 
+{% if 'java-11-openjdk-headless' in pillar['openjdk_packages'] %}
+set_openjdk_version_11:
+  file.append:
+    - name: /etc/profile.d/java.sh
+    - text:
+      - "sudo alternatives --set java java-11-openjdk.x86_64"
+{% endif %}
+
 {% if grains['os_family'] == 'Debian' %}
 create_jvm_symlink:
   file.symlink:
