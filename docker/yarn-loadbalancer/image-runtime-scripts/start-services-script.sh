@@ -51,7 +51,7 @@ i=0
 for server in "${SERVERS[@]}"
 do
     server=$(echo ${server} | sed 's#\\##g')
-    printf "\tserver server%s %s check\n" "${i}" "${server}" >> /tmp/haproxy.cfg
+    printf "\tserver server%s %s check port 8443\n" "${i}" "${server}" >> /tmp/haproxy.cfg
     i=$((i+1))
 done
 
