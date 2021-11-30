@@ -143,7 +143,7 @@ GCP_STORAGE_BUNDLE ?= cloudera-$(BASE_NAME)-images
 GCP_STORAGE_BUNDLE_LOG ?= cloudera-$(BASE_NAME)-images
 
 define GCP_AMI_REGIONS
-asia-east1,asia-east2,australia-southeast1,europe-west2,europe-west3,europe-west4,us-west2,southamerica-east1,asia-southeast1,us-central1,europe-west1,europe-north1,us-west1,northamerica-northeast1,us-east4,asia-south1,us-east1,asia-northeast1,asia-southeast2
+asia-east1,asia-east2,asia-south2,asia-southeast1,australia-southeast1,australia-southeast2,asia-northeast3,europe-west1,europe-west2,europe-west3,europe-west4,us-west1,us-west2,us-west3,europe-west6,us-west4,southamerica-east1,us-central1,europe-north1,europe-central2,northamerica-northeast1,northamerica-northeast2,us-east4,asia-south1,us-east1,asia-northeast2,asia-northeast1,asia-southeast2,southamerica-west1
 endef
 
 ifndef AWS_AMI_REGIONS
