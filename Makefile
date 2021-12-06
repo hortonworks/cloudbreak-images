@@ -207,7 +207,7 @@ build-aws-centos7-base:
 	GIT_REV=$(GIT_REV) \
 	GIT_BRANCH=$(GIT_BRANCH) \
 	GIT_TAG=$(GIT_TAG) \
-	./scripts/packer.sh build -only=aws-centos7 $(PACKER_OPTS)
+	./scripts/packer.sh build -color=false -only=aws-centos7 $(PACKER_OPTS)
 
 build-aws-centos7:
 	@ METADATA_FILENAME_POSTFIX=$(METADATA_FILENAME_POSTFIX) make build-aws-centos7-base
@@ -216,7 +216,7 @@ build-aws-centos7:
 	GIT_REV=$(GIT_REV) \
 	GIT_BRANCH=$(GIT_BRANCH) \
 	GIT_TAG=$(GIT_TAG) \
-	./scripts/sparseimage/packer.sh build -force $(PACKER_OPTS)
+	./scripts/sparseimage/packer.sh build -color=false -force $(PACKER_OPTS)
 
 copy-aws-images:
 	docker run -i --rm \
@@ -249,7 +249,7 @@ build-gc-centos7:
 	GIT_REV=$(GIT_REV) \
 	GIT_BRANCH=$(GIT_BRANCH) \
 	GIT_TAG=$(GIT_TAG) \
-	./scripts/packer.sh build -only=gc-centos7 $(PACKER_OPTS)
+	./scripts/packer.sh build -color=false -only=gc-centos7 $(PACKER_OPTS)
 
 build-azure-centos7:
 	$(ENVS) \
@@ -267,7 +267,7 @@ build-azure-centos7:
 	GIT_REV=$(GIT_REV) \
 	GIT_BRANCH=$(GIT_BRANCH) \
 	GIT_TAG=$(GIT_TAG) \
-	./scripts/packer.sh build -only=arm-centos7 $(PACKER_OPTS)
+	./scripts/packer.sh build -color=false -only=arm-centos7 $(PACKER_OPTS)
 ifeq ($(AZURE_INITIAL_COPY),true)
 	TRACE=1 AZURE_STORAGE_ACCOUNTS=$(AZURE_BUILD_STORAGE_ACCOUNT) ./scripts/azure-copy.sh
 endif
@@ -288,7 +288,7 @@ build-azure-redhat7:
 	GIT_REV=$(GIT_REV) \
 	GIT_BRANCH=$(GIT_BRANCH) \
 	GIT_TAG=$(GIT_TAG) \
-	./scripts/packer.sh build -only=arm-redhat7 $(PACKER_OPTS)
+	./scripts/packer.sh build -color=false -only=arm-redhat7 $(PACKER_OPTS)
 ifeq ($(AZURE_INITIAL_COPY),true)
 	TRACE=1 AZURE_STORAGE_ACCOUNTS=$(AZURE_BUILD_STORAGE_ACCOUNT) ./scripts/azure-copy.sh
 endif
