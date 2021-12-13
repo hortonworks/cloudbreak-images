@@ -88,6 +88,9 @@ create_certificates_cert_tool() {
   mv /etc/certs/server.pem /etc/certs/cluster.pem
   cp /etc/certs/cluster.pem /tmp/cluster.pem
   mv /etc/certs/server-key.pem /etc/certs/cluster-key.pem
+  cp /etc/certs/cluster.pem /etc/jumpgate/cluster.pem
+  chmod 600 /etc/jumpgate/cluster.pem
+  chown jumpgate:jumpgate /etc/jumpgate/cluster.pem
 }
 
 create_certificates_certm() {
@@ -98,6 +101,9 @@ create_certificates_certm() {
   cp $CERT_ROOT_PATH/cluster.pem /tmp/cluster.pem
   mv $CERT_ROOT_PATH/server-key.pem $CERT_ROOT_PATH/cluster-key.pem
   rm $CERT_ROOT_PATH/ca-key.pem
+  cp $CERT_ROOT_PATH/cluster.pem /etc/jumpgate/cluster.pem
+  chmod 600 /etc/jumpgate/cluster.pem
+  chown jumpgate:jumpgate /etc/jumpgate/cluster.pem
 }
 
 start_nginx() {
@@ -191,7 +197,7 @@ setup_ccmv2() {
   echo "$CCM_V2_AGENT_CERTIFICATE" | base64 --decode > "$AGENT_CERT_PATH"
   chmod 400 "$AGENT_CERT_PATH"
 
-  TRUSTED_BACKEND_CERT_PATH="/etc/certs/cluster.pem"
+  TRUSTED_BACKEND_CERT_PATH="/etc/jumpgate/cluster.pem"
 
   TRUSTED_PROXY_CERT_PATH=/etc/ccmv2/ccmv2-proxy-cert.enc
   echo "$CCM_V2_INVERTING_PROXY_CERTIFICATE" | base64 --decode > "$TRUSTED_PROXY_CERT_PATH"
