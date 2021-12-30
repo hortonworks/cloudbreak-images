@@ -201,6 +201,9 @@ check-azure-images:
 docker-build-centos7:
 	@ OS=centos7 OS_TYPE=redhat7 TAG=centos-7 DIR=centos7.3 JAVA_VERSION=8 make docker-build
 
+docker-build-centos7-ppc:
+	@ OS=centos7 OS_TYPE=redhat7 TAG=centos-7-ppc DIR=centos7.3-ppc JAVA_VERSION=8 make docker-build
+
 docker-build-centos74:
 	echo "Building image for ycloud2"
 	@ OS=centos7 OS_TYPE=redhat7 TAG=centos-74 DIR=centos7.4 JAVA_VERSION=8 make docker-build
