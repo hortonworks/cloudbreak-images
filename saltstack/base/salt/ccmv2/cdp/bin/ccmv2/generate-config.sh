@@ -50,6 +50,7 @@ EOF
 
 if [ -f "$CONFIG_FILE" ]; then
     chmod 640 ${CONFIG_FILE}
+    chown jumpgate:jumpgate ${CONFIG_FILE}
 fi
 
 systemctl restart jumpgate-agent.service

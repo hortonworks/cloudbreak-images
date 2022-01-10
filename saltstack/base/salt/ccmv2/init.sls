@@ -21,3 +21,15 @@ install_jumpgate_agent:
     - sources:
       - jumpgate-agent: {{ jumpgate_agent_rpm_url }}
 {% endif %}
+
+jumpgate_group:
+  group.present:
+    - name: jumpgate
+
+jumpgate_user:
+  user.present:
+    - name: jumpgate
+    - system: True
+    - gid: jumpgate
+    - home: /etc/jumpgate/
+    - shell: /sbin/nologin
