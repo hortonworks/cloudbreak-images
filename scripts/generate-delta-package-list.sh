@@ -134,7 +134,7 @@ function get_rpm_differences() {
   check_rpm_file $COMPLETE_RPM_PACKAGE_LIST_PATH false
 
   echo "Determining the difference between the base and complete rpm package lists"
-  grep -vf $BASE_RPM_PACKAGE_LIST_PATH $COMPLETE_RPM_PACKAGE_LIST_PATH | sort > "$DELTA_RPM_PACKAGE_LIST_PATH"
+  grep -Fxvf $BASE_RPM_PACKAGE_LIST_PATH $COMPLETE_RPM_PACKAGE_LIST_PATH | sort > "$DELTA_RPM_PACKAGE_LIST_PATH"
   check_rpm_file $DELTA_RPM_PACKAGE_LIST_PATH true
   RPM_PACKAGE_DIFF_NUMBER=$(wc -l < "$DELTA_RPM_PACKAGE_LIST_PATH")
   echo "Found ${RPM_PACKAGE_DIFF_NUMBER} difference(s) between rpm packages"
