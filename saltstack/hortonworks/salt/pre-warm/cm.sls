@@ -24,7 +24,6 @@ install_clustermanager_pgks:
       - cloudera-manager-daemons
       - cloudera-manager-agent
       - cloudera-manager-server
-      - cloudera-manager-server-db-2
     - require:
       - pkgrepo: create_clustermanager_repo
 
@@ -37,8 +36,3 @@ disable_clustermanager_agent:
   service.dead:
     - enable: False
     - name: cloudera-scm-agent
-
-disable_clustermanager_server_db:
-  service.dead:
-    - enable: False
-    - name: cloudera-scm-server-db
