@@ -100,6 +100,9 @@
     "freeipa_plugin_rpm_url": "{{ env `FREEIPA_PLUGIN_RPM_URL` }}",
     "freeipa_healthagent_rpm_url": "{{ env `FREEIPA_HEALTH_AGENT_RPM_URL` }}",
     "metadata_filename_postfix": "{{ env `METADATA_FILENAME_POSTFIX` }}",
+    "gov_https_proxy": "{{ env `HTTPS_PROXY` }}",
+    "gov_http_proxy": "{{ env `HTTP_PROXY` }}",
+    "gov_no_proxy": "{{ env `NO_PROXY` }}",
     "image_uuid": "{{ env `IMAGE_UUID` }}"
   },
   "builders": [
@@ -109,6 +112,46 @@
       "region": "us-west-1",
       "ssh_pty": true,
       "source_ami": "ami-098f55b4287a885ba",
+      "instance_type": "{{ user `aws_instance_type` }}",
+      "ssh_username": "centos",
+      "ena_support": true,
+      "skip_region_validation": true,
+      "tags": {
+        "builder": "packer",
+        "version": "{{user `version`}}",
+        "cb-creation-timestamp": "{{timestamp}}",
+        "owner": "{{ user `image_owner` }}",
+        "Customer Delivered": "{{user `tag_customer_delivered`}}"
+      },
+      "run_tags": {
+        "owner": "{{ user `image_owner` }}"
+      },
+      "ami_block_device_mappings": [
+        {
+          "device_name": "/dev/sda1",
+          "volume_type": "gp2",
+          "delete_on_termination": true,
+          "volume_size": "{{user `image_size`}}"
+        }
+      ],
+      "launch_block_device_mappings": [
+        {
+          "device_name": "/dev/sda1",
+          "volume_type": "gp2",
+          "delete_on_termination": true,
+          "volume_size": "{{user `image_size`}}"
+        }
+      ],
+      "ami_name": "{{ user `image_name`}}",
+      "subnet_id": "{{ user `subnet_id`}}",
+      "vpc_id": "{{ user `vpc_id`}}"
+    },
+    {
+      "name": "aws-gov-centos7",
+      "type": "amazon-gov-ebs",
+      "region": "us-gov-west-1",
+      "ssh_pty": true,
+      "source_ami": "ami-bbba86da",
       "instance_type": "{{ user `aws_instance_type` }}",
       "ssh_username": "centos",
       "ena_support": true,
@@ -345,7 +388,13 @@
         "JUMPGATE_AGENT_RPM_URL={{ user `jumpgate_agent_rpm_url` }}",
         "METERING_AGENT_RPM_URL={{ user `metering_agent_rpm_url` }}",
         "FREEIPA_PLUGIN_RPM_URL={{ user `freeipa_plugin_rpm_url` }}",
-        "FREEIPA_HEALTH_AGENT_RPM_URL={{ user `freeipa_healthagent_rpm_url` }}"
+        "FREEIPA_HEALTH_AGENT_RPM_URL={{ user `freeipa_healthagent_rpm_url` }}",
+        "HTTPS_PROXY={{ user `gov_https_proxy` }}",
+        "HTTP_PROXY={{ user `gov_http_proxy` }}",
+        "http_proxy={{ user `gov_http_proxy` }}",
+        "https_proxy={{ user `gov_https_proxy` }}",
+        "no_proxy={{ user `gov_no_proxy` }}",
+        "NO_PROXY={{ user `gov_no_proxy` }}"
       ]
     },
     {
