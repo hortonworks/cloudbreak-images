@@ -353,6 +353,19 @@ push-to-metadata-repo: cleanup-metadata-repo
 	cd $(GITHUB_REPO) && git add -A && git commit -am"Upload new metadata file" && git push
 	make cleanup-metadata-repo
 
+upload-package-list:
+ifdef IMAGE_NAME
+	$(eval UUID:=$(shell (cat $(IMAGE_NAME).json | jq -r '.uuid // empty')))
+	make UUID=${UUID} copy-manifest-to-s3-bucket
+endif
+
+copy-manifest-to-s3-bucket:
+ifdef UUID
+	cp -- installed-delta-packages.csv "${UUID}-manifest.csv"
+	AWS_DEFAULT_REGION=eu-west-1
+	aws s3 cp "${UUID}-manifest.csv" s3://cloudbreak-imagecatalog/image-manifests/ --acl public-read
+endif
+
 generate-last-metadata-url-file:
 ifdef IMAGE_NAME
 	echo "METADATA_URL=https://raw.githubusercontent.com/$(GITHUB_ORG)/$(GITHUB_REPO)/master/$(IMAGE_NAME)_$(METADATA_FILENAME_POSTFIX).json" > last_md
