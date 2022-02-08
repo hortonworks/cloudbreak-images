@@ -117,7 +117,3 @@ apply_optional_states
 
 echo "Adding prewarmed roles for salt used in final image"
 add_prewarmed_roles
-
-echo "Running validation and cleanup"
-highstate "final"
-

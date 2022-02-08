@@ -295,7 +295,11 @@
     },
     {
       "type": "shell",
-      "script": "scripts/salt-setup.sh",
+      "scripts": [
+        "scripts/salt-setup.sh",
+        "scripts/reboot.sh",
+        "scripts/salt-final.sh"
+      ],
       "expect_disconnect": true,
       "execute_command": "chmod +x {{ .Path }}; sudo {{ .Vars }} {{ .Path }} ",
       "environment_vars": [
