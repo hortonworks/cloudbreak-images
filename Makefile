@@ -355,7 +355,7 @@ push-to-metadata-repo: cleanup-metadata-repo
 
 upload-package-list:
 ifdef IMAGE_NAME
-	$(eval UUID:=$(shell (cat $(IMAGE_NAME).json | jq -r '.uuid // empty')))
+	$(eval UUID:=$(shell (cat $(IMAGE_NAME)_$(METADATA_FILENAME_POSTFIX).json | jq -r '.uuid // empty')))
 	make UUID=${UUID} copy-manifest-to-s3-bucket
 endif
 
