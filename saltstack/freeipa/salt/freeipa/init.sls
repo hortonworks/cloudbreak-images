@@ -39,3 +39,17 @@ install_freeipa_healthagent_rpm:
 net.ipv6.conf.lo.disable_ipv6:
   sysctl.present:
     - value: 0
+
+/usr/lib/python2.7/site-packages/ipaserver/plugins/stageuser.py:
+  file.patch:
+    - source: salt://{{ slspath }}/tmp/stageuser.py.patch
+    - hash: md5=c34ee2a14a0480f07faef36507626bc6
+    - require:
+      - freeipa-install
+
+/usr/lib/python2.7/site-packages/ipaserver/plugins/user.py:
+  file.patch:
+    - source: salt://{{ slspath }}/tmp/user.py.patch
+    - hash: md5=47508b761dfe42f173eee53a90bfb4db
+    - require:
+      - freeipa-install
