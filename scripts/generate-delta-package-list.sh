@@ -9,7 +9,8 @@ DELTA_RPM_PACKAGE_LIST_PATH=/tmp/delta-rpm-packages.txt
 PYTHON_PACKAGE_LIST_PATH=/tmp/python-packages.txt
 VIRTUALENV_PYTHON_PACKAGE_LIST_PATH=/tmp/virtualenv-python-packages.txt
 HARDCODED_PACKAGE_LIST_PATH=/tmp/hardcoded-packages.csv
-INSTALLED_PACKAGE_LIST_PATH=/tmp/installed-delta-packages.csv
+INSTALLED_DELTA_PACKAGE_LIST_PATH=/tmp/installed-delta-packages.csv
+INSTALLED_FULL_PACKAGE_LIST_PATH=/tmp/installed-full-packages.csv
 
 BASE_STATE="base"
 COMPLETE_STATE="complete"
@@ -26,7 +27,8 @@ FILTERED_RPM_PACKAGES=("gpg-pubkey")
 
 REQUIRED_KEY_LIST=("Name" "Version" "Summary" "Home-page" "Author" "License")
 
-declare -a CSV_ARRAY=()
+declare -a DELTA_CSV_ARRAY=()
+declare -a FULL_CSV_ARRAY=()
 declare -a PYTHON_PACKAGE_ARRAY=()
 declare -a PARCEL_LIST=()
 
@@ -143,9 +145,14 @@ function get_rpm_differences() {
 
 function add_rpm_package_to_csv_list() {
   local package=$1
+  local isDelta=$2
   RPM_PACKAGE_DETAIL=$(echo $(rpm -q --queryformat "%{NAME}|%{VERSION}|$SOURCE_RPM|%{LICENSE}|%{VENDOR}|%{URL}|%{SUMMARY}" "$package") | sed -e "s/;/,/g")
   RPM_PACKAGE_DETAIL=$(echo $RPM_PACKAGE_DETAIL | sed -e "s/|/;/g")
-  CSV_ARRAY+=("$RPM_PACKAGE_DETAIL")
+  if [ "$isDelta" = true ] ; then
+    DELTA_CSV_ARRAY+=("$RPM_PACKAGE_DETAIL")
+  else
+    FULL_CSV_ARRAY+=("$RPM_PACKAGE_DETAIL")
+  fi
 }
 
 function add_python_package_to_csv_list() {
@@ -165,7 +172,8 @@ function add_python_package_to_csv_list() {
   PYTHON_PACKAGE_DETAIL=$(echo $PYTHON_PACKAGE_DETAIL | sed -e "s/;/,/g")
   PYTHON_PACKAGE_DETAIL=$(echo $PYTHON_PACKAGE_DETAIL | sed -e "s/|/;/g")
   unset DETAIL_MAP
-  CSV_ARRAY+=("$PYTHON_PACKAGE_DETAIL")
+  DELTA_CSV_ARRAY+=("$PYTHON_PACKAGE_DETAIL")
+  FULL_CSV_ARRAY+=("$PYTHON_PACKAGE_DETAIL")
 }
 
 function add_parcel_to_csv_list() {
@@ -202,16 +210,21 @@ function add_parcel_to_csv_list() {
     esac
     PARCEL_DETAIL=$(echo "${name}|${version}|${SOURCE_PARCEL}|Cloudera Standard License|Cloudera Inc.|${url}|UNKNOWN" | sed -e "s/;/,/g")
     PARCEL_DETAIL=$(echo $PARCEL_DETAIL | sed -e "s/|/;/g")
-    CSV_ARRAY+=("$PARCEL_DETAIL")
+    DELTA_CSV_ARRAY+=("$PARCEL_DETAIL")
+    FULL_CSV_ARRAY+=("$PARCEL_DETAIL")
   fi
 }
 
 function construct_detailed_packages_csv {
   # Construct csv from the rpm package list
-  echo "Constructing the detailed rpm packages csv format"
+  echo "Constructing the detailed delta rpm packages csv format"
   while read package; do
-    add_rpm_package_to_csv_list "$package"
+    add_rpm_package_to_csv_list "$package" true
   done < "$DELTA_RPM_PACKAGE_LIST_PATH"
+  echo "Constructing the detailed full rpm packages csv format"
+  while read package; do
+    add_rpm_package_to_csv_list "$package" false
+  done < "$COMPLETE_RPM_PACKAGE_LIST_PATH"
 
   # Construct csv from the python package list
   echo "Constructing the detailed python packages csv format"
@@ -253,22 +266,32 @@ function construct_detailed_packages_csv {
   echo "Appending the hardcoded packages to the previous csv list"
   if [ -f $HARDCODED_PACKAGE_LIST_PATH ] ; then
     while read package; do
-      CSV_ARRAY+=("$package")
+      DELTA_CSV_ARRAY+=("$package")
+      FULL_CSV_ARRAY+=("$package")
     done < "$HARDCODED_PACKAGE_LIST_PATH"
   fi
 
   # Merge the different lines into one file
   echo "Merging the generated csv detailed rows"
-  IFS=$'\n' sorted=($(sort <<<"${CSV_ARRAY[*]}"))
-  unset IFS
-  printf "%s\n" "${HEADER}" >> "$INSTALLED_PACKAGE_LIST_PATH"
-  printf "%s\n" "${sorted[@]}" >> "$INSTALLED_PACKAGE_LIST_PATH"
+  merge_packages "$INSTALLED_DELTA_PACKAGE_LIST_PATH" "${DELTA_CSV_ARRAY[@]}"
+  merge_packages "$INSTALLED_FULL_PACKAGE_LIST_PATH" "${FULL_CSV_ARRAY[@]}"
+}
 
-  if [ -f $INSTALLED_PACKAGE_LIST_PATH ] ; then
-    echo "Final detailed package list was saved under ${INSTALLED_PACKAGE_LIST_PATH}"
-    chmod 644 "$INSTALLED_PACKAGE_LIST_PATH"
+function merge_packages() {
+  local output=$1
+  shift
+  local array=("$@")
+
+  IFS=$'\n' sorted=($(sort <<<"${array[*]}"))
+  unset IFS
+  printf "%s\n" "${HEADER}" >> "$output"
+  printf "%s\n" "${sorted[@]}" >> "$output"
+
+  if [ -f $output ] ; then
+    echo "Final detailed package list was saved under ${output}"
+    chmod 644 "$output"
   else
-    echo "Final detailed package file not found: " $INSTALLED_PACKAGE_LIST_PATH
+    echo "Final detailed package file not found: " $output
   fi
 }
 

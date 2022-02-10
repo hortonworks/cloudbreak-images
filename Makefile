@@ -349,8 +349,10 @@ push-to-metadata-repo: cleanup-metadata-repo
 	$(eval FILE=$(shell (ls -1tr *_manifest.json | tail -1 | sed "s/_manifest//")))
 	cp $(FILE) $(GITHUB_REPO)
 	$(eval UUID=$(shell (cat $(FILE) | jq .uuid)))
-	mkdir -p "${GITHUB_REPO}/manifest" && cp installed-delta-packages.csv "${GITHUB_REPO}/manifest/${UUID}-manifest.csv"
-	cd $(GITHUB_REPO) && git add -A && git commit -am"Upload new metadata file" && git push
+	mkdir -p "${GITHUB_REPO}/manifest"
+	cp installed-delta-packages.csv "${GITHUB_REPO}/manifest/${UUID}-manifest.csv"
+	cp installed-full-packages.csv "${GITHUB_REPO}/manifest/${UUID}-full-manifest.csv"
+	cd $(GITHUB_REPO) && git add -A && git commit -am"Upload new metadata files" && git push
 	make cleanup-metadata-repo
 
 upload-package-list:

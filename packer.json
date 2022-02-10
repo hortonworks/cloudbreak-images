@@ -373,6 +373,12 @@
       "source": "/tmp/installed-delta-packages.csv",
       "destination": "installed-delta-packages.csv",
       "direction" : "download"
+    },
+    {
+      "type": "file",
+      "source": "/tmp/installed-full-packages.csv",
+      "destination": "installed-full-packages.csv",
+      "direction" : "download"
     }
   ],
   "post-processors": [
