@@ -152,6 +152,12 @@ ap-northeast-1,ap-northeast-2,ap-south-1,ap-southeast-1,ap-southeast-2,ca-centra
 endef
 endif
 
+ifndef AWS_GOV_AMI_REGIONS
+define AWS_GOV_AMI_REGIONS
+us-gov-west-1,us-gov-east-1
+endef
+endif
+
 ifndef AZURE_STORAGE_ACCOUNTS
 define AZURE_STORAGE_ACCOUNTS
 East Asia:cldreastasia,\
@@ -225,6 +231,45 @@ copy-aws-images:
 		-e AWS_ACCESS_KEY_ID=$(AWS_ACCESS_KEY_ID) \
 		-e AWS_SECRET_ACCESS_KEY=$(AWS_SECRET_ACCESS_KEY) \
 		-e AWS_AMI_REGIONS=$(AWS_AMI_REGIONS) \
+		-e IMAGE_NAME=$(IMAGE_NAME) \
+		-e SOURCE_LOCATION=$(SOURCE_LOCATION) \
+		--entrypoint="/bin/bash" \
+		amazon/aws-cli -c "./aws-copy.sh"
+
+build-aws-gov-centos7-base:
+	$(ENVS) \
+	AWS_AMI_REGIONS="us-gov-west-1" \
+	OS=centos7 \
+	OS_TYPE=redhat7 \
+	ATLAS_ARTIFACT_TYPE=amazon-gov \
+	SALT_INSTALL_OS=centos \
+	GIT_REV=$(GIT_REV) \
+	GIT_BRANCH=$(GIT_BRANCH) \
+	GIT_TAG=$(GIT_TAG) \
+	HTTPS_PROXY=http://usgw1-egress.gov-dev.cloudera.com:3128 \
+	HTTP_PROXY=http://usgw1-egress.gov-dev.cloudera.com:3128 \
+	NO_PROXY=172.20.0.0/16,127.0.0.1,localhost,169.254.169.254,internal,local,s3.us-gov-west-1.amazonaws.com,us-gov-west-1.eks.amazonaws.com \
+	./scripts/packer.sh build -color=false -only=aws-gov-centos7 $(PACKER_OPTS)
+
+build-aws-gov-centos7:
+	@ METADATA_FILENAME_POSTFIX=$(METADATA_FILENAME_POSTFIX) make build-aws-gov-centos7-base
+	$(ENVS) \
+	AWS_AMI_REGIONS="$(AWS_GOV_AMI_REGIONS)" \
+	GIT_REV=$(GIT_REV) \
+	GIT_BRANCH=$(GIT_BRANCH) \
+	GIT_TAG=$(GIT_TAG) \
+	HTTPS_PROXY=http://usgw1-egress.gov-dev.cloudera.com:3128 \
+	HTTP_PROXY=http://usgw1-egress.gov-dev.cloudera.com:3128 \
+	NO_PROXY=172.20.0.0/16,127.0.0.1,localhost,169.254.169.254,internal,local,s3.us-gov-west-1.amazonaws.com,us-gov-west-1.eks.amazonaws.com \
+	./scripts/sparseimage/packer.sh build -color=false -force $(PACKER_OPTS)
+
+copy-aws-gov-images:
+	docker run -i --rm \
+		-v "${PWD}/scripts:/scripts" \
+		-w /scripts \
+		-e AWS_ACCESS_KEY_ID=$(AWS_GOV_ACCESS_KEY_ID) \
+		-e AWS_SECRET_ACCESS_KEY=$(AWS_GOV_SECRET_ACCESS_KEY) \
+		-e AWS_AMI_REGIONS=$(AWS_GOV_AMI_REGIONS) \
 		-e IMAGE_NAME=$(IMAGE_NAME) \
 		-e SOURCE_LOCATION=$(SOURCE_LOCATION) \
 		--entrypoint="/bin/bash" \
