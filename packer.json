@@ -148,7 +148,7 @@
     },
     {
       "name": "aws-gov-centos7",
-      "type": "amazon-gov-ebs",
+      "type": "amazon-ebs",
       "region": "us-gov-west-1",
       "ssh_pty": true,
       "source_ami": "ami-bbba86da",
