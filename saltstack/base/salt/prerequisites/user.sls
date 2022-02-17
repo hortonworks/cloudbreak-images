@@ -1,9 +1,3 @@
-{% if salt['environ.get']('OS').startswith("centos") %}
-centos_user_nologin_shell:
-  cmd.run:
-    - name: usermod centos -s /usr/sbin/nologin
-{% endif %}
-
 create_cloudbreak_user:
   user.present:
     - name: cloudbreak

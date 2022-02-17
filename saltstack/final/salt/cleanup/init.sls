@@ -6,9 +6,11 @@ include:
 {% if pillar['subtype'] != 'Docker' %}
   - {{ slspath }}.hostname
 {% endif %}
+  - {{ slspath }}.kernel
   - {{ slspath }}.package
   - {{ slspath }}.sync_fs
   - {{ slspath }}.salt
 {% if not salt['file.directory_exists']('/vagrant') %}
   - {{ slspath }}.cloud-init
 {% endif %}
+  - {{ slspath }}.user
