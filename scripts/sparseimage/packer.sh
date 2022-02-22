@@ -7,12 +7,13 @@ packer_in_container() {
 
   # Figure out the AMI of the previous build
   if [[ -f $(ls -1tr *_manifest.json | tail -1) ]]; then
-    SOURCE_AMI=$(jq -r '.builds[0].artifact_id | split(",")[] | select(contains("us-west-1")) | split(":")[1]' $(ls -1tr *_manifest.json | tail -1))
+    REGION=$(jq -r '.builds[0].artifact_id | split(",")[0] | split(":")[0]' $(ls -1tr *_manifest.json | tail -1))
+    SOURCE_AMI=$(jq -r '.builds[0].artifact_id | split(",")[0] | split(":")[1]' $(ls -1tr *_manifest.json | tail -1))
   else
     echo "There is no image burnt with name $IMAGE_NAME"
     exit -1
   fi
-  AMI_INFO=$(aws ec2 describe-images --region us-west-1 --image-ids $SOURCE_AMI --output json | jq -r '.Images[0]')
+  AMI_INFO=$(aws ec2 describe-images --region $REGION --image-ids $SOURCE_AMI --output json | jq -r '.Images[0]')
   # Figure out the snapshot id of the previous build
   SOURCE_AMI_SNAPSHOT=$(echo $AMI_INFO | jq -r '.BlockDeviceMappings[0].Ebs.SnapshotId')
   
