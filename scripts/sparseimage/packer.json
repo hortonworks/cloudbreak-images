@@ -26,6 +26,7 @@
     {
         "type": "amazon-ebssurrogate",
         "region": "{{user `aws_region`}}",
+        "skip_region_validation": true,
         "source_ami": "{{user `aws_source_ami`}}",
         "instance_type": "{{user `instance_size`}}",
         "ssh_username": "{{user `aws_ssh_username`}}",
