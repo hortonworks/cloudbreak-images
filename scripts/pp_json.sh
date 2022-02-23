@@ -48,6 +48,7 @@ cat  > ${image_name}_$metadata_filename_postfix.json <<EOF
 "description": "${description}",
 "stack_type": "${stack_type}",
 "ambari_version": "${clustermanager_version}",
+"artifact_type": "${artifact_type}",
 "ambari_os_type": "${clustermanager_os_type}",
 "ambari_baseurl": "$([ "$repository_type" == "local" ] && echo "${local_url_ambari}" || echo "${clustermanager_baseurl}")",
 "cm_gpgkey": "${clustermanager_gpgkey}",
