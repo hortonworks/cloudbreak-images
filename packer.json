@@ -448,6 +448,7 @@
         "prometheus=true",
         "created={{ isotime \"2006-01-02 15:04:05 -0700\" }}",
         "git_rev={{user `git_rev`}}",
+        "artifact_type={user `atlas_artifact_type`}}",
         "git_branch={{user `git_branch`}}",
         "git_tag={{user `git_tag`}}",
         "os={{user `os`}}",
