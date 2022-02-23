@@ -2,9 +2,9 @@
     "variables": {
         "aws_subnet_id": "{{env `AWS_SUBNET_ID`}}",
         "aws_vpc_id": "{{env `AWS_VPC_ID`}}",
-        "aws_region": "us-west-1",
+        "aws_region": "{{env `AWS_REGION`}}",
         "aws_ssh_username": "ubuntu",
-        "aws_source_ami": "ami-b20542d2",
+        "aws_source_ami": "{{env `AWS_AMI`}}",
         "aws_target_ami": "{{env `IMAGE_NAME`}}",
         "aws_associate_public_ip_address": "false",
         "aws_ena_support": "true",
