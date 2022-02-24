@@ -269,8 +269,8 @@ copy-aws-gov-images:
 	docker run -i --rm \
 		-v "${PWD}/scripts:/scripts" \
 		-w /scripts \
-		-e AWS_ACCESS_KEY_ID=$(AWS_GOV_ACCESS_KEY_ID) \
-		-e AWS_SECRET_ACCESS_KEY=$(AWS_GOV_SECRET_ACCESS_KEY) \
+		-e AWS_ACCESS_KEY_ID=$(AWS_ACCESS_KEY_ID) \
+		-e AWS_SECRET_ACCESS_KEY=$(AWS_SECRET_ACCESS_KEY) \
 		-e AWS_AMI_REGIONS=$(AWS_GOV_AMI_REGIONS) \
 		-e IMAGE_NAME=$(IMAGE_NAME) \
 		-e SOURCE_LOCATION=$(SOURCE_LOCATION) \
