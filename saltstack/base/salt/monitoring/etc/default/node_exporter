@@ -1,1 +1,0 @@
-DAEMON_ARGS="-web.listen-address 127.0.0.1:9100 -collector.diskstats.ignored-devices='^(ram|loop|fd)\\d+$'"
