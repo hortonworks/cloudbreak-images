@@ -32,6 +32,15 @@ if [[ "$CDP_LOGGING_AGENT_VERSION" != "" ]]; then
 	cat /tmp/package-versions.json | jq --arg cdp_logging_agent_version $CDP_LOGGING_AGENT_VERSION -r '. + {"cdp-logging-agent": $cdp_logging_agent_version}' > /tmp/package-versions.json.tmp && mv /tmp/package-versions.json.tmp /tmp/package-versions.json
 fi
 
+if [[ -f "/opt/node_exporter/node_exporter" ]]; then
+    node_exporter_version=$(/opt/node_exporter/node_exporter --version 2>&1 | grep -Po "version (\d+\.)+\d+" | cut -d ' ' -f2)
+	cat /tmp/package-versions.json | jq --arg ne_version $node_exporter_version -r '. + {"node-exporter": $ne_version}' > /tmp/package-versions.json.tmp && mv /tmp/package-versions.json.tmp /tmp/package-versions.json
+fi
+if [[ -f "/opt/blackbox_exporter/blackbox_exporter" ]]; then
+	blackbox_exporter_version=$(/opt/blackbox_exporter/blackbox_exporter --version 2>&1 | grep -Po "version (\d+\.)+\d+" | cut -d ' ' -f2)
+	cat /tmp/package-versions.json | jq --arg be_version $blackbox_exporter_version -r '. + {"blackbox-exporter": $be_version}' > /tmp/package-versions.json.tmp && mv /tmp/package-versions.json.tmp /tmp/package-versions.json
+fi
+
 for package in "$@"
 do
 	if [ "$package" != "None" ]; then
