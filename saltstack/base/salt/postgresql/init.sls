@@ -146,3 +146,8 @@ configure-listen-address:
 {% if pillar['subtype'] != 'Docker' %}
       - service: start-postgresql
 {% endif %}
+
+set-postgres-nologin-shell:
+  user.present:
+    - name: postgres
+    - shell: /usr/sbin/nologin
