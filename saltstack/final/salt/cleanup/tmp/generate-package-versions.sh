@@ -2,6 +2,18 @@
 
 set -x
 
+set_version_for_rpm_pkg() {
+	package_name=$1
+	package_installed=$(rpm -q "$package_name" 2>&1 >/dev/null; echo $?)
+	if [[ "$package_installed" == "0" ]]; then
+		rpm_version=$(rpm -q --queryformat '%-{VERSION}' "$package_name")
+		echo "{\"$package_name\": \"$rpm_version\"}" > /tmp/add_pkg_version.json.tmp
+		jq -s '.[0] * .[1]' /tmp/add_pkg_version.json.tmp /tmp/package-versions.json > /tmp/package-versions.json.tmp
+		rm -f /tmp/add_pkg_version.json.tmp
+		mv /tmp/package-versions.json.tmp /tmp/package-versions.json
+	fi
+}
+
 echo '{}' | jq --arg sb "$(salt-bootstrap --version | awk '{print $2}')" '. + {"salt-bootstrap": $sb}' > /tmp/package-versions.json
 cat /tmp/package-versions.json | jq --arg sv "$($SALT_PATH/bin/salt-call --local grains.get saltversion --out json | jq -r .local)" '. + {"salt": $sv}' > /tmp/package-versions.json
 
@@ -24,13 +36,10 @@ else
 	exit 1
 fi
 
-if [[ "$CDP_TELEMETRY_VERSION" != "" ]]; then
-	cat /tmp/package-versions.json | jq --arg cdp_telemetry_version $CDP_TELEMETRY_VERSION -r '. + {"cdp-telemetry": $cdp_telemetry_version}' > /tmp/package-versions.json.tmp && mv /tmp/package-versions.json.tmp /tmp/package-versions.json
-fi
-
-if [[ "$CDP_LOGGING_AGENT_VERSION" != "" ]]; then
-	cat /tmp/package-versions.json | jq --arg cdp_logging_agent_version $CDP_LOGGING_AGENT_VERSION -r '. + {"cdp-logging-agent": $cdp_logging_agent_version}' > /tmp/package-versions.json.tmp && mv /tmp/package-versions.json.tmp /tmp/package-versions.json
-fi
+set_version_for_rpm_pkg "cdp-telemetry"
+set_version_for_rpm_pkg "cdp-logging-agent"
+set_version_for_rpm_pkg "cdp-vmagent"
+set_version_for_rpm_pkg "cdp-request-signer"
 
 if [[ -f "/opt/node_exporter/node_exporter" ]]; then
     node_exporter_version=$(/opt/node_exporter/node_exporter --version 2>&1 | grep -Po "version (\d+\.)+\d+" | cut -d ' ' -f2)
