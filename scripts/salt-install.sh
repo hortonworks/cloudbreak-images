@@ -67,6 +67,11 @@ function install_nvme-cli () {
 }
 
 function install_with_yum() {
+  # Workaround based on the official documentation: https://cloud.google.com/compute/docs/troubleshooting/known-issues#known_issues_for_linux_vm_instances
+  if [ "${CLOUD_PROVIDER}" == "GCP" ]; then
+    sudo sed -i 's/repo_gpgcheck=1/repo_gpgcheck=0/g' /etc/yum.repos.d/google-cloud.repo
+  fi
+  
   yum update -y python
   yum install -y yum-utils yum-plugin-versionlock
   yum clean metadata
