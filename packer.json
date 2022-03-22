@@ -103,7 +103,8 @@
     "gov_https_proxy": "{{ env `HTTPS_PROXY` }}",
     "gov_http_proxy": "{{ env `HTTP_PROXY` }}",
     "gov_no_proxy": "{{ env `NO_PROXY` }}",
-    "image_uuid": "{{ env `IMAGE_UUID` }}"
+    "image_uuid": "{{ env `IMAGE_UUID` }}",
+    "cloud_provider": "{{ env `CLOUD_PROVIDER` }}"
   },
   "builders": [
     {
@@ -332,7 +333,8 @@
         "OS={{user `os`}}",
         "PYTHON_APT_VERSION={{user `python_apt_version`}}",
         "SALT_PATH={{user `salt_path`}}",
-        "SALT_REPO_FILE={{user `salt_repo_file` }}"
+        "SALT_REPO_FILE={{user `salt_repo_file` }}",
+        "CLOUD_PROVIDER={{user `cloud_provider`}}"
       ],
       "execute_command": "chmod +x {{ .Path }}; sudo {{ .Vars }} {{ .Path }}"
     },

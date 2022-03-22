@@ -175,6 +175,7 @@ packer_in_container() {
     -e FREEIPA_PLUGIN_RPM_URL="$FREEIPA_PLUGIN_RPM_URL" \
     -e FREEIPA_HEALTH_AGENT_RPM_URL="$FREEIPA_HEALTH_AGENT_RPM_URL" \
     -e IMAGE_UUID="$IMAGE_UUID" \
+    -e CLOUD_PROVIDER="$CLOUD_PROVIDER" \
     -v /var/run/docker.sock:/var/run/docker.sock \
     -v $PWD:$PWD \
     -w $PWD \
