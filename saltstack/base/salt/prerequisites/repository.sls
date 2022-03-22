@@ -35,3 +35,20 @@ remove_duplicates_from_yum_conf:
     - name: uniq /etc/yum.conf > /tmp/yum.conf && mv -f /tmp/yum.conf /etc/yum.conf && chmod 644 /etc/yum.conf && chown root:root /etc/yum.conf
 
 {% endif %}
+
+cat_gcloud_repo:
+  cmd.run:
+    - name: cat /etc/yum.repos.d/google-cloud.repo
+    - creates: /etc/yum.repos.d/google-cloud.repo
+
+disable_gpgcheck_for_gcloud_repo:
+  file.replace:
+    - path: /etc/yum.repos.d/google-cloud.repo
+    - pattern: '^repo_gpgcheck=1'
+    - repl: 'repo_gpgcheck=0'
+    - ignore_if_missing: True
+
+cat_gcloud_repo_after_changes:
+  cmd.run:
+    - name: cat /etc/yum.repos.d/google-cloud.repo
+    - creates: /etc/yum.repos.d/google-cloud.repo
