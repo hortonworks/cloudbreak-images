@@ -29,9 +29,15 @@ openjdk_packages:
 {% elif salt['environ.get']('OS') == 'redhat7' %}
   - java-1.8.0-openjdk-headless
   - java-1.8.0-openjdk-devel
+  - java-11-openjdk-headless
+  - java-11-openjdk-devel
 {% else %}
   - java-1.8.0-openjdk-headless
   - java-1.8.0-openjdk-devel
   - java-1.8.0-openjdk-javadoc
   - java-1.8.0-openjdk-src
+  - java-11-openjdk-headless
+  - java-11-openjdk-devel
+  - java-11-openjdk-javadoc
+  - java-11-openjdk-src
 {% endif %}
