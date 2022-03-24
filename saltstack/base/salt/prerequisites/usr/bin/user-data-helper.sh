@@ -15,6 +15,7 @@ set
 
 : ${XARGS_PARALLEL:=}
 # : ${XARGS_PARALLEL:="-P 20"}
+: ${PROXY_PROTOCOL:=http}
 
 {% if pillar['CUSTOM_IMAGE_TYPE'] == 'freeipa' %}
 IS_FREEIPA=true
@@ -219,13 +220,13 @@ setup_ccmv2() {
 
 setup_proxy() {
     if [[ -z ${PROXY_USER} ]]; then
-      HTTP_PROXY_URL="http://$PROXY_HOST:$PROXY_PORT"
+      PROXY_URL="$PROXY_PROTOCOL://$PROXY_HOST:$PROXY_PORT"
     else
-      HTTP_PROXY_URL="http://${PROXY_USER}:${PROXY_PASSWORD}@$PROXY_HOST:$PROXY_PORT"
+      PROXY_URL="$PROXY_PROTOCOL://${PROXY_USER}:${PROXY_PASSWORD}@$PROXY_HOST:$PROXY_PORT"
     fi
     PROXY_ENV_FILE=/etc/cdp/proxy.env
     mkdir -p /etc/cdp
-    echo http_proxy=$HTTP_PROXY_URL > $PROXY_ENV_FILE
+    echo ${PROXY_PROTOCOL}_proxy=$PROXY_URL > $PROXY_ENV_FILE
     if  [[ ! -z ${PROXY_NO_PROXY_HOSTS} ]]; then
       echo no_proxy=${PROXY_NO_PROXY_HOSTS} >> $PROXY_ENV_FILE
     fi
