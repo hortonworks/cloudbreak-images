@@ -25,6 +25,7 @@ INVERTING_PROXY_URL=${11}
 HTTP_PROXY_URL=${12:-""}
 
 CONFIG_FILE=/etc/jumpgate/config.toml
+LOG_FILE=/var/log/jumpgate/out.log
 
 cat > ${CONFIG_FILE} <<EOF
 [agent]
@@ -52,5 +53,8 @@ if [ -f "$CONFIG_FILE" ]; then
     chmod 640 ${CONFIG_FILE}
     chown jumpgate:jumpgate ${CONFIG_FILE}
 fi
+
+touch ${LOG_FILE}
+chown jumpgate:jumpgate ${LOG_FILE}
 
 systemctl restart jumpgate-agent.service
