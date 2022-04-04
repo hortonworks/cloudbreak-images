@@ -1,4 +1,4 @@
-FROM docker-sandbox.infra.cloudera.com/ycloud-base/base-centos7.6:0.1.0.0-5
+FROM docker-sandbox.infra.cloudera.com/ycloud-base/base-centos7.9:0.1.0.0-117
 
 ARG SALT_VERSION
 ARG SALT_PATH
@@ -76,7 +76,7 @@ RUN rm -f /etc/salt/minion_id /etc/salt/pki/minion/minion.pem /etc/salt/pki/mini
 # restore systemctl to system default
 RUN ln -sf /usr/bin/systemctl.orig /usr/bin/systemctl
 
-ADD docker/centos7.6/image-runtime-scripts/start-services-script.sh /bootstrap/
+ADD docker/centos7.9/image-runtime-scripts/start-services-script.sh /bootstrap/
 
 #################################################################################
 

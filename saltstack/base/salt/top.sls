@@ -20,4 +20,6 @@ base:
     - ccmv2
     - custom
     - mount
+{% if not salt['file.directory_exists']('/yarn-private') %}
     - chrony
+{% endif %}

@@ -359,6 +359,10 @@ docker-build-centos76:
 	echo "Building image for ycloud2"
 	@ OS=centos7 OS_TYPE=redhat7 TAG=centos-76 DIR=centos7.6 make docker-build
 
+docker-build-centos79:
+	echo "Building image for ycloud2"
+	@ OS=centos7 OS_TYPE=redhat7 TAG=centos-79 DIR=centos7.9 make docker-build
+
 docker-build-yarn-loadbalancer:
 	echo "Building loadbalancer image for ycloud2"
 	@ OS=centos7 OS_TYPE=redhat7 TAG=yarn-loadbalancer DIR=yarn-loadbalancer make docker-build

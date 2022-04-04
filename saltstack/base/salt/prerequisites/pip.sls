@@ -16,7 +16,7 @@ update_python_pip3:
     - name: pip3 install --upgrade --index=https://pypi.python.org/simple/ pip==9.0.3
     - onlyif: pip3 -V
 
-{% elif grains['os'] != 'Amazon' %}
+{% elif grains['os'] != 'Amazon' and not salt['file.directory_exists']('/yarn-private') %}
 update_python_pip2:
   cmd.run:
     - name: pip2 install --upgrade --index=https://pypi.python.org/simple/ pip==8.1.2
