@@ -71,6 +71,15 @@ function install_with_yum() {
   if [ "${CLOUD_PROVIDER}" == "GCP" ]; then
     sudo sed -i 's/repo_gpgcheck=1/repo_gpgcheck=0/g' /etc/yum.repos.d/google-cloud.repo
   fi
+
+  # The host http://olcentgbl.trafficmanager.net keeps causing problems, so we re-enable the default mirrorlist instead.
+  # Also, this is the recommended way for YUM updates to work anyway. https://wiki.centos.org/PackageManagement/Yum/FastestMirror
+  if [ "${CLOUD_PROVIDER}" == "Azure" ]; then
+    if [ "${OS}" == "centos7" ] ; then
+      sudo sed -i 's/\#mirrorlist/mirrorlist/g' /etc/yum.repos.d/CentOS-Base.repo
+      sudo sed -i 's/baseurl/\#baseurl/g' /etc/yum.repos.d/CentOS-Base.repo
+    fi
+  fi
   
   yum update -y python
   yum install -y yum-utils yum-plugin-versionlock
