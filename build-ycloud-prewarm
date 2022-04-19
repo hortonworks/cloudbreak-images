@@ -12,7 +12,7 @@ export CLUSTERMANAGER_VERSION="7.x.0"
 export CLUSTERMANAGER_BASEURL="http://cloudera-build-us-west-1.vpc.cloudera.com/s3/build/${CLUSTERMANAGER_BUILD}/cm7/7.x.0/redhat7/yum/"
 export CLUSTERMANAGER_GPGKEY="http://cloudera-build-us-west-1.vpc.cloudera.com/s3/build/${CLUSTERMANAGER_BUILD}/cm7/7.x.0/redhat7/yum/RPM-GPG-KEY-cloudera"
 
-export SALT_VERSION="3000.8"
+export SALT_VERSION="3004.1"
 export SALT_PATH="/opt/salt_${SALT_VERSION}"
 export PYZMQ_VERSION="19.0"
 export PYTHON_APT_VERSION="1.1.0_beta1ubuntu0.16.04.1"

@@ -75,7 +75,7 @@ PREWARM_TAG ?= "prewarmed_v1"
 ## https://github.com/hashicorp/packer/issues/6536
 AWS_MAX_ATTEMPTS ?= 300
 PACKAGE_VERSIONS ?= ""
-SALT_VERSION ?= 3000.8
+SALT_VERSION ?= 3004.1
 SALT_PATH ?= /opt/salt_$(SALT_VERSION)
 PYZMQ_VERSION ?= 19.0
 PYTHON_APT_VERSION ?= 1.1.0_beta1ubuntu0.16.04.1
