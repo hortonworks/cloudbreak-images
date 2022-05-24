@@ -1,0 +1,70 @@
+[base-hwx-internal]
+name=CentOS-$releasever - Base
+baseurl=http://mirrors.l42scl.hortonworks.com/centos/$releasever/os/$basearch/
+gpgcheck=1
+enabled=1
+gpgkey=file:///etc/pki/rpm-gpg/RPM-GPG-KEY-CentOS-7
+## Setting lower priority than HDP installs but more than the default repos
+priority=5
+
+#released updates
+[updates-hwx-internal]
+name=CentOS-$releasever - Updates
+baseurl=http://mirrors.l42scl.hortonworks.com/centos/$releasever/updates/$basearch/
+gpgcheck=1
+enabled=1
+gpgkey=file:///etc/pki/rpm-gpg/RPM-GPG-KEY-CentOS-7
+priority=5
+
+#additional packages that may be useful
+[extras-hwx-internal]
+name=CentOS-$releasever - Extras
+baseurl=http://mirrors.l42scl.hortonworks.com/centos/$releasever/extras/$basearch/
+gpgcheck=1
+enabled=1
+gpgkey=file:///etc/pki/rpm-gpg/RPM-GPG-KEY-CentOS-7
+priority=5
+
+#additional packages that extend functionality of existing packages
+[centosplus-hwx-internal]
+name=CentOS-$releasever - Plus
+baseurl=http://mirrors.l42scl.hortonworks.com/centos/$releasever/centosplus/$basearch/
+gpgcheck=1
+enabled=0
+gpgkey=file:///etc/pki/rpm-gpg/RPM-GPG-KEY-CentOS-7
+priority=5
+
+[fasttrack-hwx-internal]
+name=CentOS-7 - fasttrack
+baseurl=http://mirrors.l42scl.hortonworks.com/centos/$releasever/fasttrack/$basearch/
+gpgcheck=1
+enabled=0
+gpgkey=file:///etc/pki/rpm-gpg/RPM-GPG-KEY-CentOS-7
+priority=5
+
+[epel-hwx-internal]
+name=Extra Packages for Enterprise Linux 7 - $basearch
+baseurl=http://mirrors.l42scl.hortonworks.com/epel/7/$basearch
+failovermethod=priority
+enabled=1
+gpgcheck=1
+gpgkey=file:///etc/pki/rpm-gpg/RPM-GPG-KEY-EPEL-7
+priority=5
+
+[epel-debuginfo-hwx-internal]
+name=Extra Packages for Enterprise Linux 7 - $basearch - Debug
+baseurl=http://mirrors.l42scl.hortonworks.com/epel/7/$basearch/debug
+failovermethod=priority
+enabled=0
+gpgkey=file:///etc/pki/rpm-gpg/RPM-GPG-KEY-EPEL-7
+gpgcheck=1
+priority=5
+
+[epel-source-hwx-internal]
+name=Extra Packages for Enterprise Linux 7 - $basearch - Source
+baseurl=http://mirrors.l42scl.hortonworks.com/epel/7/SRPMS
+failovermethod=priority
+enabled=0
+gpgkey=file:///etc/pki/rpm-gpg/RPM-GPG-KEY-EPEL-7
+gpgcheck=1
+priority=5
