@@ -40,6 +40,9 @@ if [[ $BASE_NAME == "cb" ]]; then
     if [[ $COMP_RESULT == 2 ]]; then
       SALT_VERSION=3000.8
     fi
+  # Missing STACK_VERSION and BASE_NAME=cb -> base image
+  else
+    SALT_VERSION=3000.8
   fi
 fi
 
