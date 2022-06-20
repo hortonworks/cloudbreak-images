@@ -30,7 +30,7 @@ compare_version () {
 BASE_NAME=$1
 STACK_VERSION=$2
 
-SALT_VERSION=3001.8
+SALT_VERSION=3004.1
 
 if [[ $BASE_NAME == "cb" ]]; then
   if [[ ! -z "$STACK_VERSION" ]]; then
