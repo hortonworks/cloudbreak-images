@@ -1,9 +1,18 @@
 {% if grains['os_family'] == 'RedHat' %}
+
+{% if pillar['OS'] == 'redhat8' %}  
+install_selinux_module_dependecies:
+  pkg.installed:
+    - pkgs:
+      - policycoreutils
+      - policycoreutils-python-utils
+{% else %}
 install_selinux_module_dependecies:
   pkg.installed:
     - pkgs:
       - policycoreutils
       - policycoreutils-python
+{% endif %}
 
 selinux.setenforce:
   module.run:

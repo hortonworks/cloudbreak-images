@@ -14,7 +14,7 @@ remove_ip6tables:
   pkg.purged:
     - name: ip6tables
 
-{% elif pillar['OS'] == 'redhat7' %}
+{% elif pillar['OS'] == 'redhat7' or pillar['OS'] == 'redhat8' %}
 
 disable_firewalld_service:
   service.dead:
