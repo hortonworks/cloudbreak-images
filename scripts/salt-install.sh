@@ -28,6 +28,22 @@ function install_salt_with_pip() {
   pip install -r /tmp/salt_requirements.txt
 }
 
+function install_salt_with_pip3() {
+
+  echo "Installing salt with version: $SALT_VERSION"
+  pip3 install --upgrade pip
+  pip3 install virtualenv
+
+  mkdir ${SALT_PATH}
+  python3 -m virtualenv ${SALT_PATH}
+  source ${SALT_PATH}/bin/activate
+
+  pip3 install --upgrade pip
+  pip3 install pbr  
+  pip3 install -r /tmp/salt_requirements.txt
+}
+
+
 function install_with_apt() {
   export DEBIAN_FRONTEND=noninteractive
   apt-get update
@@ -67,6 +83,7 @@ function install_nvme-cli () {
 }
 
 function install_with_yum() {
+ 
   # Workaround based on the official documentation: https://cloud.google.com/compute/docs/troubleshooting/known-issues#known_issues_for_linux_vm_instances
   if [ "${CLOUD_PROVIDER}" == "GCP" ]; then
     sudo sed -i 's/repo_gpgcheck=1/repo_gpgcheck=0/g' /etc/yum.repos.d/google-cloud.repo
@@ -80,29 +97,44 @@ function install_with_yum() {
       sudo sed -i 's/baseurl/\#baseurl/g' /etc/yum.repos.d/CentOS-Base.repo
     fi
   fi
-  
-  yum update -y python
+
+  if [ "${OS_TYPE}" == "redhat8" ] ; then  
+    yum update -y python3
+  else
+    yum update -y python
+  fi
+
   yum install -y yum-utils yum-plugin-versionlock
   yum clean metadata
   enable_epel_repository
   yum groupinstall -y 'Development Tools'
+ 
   if [ "${OS_TYPE}" == "redhat6" ] ; then
     cp /tmp/repos/${SALT_REPO_FILE} /etc/yum.repos.d/${SALT_REPO_FILE}
     cp /tmp/repos/saltstack-gpg-key.pub /etc/pki/rpm-gpg/saltstack-gpg-key.pub
     yum install -y zeromq zeromq-devel
   fi
+ 
   install_python_pip
+ 
   if [ ! -z $(grep "^exclude=" /etc/yum.conf) ]; then
     sed -i 's/^exclude=.*$/& salt/g' /etc/yum.conf
   else
     echo "exclude=salt" >> /etc/yum.conf
   fi
-  install_salt_with_pip
+ 
+  if [ "${OS_TYPE}" == "redhat8" ] ; then
+    install_salt_with_pip3
+  else
+    install_salt_with_pip
+  fi
   create_temp_minion_config
 }
 
 function enable_epel_repository() {
-  if [ "${OS}" == "amazonlinux2" ] || [ "${OS}" == "redhat7" ] ; then
+  if [ "${OS}" == "redhat8" ] ; then
+    dnf install -y https://dl.fedoraproject.org/pub/epel/epel-release-latest-8.noarch.rpm
+  elif [ "${OS}" == "amazonlinux2" ] || [ "${OS}" == "redhat7" ] ; then
     curl https://dl.fedoraproject.org/pub/epel/epel-release-latest-7.noarch.rpm -o epel-release-latest-7.noarch.rpm && yum install --nogpgcheck -y ./epel-release-latest-7.noarch.rpm
   elif [ "${OS}" == "amazonlinux" ] ; then
     yum-config-manager --enable epel
@@ -116,6 +148,9 @@ function enable_epel_repository() {
 function install_python_pip() {
   if [ "${OS_TYPE}" == "amazonlinux" ]; then
     yum install -y python27-devel python27-pip
+  elif [ "${OS_TYPE}" == "redhat8" ] ; then
+    echo "Installing python3-devel (the rest should be already installed in case of RHEL8)"
+    yum install -y python3-devel
   elif [ "${OS_TYPE}" == "redhat7" ] || [ "${OS_TYPE}" == "amazonlinux2" ] ; then
     echo "Installing python36 with deps"
     if [ "${OS}" == "redhat7" ] ; then
@@ -180,7 +215,7 @@ case ${SALT_INSTALL_OS} in
     echo "Install with yum"
     install_with_yum
     ;;
- debian|ubuntu)
+  debian|ubuntu)
    echo "Install with apt"
    install_with_apt
    ;;
@@ -194,7 +229,7 @@ case ${SALT_INSTALL_OS} in
     echo "Install with zypper"
     install_with_zypper
     ;;
- *)
+  *)
   echo "Unsupported platform:" $1
   exit 1
   ;;
