@@ -17,11 +17,16 @@ packer_in_container() {
   # Figure out the snapshot id of the previous build
   SOURCE_AMI_SNAPSHOT=$(echo $AMI_INFO | jq -r '.BlockDeviceMappings[0].Ebs.SnapshotId')
   
+  SOURCE_AMI_SNAPSHOT_SIZE=30
+  if [ "${OS}" == "redhat8" ] ; then
+    SOURCE_AMI_SNAPSHOT_SIZE=64
+  fi
+
   echo Going to use AMI $SOURCE_AMI with SnapshotId $SOURCE_AMI_SNAPSHOT...
 
   case "$REGION" in
     *gov*) AMI="ami-d8b30db9";;
-    *) AMI="ami-b20542d2";;
+    *) AMI="ami-01154c8b2e9a14885";;
   esac
 
 
@@ -49,6 +54,7 @@ packer_in_container() {
     -e IMAGE_OWNER=$IMAGE_OWNER \
     -e SOURCE_AMI=$SOURCE_AMI \
     -e SOURCE_AMI_SNAPSHOT=$SOURCE_AMI_SNAPSHOT \
+    -e SOURCE_AMI_SNAPSHOT_SIZE=$SOURCE_AMI_SNAPSHOT_SIZE \
     -e AWS_SNAPSHOT_GROUPS="$AWS_SNAPSHOT_GROUPS" \
     -e AWS_AMI_GROUPS="$AWS_AMI_GROUPS" \
     -e AWS_POLL_DELAY_SECONDS=30 \

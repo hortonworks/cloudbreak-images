@@ -228,6 +228,28 @@ build-aws-centos7:
 	GIT_TAG=$(GIT_TAG) \
 	./scripts/sparseimage/packer.sh build -color=false -force $(PACKER_OPTS)
 
+build-aws-redhat8-base:
+	$(ENVS) \
+	AWS_AMI_REGIONS="us-west-1" \
+	OS=redhat8 \
+	OS_TYPE=redhat8 \
+	ATLAS_ARTIFACT_TYPE=amazon \
+	SALT_INSTALL_OS=redhat \
+	GIT_REV=$(GIT_REV) \
+	GIT_BRANCH=$(GIT_BRANCH) \
+	GIT_TAG=$(GIT_TAG) \
+	./scripts/packer.sh build -color=false -only=aws-redhat8 $(PACKER_OPTS)
+
+build-aws-redhat8:
+	@ METADATA_FILENAME_POSTFIX=$(METADATA_FILENAME_POSTFIX) make build-aws-redhat8-base
+	$(ENVS) \
+	AWS_AMI_REGIONS="$(AWS_AMI_REGIONS)" \
+	ATLAS_ARTIFACT_TYPE=amazon \
+	GIT_REV=$(GIT_REV) \
+	GIT_BRANCH=$(GIT_BRANCH) \
+	GIT_TAG=$(GIT_TAG) \
+	./scripts/sparseimage/packer.sh build -color=false -force $(PACKER_OPTS)
+
 copy-aws-images:
 	docker run -i --rm \
 		-v "${PWD}/scripts:/scripts" \

@@ -28,7 +28,7 @@ register_sle-sdk:
     - name: SUSEConnect -p sle-sdk/12.3/x86_64
     - unless: SUSEConnect -s | grep -q \"sle-sdk\"
 
-{% elif pillar['OS'] == 'redhat7' %}
+{% elif pillar['OS'] == 'redhat7' or pillar['OS'] == 'redhat8' %}
 
 remove_duplicates_from_yum_conf:
   cmd.run:

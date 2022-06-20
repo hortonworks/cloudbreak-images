@@ -24,15 +24,22 @@ update_python_pip2:
 
 update_python_pip3:
   cmd.run:
-    - name: pip3 install --upgrade --index=https://pypi.python.org/simple/ pip==8.1.2
-    - onlyif: pip3 -V
+    - name: python3 -m pip install --upgrade --index=https://pypi.python.org/simple/ pip==8.1.2
+    - onlyif: python3 -m pip -V
 
 {% endif %}
 
+{% if pillar['OS'] == 'redhat8' %}  
+install_pyyaml:
+  cmd.run:
+    - name: python3 -m pip install PyYAML --ignore-installed
+    - unless: python3 -m pip list | grep -E 'PyYAML'
+{% else %}
 install_pyyaml:
   cmd.run:
     - name: pip install PyYAML --ignore-installed
     - unless: pip list | grep -E 'PyYAML'
+{% endif %}
 
 install_jq:
   file.managed:

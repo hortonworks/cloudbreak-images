@@ -73,7 +73,11 @@ function collect_rpm_packages() {
 function collect_python_packages() {
   file=$1
   echo "Collecting installed python packages"
-  pip list --format json | jq -r '.[].name' | sort >> "$file"
+  if [ "${OS}" == "redhat8" ] ; then
+    python3 -m pip list --format json | jq -r '.[].name' | sort >> "$file"
+  else
+    pip list --format json | jq -r '.[].name' | sort >> "$file"
+  fi
   cat "$file"
   PYTHON_PACKAGE_NUMBER=$(wc -l < "$file")
   echo "Found ${PYTHON_PACKAGE_NUMBER} python related package(s)"
@@ -83,9 +87,16 @@ function collect_python_packages() {
 function collect_virtualenv_python_packages() {
   file=$1
   echo "Collecting installed python packages in virtualenv used by Salt"
-  virtualenv ${SALT_PATH}
-  source ${SALT_PATH}/bin/activate
-  pip list --format json | jq -r '.[].name' | sort >> "$file"
+
+  if [ "${OS}" == "redhat8" ] ; then
+    python3 -m venv ${SALT_PATH}
+    source ${SALT_PATH}/bin/activate
+    python3 -m pip list --format json | jq -r '.[].name' | sort >> "$file"
+  else
+    virtualenv ${SALT_PATH}
+    source ${SALT_PATH}/bin/activate
+    pip list --format json | jq -r '.[].name' | sort >> "$file"
+  fi
   cat "$file"
   PYTHON_PACKAGE_NUMBER=$(wc -l < "$file")
   echo "Found ${PYTHON_PACKAGE_NUMBER} python related package(s) in virtualenv"
@@ -158,6 +169,10 @@ function add_rpm_package_to_csv_list() {
 function add_python_package_to_csv_list() {
   local package=$1
   declare -A DETAIL_MAP=()
+  PIPCALL="pip"
+  if [ "${OS}" == "redhat8" ] ; then
+    PIPCALL="python3 -m pip"
+  fi
   while IFS= read -r line ; do
     IFS=':' read -r key value <<< "$line"
     key=$(echo ${key} | sed -e 's/^[ \t]*//')
@@ -167,7 +182,7 @@ function add_python_package_to_csv_list() {
         DETAIL_MAP[$key]=$value
       fi
     fi
-  done <<< "$(pip show -v "$package")"
+  done <<< "$($PIPCALL show -v "$package")"
   PYTHON_PACKAGE_DETAIL="${DETAIL_MAP["Name"]}|${DETAIL_MAP["Version"]}|$SOURCE_PYTHON|${DETAIL_MAP["License"]}|${DETAIL_MAP["Author"]}|${DETAIL_MAP["Home-page"]}|${DETAIL_MAP["Summary"]}"
   PYTHON_PACKAGE_DETAIL=$(echo $PYTHON_PACKAGE_DETAIL | sed -e "s/;/,/g")
   PYTHON_PACKAGE_DETAIL=$(echo $PYTHON_PACKAGE_DETAIL | sed -e "s/|/;/g")
@@ -235,7 +250,11 @@ function construct_detailed_packages_csv {
     done < "$PYTHON_PACKAGE_LIST_PATH"
   fi
   if [ -f $VIRTUALENV_PYTHON_PACKAGE_LIST_PATH ] ; then
-    virtualenv ${SALT_PATH}
+    if [ "${OS}" == "redhat8" ] ; then
+      python3 -m venv ${SALT_PATH}
+    else
+      virtualenv ${SALT_PATH}
+    fi
     source ${SALT_PATH}/bin/activate
     while read package; do
       if ! contains "$package" "${PYTHON_PACKAGE_ARRAY[@]}" ; then

@@ -9,7 +9,17 @@
     - source: salt://postgresql/yum/pgdg10-gpg
 {% endif %}
 
-{% if grains['os_family'] == 'RedHat' and grains['osmajorrelease'] | int == 7  %}
+{% if pillar['OS'] == 'redhat8' %}
+install-postgres:
+  pkg.installed:
+    - pkgs:
+      - postgresql: 10*
+      - postgresql-server: 10*
+      - postgresql-contrib: 10*
+      - postgresql-docs: 10*
+      - postgresql-jdbc
+
+{% elif grains['os_family'] == 'RedHat' and grains['osmajorrelease'] | int == 7  %}
 install-postgres:
   pkg.installed:
     - pkgs:
@@ -77,13 +87,30 @@ install-postgres:
 {% endif %}
 {% endif %}
 
+{% if  pillar['OS'] != 'redhat8' %}
 /usr/bin/initdb:
   file.symlink:
     - mode: 755
     - target: /usr/pgsql-10/bin/initdb
     - force: True
+{% endif %}
 
-{% if  pillar['OS'] == 'amazonlinux2' or ( grains['os_family'] == 'RedHat' and grains['osmajorrelease'] | int == 7 ) %}
+{% if  pillar['OS'] == 'redhat8' %}
+
+init-pg-database:
+  cmd.run:
+    - name: /usr/bin/postgresql-setup --initdb --unit postgresql
+
+#/var/lib/pgsql/data:
+#  file.symlink:
+#      - target: /var/lib/pgsql/10/data
+#      - force: True
+
+reenable-postgres:
+  cmd.run:
+    - name: systemctl enable postgresql.service
+
+{% elif  pillar['OS'] == 'amazonlinux2' or ( grains['os_family'] == 'RedHat' and grains['osmajorrelease'] | int == 7 ) %}
 /var/lib/pgsql/data:
   file.symlink:
       - target: /var/lib/pgsql/10/data
@@ -130,6 +157,10 @@ init-pg-database:
 start-postgresql:
   service.running:
     - name: postgresql
+
+log-postgres-service-status:
+  cmd.run:
+    - name: systemctl status postgresql.service
 {% endif %}
 
 /opt/salt/scripts/conf_pgsql_listen_address.sh:
@@ -143,6 +174,7 @@ configure-listen-address:
     - name: su postgres -c '/opt/salt/scripts/conf_pgsql_listen_address.sh' && echo $(date +%Y-%m-%d:%H:%M:%S) >> /var/log/pgsql_listen_address_configured
     - require:
       - file: /opt/salt/scripts/conf_pgsql_listen_address.sh
+
 {% if pillar['subtype'] != 'Docker' %}
       - service: start-postgresql
 {% endif %}

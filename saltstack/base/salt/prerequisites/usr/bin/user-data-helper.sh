@@ -260,7 +260,7 @@ main() {
       setup_ccmv2
     fi
 
-{% if pillar['OS'] == 'redhat7' %}
+{% if pillar['OS'] == 'redhat7' or pillar['OS'] == 'redhat8' %}
     # Relocating backup data structures to the end of the disk
     printf "x\ne\nw\nY\n" | gdisk /dev/sda
     # Resize /dev/sda4 to the end of the disk
