@@ -39,7 +39,8 @@ set_openjdk_version_11:
       - "sudo alternatives --set java java-11-openjdk.x86_64"
       - "sudo ln -sfn /etc/alternatives/java_sdk_11 /usr/lib/jvm/java"
       - "sudo mkdir -p /etc/alternatives/java_sdk_11/jre/lib/security"
-      - "sudo ln -fs /etc/alternatives/java_sdk_11/conf/security/java.security /etc/alternatives/java_sdk_11/jre/lib/security/java.security"
+      - "sudo ln -sfn /etc/alternatives/java_sdk_11/conf/security/java.security /etc/alternatives/java_sdk_11/jre/lib/security/java.security"
+      - "sudo ln -sfn /etc/pki/java/cacerts /etc/alternatives/java_sdk_11/jre/lib/security/cacerts"
 
 {% if grains['os_family'] == 'Debian' %}
 create_jvm_symlink:
