@@ -49,6 +49,10 @@ if [[ -f "/opt/blackbox_exporter/blackbox_exporter" ]]; then
 	blackbox_exporter_version=$(/opt/blackbox_exporter/blackbox_exporter --version 2>&1 | grep -Po "version (\d+\.)+\d+" | cut -d ' ' -f2)
 	cat /tmp/package-versions.json | jq --arg be_version $blackbox_exporter_version -r '. + {"blackbox-exporter": $be_version}' > /tmp/package-versions.json.tmp && mv /tmp/package-versions.json.tmp /tmp/package-versions.json
 fi
+if [[ -f "/opt/cdp-prometheus/prometheus" ]]; then
+	prometheus_version=$(/opt/cdp-prometheus/prometheus --version 2>&1 | grep -Po "version (\d+\.)+\d+" | cut -d ' ' -f2)
+	cat /tmp/package-versions.json | jq --arg pr_version $prometheus_version -r '. + {"cdp-prometheus": $pr_version}' > /tmp/package-versions.json.tmp && mv /tmp/package-versions.json.tmp /tmp/package-versions.json
+fi
 
 for package in "$@"
 do
