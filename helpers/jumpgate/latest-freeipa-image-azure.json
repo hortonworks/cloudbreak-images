@@ -1,0 +1,29 @@
+{
+  "created": 1655385905,
+  "published": 1655388080,
+  "date": "2022-06-16",
+  "description": "Official Cloudbreak image",
+  "images": {
+    "azure": {
+      "West US": "https://cldrwestus.blob.core.windows.net/images/freeipa-cdh--1655385898.vhd"
+    }
+  },
+  "os": "centos7",
+  "os_type": "redhat7",
+  "uuid": "6e2ad02c-f497-4287-85df-68e97148cb0e",
+  "package-versions": {
+    "blackbox-exporter": "0.19.0",
+    "cdp-logging-agent": "0.2.16",
+    "cdp-request-signer": "0.1.1",
+    "cdp-telemetry": "0.4.25",
+    "cdp-vmagent": "1.73.1",
+    "cloudbreak_images": "de9d102",
+    "freeipa-health-agent": "0.1-20220326020204gitb2ffef7",
+    "freeipa-plugin": "1.0-20200319002729gitc964030",
+    "inverting-proxy-agent": "1.0.0-b234",
+    "inverting-proxy-agent_gbn": "27062362",
+    "node-exporter": "1.3.1",
+    "salt": "3000.8",
+    "salt-bootstrap": "0.13.6-2022-05-20T08:57:17"
+  }
+}
