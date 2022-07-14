@@ -10,14 +10,11 @@ base:
     - postgresql
     - monitoring
     - performance
-{% if salt['environ.get']('INCLUDE_CDP_TELEMETRY') == 'Yes' %}
     - telemetry
-{% endif %}
-{% if salt['environ.get']('INCLUDE_FLUENT') == 'Yes' %}
-    - fluent
-{% endif %}
     - ccm-client
     - ccmv2
     - custom
     - mount
+{% if not salt['file.directory_exists']('/yarn-private') %}
     - chrony
+{% endif %}
