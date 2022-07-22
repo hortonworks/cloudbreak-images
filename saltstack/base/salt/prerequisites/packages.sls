@@ -66,21 +66,16 @@ packages_install:
 {% if pillar['subtype'] != 'Docker' %}
 
 download_awscli:
-  archive.extracted:
-    - name: /tmp/awscli
-    - source: https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip
-    - archive_format: zip
-    - skip_verify: true
-    - enforce_toplevel: false
+  cmd.run:
+    - name: wget https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip -q -O /tmp/awscli.zip && unzip -q -d /tmp/awscli/ /tmp/awscli.zip && rm -f /tmp/awscli.zip
 
 install_awscli:
   cmd.run:
     - name: /tmp/awscli/aws/install -b /usr/bin
 
 remove_awscli_extract:
-  file.directory:
-    - name: /tmp/awscli
-    - clean: True
+  cmd.run:
+    - name: rm -rf /tmp/awscli
 
 download_azcopy:
   archive.extracted:
