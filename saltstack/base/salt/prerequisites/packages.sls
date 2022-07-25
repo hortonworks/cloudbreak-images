@@ -65,6 +65,12 @@ packages_install:
 
 {% if pillar['subtype'] != 'Docker' %}
 
+{% if salt['environ.get']('CLOUD_PROVIDER') == '' %}
+missing_cloudprovider:
+  cmd.run:
+    - name: echo 'CLOUD_PROVIDER environment variable is missing!' && exit 1
+{% elif salt['environ.get']('CLOUD_PROVIDER').startswith('AWS') %}
+
 download_awscli:
   cmd.run:
     - name: wget https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip -q -O /tmp/awscli.zip && unzip -q -d /tmp/awscli/ /tmp/awscli.zip && rm -f /tmp/awscli.zip
@@ -76,6 +82,7 @@ install_awscli:
 remove_awscli_extract:
   cmd.run:
     - name: rm -rf /tmp/awscli
+{% elif salt['environ.get']('CLOUD_PROVIDER') == 'Azure' %}
 
 download_azcopy:
   archive.extracted:
@@ -97,6 +104,7 @@ remove_azcopy_extract:
   file.directory:
     - name: /tmp/azcopy
     - clean: True
+{% endif %}
 
 {% endif %}
 
