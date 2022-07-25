@@ -406,7 +406,8 @@
         "http_proxy={{ user `gov_http_proxy` }}",
         "https_proxy={{ user `gov_https_proxy` }}",
         "no_proxy={{ user `gov_no_proxy` }}",
-        "NO_PROXY={{ user `gov_no_proxy` }}"
+        "NO_PROXY={{ user `gov_no_proxy` }}",
+        "CLOUD_PROVIDER={{user `cloud_provider`}}"
       ]
     },
     {
