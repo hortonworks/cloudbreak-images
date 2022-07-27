@@ -38,7 +38,7 @@ fi
 
 set_version_for_rpm_pkg "cdp-telemetry"
 set_version_for_rpm_pkg "cdp-logging-agent"
-set_version_for_rpm_pkg "cdp-vmagent"
+set_version_for_rpm_pkg "cdp-minifi-agent"
 set_version_for_rpm_pkg "cdp-request-signer"
 
 if [[ -f "/opt/node_exporter/node_exporter" ]]; then

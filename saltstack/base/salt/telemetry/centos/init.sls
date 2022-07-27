@@ -43,9 +43,9 @@ install_cdp_logging_rpm_from_repo_url:
 {% endif %}
 
 {% if use_telemetry_archive == "Yes" %}
-install_vmagent:
+install_minifi:
   cmd.run:
-    - name: "/cdp/telemetry/install-package.sh cdp_vmagent {{ archive_base_url }} {{ archive_credentials }}"
+    - name: "/cdp/telemetry/install-package.sh cdp_minifi_agent {{ archive_base_url }} {{ archive_credentials }}"
 install_cdp_request_signer:
   cmd.run:
     - name: "/cdp/telemetry/install-package.sh cdp_request_signer {{ archive_base_url }} {{ archive_credentials }}"
