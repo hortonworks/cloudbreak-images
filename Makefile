@@ -89,7 +89,7 @@ endif
 
 ifeq ($(OS),centos7)
 	ifeq ($(CLOUD_PROVIDER),GCP)
-		IMAGE_SIZE ?= 35
+		IMAGE_SIZE ?= 40
 	endif
 	IMAGE_SIZE ?= 30
 else
