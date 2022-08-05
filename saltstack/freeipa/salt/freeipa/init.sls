@@ -17,11 +17,8 @@ ntp-install:
 {% endif %}
 
 freeipa-install:
-  pkg.installed:
-    - pkgs:
-        - ipa-server
-        - ipa-server-dns
-
+  cmd.run:
+    - name: yum module -y reset idm && yum -y install @idm:DL1 && yum -y install freeipa-server && yum -y install ipa-server-dns bind-dyndb-ldap
 {% if freeipa_plugin_rpm_url %}
 install_freeipa_plugin_rpm:
   pkg.installed:
