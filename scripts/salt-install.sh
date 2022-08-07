@@ -11,7 +11,7 @@ function install_salt_with_pip() {
   pip install virtualenv
 
   # fix pip3 not installing virtualenv for root
-  if [ "${OS}" != "redhat7" ] ; then
+  if [ "${OS}" != "redhat7" && "${OS}" != "redhat8" ] ; then
     ln -s /usr/local/bin/virtualenv /usr/bin/virtualenv
   else
     echo "source scl_source enable rh-python36; python3.6 -m virtualenv \$@" > /usr/bin/virtualenv
@@ -20,7 +20,7 @@ function install_salt_with_pip() {
   mkdir ${SALT_PATH}
   virtualenv ${SALT_PATH}
   source ${SALT_PATH}/bin/activate
-  if [ "${OS}" == "redhat7" ] ; then
+  if [ "${OS}" == "redhat7" || "${OS}" == "redhat8" ] ; then
     # can't install this via salt_requirements.txt and I dunno why...
     pip install pbr
   fi
