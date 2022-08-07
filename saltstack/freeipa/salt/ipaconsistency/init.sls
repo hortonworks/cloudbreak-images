@@ -1,6 +1,6 @@
 install_checkipaconsistency:
   cmd.run:
-    - name: pip install checkipaconsistency==2.7.10
+    - name: python3 -m pip install checkipaconsistency==2.7.10
 
 /usr/local/lib/python3.8/site-packages/checkipaconsistency/main.py:
   file.managed:
