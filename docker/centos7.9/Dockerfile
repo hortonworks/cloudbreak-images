@@ -18,6 +18,8 @@ ENV PRE_WARM_CSD=${PRE_WARM_CSD}
 ENV LANG en_US.UTF-8
 ENV LC_ALL en_US.UTF-8
 
+STOPSIGNAL SIGRTMIN+3
+
 #################################################################################
 # Install Cloudbreak dependencies
 #################################################################################
