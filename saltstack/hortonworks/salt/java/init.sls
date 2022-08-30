@@ -32,16 +32,6 @@ install_openjdk:
   pkg.installed:
     - pkgs: {{ pillar['openjdk_packages'] }}
 
-set_openjdk_version_11:
-  file.append:
-    - name: /etc/profile.d/java.sh
-    - text:
-      - "sudo alternatives --set java java-11-openjdk.x86_64"
-      - "sudo ln -sfn /etc/alternatives/java_sdk_11 /usr/lib/jvm/java"
-      - "sudo mkdir -p /etc/alternatives/java_sdk_11/jre/lib/security"
-      - "sudo ln -sfn /etc/alternatives/java_sdk_11/conf/security/java.security /etc/alternatives/java_sdk_11/jre/lib/security/java.security"
-      - "sudo ln -sfn /etc/pki/java/cacerts /etc/alternatives/java_sdk_11/jre/lib/security/cacerts"
-
 {% if grains['os_family'] == 'Debian' %}
 create_jvm_symlink:
   file.symlink:
@@ -59,3 +49,14 @@ add_openjdk_gplv2:
 run_java_sh:
   cmd.run:
     - name: . /etc/profile.d/java.sh
+
+/cdp/bin/java/set-java11-default.sh:
+  file.managed:
+    - name: /cdp/bin/java/set-java11-default.sh
+    - makedirs: True
+    - source: salt://{{ slspath }}/cdp/bin/java/set-java11-default.sh
+    - mode: 740
+
+run_set_java11_default_sh:
+  cmd.run:
+    - name: . /cdp/bin/java/set-java11-default.sh
