@@ -91,12 +91,6 @@ make_resolv_conf() {
 
     generate_resolv_conf
 
-    if [ ! -f /etc/hostname ]; then
-        log "Creating new hostname"
-        echo $new_host_name > /etc/hostname
-        hostname -F /etc/hostname
-    fi
-
     log "Restart unbound"
     log "$(ps aux | grep unbound)"
     pkill -u unbound -SIGHUP unbound
