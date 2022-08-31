@@ -28,11 +28,6 @@ install-postgres:
       - postgresql10-docs
       - postgresql10-devel
 
-
-install-centos-scl-rh:
-  pkg.installed:
-    - name: centos-release-scl-rh
-
 install-postgres11:
   pkg.installed:
     - pkgs:
@@ -41,7 +36,6 @@ install-postgres11:
       - postgresql11
       - postgresql11-contrib
       - postgresql11-docs
-      - postgresql11-devel
 
 pgsql-ld-conf:
   alternatives.set:
