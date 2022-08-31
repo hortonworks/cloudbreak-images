@@ -29,6 +29,10 @@ main() {
 	: ${IMAGE_PRE_NAME:=}
 
 	docker rm -f gcloud-config-$IMAGE_NAME || true
+
+    echo "Checking Google Cloud SDK version..."
+    docker run -ti  google/cloud-sdk:latest gcloud version
+
     docker run --name gcloud-config-$IMAGE_NAME -v "${GCP_ACCOUNT_FILE}":/gcp.p12 google/cloud-sdk gcloud auth activate-service-account $SERVICE_ACCOUNT_EMAIL --key-file /gcp.p12 --project $GCP_PROJECT
 
     if docker run --rm --name gcloud-pre-check-$IMAGE_NAME --volumes-from gcloud-config-$IMAGE_NAME google/cloud-sdk gsutil ls gs://${GCP_STORAGE_BUNDLE}/${IMAGE_PRE_NAME}${IMAGE_NAME}.tar.gz 2>/dev/null; then
