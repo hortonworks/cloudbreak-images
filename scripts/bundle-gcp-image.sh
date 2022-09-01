@@ -31,7 +31,7 @@ main() {
 	docker rm -f gcloud-config-$IMAGE_NAME || true
 
     echo "Checking Google Cloud SDK version..."
-    docker run -ti  google/cloud-sdk:latest gcloud version
+    docker run google/cloud-sdk:latest gcloud version
 
     docker run --name gcloud-config-$IMAGE_NAME -v "${GCP_ACCOUNT_FILE}":/gcp.p12 google/cloud-sdk gcloud auth activate-service-account $SERVICE_ACCOUNT_EMAIL --key-file /gcp.p12 --project $GCP_PROJECT
 
