@@ -30,6 +30,11 @@ install_freeipa_plugin_rpm:
 {% endif %}
 
 {% if freeipa_healthagent_rpm_url %}
+inotifytools-install:
+  pkg.installed:
+    - pkgs:
+        - inotify-tools
+
 install_freeipa_healthagent_rpm:
   pkg.installed:
     - sources:
