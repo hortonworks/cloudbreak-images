@@ -102,7 +102,7 @@ sshd_harden_sshIdealTime_ClientAliveInterval:
   file.replace:
     - name: /etc/ssh/sshd_config
     - pattern: "^ClientAliveInterval.*"
-    - repl: "ClientAliveInterval 235"
+    - repl: "ClientAliveInterval 180"
     - append_if_not_found: True
 sshd_harden_sshIdealTime_ClientAliveCountMax:
   file.replace:
