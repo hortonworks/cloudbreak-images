@@ -228,6 +228,16 @@ build-aws-centos7:
 	GIT_TAG=$(GIT_TAG) \
 	./scripts/sparseimage/packer.sh build -color=false -force $(PACKER_OPTS)
 
+generate-aws-centos7-changelog:
+ifdef IMAGE_UUID
+ifdef SOURCE_IMAGE
+	$(ENVS) \
+	IMAGE_UUID=$(IMAGE_UUID) \
+	SOURCE_IMAGE=$(SOURCE_IMAGE) \
+	./scripts/changelog/packer.sh build -color=false -only=aws-centos7 -force $(PACKER_OPTS)
+endif
+endif
+
 copy-aws-images:
 	docker run -i --rm \
 		-v "${PWD}/scripts:/scripts" \
@@ -268,6 +278,16 @@ build-aws-gov-centos7:
 	NO_PROXY=172.20.0.0/16,127.0.0.1,localhost,169.254.169.254,internal,local,s3.us-gov-west-1.amazonaws.com,us-gov-west-1.eks.amazonaws.com \
 	./scripts/sparseimage/packer.sh build -color=false -force $(PACKER_OPTS)
 
+generate-aws-gov-centos7-changelog:
+ifdef IMAGE_UUID
+ifdef SOURCE_IMAGE
+	$(ENVS) \
+	IMAGE_UUID=$(IMAGE_UUID) \
+	SOURCE_IMAGE=$(SOURCE_IMAGE) \
+	./scripts/changelog/packer.sh build -color=false -only=aws-gov-centos7 -force $(PACKER_OPTS)
+endif
+endif
+
 copy-aws-gov-images:
 	docker run -i --rm \
 		-v "${PWD}/scripts:/scripts" \
@@ -301,6 +321,16 @@ build-gc-centos7:
 	GIT_BRANCH=$(GIT_BRANCH) \
 	GIT_TAG=$(GIT_TAG) \
 	./scripts/packer.sh build -color=false -only=gc-centos7 $(PACKER_OPTS)
+
+generate-gc-centos7-changelog:
+ifdef IMAGE_UUID
+ifdef SOURCE_IMAGE
+	$(ENVS) \
+	IMAGE_UUID=$(IMAGE_UUID) \
+	SOURCE_IMAGE=$(SOURCE_IMAGE) \
+	./scripts/changelog/packer.sh build -color=false -only=gc-centos7 -force $(PACKER_OPTS)
+endif
+endif
 
 build-azure-centos7:
 	$(ENVS) \
@@ -342,6 +372,17 @@ build-azure-redhat7:
 	./scripts/packer.sh build -color=false -only=arm-redhat7 $(PACKER_OPTS)
 ifeq ($(AZURE_INITIAL_COPY),true)
 	TRACE=1 AZURE_STORAGE_ACCOUNTS=$(AZURE_BUILD_STORAGE_ACCOUNT) ./scripts/azure-copy.sh
+endif
+
+generate-azure-centos7-changelog:
+ifdef IMAGE_UUID
+ifdef SOURCE_IMAGE
+	$(ENVS) \
+	IMAGE_UUID=$(IMAGE_UUID) \
+	SOURCE_IMAGE=$(SOURCE_IMAGE) \
+	BUILD_RESOURCE_GROUP_NAME=$(BUILD_RESOURCE_GROUP_NAME) \
+	./scripts/changelog/packer.sh build -color=false -only=arm-centos7 -force $(PACKER_OPTS)
+endif
 endif
 
 copy-azure-images:
