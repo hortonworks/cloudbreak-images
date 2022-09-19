@@ -30,13 +30,13 @@ compare_version () {
 BASE_NAME=$1
 STACK_VERSION=$2
 
-SALT_VERSION=3000.8
+SALT_VERSION=3001.8
 
 if [[ $BASE_NAME == "cb" ]]; then
   if [[ ! -z "$STACK_VERSION" ]]; then
-    compare_version $STACK_VERSION 7.2.16
+    compare_version $STACK_VERSION 7.2.15
     COMP_RESULT=$?
-    # Stack version < 7.2.16
+    # Stack version < 7.2.15 (Lowered this temporarily from 7.2.16!)
     if [[ $COMP_RESULT == 2 ]]; then
       SALT_VERSION=3000.8
     fi
