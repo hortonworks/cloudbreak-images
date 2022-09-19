@@ -58,7 +58,6 @@ packages_install:
       - openldap-clients
       - openldap-devel
       - nmap-ncat
-      - telnet
       - tcpdump
       - sysstat
       - goaccess
