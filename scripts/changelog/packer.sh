@@ -3,7 +3,7 @@
 packer_in_container() {
   local dockerOpts=""
   local packerFile="./scripts/changelog/packer.json"
-  PACKER_VERSION="1.4.2"
+  PACKER_VERSION="1.8.3"
 
   if [[ "$GCP_ACCOUNT_FILE" ]]; then
     dockerOpts="$dockerOpts -v $GCP_ACCOUNT_FILE:$GCP_ACCOUNT_FILE"
@@ -18,6 +18,7 @@ packer_in_container() {
   [[ "$TRACE" ]] && set -x
   ${DRY_RUN:+echo ===} docker run -i $TTY_OPTS --rm \
     -e CHECKPOINT_DISABLE=1 \
+    -e OS=$OS \
     -e SOURCE_IMAGE=$SOURCE_IMAGE \
     -e IMAGE_UUID="$IMAGE_UUID" \
     -e IMAGE_NAME=$IMAGE_NAME \
