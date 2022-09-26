@@ -32,8 +32,7 @@ update_python_pip3:
 {% if pillar['OS'] == 'redhat8' %}  
 install_pyyaml:
   cmd.run:
-    - name: python3 -m pip install PyYAML --ignore-installed
-    - unless: python3 -m pip list | grep -E 'PyYAML'
+    - name: python3 -m pip install "PyYAML>=5.1" --ignore-installed 
 {% else %}
 install_pyyaml:
   cmd.run:
