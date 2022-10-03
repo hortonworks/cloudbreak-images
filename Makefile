@@ -228,7 +228,6 @@ build-aws-centos7:
 	GIT_TAG=$(GIT_TAG) \
 	./scripts/sparseimage/packer.sh build -color=false -force $(PACKER_OPTS)
 
-<<<<<<< HEAD
 generate-aws-centos7-changelog:
 ifdef IMAGE_UUID
 ifdef SOURCE_IMAGE
@@ -239,8 +238,6 @@ ifdef SOURCE_IMAGE
 endif
 endif
 
-=======
->>>>>>> CB-17496: Added support for burning RHEL8 based images
 build-aws-redhat8-base:
 	$(ENVS) \
 	AWS_AMI_REGIONS="us-west-1" \
