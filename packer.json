@@ -379,6 +379,19 @@
   ],
   "provisioners": [
     {
+      "type": "shell",
+      "scripts": [
+        "scripts/storage_setup.sh",
+        "scripts/storage_final.sh"
+      ],
+      "execute_command": "chmod +x {{ .Path }}; sudo {{ .Vars }} {{ .Path }}",
+      "expect_disconnect": true,
+      "environment_vars": [
+        "OS={{user `os`}}",
+        "CLOUD_PROVIDER={{user `cloud_provider`}}"
+      ]
+    },
+    {
       "type": "file",
       "source": "saltstack",
       "destination": "/tmp/saltstack"
