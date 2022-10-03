@@ -156,6 +156,12 @@ function install_python_pip() {
     # pip workaround
     echo "source scl_source enable rh-python38; python3.8 -m pip \$@" > /usr/bin/pip
     chmod +x /usr/bin/pip
+  elif [ "${OS_TYPE}" == "redhat8" ] ; then
+    yum-config-manager --enable rhscl
+    yum -y install rh-python38
+    # pip workaround
+    echo "source scl_source enable rh-python38; python3.8 -m pip \$@" > /usr/bin/pip
+    chmod +x /usr/bin/pip
   elif [ "${OS}" == "centos7" ] ; then
     # Source: https://docs.cloudera.com/cdp-private-cloud-upgrade/latest/upgrade-cdh/topics/cdpdc-install-python-3-centos.html
     # (except the zlib part)
