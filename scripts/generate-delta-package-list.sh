@@ -74,7 +74,7 @@ function collect_python_packages() {
   file=$1
   echo "Collecting installed python packages"
   if [ "${OS}" == "redhat8" ] ; then
-    python3 -m pip list --format json | jq -r '.[].name' | sort >> "$file"
+    python3.8 -m pip list --format json | jq -r '.[].name' | sort >> "$file"
   else
     pip list --format json | jq -r '.[].name' | sort >> "$file"
   fi
@@ -89,9 +89,9 @@ function collect_virtualenv_python_packages() {
   echo "Collecting installed python packages in virtualenv used by Salt"
 
   if [ "${OS}" == "redhat8" ] ; then
-    python3 -m venv ${SALT_PATH}
+    python3.8 -m venv ${SALT_PATH}
     source ${SALT_PATH}/bin/activate
-    python3 -m pip list --format json | jq -r '.[].name' | sort >> "$file"
+    python3.8 -m pip list --format json | jq -r '.[].name' | sort >> "$file"
   else
     virtualenv ${SALT_PATH}
     source ${SALT_PATH}/bin/activate
@@ -171,7 +171,7 @@ function add_python_package_to_csv_list() {
   declare -A DETAIL_MAP=()
   PIPCALL="pip"
   if [ "${OS}" == "redhat8" ] ; then
-    PIPCALL="python3 -m pip"
+    PIPCALL="python3.8 -m pip"
   fi
   while IFS= read -r line ; do
     IFS=':' read -r key value <<< "$line"
