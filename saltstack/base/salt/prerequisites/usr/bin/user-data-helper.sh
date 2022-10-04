@@ -182,7 +182,8 @@ setup_proxy() {
     fi
     PROXY_ENV_FILE=/etc/cdp/proxy.env
     mkdir -p /etc/cdp
-    echo https_proxy=$PROXY_URL > $PROXY_ENV_FILE
+    echo http_proxy=$PROXY_URL > $PROXY_ENV_FILE
+    echo https_proxy=$PROXY_URL >> $PROXY_ENV_FILE
     if  [[ ! -z ${PROXY_NO_PROXY_HOSTS} ]]; then
       echo no_proxy=${PROXY_NO_PROXY_HOSTS} >> $PROXY_ENV_FILE
     fi
