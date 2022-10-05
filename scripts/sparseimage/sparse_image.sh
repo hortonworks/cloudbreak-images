@@ -11,13 +11,18 @@ else
     sudo apt-get install -y ddpt
 fi
 
+OFFSET=1048576
+if [ "$OS" == "redhat8" ]; then
+    OFFSET=2097152
+fi
+
 sudo sysctl kernel.dmesg_restrict=0
 sudo mkdir /image
 sudo dd if=/dev/xvdb of=/image/sparse.img bs=1M status=progress
 blkid /image/sparse.img
 sudo fdisk -l /image/sparse.img
 sudo mkdir /loop
-sudo mount -t xfs -o loop,discard,offset=2097152 -o nouuid /image/sparse.img /loop || dmesg | tail -n 50
+sudo mount -t xfs -o loop,discard,offset=$OFFSET -o nouuid /image/sparse.img /loop
 sudo fstrim /loop
 sudo umount /loop
 sudo ddpt of=/dev/xvdc if=/image/sparse.img bs=1M oflag=sparse

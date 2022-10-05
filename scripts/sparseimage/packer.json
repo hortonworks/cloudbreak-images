@@ -20,7 +20,8 @@
         "aws_access_key": "{{env `AWS_ACCESS_KEY_ID`}}",
         "aws_secret_key": "{{env `AWS_SECRET_ACCESS_KEY`}}",
         "aws_ami_regions": "{{ env `AWS_AMI_REGIONS` }}",
-        "metadata_filename_postfix": "{{ env `METADATA_FILENAME_POSTFIX` }}"
+        "metadata_filename_postfix": "{{ env `METADATA_FILENAME_POSTFIX` }}",
+        "os": "{{ env `OS` }}"
     },
     "builders": [
     {
@@ -85,7 +86,10 @@
     {
         "type" : "shell",
         "script": "scripts/sparseimage/sparse_image.sh",
-        "expect_disconnect": true
+        "expect_disconnect": true,
+        "environment_vars": [
+            "OS={{user `os`}}"
+          ]
     }
     ],
     "post-processors": [
