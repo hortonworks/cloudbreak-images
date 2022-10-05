@@ -149,8 +149,10 @@ function enable_epel_repository() {
 
 function install_python_pip() {
 
-  echo "Installing python38 with deps"
-  if [ "${OS}" == "redhat7" ] ; then
+  if [ "${OS_TYPE}" == "redhat8" ] ; then
+    echo "Installing python3-devel (the rest should be already installed in case of RHEL8)"
+    yum install -y python3-devel
+  elif [ "${OS}" == "redhat7" ] ; then
     yum-config-manager --enable rhscl
     yum -y install rh-python38
     # pip workaround
