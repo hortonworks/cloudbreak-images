@@ -146,20 +146,29 @@ function enable_epel_repository() {
 }
 
 function install_python_pip() {
-  if [ "${OS_TYPE}" == "amazonlinux" ]; then
-    yum install -y python27-devel python27-pip
-  elif [ "${OS_TYPE}" == "redhat7" ] || [ "${OS_TYPE}" == "amazonlinux2" ] ; then
-    echo "Installing python36 with deps"
-    if [ "${OS}" == "redhat7" ] ; then
-      yum-config-manager --enable rhscl
-      yum -y install rh-python36
-      # pip workaround
-      echo "source scl_source enable rh-python36; python3.6 -m pip \$@" > /usr/bin/pip
-      chmod +x /usr/bin/pip
-    else
-      yum install -y python36 python36-pip python36-devel python36-setuptools
-      make_pip3_default_pip
-    fi
+  if [ "${OS_TYPE}" == "redhat8" ] ; then
+    echo "Installing python3-devel (the rest should be already installed in case of RHEL8)"
+    yum install -y python3-devel
+  elif [ "${OS}" == "redhat7" ] ; then
+    yum-config-manager --enable rhscl
+    yum -y install rh-python38
+    # pip workaround
+    echo "source scl_source enable rh-python38; python3.8 -m pip \$@" > /usr/bin/pip
+    chmod +x /usr/bin/pip
+  elif [ "${OS}" == "centos7" ] ; then
+    # Source: https://docs.cloudera.com/cdp-private-cloud-upgrade/latest/upgrade-cdh/topics/cdpdc-install-python-3-centos.html
+    # (except the zlib part)
+    yum -y install openssl-devel libffi-devel bzip2-devel
+    cd /opt
+    curl -O https://www.python.org/ftp/python/3.8.12/Python-3.8.12.tgz
+    tar -zxvf Python-3.8.12.tgz
+    cd /opt/Python-3.8.12
+    ./configure --enable-shared
+    make
+    make install
+    cp --no-clobber ./libpython3.8.so* /lib64/
+    chmod 755 /lib64/libpython3.8.so*
+    ln -s /usr/local/bin/pip3 /bin/pip
   else
     yum install -y python-pip python-devel
   fi
