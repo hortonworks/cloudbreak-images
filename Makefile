@@ -278,6 +278,35 @@ build-aws-gov-centos7:
 	NO_PROXY=172.20.0.0/16,127.0.0.1,localhost,169.254.169.254,internal,local,s3.us-gov-west-1.amazonaws.com,us-gov-west-1.eks.amazonaws.com \
 	./scripts/sparseimage/packer.sh build -color=false -force $(PACKER_OPTS)
 
+build-aws-gov-redhat8-base:
+	$(ENVS) \
+	AWS_AMI_REGIONS="us-gov-west-1" \
+	OS=redhat8 \
+	OS_TYPE=redhat8 \
+	ATLAS_ARTIFACT_TYPE=amazon-gov \
+	SALT_INSTALL_OS=redhat \
+	GIT_REV=$(GIT_REV) \
+	GIT_BRANCH=$(GIT_BRANCH) \
+	GIT_TAG=$(GIT_TAG) \
+	HTTPS_PROXY=http://usgw1-egress.gov-dev.cloudera.com:3128 \
+	HTTP_PROXY=http://usgw1-egress.gov-dev.cloudera.com:3128 \
+	NO_PROXY=172.20.0.0/16,127.0.0.1,localhost,169.254.169.254,internal,local,s3.us-gov-west-1.amazonaws.com,us-gov-west-1.eks.amazonaws.com \
+	./scripts/packer.sh build -color=false -only=aws-gov-redhat8 $(PACKER_OPTS)
+
+build-aws-gov-redhat8:
+	@ METADATA_FILENAME_POSTFIX=$(METADATA_FILENAME_POSTFIX) make build-aws-gov-redhat8-base
+	$(ENVS) \
+	AWS_AMI_REGIONS="$(AWS_GOV_AMI_REGIONS)" \
+	ATLAS_ARTIFACT_TYPE=amazon-gov \
+	GIT_REV=$(GIT_REV) \
+	GIT_BRANCH=$(GIT_BRANCH) \
+	GIT_TAG=$(GIT_TAG) \
+	HTTPS_PROXY=http://usgw1-egress.gov-dev.cloudera.com:3128 \
+	HTTP_PROXY=http://usgw1-egress.gov-dev.cloudera.com:3128 \
+	NO_PROXY=172.20.0.0/16,127.0.0.1,localhost,169.254.169.254,internal,local,s3.us-gov-west-1.amazonaws.com,us-gov-west-1.eks.amazonaws.com \
+	./scripts/sparseimage/packer.sh build -color=false -force $(PACKER_OPTS)
+
+
 generate-aws-gov-centos7-changelog:
 ifdef IMAGE_UUID
 ifdef SOURCE_IMAGE
