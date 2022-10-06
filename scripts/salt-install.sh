@@ -5,8 +5,28 @@
 
 set -ex -o pipefail -o errexit
 
+function install_salt_for_centos7_with_pip3() {
+
+  echo "Installing salt with version: $SALT_VERSION for CentOS 7"
+  python3 -m pip install --upgrade pip
+  python3 -m pip install virtualenv
+
+  # fix pip3 not installing virtualenv for root
+  # ln -s /usr/local/bin/virtualenv /usr/bin/virtualenv
+
+  mkdir ${SALT_PATH}
+  python3 -m virtualenv ${SALT_PATH}
+  source ${SALT_PATH}/bin/activate
+
+  # can't install these via salt_requirements.txt and I dunno why...
+  python3 -m pip install distro
+
+  python3 -m pip install -r /tmp/salt_requirements.txt
+}
+
+
 function install_salt_with_pip() {
-  echo "Installing salt with version: $SALT_VERSION"
+  echo "Installing salt with version: $SALT_VERSION for RHEL 7 / RHEL 8"
   pip install --upgrade pip
   pip install virtualenv
 
@@ -23,49 +43,9 @@ function install_salt_with_pip() {
   # can't install these via salt_requirements.txt and I dunno why...
   if [ "${OS}" == "redhat7" ] ; then
     pip install pbr
-  elif [ "${OS}" == "centos7" ] ; then
-    pip install distro
   fi
   pip install --upgrade pip
   pip install -r /tmp/salt_requirements.txt
-}
-
-function install_with_apt() {
-  export DEBIAN_FRONTEND=noninteractive
-  apt-get update
-  apt-get install -y apt-transport-https python-pip python-dev build-essential
-  install_salt_with_pip
-  # apt-mark hold salt zeromq zeromq-devel
-  install_python_apt_into_virtualenv
-  create_temp_minion_config
-  if [ "${OS_TYPE}" == "ubuntu14" ]; then
-    install_nvme-cli
-  fi
-}
-
-function install_python_apt_into_virtualenv() {
-  source ${SALT_PATH}/bin/activate
-  if ! [ -x "$(command -v git)" ]; then
-    echo 'git is not installed.'
-    apt install -y git
-  fi
-
-  # first install build requirements / dependencies
-  if [ "${OS_TYPE}" == "ubuntu18" ] || [ "${OS_TYPE}" == "ubuntu16" ]; then
-    sed -i 's/^# deb-src/deb-src/g' /etc/apt/sources.list
-    apt-get update
-  fi
-  apt-get -y build-dep python-apt
-
-  pip install git+https://git.launchpad.net/python-apt@${PYTHON_APT_VERSION}
-
-  deactivate
-}
-
-function install_nvme-cli () {
-  add-apt-repository -y ppa:sbates
-  apt-get update -y
-  apt-get install -y nvme-cli
 }
 
 function install_with_yum() {
@@ -88,31 +68,26 @@ function install_with_yum() {
   yum clean metadata
   enable_epel_repository
   yum groupinstall -y 'Development Tools'
-  if [ "${OS_TYPE}" == "redhat6" ] ; then
-    cp /tmp/repos/${SALT_REPO_FILE} /etc/yum.repos.d/${SALT_REPO_FILE}
-    cp /tmp/repos/saltstack-gpg-key.pub /etc/pki/rpm-gpg/saltstack-gpg-key.pub
-    yum install -y zeromq zeromq-devel
-  fi
   install_python_pip
+
   if [ ! -z $(grep "^exclude=" /etc/yum.conf) ]; then
     sed -i 's/^exclude=.*$/& salt/g' /etc/yum.conf
   else
     echo "exclude=salt" >> /etc/yum.conf
   fi
-  install_salt_with_pip
+
+  if [ "${OS}" == "centos7" ] ; then
+    install_salt_for_centos7_with_pip3
+  elif [ "${OS}" == "redhat7" ] ; then
+    install_salt_with_pip
+  elif [ "${OS}" == "redhat8" ] ; then    
+    install_salt_with_pip
+  fi  
   create_temp_minion_config
 }
 
 function enable_epel_repository() {
-  if [ "${OS}" == "amazonlinux2" ] || [ "${OS}" == "redhat7" ] ; then
-    curl https://dl.fedoraproject.org/pub/epel/epel-release-latest-7.noarch.rpm -o epel-release-latest-7.noarch.rpm && yum install --nogpgcheck -y ./epel-release-latest-7.noarch.rpm
-  elif [ "${OS}" == "amazonlinux" ] ; then
-    yum-config-manager --enable epel
-  elif [ "${OS_TYPE}" == "redhat6" ] ; then
-    curl https://dl.fedoraproject.org/pub/epel/epel-release-latest-6.noarch.rpm -o epel-release-latest-6.noarch.rpm && yum install -y ./epel-release-latest-6.noarch.rpm
-  else
     yum install -y epel-release
-  fi
 }
 
 function install_python_pip() {
@@ -125,53 +100,25 @@ function install_python_pip() {
     echo "source scl_source enable rh-python38; python3.8 -m pip \$@" > /usr/bin/pip
     chmod +x /usr/bin/pip
   elif [ "${OS}" == "centos7" ] ; then
-    # Source: https://docs.cloudera.com/cdp-private-cloud-upgrade/latest/upgrade-cdh/topics/cdpdc-install-python-3-centos.html
-    # (except the zlib part)
-    yum -y install openssl-devel libffi-devel bzip2-devel
-    cd /opt
-    curl -O https://www.python.org/ftp/python/3.8.12/Python-3.8.12.tgz
-    tar -zxvf Python-3.8.12.tgz
-    cd /opt/Python-3.8.12
-    ./configure --enable-shared
-    make
-    make install
-    cp --no-clobber ./libpython3.8.so* /lib64/
-    chmod 755 /lib64/libpython3.8.so*
-    ln -s /usr/local/bin/pip3 /bin/pip
+    yum -y install centos-release-scl
+    yum -y install openssl-devel libffi-devel bzip2-devel rh-python38-python-pip rh-python38-python-libs rh-python38-python-devel rh-python38-python-cffi rh-python38-python-lxml
+
+    #find / -name pip3
+
+    # We need this because the rh-python38-* packages apparently use a non-standard location... duh!
+    #ln -s /opt/rh/rh-python38/root/usr/bin/pip3 /bin/pip3
+    #ln -s /opt/rh/rh-python38/root/usr/bin/pip3 /bin/pip
+    ls -la /opt/rh/rh-python38/root/usr/bin/
+
+    PATH=$PATH:/opt/rh/rh-python38/root/usr/local/bin:/opt/rh/rh-python38/root/usr/bin
+    cat >> /etc/profile.d/rh-python3.sh <<EOF
+      export PATH=$PATH:/opt/rh/rh-python38/root/usr/local/bin:/opt/rh/rh-python38/root/usr/bin
+EOF
+
   else
+    # I wonder what else we have that uses Python 2... probably nothing?
     yum install -y python-pip python-devel
   fi
-}
-
-function make_pip3_default_pip() {
-  FILE=/bin/pip
-  if [ -f "$FILE" ]; then
-      mv /bin/pip /bin/pip2
-  fi
-  mv /bin/pip3 /bin/pip
-  if [ -f "$FILE" ]; then
-      mv /bin/pip3.6 /bin/pip
-  fi
-}
-
-function install_with_zypper() {
-  cp /tmp/repos/sles12sp3/* /etc/zypp/repos.d/
-  while [[ $(pgrep -f -c zypper) != 0 ]]; do
-    echo "Zypper is running, waiting 5 sec to continue"
-    sleep 5
-  done
-  zypper --gpg-auto-import-keys refresh
-  if [[ -n "${SLES_REGISTRATION_CODE}" ]] && ! SUSEConnect -s | grep -q \"Registered\"; then
-    echo "SLES_REGISTRATION_CODE="$SLES_REGISTRATION_CODE
-    SUSEConnect --regcode $SLES_REGISTRATION_CODE
-  fi
-  if ! SUSEConnect -s | grep -q \"sle-sdk\"; then
-    SUSEConnect -p sle-sdk/12.3/x86_64
-  fi
-  zypper install -y python-simplejson python-pip zypp-plugin-python gcc gcc-c++ make python-devel
-  zypper addlock salt zeromq zeromq-devel
-  install_salt_with_pip
-  create_temp_minion_config
 }
 
 function create_temp_minion_config() {
@@ -189,20 +136,6 @@ case ${SALT_INSTALL_OS} in
   centos|redhat)
     echo "Install with yum"
     install_with_yum
-    ;;
- debian|ubuntu)
-   echo "Install with apt"
-   install_with_apt
-   ;;
-  amazon)
-    echo "Install for Amazon linux"
-    echo "Return code: $?"
-    echo "Install with yum"
-    install_with_yum
-   ;;
-  suse)
-    echo "Install with zypper"
-    install_with_zypper
     ;;
  *)
   echo "Unsupported platform:" $1

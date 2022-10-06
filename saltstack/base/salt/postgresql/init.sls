@@ -36,6 +36,7 @@ install-postgres11:
       - postgresql11
       - postgresql11-contrib
       - postgresql11-docs
+      - postgresql11-devel      
 
 pgsql-ld-conf:
   alternatives.set:
@@ -272,3 +273,7 @@ set-postgres-nologin-shell:
   user.present:
     - name: postgres
     - shell: /usr/sbin/nologin
+
+install-postgresql-python3-lib:
+  pip.installed:
+    - name: psycopg2==2.9.3

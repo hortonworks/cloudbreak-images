@@ -1,3 +1,7 @@
+# This file could be probably dropped altogether - it tries to install/update ancient versions of pip
+# and also, PyYAML gets installed earlier anyway.
+# Maybe the last, jq part could be useful, but it shouldn't be here anyway...
+
 {% if grains['os_family'] == 'RedHat' %}
 install_openssl_devel:
   pkg.installed:
@@ -30,9 +34,8 @@ update_python_pip3:
 {% endif %}
 
 install_pyyaml:
-  cmd.run:
-    - name: pip install PyYAML --ignore-installed
-    - unless: pip list | grep -E 'PyYAML'
+  pip.installed:
+    - name: PyYAML
 
 install_jq:
   file.managed:
