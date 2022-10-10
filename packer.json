@@ -195,7 +195,7 @@
       "type": "amazon-ebs",
       "region": "us-gov-west-1",
       "ssh_pty": true,
-      "source_ami": "ami-2c74214d",
+      "source_ami": "ami-0ac4e06a69870e5be",
       "instance_type": "{{ user `aws_instance_type` }}",
       "ssh_username": "ec2-user",
       "ena_support": true,
