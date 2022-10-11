@@ -21,11 +21,11 @@
 install-postgres:
   pkg.installed:
     - pkgs:
-      - postgresql: 10*
-      - postgresql-server: 10*
-      - postgresql-contrib: 10*
-      - postgresql-docs: 10*
+      - postgresql11-server
       - postgresql-jdbc
+      - postgresql11
+      - postgresql11-contrib
+      - postgresql11-docs
 
 {% elif grains['os_family'] == 'RedHat' and grains['osmajorrelease'] | int == 7  %}
 install-postgres:
@@ -217,11 +217,6 @@ install-postgres:
 init-pg-database:
   cmd.run:
     - name: /usr/bin/postgresql-setup --initdb --unit postgresql
-
-#/var/lib/pgsql/data:
-#  file.symlink:
-#      - target: /var/lib/pgsql/10/data
-#      - force: True
 
 reenable-postgres:
   cmd.run:
