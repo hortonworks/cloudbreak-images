@@ -231,6 +231,46 @@
       "vpc_id": "{{ user `vpc_id`}}"
     },
     {
+      "name": "aws-redhat8",
+      "type": "amazon-ebs",
+      "region": "us-west-1",
+      "ssh_pty": true,
+      "source_ami": "ami-0186e3fec9b0283ee",
+      "instance_type": "{{ user `aws_instance_type` }}",
+      "ssh_username": "ec2-user",
+      "ena_support": true,
+      "skip_region_validation": true,
+      "tags": {
+        "builder": "packer",
+        "version": "{{user `version`}}",
+        "cb-creation-timestamp": "{{timestamp}}",
+        "owner": "{{ user `image_owner` }}",
+        "Customer Delivered": "{{user `tag_customer_delivered`}}"
+      },
+      "run_tags": {
+        "owner": "{{ user `image_owner` }}"
+      },
+      "ami_block_device_mappings": [
+        {
+          "device_name": "/dev/sda1",
+          "volume_type": "gp2",
+          "delete_on_termination": true,
+          "volume_size": "{{user `image_size`}}"
+        }
+      ],
+      "launch_block_device_mappings": [
+        {
+          "device_name": "/dev/sda1",
+          "volume_type": "gp2",
+          "delete_on_termination": true,
+          "volume_size": "{{user `image_size`}}"
+        }
+      ],
+      "ami_name": "{{ user `image_name`}}",
+      "subnet_id": "{{ user `subnet_id`}}",
+      "vpc_id": "{{ user `vpc_id`}}"
+    },
+    {
       "name": "aws-gov-centos7",
       "type": "amazon-ebs",
       "region": "us-gov-west-1",
@@ -398,6 +438,8 @@
       "type": "shell",
       "script": "scripts/generate-delta-package-list.sh",
       "environment_vars": [
+        "OS_TYPE={{user `os_type`}}",
+        "OS={{user `os`}}",
         "SALT_INSTALL_OS={{ user `salt_install_os` }}",
         "INSTALLATION_STATE=base"
       ],
@@ -494,6 +536,8 @@
       "type": "shell",
       "script": "scripts/generate-delta-package-list.sh",
       "environment_vars": [
+        "OS_TYPE={{user `os_type`}}",
+        "OS={{user `os`}}",
         "SALT_INSTALL_OS={{ user `salt_install_os` }}",
         "INSTALLATION_STATE=complete",
         "SALT_PATH={{user `salt_path`}}",

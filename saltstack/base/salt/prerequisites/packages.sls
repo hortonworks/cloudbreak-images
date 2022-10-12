@@ -21,7 +21,10 @@ packages_install:
       - git
       - tmux
   {% endif %}
+  {% if pillar['OS'] != 'redhat8' %}  
       - ntp
+      - deltarpm
+  {% endif %}
   {% if grains['os'] != 'Amazon' %}
       - bash-completion
   {% endif %}
@@ -31,7 +34,7 @@ packages_install:
   {% if grains['os_family'] == 'RedHat' %}
       - snappy
       - cloud-utils-growpart
-    {% if pillar['OS'] != 'redhat7' %}
+    {% if pillar['OS'] != 'redhat7' and pillar['OS'] != 'redhat8' %}
       - snappy-devel
     {% endif %}
       - bind-utils
@@ -42,10 +45,9 @@ packages_install:
       - iptables-persistent
       - dnsutils
   {% endif %}
-      - deltarpm
       - nvme-cli
       - openssl
-  {% if pillar['OS'] in ('centos7', 'redhat7') %}
+  {% if pillar['OS'] in ('centos7', 'redhat7', 'redhat8') %}
       - vim-common
   {% else %}
       - vim

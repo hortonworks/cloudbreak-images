@@ -158,6 +158,10 @@ function add_rpm_package_to_csv_list() {
 function add_python_package_to_csv_list() {
   local package=$1
   declare -A DETAIL_MAP=()
+  PIPCALL="pip"
+  if [ "${OS}" == "redhat8" ] ; then
+    PIPCALL="python3 -m pip"
+  fi
   while IFS= read -r line ; do
     IFS=':' read -r key value <<< "$line"
     key=$(echo ${key} | sed -e 's/^[ \t]*//')
@@ -235,7 +239,15 @@ function construct_detailed_packages_csv {
     done < "$PYTHON_PACKAGE_LIST_PATH"
   fi
   if [ -f $VIRTUALENV_PYTHON_PACKAGE_LIST_PATH ] ; then
+<<<<<<< HEAD
     python3 -m virtualenv ${SALT_PATH}
+=======
+    if [ "${OS}" == "redhat8" ] ; then
+      python3 -m venv ${SALT_PATH}
+    else
+      virtualenv ${SALT_PATH}
+    fi
+>>>>>>> a084048... CB-17496: Added support for burning RHEL8 based images
     source ${SALT_PATH}/bin/activate
     while read package; do
       if ! contains "$package" "${PYTHON_PACKAGE_ARRAY[@]}" ; then

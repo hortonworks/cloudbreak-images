@@ -9,10 +9,16 @@ disable_postgres:
   service.disabled:
     - name: postgresql
 
-freeipa-install:
+{% if pillar['OS'] != 'redhat8' %}  
+ntp-install:
   pkg.installed:
     - pkgs:
         - ntp
+{% endif %}
+
+freeipa-install:
+  pkg.installed:
+    - pkgs:
         - ipa-server
         - ipa-server-dns
 
