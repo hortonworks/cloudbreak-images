@@ -133,7 +133,10 @@ function enable_epel_repository() {
 }
 
 function install_python_pip() {
-  if [ "${OS_TYPE}" == "amazonlinux" ]; then
+  if [ "${OS_TYPE}" == "redhat8" ] ; then
+    echo "Installing python3-devel (the rest should be already installed in case of RHEL8)"
+    yum install -y python3-devel
+  elif [ "${OS_TYPE}" == "amazonlinux" ]; then
     yum install -y python27-devel python27-pip
   elif [ "${OS_TYPE}" == "redhat7" ] || [ "${OS_TYPE}" == "amazonlinux2" ] ; then
     echo "Installing python36 with deps"
