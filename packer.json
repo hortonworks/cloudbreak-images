@@ -170,6 +170,8 @@
       "run_tags": {
         "owner": "{{ user `image_owner` }}"
       },
+      "snapshot_groups": "{{ user `aws_snapshot_groups` }}",
+      "ami_groups": "{{ user `aws_ami_groups` }}",
       "ami_block_device_mappings": [
         {
           "device_name": "/dev/sda1",
@@ -210,6 +212,8 @@
       "run_tags": {
         "owner": "{{ user `image_owner` }}"
       },
+      "snapshot_groups": "{{ user `aws_snapshot_groups` }}",
+      "ami_groups": "{{ user `aws_ami_groups` }}",
       "ami_block_device_mappings": [
         {
           "device_name": "/dev/sda1",

@@ -238,7 +238,7 @@ ifdef SOURCE_IMAGE
 endif
 endif
 
-build-aws-redhat8-base:
+build-aws-redhat8:
 	$(ENVS) \
 	AWS_AMI_REGIONS="us-west-1" \
 	OS=redhat8 \
@@ -249,16 +249,6 @@ build-aws-redhat8-base:
 	GIT_BRANCH=$(GIT_BRANCH) \
 	GIT_TAG=$(GIT_TAG) \
 	./scripts/packer.sh build -color=false -only=aws-redhat8 $(PACKER_OPTS)
-
-build-aws-redhat8:
-	@ METADATA_FILENAME_POSTFIX=$(METADATA_FILENAME_POSTFIX) make build-aws-redhat8-base
-	$(ENVS) \
-	AWS_AMI_REGIONS="$(AWS_AMI_REGIONS)" \
-	ATLAS_ARTIFACT_TYPE=amazon \
-	GIT_REV=$(GIT_REV) \
-	GIT_BRANCH=$(GIT_BRANCH) \
-	GIT_TAG=$(GIT_TAG) \
-	./scripts/sparseimage/packer.sh build -color=false -force $(PACKER_OPTS)
 
 copy-aws-images:
 	docker run -i --rm \
