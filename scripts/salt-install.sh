@@ -10,7 +10,8 @@ function install_salt_with_pip3() {
   echo "Installing salt with version: $SALT_VERSION"
   pip3 install --upgrade pip
   pip3 install virtualenv
-
+  python3 -m pip install checkipaconsistency==2.7.10
+  
   mkdir ${SALT_PATH}
   python3 -m virtualenv ${SALT_PATH}
   source ${SALT_PATH}/bin/activate
@@ -19,22 +20,6 @@ function install_salt_with_pip3() {
   pip3 install pbr
   pip3 install -r /tmp/salt_requirements.txt
 }
-
-function install_salt_with_pip3() {
-
-  echo "Installing salt with version: $SALT_VERSION"
-  pip3 install --upgrade pip
-  pip3 install virtualenv
-
-  mkdir ${SALT_PATH}
-  python3 -m virtualenv ${SALT_PATH}
-  source ${SALT_PATH}/bin/activate
-
-  pip3 install --upgrade pip
-  pip3 install pbr  
-  pip3 install -r /tmp/salt_requirements.txt
-}
-
 
 function install_with_apt() {
   export DEBIAN_FRONTEND=noninteractive
@@ -135,7 +120,7 @@ function enable_epel_repository() {
 function install_python_pip() {
   if [ "${OS_TYPE}" == "redhat8" ] ; then
     echo "Installing python3-devel (the rest should be already installed in case of RHEL8)"
-    yum install -y python3-devel
+    yum install -y python3-devel openldap-devel
   elif [ "${OS_TYPE}" == "amazonlinux" ]; then
     yum install -y python27-devel python27-pip
   elif [ "${OS_TYPE}" == "redhat7" ] || [ "${OS_TYPE}" == "amazonlinux2" ] ; then
