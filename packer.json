@@ -399,6 +399,11 @@
       "destination": "/tmp/hardcoded-packages.csv"
     },
     {
+      "type": "file",
+      "source": "scripts/rhel8_salt_fix.patch",
+      "destination": "/tmp/rhel8_salt_fix.patch"
+    },
+    {
       "type": "shell",
       "script": "scripts/generate-delta-package-list.sh",
       "environment_vars": [
