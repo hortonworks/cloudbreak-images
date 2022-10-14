@@ -19,14 +19,12 @@
 
 {% if pillar['OS'] == 'redhat8' %}
 install-postgres:
-  pkg.installed:
-    - pkgs:
-      - postgresql: 10*
-      - postgresql-server: 10*
-      - postgresql-contrib: 10*
-      - postgresql-docs: 10*
-      - postgresql-jdbc
-
+  cmd.run:
+    - name: |
+        dnf -y install https://download.postgresql.org/pub/repos/yum/reporpms/EL-8-x86_64/pgdg-redhat-repo-latest.noarch.rpm
+        dnf module -y disable postgresql
+        dnf clean all
+        dnf -y install postgresql11-server postgresql11
 {% elif grains['os_family'] == 'RedHat' and grains['osmajorrelease'] | int == 7  %}
 install-postgres:
   pkg.installed:
@@ -216,16 +214,11 @@ install-postgres:
 
 init-pg-database:
   cmd.run:
-    - name: /usr/bin/postgresql-setup --initdb --unit postgresql
-
-#/var/lib/pgsql/data:
-#  file.symlink:
-#      - target: /var/lib/pgsql/10/data
-#      - force: True
+    - name: /usr/pgsql-11/bin/postgresql-11-setup initdb
 
 reenable-postgres:
   cmd.run:
-    - name: systemctl enable postgresql.service
+    - name: systemctl enable --now postgresql-11
 
 {% elif  pillar['OS'] == 'amazonlinux2' or ( grains['os_family'] == 'RedHat' and grains['osmajorrelease'] | int == 7 ) %}
 /var/lib/pgsql/data:
@@ -277,11 +270,18 @@ init-pg-database:
 {% if pillar['subtype'] != 'Docker' %}
 start-postgresql:
   service.running:
+{% if  pillar['OS'] == 'redhat8' %}
+    - name: postgresql-11
+{% else %}
     - name: postgresql
-
+{% endif %}
 log-postgres-service-status:
   cmd.run:
+{% if  pillar['OS'] == 'redhat8' %}
+    - name: systemctl status postgresql-11.service
+{% else %}
     - name: systemctl status postgresql.service
+{% endif %}
 {% endif %}
 
 /opt/salt/scripts/conf_pgsql_listen_address.sh:
