@@ -60,7 +60,6 @@ function install_nvme-cli () {
 }
 
 function install_with_yum() {
- 
   # Workaround based on the official documentation: https://cloud.google.com/compute/docs/troubleshooting/known-issues#known_issues_for_linux_vm_instances
   if [ "${CLOUD_PROVIDER}" == "GCP" ]; then
     sudo sed -i 's/repo_gpgcheck=1/repo_gpgcheck=0/g' /etc/yum.repos.d/google-cloud.repo
@@ -85,15 +84,12 @@ function install_with_yum() {
   yum clean metadata
   enable_epel_repository
   yum groupinstall -y 'Development Tools'
- 
   if [ "${OS_TYPE}" == "redhat6" ] ; then
     cp /tmp/repos/${SALT_REPO_FILE} /etc/yum.repos.d/${SALT_REPO_FILE}
     cp /tmp/repos/saltstack-gpg-key.pub /etc/pki/rpm-gpg/saltstack-gpg-key.pub
     yum install -y zeromq zeromq-devel
   fi
- 
   install_python_pip
- 
   if [ ! -z $(grep "^exclude=" /etc/yum.conf) ]; then
     sed -i 's/^exclude=.*$/& salt/g' /etc/yum.conf
   else
@@ -188,15 +184,15 @@ case ${SALT_INSTALL_OS} in
     install_with_yum
     ;;
   debian|ubuntu)
-   echo "Install with apt"
-   install_with_apt
-   ;;
+    echo "Install with apt"
+    install_with_apt
+    ;;
   amazon)
     echo "Install for Amazon linux"
     echo "Return code: $?"
     echo "Install with yum"
     install_with_yum
-   ;;
+    ;;
   suse)
     echo "Install with zypper"
     install_with_zypper

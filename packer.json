@@ -151,11 +151,11 @@
       "vpc_id": "{{ user `vpc_id`}}"
     },
     {
-      "name": "aws-gov-redhat8",
+      "name": "aws-redhat8",
       "type": "amazon-ebs",
-      "region": "us-gov-west-1",
+      "region": "us-west-1",
       "ssh_pty": true,
-      "source_ami": "ami-0ac4e06a69870e5be",
+      "source_ami": "ami-0186e3fec9b0283ee",
       "instance_type": "{{ user `aws_instance_type` }}",
       "ssh_username": "ec2-user",
       "ena_support": true,
@@ -193,11 +193,11 @@
       "vpc_id": "{{ user `vpc_id`}}"
     },
     {
-      "name": "aws-redhat8",
+      "name": "aws-gov-redhat8",
       "type": "amazon-ebs",
-      "region": "us-west-1",
+      "region": "us-gov-west-1",
       "ssh_pty": true,
-      "source_ami": "ami-0186e3fec9b0283ee",
+      "source_ami": "ami-0ac4e06a69870e5be",
       "instance_type": "{{ user `aws_instance_type` }}",
       "ssh_username": "ec2-user",
       "ena_support": true,

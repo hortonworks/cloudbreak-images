@@ -10,9 +10,8 @@ fi
 
 sudo mkdir /image
 sudo dd if=/dev/xvdb of=/image/sparse.img bs=1M status=progress
-blkid /image/sparse.img
 sudo mkdir /loop
-sudo mount -t xfs -o loop,discard,offset=1048576 -o nouuid /image/sparse.img /loop || dmesg | tail -n 50
+sudo mount -t xfs -o loop,discard,offset=1048576 -o nouuid /image/sparse.img /loop
 sudo fstrim /loop
 sudo umount /loop
 sudo ddpt of=/dev/xvdc if=/image/sparse.img bs=1M oflag=sparse
