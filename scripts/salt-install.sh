@@ -11,6 +11,7 @@ function install_salt_with_pip3() {
   pip3 install --upgrade pip
   pip3 install virtualenv
   python3 -m pip install checkipaconsistency==2.7.10
+  python3 -m pip install 'PyYAML>=5.1' --ignore-installed
   
   mkdir ${SALT_PATH}
   python3 -m virtualenv ${SALT_PATH}
