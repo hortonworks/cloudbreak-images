@@ -7,7 +7,7 @@ install_openssl_devel:
 
 install_pyyaml:
   pip.installed:
-    - name: PyYAML
+    - name: PyYAML>=5.1
 
 install_jq:
   file.managed:
