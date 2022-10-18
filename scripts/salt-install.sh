@@ -10,11 +10,11 @@ function install_salt_with_pip3() {
   echo "Installing salt with version: $SALT_VERSION"
   pip3 install --upgrade pip
   pip3 install virtualenv
-  python3 -m pip install checkipaconsistency==2.7.10
-  python3 -m pip install 'PyYAML>=5.1' --ignore-installed
+  python3.8 -m pip install checkipaconsistency==2.7.10
+  python3.8 -m pip install 'PyYAML>=5.1' --ignore-installed
   
   mkdir ${SALT_PATH}
-  python3 -m virtualenv ${SALT_PATH}
+  python3.8 -m virtualenv ${SALT_PATH}
   source ${SALT_PATH}/bin/activate
 
   pip3 install --upgrade pip
@@ -76,7 +76,9 @@ function install_with_yum() {
   fi
 
   if [ "${OS_TYPE}" == "redhat8" ] ; then  
-    yum update -y python3
+    sudo yum remove -y python3
+    yum install -y python38
+    yum install -y python38-devel
   else
     yum update -y python
   fi
@@ -116,10 +118,7 @@ function enable_epel_repository() {
 
 function install_python_pip() {
   yum install -y openldap-devel
-  if [ "${OS_TYPE}" == "redhat8" ] ; then
-    echo "Installing python3-devel (the rest should be already installed in case of RHEL8)"
-    yum install -y python3-devel
-  elif [ "${OS_TYPE}" == "amazonlinux" ]; then
+  if [ "${OS_TYPE}" == "amazonlinux" ]; then
     yum install -y python27-devel python27-pip
   elif [ "${OS_TYPE}" == "redhat7" ] || [ "${OS_TYPE}" == "amazonlinux2" ] ; then
     echo "Installing python36 with deps"
@@ -133,7 +132,7 @@ function install_python_pip() {
       yum install -y python36 python36-pip python36-devel python36-setuptools
       make_pip3_default_pip
     fi
-  else
+  elif [ "${OS_TYPE}" != "redhat8" ]; then
     yum install -y python-pip python-devel
   fi
 }
@@ -145,7 +144,7 @@ function make_pip3_default_pip() {
   fi
   cp /bin/pip3 /bin/pip
   if [ -f "$FILE" ]; then
-      cp /bin/pip3.6 /bin/pip
+      cp /bin/pip3.8 /bin/pip
   fi
 }
 

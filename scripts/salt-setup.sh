@@ -32,7 +32,7 @@ EOF
 
 function apply_rhel8_salt_patch {
   if [ "${OS}" == "redhat8" ] ; then
-    patch -t -u /opt/salt_3001.8/lib/python3.6/site-packages/salt/modules/network.py -i /tmp/rhel8_salt_fix.patch
+    patch -t -u /opt/salt_3001.8/lib/python3.8/site-packages/salt/modules/network.py -i /tmp/rhel8_salt_fix.patch
   fi
 }
 
