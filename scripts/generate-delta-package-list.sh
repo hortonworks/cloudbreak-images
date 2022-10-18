@@ -158,6 +158,10 @@ function add_rpm_package_to_csv_list() {
 function add_python_package_to_csv_list() {
   local package=$1
   declare -A DETAIL_MAP=()
+  PIPCALL="pip"
+  if [ "${OS}" == "redhat8" ] ; then
+    PIPCALL="python3 -m pip"
+  fi
   while IFS= read -r line ; do
     IFS=':' read -r key value <<< "$line"
     key=$(echo ${key} | sed -e 's/^[ \t]*//')

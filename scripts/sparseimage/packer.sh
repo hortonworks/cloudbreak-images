@@ -16,7 +16,6 @@ packer_in_container() {
   AMI_INFO=$(aws ec2 describe-images --region $REGION --image-ids $SOURCE_AMI --output json | jq -r '.Images[0]')
   # Figure out the snapshot id of the previous build
   SOURCE_AMI_SNAPSHOT=$(echo $AMI_INFO | jq -r '.BlockDeviceMappings[0].Ebs.SnapshotId')
-  
   echo Going to use AMI $SOURCE_AMI with SnapshotId $SOURCE_AMI_SNAPSHOT...
 
   case "$REGION" in

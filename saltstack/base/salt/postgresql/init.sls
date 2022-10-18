@@ -17,7 +17,15 @@
     - source: salt://postgresql/yum/pgdg11-gpg
 {% endif %}
 
-{% if grains['os_family'] == 'RedHat' and grains['osmajorrelease'] | int == 7  %}
+{% if pillar['OS'] == 'redhat8' %}
+install-postgres:
+  cmd.run:
+    - name: |
+        dnf -y install https://download.postgresql.org/pub/repos/yum/reporpms/EL-8-x86_64/pgdg-redhat-repo-latest.noarch.rpm
+        dnf module -y disable postgresql
+        dnf clean all
+        dnf -y install postgresql11-server postgresql11
+{% elif grains['os_family'] == 'RedHat' and grains['osmajorrelease'] | int == 7  %}
 install-postgres:
   pkg.installed:
     - pkgs:
@@ -194,13 +202,25 @@ install-postgres:
 {% endif %}
 {% endif %}
 
+{% if  pillar['OS'] != 'redhat8' %}
 /usr/bin/initdb:
   file.symlink:
     - mode: 755
     - target: /usr/pgsql-10/bin/initdb
     - force: True
+{% endif %}
 
-{% if  pillar['OS'] == 'amazonlinux2' or ( grains['os_family'] == 'RedHat' and grains['osmajorrelease'] | int == 7 ) %}
+{% if  pillar['OS'] == 'redhat8' %}
+
+init-pg-database:
+  cmd.run:
+    - name: /usr/pgsql-11/bin/postgresql-11-setup initdb
+
+reenable-postgres:
+  cmd.run:
+    - name: systemctl enable --now postgresql-11
+
+{% elif  pillar['OS'] == 'amazonlinux2' or ( grains['os_family'] == 'RedHat' and grains['osmajorrelease'] | int == 7 ) %}
 /var/lib/pgsql/data:
   file.symlink:
       - target: /var/lib/pgsql/10/data
@@ -250,7 +270,18 @@ init-pg-database:
 {% if pillar['subtype'] != 'Docker' %}
 start-postgresql:
   service.running:
+{% if  pillar['OS'] == 'redhat8' %}
+    - name: postgresql-11
+{% else %}
     - name: postgresql
+{% endif %}
+log-postgres-service-status:
+  cmd.run:
+{% if  pillar['OS'] == 'redhat8' %}
+    - name: systemctl status postgresql-11.service
+{% else %}
+    - name: systemctl status postgresql.service
+{% endif %}
 {% endif %}
 
 /opt/salt/scripts/conf_pgsql_listen_address.sh:
@@ -264,6 +295,7 @@ configure-listen-address:
     - name: su postgres -c '/opt/salt/scripts/conf_pgsql_listen_address.sh' && echo $(date +%Y-%m-%d:%H:%M:%S) >> /var/log/pgsql_listen_address_configured
     - require:
       - file: /opt/salt/scripts/conf_pgsql_listen_address.sh
+
 {% if pillar['subtype'] != 'Docker' %}
       - service: start-postgresql
 {% endif %}
