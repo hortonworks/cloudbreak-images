@@ -1,5 +1,6 @@
 {
   "variables": {
+    "os": "{{ env `OS` }}",
     "source_image": "{{ env `SOURCE_IMAGE` }}",
     "image_uuid": "{{ env `IMAGE_UUID` }}",
     "image_name": "{{ env `IMAGE_NAME` }}",
@@ -24,7 +25,7 @@
       "ssh_pty": true,
       "source_ami": "{{ user `source_image` }}",
       "instance_type": "t3.2xlarge",
-      "ssh_username": "centos",
+      "ssh_username": "cloudbreak",
       "ena_support": true,
       "skip_region_validation": true,
       "tags": {
@@ -63,7 +64,7 @@
       "ssh_pty": true,
       "source_ami": "{{ user `source_image` }}",
       "instance_type": "t3.2xlarge",
-      "ssh_username": "centos",
+      "ssh_username": "cloudbreak",
       "ena_support": true,
       "skip_region_validation": true,
       "tags": {
@@ -110,7 +111,7 @@
       "ssh_pty": "true",
       "username": "cloudbreak",
       "os_type": "Linux",
-      "ssh_username": "centos",
+      "ssh_username": "cloudbreak",
       "ssh_password": "S3cr3t",
       "location": "westus",
       "vm_size": "Standard_D4",
@@ -124,7 +125,8 @@
         "cb-creation-timestamp": "{{timestamp}}",
         "owner": "{{ user `image_owner` }}"
       },
-      "skip_create_image": true
+      "skip_create_image": true,
+      "communicator": "ssh"
     },
     {
       "name": "gc-centos7",
@@ -135,7 +137,7 @@
       "zone": "us-west2-a",
       "project_id": "gcp-cdp-cb-images",
       "network_project_id": "gcp-eng-network-enterprise",
-      "ssh_username": "centos",
+      "ssh_username": "cloudbreak",
       "ssh_pty": "true",
       "machine_type": "n1-standard-2",
       "preemptible": false,
@@ -162,13 +164,14 @@
       "type": "shell",
       "script": "scripts/changelog/collect-package-changelogs.sh",
       "environment_vars": [
+        "OS={{ user `os` }}",
         "IMAGE_UUID={{ user `image_uuid` }}"
       ],
-      "execute_command": "chmod +x {{ .Path }}; sudo {{ .Vars }} {{ .Path }}"
+      "execute_command": "chmod +x {{ .Path }}; sudo {{ .Vars }} {{ .Path }};"
     },
     {
       "type": "file",
-      "source": "/tmp/changlogs-tmp/rpm-package-changelogs.tar.gz",
+      "source": "/tmp/changelogs-tmp/rpm-package-changelogs.tar.gz",
       "destination": "rpm-package-changelogs.tar.gz",
       "direction" : "download"
     }

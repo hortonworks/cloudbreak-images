@@ -8,7 +8,7 @@ if [ -z "${IMAGE_UUID}" ] ; then
   exit 1
 fi
 
-BASE_PATH="/tmp/changlogs-tmp"
+BASE_PATH="/tmp/changelogs-tmp"
 RPM_PACKAGE_LIST_PATH="${BASE_PATH}/rpm-packages.txt"
 RPM_PACKAGE_TAR_FILE_NAME="rpm-package-changelogs.tar.gz"
 RPM_PACKAGE_TAR_FILE_PATH="${BASE_PATH}/${RPM_PACKAGE_TAR_FILE_NAME}"
@@ -27,6 +27,7 @@ function execute() {
   echo "Compressing the entire directory that contains generated files into ${RPM_PACKAGE_TAR_FILE_PATH} file..."
   cd $BASE_PATH
   tar -zcf $RPM_PACKAGE_TAR_FILE_NAME $CHANGELOG_DIRECTORY_NAME
+  chmod 777 $BASE_PATH -R
 }
 
 function clean_up() {
@@ -34,7 +35,7 @@ function clean_up() {
 } 
 
 function collect_rpm_packages() {
-   mkdir -p $BASE_PATH
+  mkdir -p $BASE_PATH
   rpm -qa | sort | while read line ; do
     name=$(rpm -q --queryformat '%{NAME}' "$line")
     if ! contains "$name" "${FILTERED_RPM_PACKAGES[@]}" ; then
@@ -68,9 +69,9 @@ function contains() {
   return 1
 }
 
-echo "Trying to collect changelogs regarding to the installed packages on ${SALT_INSTALL_OS}"
+echo "Trying to collect changelogs regarding to the installed packages on ${OS}"
 
-case ${SALT_INSTALL_OS} in
+case ${OS} in
   centos|redhat|amazon)
     execute
     ;;
@@ -79,7 +80,7 @@ case ${SALT_INSTALL_OS} in
     exit 1
     ;;
   *)
-    echo "Unsupported platform:" $SALT_INSTALL_OS
+    echo "Unsupported platform:" $OS
     exit 1
     ;;
 esac

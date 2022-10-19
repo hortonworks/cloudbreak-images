@@ -232,6 +232,7 @@ generate-aws-centos7-changelog:
 ifdef IMAGE_UUID
 ifdef SOURCE_IMAGE
 	$(ENVS) \
+	OS=centos \
 	IMAGE_UUID=$(IMAGE_UUID) \
 	SOURCE_IMAGE=$(SOURCE_IMAGE) \
 	./scripts/changelog/packer.sh build -color=false -only=aws-centos7 -force $(PACKER_OPTS)
@@ -309,6 +310,7 @@ generate-aws-gov-centos7-changelog:
 ifdef IMAGE_UUID
 ifdef SOURCE_IMAGE
 	$(ENVS) \
+	OS=centos \
 	IMAGE_UUID=$(IMAGE_UUID) \
 	SOURCE_IMAGE=$(SOURCE_IMAGE) \
 	./scripts/changelog/packer.sh build -color=false -only=aws-gov-centos7 -force $(PACKER_OPTS)
@@ -353,6 +355,7 @@ generate-gc-centos7-changelog:
 ifdef IMAGE_UUID
 ifdef SOURCE_IMAGE
 	$(ENVS) \
+	OS=centos \
 	IMAGE_UUID=$(IMAGE_UUID) \
 	SOURCE_IMAGE=$(SOURCE_IMAGE) \
 	./scripts/changelog/packer.sh build -color=false -only=gc-centos7 -force $(PACKER_OPTS)
@@ -405,6 +408,7 @@ generate-azure-centos7-changelog:
 ifdef IMAGE_UUID
 ifdef SOURCE_IMAGE
 	$(ENVS) \
+	OS=centos \
 	IMAGE_UUID=$(IMAGE_UUID) \
 	SOURCE_IMAGE=$(SOURCE_IMAGE) \
 	BUILD_RESOURCE_GROUP_NAME=$(BUILD_RESOURCE_GROUP_NAME) \
