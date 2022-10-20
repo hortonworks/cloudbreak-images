@@ -495,6 +495,14 @@ ifdef UUID
 	aws s3 cp "${UUID}-manifest.csv" s3://cloudbreak-imagecatalog/image-manifests/ --acl public-read
 endif
 
+copy-changelog-to-s3-bucket:
+ifdef IMAGE_UUID_1
+ifdef IMAGE_UUID_2
+	AWS_DEFAULT_REGION=eu-west-1
+	aws s3 cp "${IMAGE_UUID_1}-to-${IMAGE_UUID_2}-changelog.txt" s3://cloudbreak-imagecatalog/image-changelogs/ --acl public-read
+endif
+endif
+
 generate-last-metadata-url-file:
 ifdef IMAGE_NAME
 	echo "METADATA_URL=https://raw.githubusercontent.com/$(GITHUB_ORG)/$(GITHUB_REPO)/master/$(IMAGE_NAME)_$(METADATA_FILENAME_POSTFIX).json" > last_md
