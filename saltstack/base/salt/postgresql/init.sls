@@ -7,9 +7,25 @@
 /etc/pki/rpm-gpg/RPM-GPG-KEY-PGDG-10:
   file.managed:
     - source: salt://postgresql/yum/pgdg10-gpg
+
+/etc/yum.repos.d/pgdg11.repo:
+  file.managed:
+    - source: salt://postgresql/yum/postgres11-el7.repo
+
+/etc/pki/rpm-gpg/RPM-GPG-KEY-PGDG-11:
+  file.managed:
+    - source: salt://postgresql/yum/pgdg11-gpg
 {% endif %}
 
-{% if grains['os_family'] == 'RedHat' and grains['osmajorrelease'] | int == 7  %}
+{% if pillar['OS'] == 'redhat8' %}
+install-postgres:
+  cmd.run:
+    - name: |
+        dnf -y install https://download.postgresql.org/pub/repos/yum/reporpms/EL-8-x86_64/pgdg-redhat-repo-latest.noarch.rpm
+        dnf module -y disable postgresql
+        dnf clean all
+        dnf -y install postgresql11-server postgresql11
+{% elif grains['os_family'] == 'RedHat' and grains['osmajorrelease'] | int == 7  %}
 install-postgres:
   pkg.installed:
     - pkgs:
@@ -19,6 +35,115 @@ install-postgres:
       - postgresql10-contrib
       - postgresql10-docs
       - postgresql10-devel
+
+install-postgres11:
+  pkg.installed:
+    - pkgs:
+      - postgresql11-server
+      - postgresql-jdbc
+      - postgresql11
+      - postgresql11-contrib
+      - postgresql11-docs
+
+pgsql-ld-conf:
+  alternatives.set:
+    - path: /usr/pgsql-10/share/postgresql-10-libs.conf
+
+pgsql-psql:
+  alternatives.set:
+    - path: /usr/pgsql-10/bin/psql
+
+pgsql-clusterdb:
+  alternatives.set:
+    - path: /usr/pgsql-10/bin/clusterdb
+
+pgsql-createdb:
+  alternatives.set:
+    - path: /usr/pgsql-10/bin/createdb
+
+pgsql-createuser:
+  alternatives.set:
+    - path: /usr/pgsql-10/bin/createuser
+
+pgsql-dropdb:
+  alternatives.set:
+    - path: /usr/pgsql-10/bin/dropdb
+
+pgsql-dropuser:
+  alternatives.set:
+    - path: /usr/pgsql-10/bin/dropuser
+
+pgsql-pg_basebackup:
+  alternatives.set:
+    - path: /usr/pgsql-10/bin/pg_basebackup
+
+pgsql-pg_dump:
+  alternatives.set:
+    - path: /usr/pgsql-10/bin/pg_dump
+
+pgsql-pg_dumpall:
+  alternatives.set:
+    - path: /usr/pgsql-10/bin/pg_dumpall
+
+pgsql-pg_restore:
+  alternatives.set:
+    - path: /usr/pgsql-10/bin/pg_restore
+
+pgsql-reindexdb:
+  alternatives.set:
+    - path: /usr/pgsql-10/bin/reindexdb
+
+pgsql-vacuumdb:
+  alternatives.set:
+    - path: /usr/pgsql-10/bin/vacuumdb
+
+pgsql-clusterdbman:
+  alternatives.set:
+    - path: /usr/pgsql-10/share/man/man1/clusterdb.1
+
+pgsql-createdbman:
+  alternatives.set:
+    - path: /usr/pgsql-10/share/man/man1/createdb.1
+
+pgsql-createuserman:
+  alternatives.set:
+    - path: /usr/pgsql-10/share/man/man1/createuser.1
+
+pgsql-dropdbman:
+  alternatives.set:
+    - path: /usr/pgsql-10/share/man/man1/dropdb.1
+
+pgsql-dropuserman:
+  alternatives.set:
+    - path: /usr/pgsql-10/share/man/man1/dropuser.1
+
+pgsql-pg_basebackupman:
+  alternatives.set:
+    - path: /usr/pgsql-10/share/man/man1/pg_basebackup.1
+
+pgsql-pg_dumpman:
+  alternatives.set:
+    - path: /usr/pgsql-10/share/man/man1/pg_dump.1
+
+pgsql-pg_dumpallman:
+  alternatives.set:
+    - path: /usr/pgsql-10/share/man/man1/pg_dumpall.1
+
+pgsql-pg_restoreman:
+  alternatives.set:
+    - path: /usr/pgsql-10/share/man/man1/pg_restore.1
+
+pgsql-psqlman:
+  alternatives.set:
+    - path: /usr/pgsql-10/share/man/man1/psql.1
+
+pgsql-reindexdbman:
+  alternatives.set:
+    - path: /usr/pgsql-10/share/man/man1/reindexdb.1
+
+pgsql-vacuumdbman:
+  alternatives.set:
+    - path: /usr/pgsql-10/share/man/man1/vacuumdb.1
 
 {% elif grains['os_family'] == 'Debian' %}
 install-postgres:
@@ -77,13 +202,25 @@ install-postgres:
 {% endif %}
 {% endif %}
 
+{% if  pillar['OS'] != 'redhat8' %}
 /usr/bin/initdb:
   file.symlink:
     - mode: 755
     - target: /usr/pgsql-10/bin/initdb
     - force: True
+{% endif %}
 
-{% if  pillar['OS'] == 'amazonlinux2' or ( grains['os_family'] == 'RedHat' and grains['osmajorrelease'] | int == 7 ) %}
+{% if  pillar['OS'] == 'redhat8' %}
+
+init-pg-database:
+  cmd.run:
+    - name: /usr/pgsql-11/bin/postgresql-11-setup initdb
+
+reenable-postgres:
+  cmd.run:
+    - name: systemctl enable --now postgresql-11
+
+{% elif  pillar['OS'] == 'amazonlinux2' or ( grains['os_family'] == 'RedHat' and grains['osmajorrelease'] | int == 7 ) %}
 /var/lib/pgsql/data:
   file.symlink:
       - target: /var/lib/pgsql/10/data
@@ -92,6 +229,10 @@ install-postgres:
 init-pg-database:
   cmd.run:
     - name: find /var/lib/pgsql/ -name PG_VERSION | grep -q "data/PG_VERSION" || /usr/pgsql-10/bin/postgresql-10-setup initdb
+
+init-pg11-database:
+  cmd.run:
+    - name: /usr/pgsql-11/bin/postgresql-11-setup initdb
 
 systemd-link:
   file.replace:
@@ -129,7 +270,18 @@ init-pg-database:
 {% if pillar['subtype'] != 'Docker' %}
 start-postgresql:
   service.running:
+{% if  pillar['OS'] == 'redhat8' %}
+    - name: postgresql-11
+{% else %}
     - name: postgresql
+{% endif %}
+log-postgres-service-status:
+  cmd.run:
+{% if  pillar['OS'] == 'redhat8' %}
+    - name: systemctl status postgresql-11.service
+{% else %}
+    - name: systemctl status postgresql.service
+{% endif %}
 {% endif %}
 
 /opt/salt/scripts/conf_pgsql_listen_address.sh:
@@ -143,6 +295,7 @@ configure-listen-address:
     - name: su postgres -c '/opt/salt/scripts/conf_pgsql_listen_address.sh' && echo $(date +%Y-%m-%d:%H:%M:%S) >> /var/log/pgsql_listen_address_configured
     - require:
       - file: /opt/salt/scripts/conf_pgsql_listen_address.sh
+
 {% if pillar['subtype'] != 'Docker' %}
       - service: start-postgresql
 {% endif %}

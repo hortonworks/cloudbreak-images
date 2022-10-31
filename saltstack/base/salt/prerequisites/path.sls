@@ -10,6 +10,6 @@ set_path_sbin:
 set_path_local_sbin:
   environ.setenv:
     - name: PATH
-    - value: "{{ salt['environ.get']('PATH') }}:/usr/local/sbin"
+    - value: "{{ salt['environ.get']('PATH') }}:/usr/local/sbin:/usr/local/bin"
     - update_minion: True
 {% endif %}

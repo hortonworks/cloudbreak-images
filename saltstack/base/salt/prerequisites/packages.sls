@@ -21,7 +21,10 @@ packages_install:
       - git
       - tmux
   {% endif %}
+  {% if pillar['OS'] != 'redhat8' %}  
       - ntp
+      - deltarpm
+  {% endif %}
   {% if grains['os'] != 'Amazon' %}
       - bash-completion
   {% endif %}
@@ -31,7 +34,7 @@ packages_install:
   {% if grains['os_family'] == 'RedHat' %}
       - snappy
       - cloud-utils-growpart
-    {% if pillar['OS'] != 'redhat7' %}
+    {% if pillar['OS'] != 'redhat7' and pillar['OS'] != 'redhat8' %}
       - snappy-devel
     {% endif %}
       - bind-utils
@@ -42,10 +45,9 @@ packages_install:
       - iptables-persistent
       - dnsutils
   {% endif %}
-      - deltarpm
       - nvme-cli
       - openssl
-  {% if pillar['OS'] in ('centos7', 'redhat7') %}
+  {% if pillar['OS'] in ('centos7', 'redhat7', 'redhat8') %}
       - vim-common
   {% else %}
       - vim
@@ -58,29 +60,30 @@ packages_install:
       - openldap-clients
       - openldap-devel
       - nmap-ncat
-      - telnet
       - tcpdump
       - sysstat
       - goaccess
 
 {% if pillar['subtype'] != 'Docker' %}
 
+{% if salt['environ.get']('CLOUD_PROVIDER') == '' %}
+missing_cloudprovider:
+  cmd.run:
+    - name: echo 'CLOUD_PROVIDER environment variable is missing!' && exit 1
+{% elif salt['environ.get']('CLOUD_PROVIDER').startswith('AWS') %}
+
 download_awscli:
-  archive.extracted:
-    - name: /tmp/awscli
-    - source: https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip
-    - archive_format: zip
-    - skip_verify: true
-    - enforce_toplevel: false
+  cmd.run:
+    - name: wget https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip -q -O /tmp/awscli.zip && unzip -q -d /tmp/awscli/ /tmp/awscli.zip && rm -f /tmp/awscli.zip
 
 install_awscli:
   cmd.run:
     - name: /tmp/awscli/aws/install -b /usr/bin
 
 remove_awscli_extract:
-  file.directory:
-    - name: /tmp/awscli
-    - clean: True
+  cmd.run:
+    - name: rm -rf /tmp/awscli
+{% elif salt['environ.get']('CLOUD_PROVIDER') == 'Azure' %}
 
 download_azcopy:
   archive.extracted:
@@ -102,6 +105,7 @@ remove_azcopy_extract:
   file.directory:
     - name: /tmp/azcopy
     - clean: True
+{% endif %}
 
 {% endif %}
 

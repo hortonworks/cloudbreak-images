@@ -9,12 +9,18 @@ disable_postgres:
   service.disabled:
     - name: postgresql
 
+
 freeipa-install:
+{% if pillar['OS'] != 'redhat8' %}  
   pkg.installed:
     - pkgs:
         - ntp
         - ipa-server
         - ipa-server-dns
+{% else %}
+  cmd.run:
+    - name: yum module -y reset idm && yum -y install @idm:DL1 && yum -y install freeipa-server && yum -y install ipa-server-dns bind-dyndb-ldap
+{% endif %}
 
 {% if freeipa_plugin_rpm_url %}
 install_freeipa_plugin_rpm:
@@ -27,6 +33,11 @@ install_freeipa_plugin_rpm:
 {% endif %}
 
 {% if freeipa_healthagent_rpm_url %}
+inotifytools-install:
+  pkg.installed:
+    - pkgs:
+        - inotify-tools
+
 install_freeipa_healthagent_rpm:
   pkg.installed:
     - sources:

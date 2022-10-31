@@ -89,7 +89,7 @@ endif
 
 ifeq ($(OS),centos7)
 	ifeq ($(CLOUD_PROVIDER),GCP)
-		IMAGE_SIZE ?= 32
+		IMAGE_SIZE ?= 48
 	endif
 	IMAGE_SIZE ?= 30
 else
@@ -115,7 +115,7 @@ ARCHIVE_CREDENTIALS ?= ":"
 CDP_TELEMETRY_VERSION ?= ""
 CDP_LOGGING_AGENT_VERSION ?= ""
 
-DEFAULT_JUMPGATE_AGENT_RPM_URL := "https://cloudera-build-us-west-1.vpc.cloudera.com/s3/build/19813655/inverting-proxy/2.x/redhat7/yum/tars/inverting-proxy/jumpgate-agent.rpm"
+DEFAULT_JUMPGATE_AGENT_RPM_URL := "https://cloudera-build-us-west-1.vpc.cloudera.com/s3/build/29318549/inverting-proxy/2.x/redhat7/yum/tars/inverting-proxy/jumpgate-agent.rpm"
 
 ENVS=METADATA_FILENAME_POSTFIX=$(METADATA_FILENAME_POSTFIX) DESCRIPTION=$(DESCRIPTION) STACK_TYPE=$(STACK_TYPE) MPACK_URLS=$(MPACK_URLS) HDP_VERSION=$(HDP_VERSION) BASE_NAME=$(BASE_NAME) IMAGE_NAME=$(IMAGE_NAME) IMAGE_SIZE=$(IMAGE_SIZE) INCLUDE_CDP_TELEMETRY=$(INCLUDE_CDP_TELEMETRY) INCLUDE_FLUENT=$(INCLUDE_FLUENT) INCLUDE_METERING=$(INCLUDE_METERING) USE_TELEMETRY_ARCHIVE=$(USE_TELEMETRY_ARCHIVE) ARCHIVE_BASE_URL=$(ARCHIVE_BASE_URL) ARCHIVE_CREDENTIALS=$(ARCHIVE_CREDENTIALS) ENABLE_POSTPROCESSORS=$(ENABLE_POSTPROCESSORS) CUSTOM_IMAGE_TYPE=$(CUSTOM_IMAGE_TYPE) OPTIONAL_STATES=$(OPTIONAL_STATES) ORACLE_JDK8_URL_RPM=$(ORACLE_JDK8_URL_RPM) PREINSTALLED_JAVA_HOME=${PREINSTALLED_JAVA_HOME} IMAGE_OWNER=${IMAGE_OWNER} REPOSITORY_TYPE=${REPOSITORY_TYPE} PACKAGE_VERSIONS=$(PACKAGE_VERSIONS) SALT_VERSION=$(SALT_VERSION) SALT_PATH=$(SALT_PATH) PYZMQ_VERSION=$(PYZMQ_VERSION) PYTHON_APT_VERSION=$(PYTHON_APT_VERSION) AWS_MAX_ATTEMPTS=$(AWS_MAX_ATTEMPTS) TRACE=1 AWS_SNAPSHOT_GROUPS=$(AWS_SNAPSHOT_GROUPS) AWS_AMI_GROUPS=$(AWS_AMI_GROUPS) TAG_CUSTOMER_DELIVERED=$(TAG_CUSTOMER_DELIVERED) VERSION=$(VERSION) PARCELS_NAME=$(PARCELS_NAME) PARCELS_ROOT=$(PARCELS_ROOT) SUBNET_ID=$(SUBNET_ID) VPC_ID=$(VPC_ID) VIRTUAL_NETWORK_RESOURCE_GROUP_NAME=$(VIRTUAL_NETWORK_RESOURCE_GROUP_NAME) ARM_BUILD_REGION=$(ARM_BUILD_REGION) PRE_WARM_PARCELS=$(PRE_WARM_PARCELS) PRE_WARM_CSD=$(PRE_WARM_CSD) SLES_REGISTRATION_CODE=$(SLES_REGISTRATION_CODE) FLUENT_PREWARM_TAG=$(FLUENT_PREWARM_TAG) METERING_PREWARM_TAG=$(METERING_PREWARM_TAG) CDP_TELEMETRY_PREWARM_TAG=$(CDP_TELEMETRY_PREWARM_TAG) PREWARM_TAG=$(PREWARM_TAG) DEFAULT_JUMPGATE_AGENT_RPM_URL=$(DEFAULT_JUMPGATE_AGENT_RPM_URL) CLOUD_PROVIDER=$(CLOUD_PROVIDER)
 
@@ -151,7 +151,7 @@ endef
 
 ifndef AWS_AMI_REGIONS
 define AWS_AMI_REGIONS
-ap-northeast-1,ap-northeast-2,ap-south-1,ap-southeast-1,ap-southeast-2,ap-southeast-3,ca-central-1,eu-central-1,eu-west-1,eu-west-2,eu-west-3,sa-east-1,us-east-1,us-east-2,us-west-1,us-west-2,eu-north-1,eu-south-1,af-south-1,me-south-1
+ap-northeast-1,ap-northeast-2,ap-south-1,ap-southeast-1,ap-southeast-2,ap-southeast-3,ca-central-1,eu-central-1,eu-west-1,eu-west-2,eu-west-3,sa-east-1,us-east-1,us-east-2,us-west-1,us-west-2,eu-north-1,eu-south-1,af-south-1,me-south-1,ap-east-1
 endef
 endif
 
@@ -228,6 +228,29 @@ build-aws-centos7:
 	GIT_TAG=$(GIT_TAG) \
 	./scripts/sparseimage/packer.sh build -color=false -force $(PACKER_OPTS)
 
+generate-aws-centos7-changelog:
+ifdef IMAGE_UUID
+ifdef SOURCE_IMAGE
+	$(ENVS) \
+	OS=centos \
+	IMAGE_UUID=$(IMAGE_UUID) \
+	SOURCE_IMAGE=$(SOURCE_IMAGE) \
+	./scripts/changelog/packer.sh build -color=false -only=aws-centos7 -force $(PACKER_OPTS)
+endif
+endif
+
+build-aws-redhat8:
+	$(ENVS) \
+	AWS_AMI_REGIONS="us-west-1" \
+	OS=redhat8 \
+	OS_TYPE=redhat8 \
+	ATLAS_ARTIFACT_TYPE=amazon \
+	SALT_INSTALL_OS=redhat \
+	GIT_REV=$(GIT_REV) \
+	GIT_BRANCH=$(GIT_BRANCH) \
+	GIT_TAG=$(GIT_TAG) \
+	./scripts/packer.sh build -color=false -only=aws-redhat8 $(PACKER_OPTS)
+
 copy-aws-images:
 	docker run -i --rm \
 		-v "${PWD}/scripts:/scripts" \
@@ -268,6 +291,32 @@ build-aws-gov-centos7:
 	NO_PROXY=172.20.0.0/16,127.0.0.1,localhost,169.254.169.254,internal,local,s3.us-gov-west-1.amazonaws.com,us-gov-west-1.eks.amazonaws.com \
 	./scripts/sparseimage/packer.sh build -color=false -force $(PACKER_OPTS)
 
+build-aws-gov-redhat8:
+	$(ENVS) \
+	AWS_AMI_REGIONS="us-gov-west-1" \
+	OS=redhat8 \
+	OS_TYPE=redhat8 \
+	ATLAS_ARTIFACT_TYPE=amazon-gov \
+	SALT_INSTALL_OS=redhat \
+	GIT_REV=$(GIT_REV) \
+	GIT_BRANCH=$(GIT_BRANCH) \
+	GIT_TAG=$(GIT_TAG) \
+	HTTPS_PROXY=http://usgw1-egress.gov-dev.cloudera.com:3128 \
+	HTTP_PROXY=http://usgw1-egress.gov-dev.cloudera.com:3128 \
+	NO_PROXY=172.20.0.0/16,127.0.0.1,localhost,169.254.169.254,internal,local,s3.us-gov-west-1.amazonaws.com,us-gov-west-1.eks.amazonaws.com \
+	./scripts/packer.sh build -color=false -only=aws-gov-redhat8 $(PACKER_OPTS)
+
+generate-aws-gov-centos7-changelog:
+ifdef IMAGE_UUID
+ifdef SOURCE_IMAGE
+	$(ENVS) \
+	OS=centos \
+	IMAGE_UUID=$(IMAGE_UUID) \
+	SOURCE_IMAGE=$(SOURCE_IMAGE) \
+	./scripts/changelog/packer.sh build -color=false -only=aws-gov-centos7 -force $(PACKER_OPTS)
+endif
+endif
+
 copy-aws-gov-images:
 	docker run -i --rm \
 		-v "${PWD}/scripts:/scripts" \
@@ -301,6 +350,17 @@ build-gc-centos7:
 	GIT_BRANCH=$(GIT_BRANCH) \
 	GIT_TAG=$(GIT_TAG) \
 	./scripts/packer.sh build -color=false -only=gc-centos7 $(PACKER_OPTS)
+
+generate-gc-centos7-changelog:
+ifdef IMAGE_UUID
+ifdef SOURCE_IMAGE
+	$(ENVS) \
+	OS=centos \
+	IMAGE_UUID=$(IMAGE_UUID) \
+	SOURCE_IMAGE=$(SOURCE_IMAGE) \
+	./scripts/changelog/packer.sh build -color=false -only=gc-centos7 -force $(PACKER_OPTS)
+endif
+endif
 
 build-azure-centos7:
 	$(ENVS) \
@@ -342,6 +402,18 @@ build-azure-redhat7:
 	./scripts/packer.sh build -color=false -only=arm-redhat7 $(PACKER_OPTS)
 ifeq ($(AZURE_INITIAL_COPY),true)
 	TRACE=1 AZURE_STORAGE_ACCOUNTS=$(AZURE_BUILD_STORAGE_ACCOUNT) ./scripts/azure-copy.sh
+endif
+
+generate-azure-centos7-changelog:
+ifdef IMAGE_UUID
+ifdef SOURCE_IMAGE
+	$(ENVS) \
+	OS=centos \
+	IMAGE_UUID=$(IMAGE_UUID) \
+	SOURCE_IMAGE=$(SOURCE_IMAGE) \
+	BUILD_RESOURCE_GROUP_NAME=$(BUILD_RESOURCE_GROUP_NAME) \
+	./scripts/changelog/packer.sh build -color=false -only=arm-centos7 -force $(PACKER_OPTS)
+endif
 endif
 
 copy-azure-images:
@@ -421,6 +493,14 @@ ifdef UUID
 	cp -- installed-delta-packages.csv "${UUID}-manifest.csv"
 	AWS_DEFAULT_REGION=eu-west-1
 	aws s3 cp "${UUID}-manifest.csv" s3://cloudbreak-imagecatalog/image-manifests/ --acl public-read
+endif
+
+copy-changelog-to-s3-bucket:
+ifdef IMAGE_UUID_1
+ifdef IMAGE_UUID_2
+	AWS_DEFAULT_REGION=eu-west-1
+	aws s3 cp "${IMAGE_UUID_1}-to-${IMAGE_UUID_2}-changelog.txt" s3://cloudbreak-imagecatalog/image-changelogs/ --acl public-read
+endif
 endif
 
 generate-last-metadata-url-file:

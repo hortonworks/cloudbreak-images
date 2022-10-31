@@ -1,4 +1,4 @@
-FROM docker-sandbox.infra.cloudera.com/ycloud-base/base-centos7.9:0.1.0.0-117
+FROM docker-sandbox.infra.cloudera.com/ycloud-base/base-centos7.9:0.1.0.0-120
 
 ARG SALT_VERSION
 ARG SALT_PATH
@@ -17,6 +17,8 @@ ENV PRE_WARM_CSD=${PRE_WARM_CSD}
 # Explicitly set language to avoid UnicodeEncodeError in pip installs
 ENV LANG en_US.UTF-8
 ENV LC_ALL en_US.UTF-8
+
+STOPSIGNAL SIGRTMIN+3
 
 #################################################################################
 # Install Cloudbreak dependencies

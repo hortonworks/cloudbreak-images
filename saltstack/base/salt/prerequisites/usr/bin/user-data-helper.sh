@@ -182,7 +182,7 @@ setup_proxy() {
     fi
     PROXY_ENV_FILE=/etc/cdp/proxy.env
     mkdir -p /etc/cdp
-    echo ${PROXY_PROTOCOL}_proxy=$PROXY_URL > $PROXY_ENV_FILE
+    echo https_proxy=$PROXY_URL > $PROXY_ENV_FILE
     if  [[ ! -z ${PROXY_NO_PROXY_HOSTS} ]]; then
       echo no_proxy=${PROXY_NO_PROXY_HOSTS} >> $PROXY_ENV_FILE
     fi
@@ -260,7 +260,7 @@ main() {
       setup_ccmv2
     fi
 
-{% if pillar['OS'] == 'redhat7' %}
+{% if pillar['OS'] == 'redhat7' or pillar['OS'] == 'redhat8' %}
     # Relocating backup data structures to the end of the disk
     printf "x\ne\nw\nY\n" | gdisk /dev/sda
     # Resize /dev/sda4 to the end of the disk

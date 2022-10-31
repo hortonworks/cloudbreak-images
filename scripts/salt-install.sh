@@ -5,34 +5,28 @@
 
 set -ex -o pipefail -o errexit
 
-function install_salt_with_pip() {
-  echo "Installing salt with version: $SALT_VERSION"
-  pip install --upgrade pip
-  pip install virtualenv
+function install_salt_with_pip3() {
 
-  # fix pip3 not installing virtualenv for root
-  if [ "${OS}" != "redhat7" ] ; then
-    ln -s /usr/local/bin/virtualenv /usr/bin/virtualenv
-  else
-    echo "source scl_source enable rh-python36; python3.6 -m virtualenv \$@" > /usr/bin/virtualenv
-    chmod +x /usr/bin/virtualenv
-  fi
+  echo "Installing salt with version: $SALT_VERSION"
+  pip3 install --upgrade pip
+  pip3 install virtualenv
+  python3 -m pip install checkipaconsistency==2.7.10
+  python3 -m pip install 'PyYAML>=5.1' --ignore-installed
+  
   mkdir ${SALT_PATH}
-  virtualenv ${SALT_PATH}
+  python3 -m virtualenv ${SALT_PATH}
   source ${SALT_PATH}/bin/activate
-  if [ "${OS}" == "redhat7" ] ; then
-    # can't install this via salt_requirements.txt and I dunno why...
-    pip install pbr
-  fi
-  pip install --upgrade pip
-  pip install -r /tmp/salt_requirements.txt
+
+  pip3 install --upgrade pip
+  pip3 install pbr
+  pip3 install -r /tmp/salt_requirements.txt
 }
 
 function install_with_apt() {
   export DEBIAN_FRONTEND=noninteractive
   apt-get update
   apt-get install -y apt-transport-https python-pip python-dev build-essential
-  install_salt_with_pip
+  install_salt_with_pip3
   # apt-mark hold salt zeromq zeromq-devel
   install_python_apt_into_virtualenv
   create_temp_minion_config
@@ -80,8 +74,13 @@ function install_with_yum() {
       sudo sed -i 's/baseurl/\#baseurl/g' /etc/yum.repos.d/CentOS-Base.repo
     fi
   fi
-  
-  yum update -y python
+
+  if [ "${OS_TYPE}" == "redhat8" ] ; then  
+    yum update -y python3
+  else
+    yum update -y python
+  fi
+
   yum install -y yum-utils yum-plugin-versionlock
   yum clean metadata
   enable_epel_repository
@@ -97,12 +96,14 @@ function install_with_yum() {
   else
     echo "exclude=salt" >> /etc/yum.conf
   fi
-  install_salt_with_pip
+  install_salt_with_pip3
   create_temp_minion_config
 }
 
 function enable_epel_repository() {
-  if [ "${OS}" == "amazonlinux2" ] || [ "${OS}" == "redhat7" ] ; then
+  if [ "${OS}" == "redhat8" ] ; then
+    dnf install -y https://dl.fedoraproject.org/pub/epel/epel-release-latest-8.noarch.rpm
+  elif [ "${OS}" == "amazonlinux2" ] || [ "${OS}" == "redhat7" ] ; then
     curl https://dl.fedoraproject.org/pub/epel/epel-release-latest-7.noarch.rpm -o epel-release-latest-7.noarch.rpm && yum install --nogpgcheck -y ./epel-release-latest-7.noarch.rpm
   elif [ "${OS}" == "amazonlinux" ] ; then
     yum-config-manager --enable epel
@@ -114,7 +115,11 @@ function enable_epel_repository() {
 }
 
 function install_python_pip() {
-  if [ "${OS_TYPE}" == "amazonlinux" ]; then
+  yum install -y openldap-devel
+  if [ "${OS_TYPE}" == "redhat8" ] ; then
+    echo "Installing python3-devel (the rest should be already installed in case of RHEL8)"
+    yum install -y python3-devel
+  elif [ "${OS_TYPE}" == "amazonlinux" ]; then
     yum install -y python27-devel python27-pip
   elif [ "${OS_TYPE}" == "redhat7" ] || [ "${OS_TYPE}" == "amazonlinux2" ] ; then
     echo "Installing python36 with deps"
@@ -138,9 +143,9 @@ function make_pip3_default_pip() {
   if [ -f "$FILE" ]; then
       mv /bin/pip /bin/pip2
   fi
-  mv /bin/pip3 /bin/pip
+  cp /bin/pip3 /bin/pip
   if [ -f "$FILE" ]; then
-      mv /bin/pip3.6 /bin/pip
+      cp /bin/pip3.6 /bin/pip
   fi
 }
 
@@ -160,7 +165,7 @@ function install_with_zypper() {
   fi
   zypper install -y python-simplejson python-pip zypp-plugin-python gcc gcc-c++ make python-devel
   zypper addlock salt zeromq zeromq-devel
-  install_salt_with_pip
+  install_salt_with_pip3
   create_temp_minion_config
 }
 
@@ -180,21 +185,21 @@ case ${SALT_INSTALL_OS} in
     echo "Install with yum"
     install_with_yum
     ;;
- debian|ubuntu)
-   echo "Install with apt"
-   install_with_apt
-   ;;
+  debian|ubuntu)
+    echo "Install with apt"
+    install_with_apt
+    ;;
   amazon)
     echo "Install for Amazon linux"
     echo "Return code: $?"
     echo "Install with yum"
     install_with_yum
-   ;;
+    ;;
   suse)
     echo "Install with zypper"
     install_with_zypper
     ;;
- *)
+  *)
   echo "Unsupported platform:" $1
   exit 1
   ;;

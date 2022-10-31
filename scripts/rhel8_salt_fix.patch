@@ -1,0 +1,40 @@
+--- /opt/salt_3001.8/lib/python3.6/site-packages/salt/modules/network.py	2022-10-14 08:51:36.756992334 +0000
++++ network.py	2022-10-14 08:53:53.778305601 +0000
+@@ -537,7 +537,17 @@
+ 
+         # need to fake similar output to that provided by netstat
+         # to maintain output format
+-        if comps[0] == "unreachable":
++        if comps[0] in (
++            "unicast",
++            "broadcast",
++            "throw",
++            "unreachable",
++            "prohibit",
++            "blackhole",
++            "nat",
++            "anycast",
++            "multicast",
++        ):
+             continue
+ 
+         if comps[0] == "default":
+@@ -580,7 +590,17 @@
+ 
+         # need to fake similar output to that provided by netstat
+         # to maintain output format
+-        if comps[0] == "unreachable":
++        if comps[0] in (
++            "unicast",
++            "broadcast",
++            "throw",
++            "unreachable",
++            "prohibit",
++            "blackhole",
++            "nat",
++            "anycast",
++            "multicast",
++        ):
+             continue
+ 
+         if comps[0] == "default":
