@@ -77,7 +77,7 @@ AWS_MAX_ATTEMPTS ?= 300
 PACKAGE_VERSIONS ?= ""
 SALT_VERSION ?= $(shell ./scripts/get-salt-version.sh $(BASE_NAME) $(STACK_VERSION))
 SALT_PATH ?= /opt/salt_$(SALT_VERSION)
-PYZMQ_VERSION ?= 19.0
+PYZMQ_VERSION ?= 20.0
 PYTHON_APT_VERSION ?= 1.1.0_beta1ubuntu0.16.04.1
 
 # This block remains here for backward compatibility reasons when the IMAGE_NAME is not defined as an env variable
