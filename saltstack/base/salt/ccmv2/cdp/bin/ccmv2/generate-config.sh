@@ -40,7 +40,7 @@ clientAuthenticationKey = """$(cat $AGENT_KEY_PATH)"""
 
 environmentCrn = "${ENVIRONMENT_CRN}"
 accessKeyId = "${ACCESS_KEY_ID}"
-accessKey = "${ACCESS_KEY}"
+accessKey = """${ACCESS_KEY}"""
 
 http_proxy = "${HTTP_PROXY_URL}"
 
