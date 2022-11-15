@@ -1,5 +1,6 @@
 {% set freeipa_plugin_rpm_url = salt['environ.get']('FREEIPA_PLUGIN_RPM_URL') %}
 {% set freeipa_healthagent_rpm_url = salt['environ.get']('FREEIPA_HEALTH_AGENT_RPM_URL') %}
+{% set freeipa_ldapagent_rpm_url = salt['environ.get']('FREEIPA_LDAP_AGENT_RPM_URL') %}
 
 disable_postfix:
   service.disabled:
@@ -42,6 +43,16 @@ install_freeipa_healthagent_rpm:
   pkg.installed:
     - sources:
       - freeipa-health-agent: {{ freeipa_healthagent_rpm_url }}
+    - skip_verify: True
+    - require:
+      - freeipa-install
+{% endif %}
+
+{% if freeipa_ldapagent_rpm_url %}
+install_freeipa_ldapagent_rpm:
+  pkg.installed:
+    - sources:
+      - freeipa-ldap-agent: {{ freeipa_ldapagent_rpm_url }}
     - skip_verify: True
     - require:
       - freeipa-install

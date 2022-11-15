@@ -73,6 +73,9 @@ packer_in_container() {
   if ! [[ $FREEIPA_HEALTH_AGENT_RPM_URL =~ ^http.*rpm$ ]]; then
       export FREEIPA_HEALTH_AGENT_RPM_URL=$DEFAULT_FREEIPA_HEALTH_AGENT_RPM_URL
   fi
+  if ! [[  $FREEIPA_LDAP_AGENT_RPM_URL =~ ^http.*rpm$ ]]; then
+      export FREEIPA_LDAP_AGENT_RPM_URL=$DEFAULT_FREEIPA_LDAP_AGENT_RPM_URL
+  fi
 
   [[ "$TRACE" ]] && set -x
   ${DRY_RUN:+echo ===} docker run -i $TTY_OPTS --rm \
@@ -186,6 +189,7 @@ packer_in_container() {
     -e METERING_AGENT_RPM_URL="$METERING_AGENT_RPM_URL" \
     -e FREEIPA_PLUGIN_RPM_URL="$FREEIPA_PLUGIN_RPM_URL" \
     -e FREEIPA_HEALTH_AGENT_RPM_URL="$FREEIPA_HEALTH_AGENT_RPM_URL" \
+    -e FREEIPA_LDAP_AGENT_RPM_URL="$FREEIPA_LDAP_AGENT_RPM_URL" \
     -e IMAGE_UUID="$IMAGE_UUID" \
     -e CLOUD_PROVIDER="$CLOUD_PROVIDER" \
     -v /var/run/docker.sock:/var/run/docker.sock \
