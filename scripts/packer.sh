@@ -61,8 +61,17 @@ packer_in_container() {
     CDP_LOGGING_AGENT_RPM_URL="${CDP_LOGGING_AGENT_BASE_URL}${CDP_LOGGING_AGENT_VERSION}/cdp_logging_agent-${CDP_LOGGING_AGENT_VERSION}.x86_64.rpm"
   fi
 
-  if ! [[  $JUMPGATE_AGENT_RPM_URL =~ ^http.*rpm$ ]]; then
+  if ! [[ $JUMPGATE_AGENT_RPM_URL =~ ^http.*rpm$ ]]; then
       export JUMPGATE_AGENT_RPM_URL=$DEFAULT_JUMPGATE_AGENT_RPM_URL
+  fi
+  if ! [[ $METERING_AGENT_RPM_URL =~ ^http.*rpm$ ]]; then
+      export METERING_AGENT_RPM_URL=$DEFAULT_METERING_AGENT_RPM_URL
+  fi
+  if ! [[ $FREEIPA_PLUGIN_RPM_URL =~ ^http.*rpm$ ]]; then
+      export FREEIPA_PLUGIN_RPM_URL=$DEFAULT_FREEIPA_PLUGIN_RPM_URL
+  fi
+  if ! [[ $FREEIPA_HEALTH_AGENT_RPM_URL =~ ^http.*rpm$ ]]; then
+      export FREEIPA_HEALTH_AGENT_RPM_URL=$DEFAULT_FREEIPA_HEALTH_AGENT_RPM_URL
   fi
 
   [[ "$TRACE" ]] && set -x
