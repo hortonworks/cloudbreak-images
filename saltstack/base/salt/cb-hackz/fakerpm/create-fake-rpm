@@ -1,0 +1,82 @@
+#!/usr/bin/bash
+
+TEMPLATEDIR=./template/
+VERSION=0
+RELEASE=0
+TARGET="-bs"
+PRINT_RESULT=0
+REQUIRES=""
+
+# parse command line options
+for i in "$@"; do
+  case $i in
+    --help)
+    OPTS_HELP=YES
+    shift # past argument
+    ;;
+    --version=*)
+    VERSION="${i#*=}"
+    shift # past argument
+    ;;
+    --release=*)
+    RELEASE="${i#*=}"
+    shift # past argument
+    ;;
+    --requires=*)
+    REQUIRES+=" ${i#*=}"
+    shift # past argument
+    ;;
+    --build)
+    TARGET="-ba"
+    shift # past argument
+    ;;
+    --print-result)
+    PRINT_RESULT=1
+    shift
+    ;;
+    *)
+          # unknown option
+    ;;
+  esac
+done
+
+if [ -n "$OPTS_HELP" ]; then
+  man create-fake-rpm | cat
+  exit 0;
+fi
+
+NAME=$1
+PROVIDES=$2
+
+if [ -z "$NAME" -o -z "$PROVIDES" ]; then
+  echo "Error: You have to specify PACKAGE_NAME and PROVIDES."
+  exit 1
+fi
+
+SPECFILE=${PWD}/${NAME}.spec
+rm -f ${SPECFILE}
+touch ${SPECFILE}
+
+echo "%{!?fake_name: %global fake_name $NAME}" >>${SPECFILE}
+echo "%{!?fake_version: %global fake_version $VERSION}" >>${SPECFILE}
+echo "%{!?fake_release: %global fake_release $RELEASE}" >>${SPECFILE}
+echo "%{!?fake_provides: %global fake_provides $PROVIDES}" >>${SPECFILE}
+if [ -n "$REQUIRES" ]; then
+  echo "%{!?fake_requires: %global fake_requires $REQUIRES}" >>${SPECFILE}
+fi
+cat "$TEMPLATEDIR/template.spec" >>${SPECFILE}
+
+OUTPUT=$( rpmbuild \
+        --define "_sourcedir $PWD" \
+        --define "_rpmdir $PWD" \
+        --define "_specdir $PWD" \
+        --define "_builddir $PWD" \
+        --define "_srcrpmdir $PWD" \
+        "$TARGET" "${SPECFILE}" 2>/dev/null \
+)
+
+if [ "$PRINT_RESULT" -eq 1 ]; then
+    echo "$OUTPUT" | grep noarch.rpm
+else
+    echo "$OUTPUT"
+fi

@@ -1,4 +1,4 @@
-#!/usr/bin/env python2
+#!/usr/bin/env python3
 
 import os
 import json
@@ -9,10 +9,10 @@ import time
 import functools
 import hashlib
 
-print "PRE_WARM_PARCELS: " + os.environ.get("PRE_WARM_PARCELS", "[]")
-print "\n-------------\n"
-print "PRE_WARM_CSD: " + os.environ.get("PRE_WARM_CSD", "[]")
-print "\n-------------\n"
+print("PRE_WARM_PARCELS: " + os.environ.get("PRE_WARM_PARCELS", "[]"))
+print("\n-------------\n")
+print("PRE_WARM_CSD: " + os.environ.get("PRE_WARM_CSD", "[]"))
+print("\n-------------\n")
 
 if os.environ.get("PRE_WARM_PARCELS", "[]"):
     PRE_WARM_PARCELS = json.loads(os.environ.get("PRE_WARM_PARCELS", "[]"))
@@ -24,7 +24,6 @@ if os.environ.get("PRE_WARM_PARCELS", "[]"):
     PARCEL_REPO = "/opt/cloudera/parcel-repo"
     PARCEL_CACHE = "/opt/cloudera/parcel-cache"
 
-
 # PRE_WARM_PARCELS = json.loads(os.environ.get("PRE_WARM_PARCELS", "[]"))
 # PRE_WARM_CSD = json.loads(os.environ.get("PRE_WARM_CSD", "[]"))
 # PARCELS_ROOT = os.environ.get("PARCELS_ROOT", "/home/workstation/dev/cloudera/cloudbreak-images/test-folder/proot")
@@ -33,7 +32,18 @@ if os.environ.get("PRE_WARM_PARCELS", "[]"):
 # CREATE_USERS = False
 # PARCEL_REPO = "/home/workstation/dev/cloudera/cloudbreak-images/test-folder/prepo"
 # PARCEL_CACHE = "/home/workstation/dev/cloudera/cloudbreak-images/test-folder/pcache"
-    
+
+try:
+    isinstance("", basestring)
+    # Definition for Python 2.x
+    def isstr(s):
+        return isinstance(s, basestring)
+except NameError:
+    # Definition for Python 3.x
+    def isstr(s):
+        return isinstance(s, str)
+
+
     def retry(num_attempts=3, sleeptime_in_seconds=1):
         def decorator(func):
             @functools.wraps(func)
@@ -45,7 +55,7 @@ if os.environ.get("PRE_WARM_PARCELS", "[]"):
                         if i == num_attempts - 1:
                             raise
                         else:
-                            print 'Failed with error {0}, trying again'.format(e)
+                            print('Failed with error {0}, trying again'.format(e))
                             time.sleep(sleeptime_in_seconds)
 
             return wrapper
@@ -85,7 +95,7 @@ if os.environ.get("PRE_WARM_PARCELS", "[]"):
             try:
                 checksum_url = url + "." + ext
                 download(checksum_url, dest + ".sha")
-                print "Downloaded checksum file:", dest + ".sha"
+                print("Downloaded checksum file:", dest + ".sha")
                 return ext
             except:
                 pass
@@ -120,13 +130,13 @@ if os.environ.get("PRE_WARM_PARCELS", "[]"):
                 sha_hash.update(byte_block)
 
         if check_if_string_in_file(parcel_dest + ".sha", sha_hash.hexdigest()):
-            print "Hash verification passed for {0}".format(parcel_dest)
+            print("Hash verification passed for {0}".format(parcel_dest))
         else:
             raise Exception("Hash verification failed for {0}".format(parcel_dest))
 
 
     def place_parcel(parcel_path):
-        print "Place parcel: {0}".format(parcel_path)
+        print("Place parcel: {0}".format(parcel_path))
         base_folder, parcel_meta = read_parcel_meta(parcel_path)
         subprocess.check_call("echo Decompress " + parcel_path + ";df -h", shell=True)
 
@@ -145,9 +155,9 @@ if os.environ.get("PRE_WARM_PARCELS", "[]"):
             subprocess.check_call("echo Download " + parcel_file_name + ";df -h", shell=True)
             parcel_url = normalize_url(parcel_repository) + "/" + parcel_file_name
             parcel_dest = os.path.join(PARCEL_REPO, parcel_file_name)
-            print "Downloading parcel {0}, please wait ...".format(parcel_url)
+            print("Downloading parcel {0}, please wait ...".format(parcel_url))
             download(parcel_url, parcel_dest)
-            print "Downloaded parcel:", parcel_url
+            print("Downloaded parcel:", parcel_url)
             hash_method = download_parcel_checksum(parcel_url, parcel_dest)
             verify_checksum(hash_method, parcel_dest)
             place_parcel(parcel_dest)
@@ -156,12 +166,12 @@ if os.environ.get("PRE_WARM_PARCELS", "[]"):
     def place_csds():
         for csd_url in PRE_WARM_CSD:
             subprocess.check_call("echo Download " + csd_url + ";df -h", shell=True)
-            if isinstance(csd_url, basestring):
+            if isstr(csd_url):
                 download(csd_url, os.path.join(CSD_ROOT, csd_url.split("/")[-1]))
-                print "Downloaded CSD:", csd_url
+                print("Downloaded CSD:" + csd_url)
             elif isinstance(csd_url, list):
                 download(csd_url[0], os.path.join(CSD_ROOT, csd_url[1]))
-                print "Downloaded CSD:", csd_url[0]
+                print("Downloaded CSD:" + csd_url[0])
 
 
     def create_users():
