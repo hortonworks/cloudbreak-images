@@ -128,6 +128,7 @@ if os.environ.get("PRE_WARM_PARCELS", "[]"):
     def place_parcel(parcel_path):
         print "Place parcel: {0}".format(parcel_path)
         base_folder, parcel_meta = read_parcel_meta(parcel_path)
+        subprocess.check_call("echo Decompress " + parcel_path + ";df -h", shell=True)
 
         cmd = 'tar zxf "{0}" -C "{1}"'.format(parcel_path, PARCELS_ROOT)
         subprocess.check_call(cmd, shell=True)
@@ -141,6 +142,7 @@ if os.environ.get("PRE_WARM_PARCELS", "[]"):
 
     def place_parcels():
         for parcel_file_name, parcel_repository in PRE_WARM_PARCELS:
+            subprocess.check_call("echo Download " + parcel_file_name + ";df -h", shell=True)
             parcel_url = normalize_url(parcel_repository) + "/" + parcel_file_name
             parcel_dest = os.path.join(PARCEL_REPO, parcel_file_name)
             print "Downloading parcel {0}, please wait ...".format(parcel_url)
@@ -153,6 +155,7 @@ if os.environ.get("PRE_WARM_PARCELS", "[]"):
 
     def place_csds():
         for csd_url in PRE_WARM_CSD:
+            subprocess.check_call("echo Download " + csd_url + ";df -h", shell=True)
             if isinstance(csd_url, basestring):
                 download(csd_url, os.path.join(CSD_ROOT, csd_url.split("/")[-1]))
                 print "Downloaded CSD:", csd_url
