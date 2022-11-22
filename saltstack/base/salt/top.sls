@@ -5,6 +5,7 @@ base:
     - cloud-init
 {% endif %}
     - nginx
+    - python3
     - salt-bootstrap
     - salt
     - postgresql

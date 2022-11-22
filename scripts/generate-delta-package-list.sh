@@ -158,10 +158,6 @@ function add_rpm_package_to_csv_list() {
 function add_python_package_to_csv_list() {
   local package=$1
   declare -A DETAIL_MAP=()
-  PIPCALL="pip"
-  if [ "${OS}" == "redhat8" ] ; then
-    PIPCALL="python3 -m pip"
-  fi
   while IFS= read -r line ; do
     IFS=':' read -r key value <<< "$line"
     key=$(echo ${key} | sed -e 's/^[ \t]*//')
@@ -331,19 +327,13 @@ function contains() {
 echo "Trying to collect installed packages on ${SALT_INSTALL_OS}"
 
 case ${SALT_INSTALL_OS} in
-  centos|redhat)
+
+  centos)
+    export PATH=$PATH:/opt/rh/rh-python38/root/usr/local/bin:/opt/rh/rh-python38/root/usr/bin
     execute
     ;;
-  debian|ubuntu)
-    echo "Platform does not support this functionality"
-    exit 0
-    ;;
-  amazon)
+  redhat)
     execute
-    ;;
-  suse)
-    echo "Platform does not support this functionality"
-    exit 0
     ;;
   *)
     echo "Unsupported platform:" $SALT_INSTALL_OS
