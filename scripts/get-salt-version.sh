@@ -42,7 +42,7 @@ if [[ $BASE_NAME == "cb" ]]; then
     fi
   # Missing STACK_VERSION and BASE_NAME=cb -> base image
   else
-    SALT_VERSION=3000.8
+    SALT_VERSION=3001.8
   fi
 fi
 

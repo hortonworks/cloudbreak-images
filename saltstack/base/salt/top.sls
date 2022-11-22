@@ -5,6 +5,8 @@ base:
     - cloud-init
 {% endif %}
     - nginx
+    - python3
+    - cb-hackz
     - salt-bootstrap
     - salt
     - postgresql
