@@ -78,7 +78,7 @@ do
 
   IMAGES+="${REGION}=${AMI_IN_REGION},"
   wait_for_image $REGION $AMI_IN_REGION &
-  check_if_imgage_is_public_and_available_in_region $REGION $AMI_IN_REGION &
+  check_if_image_is_public_and_available_in_region $REGION $AMI_IN_REGION &
 
 done
 
