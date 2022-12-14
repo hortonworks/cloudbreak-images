@@ -8,7 +8,7 @@ set -ex -o pipefail -o errexit
 function prepare {
   sudo chown -R root:root /tmp/saltstack
   apply_amazonlinux_salt_patch
-  apply_rhel8_salt_patch
+  #apply_rhel8_salt_patch
 }
 
 function copy_resources {
