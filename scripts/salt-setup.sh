@@ -8,7 +8,7 @@ set -ex -o pipefail -o errexit
 function prepare {
   sudo chown -R root:root /tmp/saltstack
   apply_amazonlinux_salt_patch
-  apply_rhel8_salt_patch
+  #apply_rhel8_salt_patch
 }
 
 function copy_resources {
@@ -31,7 +31,7 @@ EOF
 }
 
 function apply_rhel8_salt_patch {
-  if [ "${OS}" == "redhat8" ] ; then
+  if [ "${OS}" == "redhat8" &&  ] ; then
     patch -t -u /opt/salt_3001.8/lib/python3.6/site-packages/salt/modules/network.py -i /tmp/rhel8_salt_fix.patch
   fi
 }
