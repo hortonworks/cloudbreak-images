@@ -75,6 +75,12 @@ if [[ "$CUSTOM_IMAGE_TYPE" == "freeipa" ]]; then
 		echo "It is not possible to retrieve the version of FreeIPA Health Agent from the specified url."
 		exit 1
 	fi
+	if [[ $FREEIPA_LDAP_AGENT_RPM_URL =~ $FREEIPA_REGEX ]]; then
+		cat /tmp/package-versions.json | jq --arg freeipa_ldap_agent_version ${BASH_REMATCH[1]} '. + {"freeipa-ldap-agent": $freeipa_ldap_agent_version}' > /tmp/package-versions.json.tmp && mv /tmp/package-versions.json.tmp /tmp/package-versions.json
+	else
+		echo "It is not possible to retrieve the version of FreeIPA LDAP Agent from the specified url."
+		exit 1
+	fi
 elif [[ "$CUSTOM_IMAGE_TYPE" == "hortonworks" ]]; then
 	METERING_REGEX=".*\/[_a-z\-]*\-(.*)\-.*\.x86_64\.rpm"
 	if [[ $METERING_AGENT_RPM_URL =~ $METERING_REGEX ]]; then
