@@ -2,7 +2,7 @@ download_mysql_jdbc_driver:
   archive.extracted:
     - name: /tmp/
     - source: https://dev.mysql.com/get/Downloads/Connector-J/mysql-connector-java-5.1.39.tar.gz
-    - source_hash: md5=c8988d4fc6e44364a2f51efe5b5139c1
+    - source_hash: sha256=fa1bdc9ee5323642c5a533fa73fbcf537b26a979e5981c486c24256c433c7718
     - skip_verify: True
     - archive_format: tar
     - enforce_toplevel: True
