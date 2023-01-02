@@ -641,10 +641,6 @@ Umask027:
 Umask077:
   cmd.run:
     - name: "for TEMPLATE in 'bashrc' 'profile'; do sed -i 's|umask 022|umask 077|g' /etc/${TEMPLATE}; done"
-#Ensure default user shell timeout is 900 seconds or less
-TMOUT_profile:
-  cmd.run:
-    - name: printf "readonly TMOUT=900 ; export TMOUT" >> /etc/profile
 
 #### CIS: Ensure access to the su command is restricted
 #https://jira.cloudera.com/browse/CB-8929
