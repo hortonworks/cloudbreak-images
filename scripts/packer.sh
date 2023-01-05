@@ -53,6 +53,7 @@ packer_in_container() {
     fi
     CDP_TELEMETRY_RPM_URL="${CDP_TELEMETRY_BASE_URL}cdp_telemetry-${CDP_TELEMETRY_VERSION}.x86_64.rpm"
     #DP_TELEMETRY_RPM_URL="https://cloudera-build-us-west-1.vpc.cloudera.com/s3/build/37269492/cdp-infra-tools/0.x/redhat8/yum/cdp_telemetry-0.4.31.x86_64.rpm"
+    CDP_TELEMETRY_RPM_URL="https://cloudera-build-us-west-1.vpc.cloudera.com/s3/build/38453415/cdp-infra-tools/1.x/redhat8/yum/cdp_telemetry-0.4.31.x86_64.rpm"
     
 
   fi
@@ -63,6 +64,7 @@ packer_in_container() {
     fi
     CDP_LOGGING_AGENT_RPM_URL="${CDP_LOGGING_AGENT_BASE_URL}${CDP_LOGGING_AGENT_VERSION}/cdp_logging_agent-${CDP_LOGGING_AGENT_VERSION}.x86_64.rpm"
     #CDP_LOGGING_AGENT_RPM_URL="https://cloudera-build-us-west-1.vpc.cloudera.com/s3/build/37269492/cdp-infra-tools/0.x/redhat8/yum/cdp_logging_agent-0.3.6.x86_64.rpm"
+    CDP_LOGGING_AGENT_RPM_URL="https://cloudera-build-us-west-1.vpc.cloudera.com/s3/build/38783570/cdp-infra-tools/1.x/redhat8/yum/cdp_logging_agent-0.3.7.x86_64.rpm"
 
   fi
 
