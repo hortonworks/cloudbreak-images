@@ -54,6 +54,8 @@ function install_with_yum() {
     rpm --import /etc/pki/rpm-gpg/jumpgate-gpg-key.pub
     cp /tmp/repos/cdptools-gpg-key.pub /etc/pki/rpm-gpg/cdptools-gpg-key.pub
     rpm --import /etc/pki/rpm-gpg/cdptools-gpg-key.pub
+    cp /tmp/repos/gpg-key-jenkins-build-us-west1.pub /etc/pki/rpm-gpg/gpg-key-jenkins-build-us-west1.pub
+    rpm --import /etc/pki/rpm-gpg/gpg-key-jenkins-build-us-west1.pub
     yum update -y python3
   else
     yum update -y python
