@@ -3,7 +3,8 @@ package=${1:?"usage: <package>"}
 archive_base_url=${2:?"usage: <archive_url>"}
 auth=${3:?"usage: <username:password>"}
 s3_url=$4
-archive_telemetry_base_url="$archive_base_url/cdp-infra-tools/latest/redhat7/yum"
+#archive_telemetry_base_url="$archive_base_url/cdp-infra-tools/latest/redhat7/yum"
+archive_telemetry_base_url="https://cloudera-build-us-west-1.vpc.cloudera.com/s3/build/37269492/cdp-infra-tools/0.x/redhat8/yum/"
 artifacts_url="$archive_telemetry_base_url/artifacts.txt"
 rpm_package=$(echo "$package" | tr '_' '-')
 
