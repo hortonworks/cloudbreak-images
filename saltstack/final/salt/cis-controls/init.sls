@@ -118,25 +118,6 @@ sshd_harden_ssh2:
     - repl: "Protocol 2"
     - append_if_not_found: True
 
-sshd_local_WarnBanner1:
-  file.managed:
-    - name: /etc/issue
-    - contents: |
-        Corporate computer security personnel monitor this system for security purposes to ensure it remains available to all users and to protect information in the system. By accessing this system, you are expressly consenting to these monitoring activities.
-        Unauthorized attempts to defeat or circumvent security features, to use the system for other than intended purposes, to deny service to authorized users, to access, obtain, alter, damage, or destroy information, or otherwise to interfere with the system or its operation are prohibited. Evidence of such acts may be disclosed to law enforcement authorities and result in criminal prosecution under the Computer Fraud and Abuse Act of 1986 (Pub. L. 99-474) and the National Information Infrastructure Protection Act of 1996 (Pub. L. 104-294), (18 U.S.C. 1030), or other applicable criminal laws.
-sshd_local_WarnBanner2:
-  file.replace:
-    - name: /etc/ssh/sshd_config
-    - pattern: "^Banner.*"
-    - repl: "Banner /etc/issue.net"
-    - append_if_not_found: True
-
-sshd_remote_WarnBanner:
-  file.managed:
-    - name: /etc/issue.net
-    - contents: |
-        Corporate computer security personnel monitor this system for security purposes to ensure it remains available to all users and to protect information in the system. By accessing this system, you are expressly consenting to these monitoring activities.
-        Unauthorized attempts to defeat or circumvent security features, to use the system for other than intended purposes, to deny service to authorized users, to access, obtain, alter, damage, or destroy information, or otherwise to interfere with the system or its operation are prohibited. Evidence of such acts may be disclosed to law enforcement authorities and result in criminal prosecution under the Computer Fraud and Abuse Act of 1986 (Pub. L. 99-474) and the National Information Infrastructure Protection Act of 1996 (Pub. L. 104-294), (18 U.S.C. 1030), or other applicable criminal laws.
 sshd_harden_ApprovedCiphers:
   file.replace:
     - name: /etc/ssh/sshd_config
