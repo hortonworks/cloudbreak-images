@@ -91,11 +91,22 @@ function install_python_pip() {
   
   elif [ "${OS}" == "redhat7" ] ; then
     echo "Installing python38 with deps"
-    yum-config-manager --enable rhscl
-    yum -y install rh-python38
-    # pip workaround
-    echo "source scl_source enable rh-python38; python3.8 -m pip \$@" > /usr/bin/pip
-    chmod +x /usr/bin/pip
+    yum install -y gcc openssl-devel bzip2-devel libffi-devel zlib-devel wget
+    cd /opt
+    wget https://www.python.org/ftp/python/3.8.12/Python-3.8.12.tgz
+    tar -zxvf Python-3.8.12.tgz
+    cd Python-3.8.12/
+    ./configure --enable-optimizations --enable-shared --prefix=/opt/rh/rh-python38/root/usr/local
+    make altinstall
+    cp --no-clobber ./libpython3.8.so* /lib64/
+    chmod 755 /lib64/libpython3.8.so*
+    find / -name python3.8
+    echo "Updating /etc/environment for Python 3.8..."    
+    ln -s /opt/rh/rh-python38/root/usr/local/bin/python3.8 /opt/rh/rh-python38/root/usr/local/bin/python3
+    PATH=$PATH:/opt/rh/rh-python38/root/usr/local/bin:/opt/rh/rh-python38/root/usr/bin
+    echo "PATH=$PATH" >>/etc/environment
+    cat /etc/environment
+    python3 -V
 
   elif [ "${OS}" == "centos7" ] ; then
     yum -y install centos-release-scl

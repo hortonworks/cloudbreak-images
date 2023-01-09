@@ -333,6 +333,9 @@ case ${SALT_INSTALL_OS} in
     execute
     ;;
   redhat)
+    # This extra path makes sense only on RHEL7 though for which we try to be as compatible
+    # with CentOS 7 as possible
+    export PATH=$PATH:/opt/rh/rh-python38/root/usr/local/bin:/opt/rh/rh-python38/root/usr/bin
     execute
     ;;
   *)

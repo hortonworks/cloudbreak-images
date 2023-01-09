@@ -242,6 +242,18 @@ ifdef SOURCE_IMAGE
 endif
 endif
 
+build-aws-redhat7:
+	$(ENVS) \
+	AWS_AMI_REGIONS="us-west-1" \
+	OS=redhat7 \
+	OS_TYPE=redhat7 \
+	ATLAS_ARTIFACT_TYPE=amazon \
+	SALT_INSTALL_OS=redhat \
+	GIT_REV=$(GIT_REV) \
+	GIT_BRANCH=$(GIT_BRANCH) \
+	GIT_TAG=$(GIT_TAG) \
+	./scripts/packer.sh build -color=false -only=aws-redhat7 $(PACKER_OPTS)
+
 build-aws-redhat8:
 	$(ENVS) \
 	AWS_AMI_REGIONS="us-west-1" \

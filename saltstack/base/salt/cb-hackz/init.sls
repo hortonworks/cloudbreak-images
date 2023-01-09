@@ -4,7 +4,6 @@ fake_python2-psycopg2_rpm_step0:
         - rpmdevtools
         - rpm-build
         - rpmlint
-        - tree
 
 fake_python2-psycopg2_rpm_step1:
   file.recurse:
@@ -24,5 +23,5 @@ fake_python2-psycopg2_rpm_step3:
 
 fake_python2-psycopg2_rpm_step4:
   cmd.run:
-    - name: dnf -y install /tmp/fakerpm/noarch/python2-psycopg2-0-0.noarch.rpm
+    - name: rpm -i /tmp/fakerpm/noarch/python2-psycopg2-0-0.noarch.rpm
     - cwd: /tmp/fakerpm

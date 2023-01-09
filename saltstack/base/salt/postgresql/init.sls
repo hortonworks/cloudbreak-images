@@ -17,6 +17,12 @@
     - source: salt://postgresql/yum/pgdg11-gpg
 {% endif %}
 
+{% if pillar['OS'] == 'redhat7' %}
+enable_scl:
+  cmd.run:
+   - name: yum-config-manager --enable rhel-server-rhscl-7-rpms
+{% endif %}
+
 {% if pillar['OS'] == 'redhat8' %}
 install-postgres:
   cmd.run:
@@ -44,7 +50,7 @@ install-postgres11:
       - postgresql11
       - postgresql11-contrib
       - postgresql11-docs
-      - postgresql11-devel
+#      - postgresql11-devel
 
 pgsql-ld-conf:
   alternatives.set:
@@ -325,7 +331,7 @@ psycopg2-rhel8-py38:
     - bin_env: /usr/local/bin/pip3
     - onlyif: ls -la /usr/local/lib/python3.8/site-packages/
 
-# CentOS 7 + Python 3.8
+# CentOS 7 / RHEL 7 + Python 3.8
 psycopg2-centos7-py38:
   pip.installed:
     - name: psycopg2==2.9.3
