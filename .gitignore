@@ -15,6 +15,7 @@ build.sh
 *.pem
 .*
 !.dockerignore
+!.github
 packer_no_pp.json
 test-folder
 *.code-workspace
