@@ -54,7 +54,7 @@ You can set the cloud provider regions for the image to be copied over by editin
 
  Cloud Provider | Parameter Name | Default value
  ---- | ---- | ---- |
- AWS | AWS_AMI_REGIONS | ap-northeast-1,ap-northeast-2,ap-south-1,ap-southeast-1,ap-southeast-2,ap-southeast-3,ca-central-1,eu-central-1,eu-west-1,eu-west-2,eu-west-3,sa-east-1,us-east-1,us-east-2,us-west-1,us-west-2,ap-east-1
+ AWS | AWS_AMI_REGIONS | ap-northeast-1,ap-northeast-2,ap-south-1,ap-southeast-1,ap-southeast-2,ap-southeast-3,ca-central-1,eu-central-1,eu-west-1,eu-west-2,eu-west-3,sa-east-1,us-east-1,us-east-2,us-west-1,us-west-2,ap-east-1,eu-south-2,eu-central-2
  Azure | AZURE_STORAGE_ACCOUNTS | East Asia, East US, Central US, North Europe, South Central US, North Central US, East US 2, Japan East, Japan West, South East Asia, West US, West Europe, Brazil South, Canada East, Canada Central, Australia East, Australia South East, Central India, Korea Central, Korea South, South India, UK South, West Central US, UK West, West US 2, West India
 
  After saving the `Makefile` the modified values are applied to all subsequent image burns.

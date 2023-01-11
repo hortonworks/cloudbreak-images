@@ -49,6 +49,20 @@ function wait_for_image() {
   log "Copy operation in region $REGION for image $AMI_IN_REGION finished"
 }
 
+function check_if_image_is_public_and_available_in_region() {
+  REGION=$1
+  AMI_IN_REGION=$2
+  IMAGE_DESC=$(aws ec2 describe-images --region $REGION --image-ids $AMI_IN_REGION)
+  REGEX_PUBLIC="Public: true"
+  REGEX_STATE="State: available"
+  if [[ $IMAGE_DESC =~ $REGEX_PUBLIC ]] && [[ $IMAGE_DESC =~ $REGEX_STATE ]]; then
+    log "The $AMI_IN_REGION is PUBLIC and AVAILABLE in $REGION region."
+  else
+    log "FAILURE | The $AMI_IN_REGION in $REGION region is not available or not in correct state."
+    exit 1
+  fi
+}
+
 for REGION in $(echo $AWS_AMI_REGIONS | sed "s/,/ /g")
 do
   log "Copying to region $REGION..."
@@ -59,11 +73,20 @@ do
     continue
   fi
 
+  AMI_IN_REGION=$(aws ec2 describe-images --owners self --filters "Name=name,Values=$IMAGE_NAME" --region $REGION --query "Images[*].[ImageId]" --output "text")
+  if [ -n "$AMI_IN_REGION" ]
+  then
+    log "Image is already copied to region $REGION as $AMI_IN_REGION"
+    continue
+  fi
+
   AMI_IN_REGION=$(aws ec2 copy-image --source-image-id $AMI_ID --source-region $SOURCE_LOCATION --region $REGION --name $IMAGE_NAME --output "text")
   log "Image copy started to region $REGION as $AMI_IN_REGION, waiting for its completion"
 
   IMAGES+="${REGION}=${AMI_IN_REGION},"
   wait_for_image $REGION $AMI_IN_REGION &
+  check_if_image_is_public_and_available_in_region $REGION $AMI_IN_REGION &
+
 done
 
 wait
