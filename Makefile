@@ -43,6 +43,10 @@ $(error "AZURE_IMAGE_VHD and Marketplace image properties (AZURE_IMAGE_PUBLISHER
 			AZURE_IMAGE_PUBLISHER ?= RedHat
 			AZURE_IMAGE_OFFER ?= RHEL
 			AZURE_IMAGE_SKU ?= 7_9
+		else ifeq ($(OS),redhat8)
+			AZURE_IMAGE_PUBLISHER ?= RedHat
+			AZURE_IMAGE_OFFER ?= RHEL
+			AZURE_IMAGE_SKU ?= 8
 		else ifeq ($(OS),centos7)
 			AZURE_IMAGE_PUBLISHER ?= OpenLogic
 			AZURE_IMAGE_OFFER ?= CentOS
@@ -254,6 +258,42 @@ build-aws-redhat8:
 	GIT_BRANCH=$(GIT_BRANCH) \
 	GIT_TAG=$(GIT_TAG) \
 	./scripts/packer.sh build -color=false -only=aws-redhat8 $(PACKER_OPTS)
+
+build-azure-redhat8:
+	$(ENVS) \
+	AZURE_STORAGE_ACCOUNTS=$(AZURE_BUILD_STORAGE_ACCOUNT) \
+	OS=redhat8 \
+	OS_TYPE=redhat8 \
+	ATLAS_ARTIFACT_TYPE=azure-arm \
+	SALT_INSTALL_OS=redhat \
+	AZURE_IMAGE_VHD=$(AZURE_IMAGE_VHD) \
+	AZURE_IMAGE_PUBLISHER=$(AZURE_IMAGE_PUBLISHER) \
+	AZURE_IMAGE_OFFER=$(AZURE_IMAGE_OFFER) \
+	AZURE_IMAGE_SKU=$(AZURE_IMAGE_SKU) \
+	BUILD_RESOURCE_GROUP_NAME=$(BUILD_RESOURCE_GROUP_NAME) \
+	PRIVATE_VIRTUAL_NETWORK_WITH_PUBLIC_IP=$(PRIVATE_VIRTUAL_NETWORK_WITH_PUBLIC_IP) \
+	GIT_REV=$(GIT_REV) \
+	GIT_BRANCH=$(GIT_BRANCH) \
+	GIT_TAG=$(GIT_TAG) \
+	./scripts/packer.sh build -color=false -only=arm-redhat8 $(PACKER_OPTS)
+ifeq ($(AZURE_INITIAL_COPY),true)
+	TRACE=1 AZURE_STORAGE_ACCOUNTS=$(AZURE_BUILD_STORAGE_ACCOUNT) ./scripts/azure-copy.sh
+endif
+
+build-gc-redhat8:
+	@ METADATA_FILENAME_POSTFIX=$(METADATA_FILENAME_POSTFIX)
+	$(ENVS) \
+	OS=redhat8 \
+	OS_TYPE=redhat8 \
+	GCP_AMI_REGIONS=$(GCP_AMI_REGIONS) \
+	ATLAS_ARTIFACT_TYPE=google \
+	GCP_STORAGE_BUNDLE=$(GCP_STORAGE_BUNDLE) \
+	GCP_STORAGE_BUNDLE_LOG=$(GCP_STORAGE_BUNDLE_LOG) \
+	SALT_INSTALL_OS=redhat \
+	GIT_REV=$(GIT_REV) \
+	GIT_BRANCH=$(GIT_BRANCH) \
+	GIT_TAG=$(GIT_TAG) \
+	./scripts/packer.sh build -color=false -only=gc-redhat8 $(PACKER_OPTS)
 
 copy-aws-images:
 	docker run -i --rm \
