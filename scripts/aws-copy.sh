@@ -12,6 +12,26 @@ fi
 echo "Restoring image $IMAGE_NAME ($AMI_ID) from region $SOURCE_LOCATION to regions $AWS_AMI_REGIONS"
 IMAGES=""
 
+declare -a JOBS
+
+function exec_background() {
+  eval $1 & JOBS[$!]="$1"
+}
+
+function checking_jobs() {
+  local cmd
+  local status=0
+  for pid in ${!JOBS[@]}; do
+    cmd=${JOBS[${pid}]}
+    wait ${pid} ; JOBS[${pid}]=$?
+    if [[ ${JOBS[${pid}]} -ne 0 ]]; then
+      status=${JOBS[${pid}]}
+      echo -e "[${pid}] Exited with status: ${status} | ${cmd}"
+    fi
+  done
+  return ${status}
+}
+
 function log() {
   echo "$(date --rfc-3339=seconds) $1"
 }
@@ -84,12 +104,11 @@ do
   log "Image copy started to region $REGION as $AMI_IN_REGION, waiting for its completion"
 
   IMAGES+="${REGION}=${AMI_IN_REGION},"
-  wait_for_image $REGION $AMI_IN_REGION &
-  check_if_image_is_public_and_available_in_region $REGION $AMI_IN_REGION &
-
+  exec_background 'wait_for_image $REGION $AMI_IN_REGION'
+  exec_background 'check_if_image_is_public_and_available_in_region $REGION $AMI_IN_REGION'
 done
 
-wait
+checking_jobs|| exit 1
 
 IMAGES=${IMAGES%?} # remove trailing comma
 log "Image copied to regions: $IMAGES"
