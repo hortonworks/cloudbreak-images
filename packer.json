@@ -1,5 +1,6 @@
 {
   "variables": {
+    "base_name": "{{ env `BASE_NAME` }}",
     "mock": "{{ env `MOCK` }}",
     "description": "{{ env `DESCRIPTION` }}",
     "gcp_account_file": "{{env `GCP_ACCOUNT_FILE`}}",
@@ -498,6 +499,7 @@
       "type": "shell",
       "script": "scripts/salt-install.sh",
       "environment_vars": [
+        "IMAGE_BASE_NAME={{ user `base_name` }}",
         "SALT_INSTALL_OS={{ user `salt_install_os` }}",
         "SALT_INSTALL_REPO={{user `salt_install_repo` }}",
         "SALT_VERSION={{user `salt_version`}}",
@@ -522,6 +524,7 @@
       "expect_disconnect": true,
       "execute_command": "chmod +x {{ .Path }}; sudo {{ .Vars }} {{ .Path }} ",
       "environment_vars": [
+        "IMAGE_BASE_NAME={{ user `base_name` }}",
         "CUSTOM_IMAGE_TYPE={{user `custom_image_type`}}",
         "OS_USER={{ user `os_user` }}",
         "CLUSTERMANAGER_VERSION={{user `clustermanager_version`}}",

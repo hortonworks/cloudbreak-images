@@ -24,7 +24,7 @@ install-postgres:
         dnf -y install https://download.postgresql.org/pub/repos/yum/reporpms/EL-8-x86_64/pgdg-redhat-repo-latest.noarch.rpm
         dnf module -y disable postgresql
         dnf clean all
-        dnf -y install postgresql11-server postgresql11
+        dnf -y install postgresql11-server postgresql11 postgresql11-devel
 {% elif grains['os_family'] == 'RedHat' and grains['osmajorrelease'] | int == 7  %}
 install-postgres:
   pkg.installed:
@@ -44,6 +44,7 @@ install-postgres11:
       - postgresql11
       - postgresql11-contrib
       - postgresql11-docs
+      - postgresql11-devel
 
 pgsql-ld-conf:
   alternatives.set:
@@ -145,24 +146,6 @@ pgsql-vacuumdbman:
   alternatives.set:
     - path: /usr/pgsql-10/share/man/man1/vacuumdb.1
 
-{% elif grains['os_family'] == 'Debian' %}
-install-postgres:
-  pkg.installed:
-    - pkgs:
-      - postgresql
-      - postgresql-client
-      - libpostgresql-jdbc-java
-{% elif grains['os_family'] == 'Suse' %}
-install-postgres:
-  pkg.installed:
-    - pkgs:
-      - postgresql10
-      - postgresql-init
-      - postgresql10-server
-      - postgresql10-contrib
-      - postgresql10-docs
-      - postgresql10-devel
-      - postgresql-jdbc
 {% else %}
 remove-old-postgres:
   pkg.removed:
@@ -220,7 +203,7 @@ reenable-postgres:
   cmd.run:
     - name: systemctl enable --now postgresql-11
 
-{% elif  pillar['OS'] == 'amazonlinux2' or ( grains['os_family'] == 'RedHat' and grains['osmajorrelease'] | int == 7 ) %}
+{% elif  grains['os_family'] == 'RedHat' and grains['osmajorrelease'] | int == 7 %}
 /var/lib/pgsql/data:
   file.symlink:
       - target: /var/lib/pgsql/10/data
@@ -304,3 +287,47 @@ set-postgres-nologin-shell:
   user.present:
     - name: postgres
     - shell: /usr/sbin/nologin
+
+# Needed for installing psycopg2 in saltstack/base/salt/postgresql/init.sls
+{% if '/usr/pgsql-11/bin' not in salt['environ.get']('PATH') %}
+/opt/salt/scripts/conf_pgconfig_path.sh:
+  file.managed:
+    - makedirs: True
+    - mode: 755
+    - source: salt://postgresql/scripts/conf_pgconfig_path.sh
+
+add-pgconfig-to-path:
+  cmd.run:
+    - name: /opt/salt/scripts/conf_pgconfig_path.sh
+    - require:
+      - file: /opt/salt/scripts/conf_pgconfig_path.sh
+
+set-path-pgsql11-bin:
+  environ.setenv:
+    - name: PATH
+    - value: "{{ salt['environ.get']('PATH') }}:/usr/pgsql-11/bin"
+    - update_minion: True
+{% endif %}
+
+# Install psycopg2 globally
+
+# CentOS 7 / RHEL 7 / RHEL 8 + Python 3.6
+psycopg2-centos7-py36:
+  pip.installed:
+    - name: psycopg2==2.9.3
+    - bin_env: /usr/local/lib/python3.6/bin/pip3
+    - onlyif: ls -la /usr/local/lib/python3.6/site-packages/
+
+# RHEL 8 + Python 3.8
+psycopg2-rhel8-py38:
+  pip.installed:
+    - name: psycopg2==2.9.3
+    - bin_env: /usr/local/bin/pip3
+    - onlyif: ls -la /usr/local/lib/python3.8/site-packages/
+
+# CentOS 7 + Python 3.8
+psycopg2-centos7-py38:
+  pip.installed:
+    - name: psycopg2==2.9.3
+    - bin_env: /opt/rh/rh-python38/root/usr/local/bin/pip3
+    - onlyif: ls -la /opt/rh/rh-python38/root/usr/local/lib/python3.8/site-packages/
