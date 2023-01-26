@@ -14,6 +14,10 @@ IMAGES=""
 
 declare -a JOBS
 
+function log() {
+  echo "$(date --rfc-3339=seconds) $1"
+}
+
 function exec_background() {
   eval $1 & JOBS[$!]="$1"
 }
@@ -26,17 +30,13 @@ function checking_jobs() {
     wait ${pid} ; JOBS[${pid}]=$?
     if [[ ${JOBS[${pid}]} -ne 0 ]]; then
       status=${JOBS[${pid}]}
-      echo -e "[${pid}] Exited with status: ${status} | ${cmd}"
+      log "[${pid}] Exited with status: ${status} | ${cmd}"
     fi
   done
   return ${status}
 }
 
-function log() {
-  echo "$(date --rfc-3339=seconds) $1"
-}
-
-function wait_for_image() {
+function wait_for_image_and_check() {
   REGION=$1
   AMI_IN_REGION=$2
 
@@ -66,12 +66,6 @@ function wait_for_image() {
   log "Setting launch permissions to public in region $REGION for image $AMI_IN_REGION"
   aws ec2 modify-image-attribute --image-id $AMI_IN_REGION --region $REGION --launch-permission "Add=[{Group=all}]"
 
-  log "Copy operation in region $REGION for image $AMI_IN_REGION finished"
-}
-
-function check_if_image_is_public_and_available_in_region() {
-  REGION=$1
-  AMI_IN_REGION=$2
   IMAGE_DESC=$(aws ec2 describe-images --region $REGION --image-ids $AMI_IN_REGION)
   REGEX_PUBLIC="Public: true"
   REGEX_STATE="State: available"
@@ -81,6 +75,8 @@ function check_if_image_is_public_and_available_in_region() {
     log "FAILURE | The $AMI_IN_REGION in $REGION region is not available or not in correct state."
     exit 1
   fi
+
+  log "Copy operation in region $REGION for image $AMI_IN_REGION finished"
 }
 
 for REGION in $(echo $AWS_AMI_REGIONS | sed "s/,/ /g")
@@ -104,8 +100,7 @@ do
   log "Image copy started to region $REGION as $AMI_IN_REGION, waiting for its completion"
 
   IMAGES+="${REGION}=${AMI_IN_REGION},"
-  exec_background 'wait_for_image $REGION $AMI_IN_REGION'
-  exec_background 'check_if_image_is_public_and_available_in_region $REGION $AMI_IN_REGION'
+  exec_background "wait_for_image_and_check $REGION $AMI_IN_REGION"
 done
 
 checking_jobs|| exit 1
