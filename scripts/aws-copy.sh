@@ -69,7 +69,7 @@ function wait_for_image_and_check() {
   IMAGESTATUS=""
   for ((i=0; i<5; i++))
   do
-    IMAGE_DESC=$(aws ec2 describe-images --region $REGION --image-ids $AMI_IN_REGION)
+    IMAGE_DESC=$(aws ec2 describe-images --region $REGION --image-ids $AMI_IN_REGION --output yaml)
     REGEX_PUBLIC="Public: true"
     REGEX_STATE="State: available"
     if [[ $IMAGE_DESC =~ $REGEX_PUBLIC ]] && [[ $IMAGE_DESC =~ $REGEX_STATE ]]; then
