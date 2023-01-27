@@ -66,10 +66,20 @@ function wait_for_image_and_check() {
   log "Setting launch permissions to public in region $REGION for image $AMI_IN_REGION"
   aws ec2 modify-image-attribute --image-id $AMI_IN_REGION --region $REGION --launch-permission "Add=[{Group=all}]"
 
-  IMAGE_DESC=$(aws ec2 describe-images --region $REGION --image-ids $AMI_IN_REGION)
-  REGEX_PUBLIC="Public: true"
-  REGEX_STATE="State: available"
-  if [[ $IMAGE_DESC =~ $REGEX_PUBLIC ]] && [[ $IMAGE_DESC =~ $REGEX_STATE ]]; then
+  IMAGESTATUS=""
+  for ((i=0; i<5; i++))
+  do
+    IMAGE_DESC=$(aws ec2 describe-images --region $REGION --image-ids $AMI_IN_REGION)
+    REGEX_PUBLIC="Public: true"
+    REGEX_STATE="State: available"
+    if [[ $IMAGE_DESC =~ $REGEX_PUBLIC ]] && [[ $IMAGE_DESC =~ $REGEX_STATE ]]; then
+      IMAGESTATUS="OK"
+      break
+    fi
+    sleep 60
+  done
+
+  if [ "${IMAGESTATUS}" = "OK" ]; then 
     log "The $AMI_IN_REGION is PUBLIC and AVAILABLE in $REGION region."
   else
     log "FAILURE | The $AMI_IN_REGION in $REGION region is not available or not in correct state."
