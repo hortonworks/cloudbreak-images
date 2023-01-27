@@ -103,12 +103,10 @@ do
   if [ -n "$AMI_IN_REGION" ]
   then
     log "Image is already copied to region $REGION as $AMI_IN_REGION"
-    continue
+  else
+    AMI_IN_REGION=$(aws ec2 copy-image --source-image-id $AMI_ID --source-region $SOURCE_LOCATION --region $REGION --name $IMAGE_NAME --output "text")
+    log "Image copy started to region $REGION as $AMI_IN_REGION, waiting for its completion"
   fi
-
-  AMI_IN_REGION=$(aws ec2 copy-image --source-image-id $AMI_ID --source-region $SOURCE_LOCATION --region $REGION --name $IMAGE_NAME --output "text")
-  log "Image copy started to region $REGION as $AMI_IN_REGION, waiting for its completion"
-
   IMAGES+="${REGION}=${AMI_IN_REGION},"
   exec_background "wait_for_image_and_check $REGION $AMI_IN_REGION"
 done
