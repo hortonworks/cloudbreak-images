@@ -132,7 +132,7 @@ function install_python_pip() {
       # We need this because the rh-python38-* packages apparently use a non-standard location... duh!
       echo "Updating /etc/environment for Python 3.8..."
       PATH=$PATH:/opt/rh/rh-python38/root/usr/local/bin:/opt/rh/rh-python38/root/usr/bin
-      echo "PATH=$PATH" >>/etc/environment
+      echo "PATH=\"$PATH\"" >>/etc/environment
       cat /etc/environment
     fi
   fi
