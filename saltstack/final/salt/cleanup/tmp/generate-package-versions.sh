@@ -2,6 +2,8 @@
 
 set -x
 
+function version { echo "$@" | awk -F. '{ printf("%d%03d%03d%03d\n", $1,$2,$3,$4); }'; }
+
 set_version_for_rpm_pkg() {
 	package_name=$1
 	package_installed=$(rpm -q "$package_name" 2>&1 >/dev/null; echo $?)
@@ -88,6 +90,20 @@ elif [[ "$CUSTOM_IMAGE_TYPE" == "hortonworks" ]]; then
 	else
 		echo "It is not possible to retrieve the version of Metering Agent from the specified url."
 		exit 1
+	fi
+
+	if [ $(version $STACK_VERSION) -le $(version "7.2.15") ]; then
+		echo "Skip java versions as CB should not allow to force java version before 7.2.15"
+	else
+		DEFAULT_JAVA_MAJOR_VERSION=$(java -version 2>&1 | grep -oP "version [^0-9]?(1\.)?\K\d+" || true)
+		cat /tmp/package-versions.json | jq --arg default_java_version ${DEFAULT_JAVA_MAJOR_VERSION} '. + {"java": $default_java_version}' > /tmp/package-versions.json.tmp && mv /tmp/package-versions.json.tmp /tmp/package-versions.json
+
+		alternatives --display java | grep priority | grep -oP '^[^ ]*java' | while read -r java_path ; do
+			JAVA_VERSION_KEY=java$($java_path -version 2>&1 | grep -oP "version [^0-9]?(1\.)?\K\d+" || true)
+			JAVA_VERSION=$($java_path -version 2>&1 | grep -oP 'version\s"\K[^"]+' || true)
+
+			cat /tmp/package-versions.json | jq --arg java_version_key ${JAVA_VERSION_KEY} --arg java_version ${JAVA_VERSION} '. + {($java_version_key): $java_version}' > /tmp/package-versions.json.tmp && mv /tmp/package-versions.json.tmp /tmp/package-versions.json
+		done
 	fi
 fi
 
