@@ -18,7 +18,7 @@ function copy_resources {
 function highstate {
   local saltenv=${1}
   copy_resources ${saltenv}
-  ${SALT_PATH}/bin/salt-call --no-color --local state.highstate saltenv=${saltenv} --retcode-passthrough -l info --log-file=/tmp/salt-build-${saltenv}.log --log-file-level=info --config-dir=/tmp/saltstack/config
+  ${SALT_PATH}/bin/salt-call --no-color --local state.highstate saltenv=${saltenv} --retcode-passthrough -l debug --config-dir=/tmp/saltstack/config
 }
 
 echo "Running validation and cleanup"
