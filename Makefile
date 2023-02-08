@@ -378,6 +378,7 @@ build-gc-tar-file:
 	GCP_AMI_REGIONS=$(GCP_AMI_REGIONS) \
 	GCP_STORAGE_BUNDLE=$(GCP_STORAGE_BUNDLE) \
 	GCP_STORAGE_BUNDLE_LOG=$(GCP_STORAGE_BUNDLE_LOG) \
+	STACK_VERSION=$(STACK_VERSION) \
 	./scripts/bundle-gcp-image.sh
 
 build-gc-centos7:
