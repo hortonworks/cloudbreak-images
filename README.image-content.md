@@ -15,11 +15,11 @@ This section provides information about the packages of specified images to be i
 
 ## Source of base images
 
-|Cloud Provider | OS | Source                     |
-|--------------| ---- |----------------------------|
-|AWS           | CentOS 7 | `ami-098f55b4287a885ba`    |
-|Azure         | CentOS 7 | `OpenLogic - CentOS - 7.6` |
-|Gcp           | CentOS 7 | `centos-7-v20200811`       |
+ Cloud Provider | OS | Source
+ ---- | ---- | ----
+ AWS | CentOS 7 | `ami-098f55b4287a885ba`
+ Azure | CentOS 7 |  `OpenLogic - CentOS - 7.6`
+ Gcp | CentOS 7 |  `centos-7-v20200811`
 
 ## Salt requirements
 - requests
@@ -80,6 +80,8 @@ This section provides information about the packages of specified images to be i
 - policycoreutils-python (RedHat)
 - cloud-init
 - fluentd
+- consul-template
+- consul
 - node-exporter
 - jmx-exporter
 - prometheus
