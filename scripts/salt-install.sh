@@ -78,6 +78,8 @@ function enable_epel_repository() {
   fi
 }
 
+function version { echo "$@" | awk -F. '{ printf("%d%03d%03d%03d\n", $1,$2,$3,$4); }'; }
+
 function install_python_pip() {
   
   yum install -y openldap-devel
@@ -106,7 +108,28 @@ function install_python_pip() {
       echo "Installing Python 3.6 with dependencies..."
       yum install -y python36 python36-pip python36-devel python36-setuptools
     fi
-  # For Runtime images we need Python 3.8, but sadly the package
+
+  # For images with Runtime 7.2.15 and below we only support RHEL7 and CentOS7 with Python 2.7 and 3.6
+  elif [ $(version $STACK_VERSION) -le $(version "7.2.16") ]; then
+    if [ "${OS}" == "redhat7" ] ; then
+      echo "Updating Python 2.7..."
+      yum update -y python
+      echo "Installing Python 3.6 with dependencies..."
+      yum-config-manager --enable rhscl
+      yum -y install rh-python36
+      # pip workaround
+      echo "source scl_source enable rh-python36; python3.6 -m pip \$@" > /usr/bin/pip
+      chmod +x /usr/bin/pip
+
+    elif [ "${OS}" == "centos7" ] ; then
+      yum -y install centos-release-scl
+      echo "Updating Python 2.7..."
+      yum update -y python
+      echo "Installing Python 3.6 with dependencies..."
+      yum install -y python36 python36-pip python36-devel python36-setuptools
+    fi
+
+  # For images with Runtime 7.2.16 and above, we need Python 3.8, but sadly the package
   # names depend on the OS
   else
     if [ "${OS}" == "redhat8" ] ; then

@@ -503,6 +503,7 @@
         "SALT_INSTALL_OS={{ user `salt_install_os` }}",
         "SALT_INSTALL_REPO={{user `salt_install_repo` }}",
         "SALT_VERSION={{user `salt_version`}}",
+        "STACK_VERSION={{user `stack_version`}}",
         "PYZMQ_VERSION={{user `pyzmq_version`}}",
         "SLES_REGISTRATION_CODE={{user `sles_registration_code`}}",
         "OS_TYPE={{user `os_type`}}",
