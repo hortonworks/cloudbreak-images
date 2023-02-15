@@ -94,13 +94,13 @@ make_resolv_conf() {
         hostname -F /etc/hostname
     fi
     
+    generate_resolv_conf
+
     log "Restart unbound"
     log "$(ps aux | grep unbound)"
     pkill -u unbound -SIGHUP unbound
     log "Restarted unbound"
     log "$(ps aux | grep unbound)"
-
-    generate_resolv_conf
 
     return 0
 }
