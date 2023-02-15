@@ -110,7 +110,7 @@ function install_python_pip() {
     fi
 
   # For images with Runtime 7.2.15 and below we only support RHEL7 and CentOS7 with Python 2.7 and 3.6
-  elif [ $(version $STACK_VERSION) -le $(version "7.2.16") ]; then
+  elif [ $(version $STACK_VERSION) -le $(version "7.2.15") ]; then
     if [ "${OS}" == "redhat7" ] ; then
       echo "Updating Python 2.7..."
       yum update -y python
