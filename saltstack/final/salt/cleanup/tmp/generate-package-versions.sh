@@ -92,7 +92,7 @@ elif [[ "$CUSTOM_IMAGE_TYPE" == "hortonworks" ]]; then
 		exit 1
 	fi
 
-	if [ $(version $STACK_VERSION) -le $(version "7.2.15") ]; then
+	if [ $(version $STACK_VERSION) -lt $(version "7.2.15") ]; then
 		echo "Skip java versions as CB should not allow to force java version before 7.2.15"
 	else
 		DEFAULT_JAVA_MAJOR_VERSION=$(java -version 2>&1 | grep -oP "version [^0-9]?(1\.)?\K\d+" || true)
