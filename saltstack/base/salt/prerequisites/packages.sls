@@ -63,6 +63,7 @@ packages_install:
       - tcpdump
       - sysstat
       - goaccess
+      - httpd-tools
 
 {% if pillar['subtype'] != 'Docker' %}
 
