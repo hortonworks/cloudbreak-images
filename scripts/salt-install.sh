@@ -13,7 +13,7 @@ function install_salt_with_pip3() {
   python3 -m pip install checkipaconsistency==2.7.10
   python3 -m pip install 'PyYAML>=5.1' --ignore-installed
 
-  # OS specific required packages go here
+  # OS specific packages required for Salt go here
   if [ "${OS}" == "redhat8" ] ; then
     python3 -m pip install distro
   elif [ "${OS}" == "redhat7" ] ; then
@@ -107,6 +107,30 @@ function install_python_pip() {
       yum update -y python
       echo "Installing Python 3.6 with dependencies..."
       yum install -y python36 python36-pip python36-devel python36-setuptools
+    fi
+
+  # Base images have IMAGE_BASE_NAME set to "cb" and the stack version left empty
+  # Right now for RHEL8 base images we install Python 3.8 and for CentOS we install 3.6
+  # The latter is temporarily changed to have both 3.6 and 3.8 though (see CB-20961) - DON'T MERGE THIS IN YET!
+  elif [ $(version $STACK_VERSION) == $(version "0.0.0") ]; then
+    if [ "${OS}" == "redhat8" ] ; then
+      echo "Upgrading Python 3.6 to Python 3.8..."
+      yum remove -y python3
+      yum install -y python38
+      yum install -y python38-devel python38-libs python38-cffi python38-lxml python38-psycopg2
+      alternatives --set python /usr/bin/python3.8
+    elif [ "${OS}" == "centos7" ] ; then
+      yum -y install centos-release-scl
+      echo "Installing Python 3.6 with dependencies..."
+      yum install -y python36 python36-pip python36-devel python36-setuptools
+      echo "Installing Python 3.8 with dependencies..."
+      yum -y install openssl-devel libffi-devel bzip2-devel rh-python38-python-pip rh-python38-python-libs rh-python38-python-devel rh-python38-python-cffi rh-python38-python-lxml rh-python38-python-psycopg2
+
+      # We need this because the rh-python38-* packages apparently use a non-standard location... duh!
+      # echo "Updating /etc/environment for Python 3.8..."
+      # PATH=$PATH:/opt/rh/rh-python38/root/usr/local/bin:/opt/rh/rh-python38/root/usr/bin
+      # echo "PATH=\"$PATH\"" >>/etc/environment
+      # cat /etc/environment
     fi
 
   # For images with Runtime 7.2.16 or lower:

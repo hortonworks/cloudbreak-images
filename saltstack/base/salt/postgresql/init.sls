@@ -315,7 +315,7 @@ set-path-pgsql11-bin:
 psycopg2-centos7-py36:
   pip.installed:
     - name: psycopg2==2.9.3
-    - bin_env: /usr/local/lib/python3.6/bin/pip3
+    - bin_env: /usr/local/bin/pip3
     - onlyif: ls -la /usr/local/lib/python3.6/site-packages/
 
 # RHEL 8 + Python 3.8
@@ -329,5 +329,5 @@ psycopg2-rhel8-py38:
 psycopg2-centos7-py38:
   pip.installed:
     - name: psycopg2==2.9.3
-    - bin_env: /opt/rh/rh-python38/root/usr/local/bin/pip3
-    - onlyif: ls -la /opt/rh/rh-python38/root/usr/local/lib/python3.8/site-packages/
+    - bin_env: /opt/rh/rh-python38/root/usr/bin/pip3
+    - onlyif: ls -la /opt/rh/rh-python38/root/usr/lib/python3.8/site-packages/
