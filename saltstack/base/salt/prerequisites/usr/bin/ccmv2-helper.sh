@@ -16,7 +16,7 @@ setup_ccmv2() {
   touch "$AGENT_KEY_PATH"
   touch "$AGENT_CERT_PATH"
 
-  if [[ ! -z "$CCM_V2_AGENT_CERTIFICATE" &&  -z $CCM_V2_AGENT_ENCIPHERED_KEY ]]; then
+  if [[ ! -z "$CCM_V2_AGENT_CERTIFICATE" &&  ! -z $CCM_V2_AGENT_ENCIPHERED_KEY ]]; then
     CCM_V2_AGENT_KEY_HEX=$(xxd -pu -l 16 <<< $CCM_V2_AGENT_KEY_ID)
     echo ${CCM_V2_AGENT_ENCIPHERED_KEY} | openssl enc -aes-128-cbc -d -A -a -K ${CCM_V2_AGENT_KEY_HEX} -iv ${LEGACY_IV} > ${AGENT_KEY_PATH}
     chmod 400 "$AGENT_KEY_PATH"
