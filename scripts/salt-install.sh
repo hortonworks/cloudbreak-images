@@ -80,115 +80,140 @@ function enable_epel_repository() {
 
 function version { echo "$@" | awk -F. '{ printf("%d%03d%03d%03d\n", $1,$2,$3,$4); }'; }
 
+function centos7_update_python27() {
+  echo "Updating Python 2.7..."
+  yum update -y python
+}
+
+function centos7_install_python36() {
+  echo "Installing Python 3.6 with dependencies..."
+  yum -y install centos-release-scl
+  yum install -y python36 python36-pip python36-devel python36-setuptools
+}
+
+function centos7_install_python38() {
+  echo "Installing Python 3.8 with dependencies..."
+  yum -y install centos-release-scl
+  yum -y install openssl-devel libffi-devel bzip2-devel rh-python38-python-pip rh-python38-python-libs rh-python38-python-devel rh-python38-python-cffi rh-python38-python-lxml rh-python38-python-psycopg2
+
+  ### We'll need this in case in the future we want to make Python 3.8 the default python3 (7.2.18+)
+  # We need this because the rh-python38-* packages apparently use a non-standard location... duh!
+  # echo "Updating /etc/environment for Python 3.8..."
+  # PATH=$PATH:/opt/rh/rh-python38/root/usr/local/bin:/opt/rh/rh-python38/root/usr/bin
+  # echo "PATH=\"$PATH\"" >>/etc/environment
+  # cat /etc/environment
+}
+
+function redhat7_update_python27() {
+  echo "Updating Python 2.7..."
+  yum update -y python
+}
+
+function redhat7_install_python36() {
+  echo "Installing Python 3.6 with dependencies..."
+  yum-config-manager --enable rhscl
+  yum -y install rh-python36
+  # pip workaround
+  echo "source scl_source enable rh-python36; python3.6 -m pip \$@" > /usr/bin/pip
+  chmod +x /usr/bin/pip
+}
+
+function redhat7_install_python38() {
+  echo "Installing Python 3.8 with dependencies..."
+  yum-config-manager --enable rhscl
+  yum -y install rh-python38
+  # pip workaround
+  echo "source scl_source enable rh-python38; python3.8 -m pip \$@" > /usr/bin/pip
+  chmod +x /usr/bin/pip
+}
+
+function redhat8_update_python36() {
+  echo "Installing python3-devel (the rest should be already installed in case of RHEL8)..."
+  yum update -y python3
+  yum install -y python3-devel
+}
+
+function redhat8_install_python38() {
+  echo "Installing Python 3.8 with dependencies..."
+  yum install -y python38
+  yum install -y python38-devel python38-libs python38-cffi python38-lxml python38-psycopg2
+}
+
+function redhat8_update_python36_to_38() {
+  echo "Upgrading Python 3.6 to Python 3.8..."
+  yum remove -y python3
+  yum install -y python38
+  yum install -y python38-devel python38-libs python38-cffi python38-lxml python38-psycopg2
+  alternatives --set python /usr/bin/python3.8
+}
+
 function install_python_pip() {
   
   yum install -y openldap-devel
   
-  # For now, FreeIPA images have to be left with Python 3.6 and 2.7
+  # FreeIPA images:
+  #  CentOS7: Python 2.7 + Python 3.6
+  #  RHEL7  : Python 2.7 + Python 3.6
+  #  RHEL8  : Python 3.6
   if [ "${IMAGE_BASE_NAME}" == "freeipa" ] ; then
     if [ "${OS}" == "redhat8" ] ; then
-      echo "Installing python3-devel (the rest should be already installed in case of RHEL8)..."
-      yum update -y python3
-      yum install -y python3-devel
-
+      redhat8_update_python36
     elif [ "${OS}" == "redhat7" ] ; then
-      echo "Updating Python 2.7..."
-      yum update -y python
-      echo "Installing Python 3.6 with dependencies..."
-      yum-config-manager --enable rhscl
-      yum -y install rh-python36
-      # pip workaround
-      echo "source scl_source enable rh-python36; python3.6 -m pip \$@" > /usr/bin/pip
-      chmod +x /usr/bin/pip
-
+      redhat7_update_python27
+      redhat7_install_python36
     elif [ "${OS}" == "centos7" ] ; then
-      yum -y install centos-release-scl
-      echo "Updating Python 2.7..."
-      yum update -y python
-      echo "Installing Python 3.6 with dependencies..."
-      yum install -y python36 python36-pip python36-devel python36-setuptools
+      centos7_update_python27
+      centos7_install_python36
     fi
-
-  # Base images have IMAGE_BASE_NAME set to "cb" and the stack version left empty
-  # Right now for RHEL8 base images we install Python 3.8 and for CentOS we install 3.6
-  # The latter is temporarily changed to have both 3.6 and 3.8 though (see CB-20961) - DON'T MERGE THIS IN YET!
+  # Base images:
+  #  CentOS7: Python 2.7 + Python 3.6 + Python 3.8
+  #  RHEL7  : n/a
+  #  RHEL8  : Python 3.6 + Python 3.8
   elif [ $(version $STACK_VERSION) == $(version "0.0.0") ]; then
     if [ "${OS}" == "redhat8" ] ; then
-      echo "Upgrading Python 3.6 to Python 3.8..."
-      yum remove -y python3
-      yum install -y python38
-      yum install -y python38-devel python38-libs python38-cffi python38-lxml python38-psycopg2
-      alternatives --set python /usr/bin/python3.8
+      #redhat8_update_python36_to_38
+      redhat8_update_python36
+      redhat8_install_python38
     elif [ "${OS}" == "centos7" ] ; then
-      yum -y install centos-release-scl
-      echo "Installing Python 3.6 with dependencies..."
-      yum install -y python36 python36-pip python36-devel python36-setuptools
-      echo "Installing Python 3.8 with dependencies..."
-      yum -y install openssl-devel libffi-devel bzip2-devel rh-python38-python-pip rh-python38-python-libs rh-python38-python-devel rh-python38-python-cffi rh-python38-python-lxml rh-python38-python-psycopg2
-
-      # We need this because the rh-python38-* packages apparently use a non-standard location... duh!
-      # echo "Updating /etc/environment for Python 3.8..."
-      # PATH=$PATH:/opt/rh/rh-python38/root/usr/local/bin:/opt/rh/rh-python38/root/usr/bin
-      # echo "PATH=\"$PATH\"" >>/etc/environment
-      # cat /etc/environment
+      centos7_update_python27
+      centos7_install_python36
+      centos7_install_python38
     fi
 
-  # For images with Runtime 7.2.16 or lower:
-  #   - RHEL7 and CentOS7 stays with Python 2.7 and 3.6
-  #   - RHEL8 goes with Python 3.8 (Runtime <= 7.2.15 won't be officially supported though)
+  # Runtime images 7.2.16 or lower:
+  #  CentOS7: Python 2.7 + Python 3.6
+  #  RHEL7  : Python 2.7 + Python 3.6
+  #  RHEL8  : Python 3.6 + Python 3.8 (7.2.16.1+, AWS Gov only!)
   elif [ $(version $STACK_VERSION) -le $(version "7.2.16") ]; then
     if [ "${OS}" == "redhat8" ] ; then
-      echo "Upgrading Python 3.6 to Python 3.8..."
-      yum remove -y python3
-      yum install -y python38
-      yum install -y python38-devel python38-libs python38-cffi python38-lxml python38-psycopg2
-      alternatives --set python /usr/bin/python3.8
+      #redhat8_update_python36_to_38
+      redhat8_update_python36
+      redhat8_install_python38
     elif [ "${OS}" == "redhat7" ] ; then
-      echo "Updating Python 2.7..."
-      yum update -y python
-      echo "Installing Python 3.6 with dependencies..."
-      yum-config-manager --enable rhscl
-      yum -y install rh-python36
-      # pip workaround
-      echo "source scl_source enable rh-python36; python3.6 -m pip \$@" > /usr/bin/pip
-      chmod +x /usr/bin/pip
-
+      redhat7_update_python27
+      redhat7_install_python36
     elif [ "${OS}" == "centos7" ] ; then
-      yum -y install centos-release-scl
-      echo "Updating Python 2.7..."
-      yum update -y python
-      echo "Installing Python 3.6 with dependencies..."
-      yum install -y python36 python36-pip python36-devel python36-setuptools
+      centos7_update_python27
+      centos7_install_python36
+      centos7_install_python36
     fi
-
-  # For images with Runtime 7.2.17 and above, we need Python 3.8, but sadly the package
-  # names depend on the OS
+  # Runtime images 7.2.17 or newer:
+  #  CentOS7: Python 2.7 + Python 3.6 + Python 3.8
+  #  RHEL7  : Python 2.7 + Python 3.6 + Python 3.8
+  #  RHEL8  : Python 3.6 + Python 3.8
   else
     if [ "${OS}" == "redhat8" ] ; then
-      echo "Upgrading Python 3.6 to Python 3.8..."
-      yum remove -y python3
-      yum install -y python38
-      yum install -y python38-devel python38-libs python38-cffi python38-lxml python38-psycopg2
-      alternatives --set python /usr/bin/python3.8
-
+      #redhat8_update_python36_to_38
+      redhat8_update_python36
+      redhat8_install_python38
     elif [ "${OS}" == "redhat7" ] ; then
-      echo "Installing Python 3.8 with dependencies..."
-      yum-config-manager --enable rhscl
-      yum -y install rh-python38
-      # pip workaround
-      echo "source scl_source enable rh-python38; python3.8 -m pip \$@" > /usr/bin/pip
-      chmod +x /usr/bin/pip
-
+      redhat7_update_python27
+      redhat7_install_python36
+      redhat7_install_python38
     elif [ "${OS}" == "centos7" ] ; then
-      echo "Installing Python 3.8 with dependencies..."
-      yum -y install centos-release-scl
-      yum -y install openssl-devel libffi-devel bzip2-devel rh-python38-python-pip rh-python38-python-libs rh-python38-python-devel rh-python38-python-cffi rh-python38-python-lxml rh-python38-python-psycopg2
-
-      # We need this because the rh-python38-* packages apparently use a non-standard location... duh!
-      echo "Updating /etc/environment for Python 3.8..."
-      PATH=$PATH:/opt/rh/rh-python38/root/usr/local/bin:/opt/rh/rh-python38/root/usr/bin
-      echo "PATH=\"$PATH\"" >>/etc/environment
-      cat /etc/environment
+      centos7_update_python27
+      centos7_install_python36
+      centos7_install_python38
     fi
   fi
 }
