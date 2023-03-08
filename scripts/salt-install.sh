@@ -109,9 +109,17 @@ function install_python_pip() {
       yum install -y python36 python36-pip python36-devel python36-setuptools
     fi
 
-  # For images with Runtime 7.2.15 and below we only support RHEL7 and CentOS7 with Python 2.7 and 3.6
-  elif [ $(version $STACK_VERSION) -le $(version "7.2.15") ]; then
-    if [ "${OS}" == "redhat7" ] ; then
+  # For images with Runtime 7.2.16 or lower:
+  #   - RHEL7 and CentOS7 stays with Python 2.7 and 3.6
+  #   - RHEL8 goes with Python 3.8 (Runtime <= 7.2.15 won't be officially supported though)
+  elif [ $(version $STACK_VERSION) -le $(version "7.2.16") ]; then
+    if [ "${OS}" == "redhat8" ] ; then
+      echo "Upgrading Python 3.6 to Python 3.8..."
+      yum remove -y python3
+      yum install -y python38
+      yum install -y python38-devel python38-libs python38-cffi python38-lxml python38-psycopg2
+      alternatives --set python /usr/bin/python3.8
+    elif [ "${OS}" == "redhat7" ] ; then
       echo "Updating Python 2.7..."
       yum update -y python
       echo "Installing Python 3.6 with dependencies..."
@@ -129,7 +137,7 @@ function install_python_pip() {
       yum install -y python36 python36-pip python36-devel python36-setuptools
     fi
 
-  # For images with Runtime 7.2.16 and above, we need Python 3.8, but sadly the package
+  # For images with Runtime 7.2.17 and above, we need Python 3.8, but sadly the package
   # names depend on the OS
   else
     if [ "${OS}" == "redhat8" ] ; then
