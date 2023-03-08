@@ -137,6 +137,15 @@ function redhat8_install_python38() {
   echo "Installing Python 3.8 with dependencies..."
   yum install -y python38
   yum install -y python38-devel python38-libs python38-cffi python38-lxml python38-psycopg2
+
+  # We need to create this "hack", because Saltstack's pip.installed only accepts a pip/pip3
+  # wrapper, but apparently can't call "python3 -m pip", so without this, we can't install
+  # packages to the non-default python3 installation.
+  cat <<EOF >/usr/local/bin/pip3.8
+#!/bin/bash
+/usr/bin/python3.8 -m pip "\$@"
+EOF
+  chmod +x /usr/local/bin/pip3.8
 }
 
 function redhat8_update_python36_to_38() {
@@ -179,12 +188,24 @@ function install_python_pip() {
       centos7_install_python36
       centos7_install_python38
     fi
-
-  # Runtime images 7.2.16 or lower:
+  # Runtime images 7.2.15 or lower:
   #  CentOS7: Python 2.7 + Python 3.6
   #  RHEL7  : Python 2.7 + Python 3.6
+  #  RHEL8  : n/a
+  elif [ $(version $STACK_VERSION) -le $(version "7.2.15") ]; then
+    if [ "${OS}" == "redhat7" ] ; then
+      redhat7_update_python27
+      redhat7_install_python36
+    elif [ "${OS}" == "centos7" ] ; then
+      centos7_update_python27
+      centos7_install_python36
+    fi
+
+  # Runtime images with 7.2.16
+  #  CentOS7: Python 2.7 + Python 3.6 + Python 3.8
+  #  RHEL7  : Python 2.7 + Python 3.6
   #  RHEL8  : Python 3.6 + Python 3.8 (7.2.16.1+, AWS Gov only!)
-  elif [ $(version $STACK_VERSION) -le $(version "7.2.16") ]; then
+  elif [ $(version $STACK_VERSION) == $(version "7.2.16") ]; then
     if [ "${OS}" == "redhat8" ] ; then
       #redhat8_update_python36_to_38
       redhat8_update_python36
@@ -192,15 +213,18 @@ function install_python_pip() {
     elif [ "${OS}" == "redhat7" ] ; then
       redhat7_update_python27
       redhat7_install_python36
+      redhat7_install_python38
     elif [ "${OS}" == "centos7" ] ; then
       centos7_update_python27
       centos7_install_python36
-      centos7_install_python36
+      centos7_install_python38
     fi
   # Runtime images 7.2.17 or newer:
   #  CentOS7: Python 2.7 + Python 3.6 + Python 3.8
   #  RHEL7  : Python 2.7 + Python 3.6 + Python 3.8
   #  RHEL8  : Python 3.6 + Python 3.8
+  # Note: this is currently the same as 7.2.16, but in the near future 
+  # we make Python 3.8 the default for 7.2.17, hence the separate section.
   else
     if [ "${OS}" == "redhat8" ] ; then
       #redhat8_update_python36_to_38

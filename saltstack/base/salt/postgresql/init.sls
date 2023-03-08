@@ -322,8 +322,8 @@ psycopg2-centos7-py36:
 psycopg2-rhel8-py38:
   pip.installed:
     - name: psycopg2==2.9.3
-    - bin_env: /usr/local/bin/pip3
-    - onlyif: ls -la /usr/local/lib/python3.8/site-packages/
+    - bin_env: /usr/local/bin/pip3.8
+    - onlyif: ls -la /usr/lib64/python3.8/site-packages
 
 # CentOS 7 + Python 3.8
 psycopg2-centos7-py38:
