@@ -24,7 +24,7 @@ install-postgres:
         dnf -y install https://download.postgresql.org/pub/repos/yum/reporpms/EL-8-x86_64/pgdg-redhat-repo-latest.noarch.rpm
         dnf module -y disable postgresql
         dnf clean all
-        dnf -y install postgresql11-server postgresql11 postgresql11-devel --skip-broken --nobest
+        dnf -y install postgresql11-server postgresql11 postgresql11-devel
 {% elif grains['os_family'] == 'RedHat' and grains['osmajorrelease'] | int == 7  %}
 install-postgres:
   pkg.installed:
