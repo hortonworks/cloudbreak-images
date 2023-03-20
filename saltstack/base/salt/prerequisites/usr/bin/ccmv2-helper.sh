@@ -1,8 +1,6 @@
 setup_ccmv2() {
   : ${CCM_V2_INVERTING_PROXY_CERTIFICATE:? required}
   : ${CCM_V2_INVERTING_PROXY_HOST:? required}
-  : ${CCM_V2_AGENT_CERTIFICATE:? required}
-  : ${CCM_V2_AGENT_ENCIPHERED_KEY:? required}
   : ${CCM_V2_AGENT_KEY_ID:? required}
   : ${CCM_V2_AGENT_BACKEND_ID_PREFIX:? required}
 
@@ -14,14 +12,18 @@ setup_ccmv2() {
 
   LEGACY_IV=436c6f7564657261436c6f7564657261
   AGENT_KEY_PATH=/etc/ccmv2/ccmv2-key.enc
-
-  CCM_V2_AGENT_KEY_HEX=$(xxd -pu -l 16 <<< $CCM_V2_AGENT_KEY_ID)
-  echo ${CCM_V2_AGENT_ENCIPHERED_KEY} | openssl enc -aes-128-cbc -d -A -a -K ${CCM_V2_AGENT_KEY_HEX} -iv ${LEGACY_IV} > ${AGENT_KEY_PATH}
-  chmod 400 "$AGENT_KEY_PATH"
-
   AGENT_CERT_PATH=/etc/ccmv2/ccmv2-cert.enc
-  echo "$CCM_V2_AGENT_CERTIFICATE" | base64 --decode > "$AGENT_CERT_PATH"
-  chmod 400 "$AGENT_CERT_PATH"
+  touch "$AGENT_KEY_PATH"
+  touch "$AGENT_CERT_PATH"
+
+  if [[ ! -z "$CCM_V2_AGENT_CERTIFICATE" &&  ! -z $CCM_V2_AGENT_ENCIPHERED_KEY ]]; then
+    CCM_V2_AGENT_KEY_HEX=$(xxd -pu -l 16 <<< $CCM_V2_AGENT_KEY_ID)
+    echo ${CCM_V2_AGENT_ENCIPHERED_KEY} | openssl enc -aes-128-cbc -d -A -a -K ${CCM_V2_AGENT_KEY_HEX} -iv ${LEGACY_IV} > ${AGENT_KEY_PATH}
+    chmod 400 "$AGENT_KEY_PATH"
+
+    echo "$CCM_V2_AGENT_CERTIFICATE" | base64 --decode > "$AGENT_CERT_PATH"
+    chmod 400 "$AGENT_CERT_PATH"
+  fi
 
   TRUSTED_BACKEND_CERT_PATH="/etc/jumpgate/cluster.pem"
 
