@@ -131,6 +131,9 @@ function redhat8_update_python36() {
   echo "Installing python3-devel (the rest should be already installed in case of RHEL8)..."
   yum update -y python3
   yum install -y python3-devel
+
+  # CM agent needs this to work
+  alternatives --set python /usr/bin/python3
 }
 
 function redhat8_install_python38() {
