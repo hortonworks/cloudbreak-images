@@ -77,6 +77,12 @@ packer_in_container() {
       export FREEIPA_LDAP_AGENT_RPM_URL=$DEFAULT_FREEIPA_LDAP_AGENT_RPM_URL
   fi
 
+  if [[ $CLOUD_PROVIDER == "AWS_GOV" ]]; then
+      IGNORE_RPM_INSTALL_AWS_GOV="Yes"
+  else
+      IGNORE_RPM_INSTALL_AWS_GOV="No"
+  fi
+
   [[ "$TRACE" ]] && set -x
   ${DRY_RUN:+echo ===} docker run -i $TTY_OPTS --rm \
     -e MOCK=$MOCK \
@@ -192,6 +198,7 @@ packer_in_container() {
     -e FREEIPA_LDAP_AGENT_RPM_URL="$FREEIPA_LDAP_AGENT_RPM_URL" \
     -e IMAGE_UUID="$IMAGE_UUID" \
     -e CLOUD_PROVIDER="$CLOUD_PROVIDER" \
+    -e IGNORE_RPM_INSTALL_AWS_GOV="$IGNORE_RPM_INSTALL_AWS_GOV" \
     -v /var/run/docker.sock:/var/run/docker.sock \
     -v $PWD:$PWD \
     -w $PWD \
