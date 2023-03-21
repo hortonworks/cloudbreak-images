@@ -5,6 +5,8 @@
 {% set use_telemetry_archive = salt['environ.get']('USE_TELEMETRY_ARCHIVE') %}
 {% set archive_base_url = salt['environ.get']('ARCHIVE_BASE_URL') %}
 {% set archive_credentials = salt['environ.get']('ARCHIVE_CREDENTIALS') %}
+{% set cloud_provider = salt['environ.get']('CLOUD_PROVIDER') %}
+
 
 /cdp/telemetry/install-package.sh:
   file.managed:
@@ -43,11 +45,13 @@ install_cdp_logging_rpm_from_repo_url:
 {% endif %}
 
 {% if use_telemetry_archive == "Yes" %}
+{% if cloud_provider != "AWS_GOV" %}
 install_minifi:
   cmd.run:
     - name: "/cdp/telemetry/install-package.sh cdp_minifi_agent {{ archive_base_url }} {{ archive_credentials }}"
 install_cdp_request_signer:
   cmd.run:
     - name: "/cdp/telemetry/install-package.sh cdp_request_signer {{ archive_base_url }} {{ archive_credentials }}"
+{% endif %}    
 {% endif %}
 
