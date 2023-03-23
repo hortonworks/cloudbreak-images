@@ -132,7 +132,7 @@ GITHUB_REPO ?= cloudbreak-images-metadata
 
 # it testing, atlas uploads should go to mocking artifact slush
 #PACKER_VARS=
-GIT_REV=$(shell git rev-parse --short HEAD)
+GIT_REV=$(shell git rev-parse HEAD)
 GIT_BRANCH=$(shell git rev-parse --abbrev-ref HEAD)
 GIT_TAG=$(shell git describe --exact-match --tags 2>/dev/null)
 
