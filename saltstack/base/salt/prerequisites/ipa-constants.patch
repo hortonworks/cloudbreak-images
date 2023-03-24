@@ -1,0 +1,11 @@
+--- constants.py	2022-06-15 14:39:26.000000000 +0000
++++ constants.py.patched	2023-04-03 14:48:44.798318271 +0000
+@@ -311,7 +311,7 @@
+ 
+ # Maximum hostname length in Linux
+ # It's the max length of uname's nodename and return value of gethostname().
+-MAXHOSTNAMELEN = 64
++MAXHOSTNAMELEN = 253
+ # DNS name is 255 octets, effectively 253 ASCII characters.
+ MAXHOSTFQDNLEN = 253
+ 
