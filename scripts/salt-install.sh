@@ -48,6 +48,14 @@ function install_with_yum() {
     fi
   fi
 
+  if [ "${OS_TYPE}" == "redhat8" ] ; then
+    yum install -y redhat-lsb-core
+    cp /tmp/repos/jumpgate-gpg-key.pub /etc/pki/rpm-gpg/jumpgate-gpg-key.pub
+    rpm --import /etc/pki/rpm-gpg/jumpgate-gpg-key.pub
+    cp /tmp/repos/cdptools-gpg-key.pub /etc/pki/rpm-gpg/cdptools-gpg-key.pub
+    rpm --import /etc/pki/rpm-gpg/cdptools-gpg-key.pub
+  fi
+
   yum install -y yum-utils yum-plugin-versionlock
   yum clean metadata
   enable_epel_repository
