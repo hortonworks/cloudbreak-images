@@ -47,6 +47,8 @@ http_proxy = "${HTTP_PROXY_URL}"
 scheme = "https"
 host = "${BACKEND_HOST}:${BACKEND_PORT}"
 trustedBackendCertificatePath = "${TRUSTED_BACKEND_CERT_PATH}"
+
+cdpEndpoint = "${CDP_API_ENDPOINT_URL}"
 EOF
 
 if [ -f "$CONFIG_FILE" ]; then
