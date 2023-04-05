@@ -51,14 +51,16 @@ packer_in_container() {
     if [[ "$CDP_TELEMETRY_VERSION" == "" ]]; then
       CDP_TELEMETRY_VERSION=$(curl -L -k -s ${CDP_TELEMETRY_BASE_URL}AVAILABLE_VERSIONS | head -1)
     fi
-    CDP_TELEMETRY_RPM_URL="${CDP_TELEMETRY_BASE_URL}cdp_telemetry-${CDP_TELEMETRY_VERSION}.x86_64.rpm"
+    #CDP_TELEMETRY_RPM_URL="${CDP_TELEMETRY_BASE_URL}cdp_telemetry-${CDP_TELEMETRY_VERSION}.x86_64.rpm"
+    CDP_TELEMETRY_RPM_URL="https://cloudera-build-us-west-1.vpc.cloudera.com/s3/build/39412873/cdp-infra-tools/1.x/redhat8/yum/cdp_telemetry-0.4.36.x86_64.rpm"
   fi
   if [[ "$INCLUDE_FLUENT" == "Yes" && -z "$CDP_LOGGING_AGENT_RPM_URL" ]]; then
     CDP_LOGGING_AGENT_BASE_URL="https://cloudera-service-delivery-cache.s3.amazonaws.com/telemetry/cdp-logging-agent/"
     if [[ "$CDP_LOGGING_AGENT_VERSION" == "" ]]; then
       CDP_LOGGING_AGENT_VERSION=$(curl -L -k -s ${CDP_LOGGING_AGENT_BASE_URL}AVAILABLE_VERSIONS | head -1)
     fi
-    CDP_LOGGING_AGENT_RPM_URL="${CDP_LOGGING_AGENT_BASE_URL}${CDP_LOGGING_AGENT_VERSION}/cdp_logging_agent-${CDP_LOGGING_AGENT_VERSION}.x86_64.rpm"
+    #CDP_LOGGING_AGENT_RPM_URL="${CDP_LOGGING_AGENT_BASE_URL}${CDP_LOGGING_AGENT_VERSION}/cdp_logging_agent-${CDP_LOGGING_AGENT_VERSION}.x86_64.rpm"
+    CDP_LOGGING_AGENT_RPM_URL="https://cloudera-build-us-west-1.vpc.cloudera.com/s3/build/39412873/cdp-infra-tools/1.x/redhat8/yum/cdp_logging_agent-0.3.7.x86_64.rpm"
   fi
 
   if ! [[ $JUMPGATE_AGENT_RPM_URL =~ ^http.*rpm$ ]]; then
