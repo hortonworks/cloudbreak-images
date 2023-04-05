@@ -24,6 +24,8 @@ include:
   - {{ slspath }}.disable-unattended-upgrades
 {% endif %}
   - {{ slspath }}.authconfig
+  - {{ slspath }}.ipa
+
 
 /usr/bin/:
   file.recurse:
