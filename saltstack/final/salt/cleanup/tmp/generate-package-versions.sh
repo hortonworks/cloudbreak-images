@@ -107,6 +107,22 @@ elif [[ "$CUSTOM_IMAGE_TYPE" == "hortonworks" ]]; then
 	fi
 fi
 
+
+source /tmp/python_install.properties
+
+if [[ -n "$PYTHON27" ]]; then
+	cat /tmp/package-versions.json | jq --arg version ${PYTHON27} '. + {"python27": $version}' > /tmp/package-versions.json.tmp && mv /tmp/package-versions.json.tmp /tmp/package-versions.json
+fi
+
+if [[ -n "$PYTHON36" ]]; then
+	cat /tmp/package-versions.json | jq --arg version ${PYTHON36} '. + {"python36": $version}' > /tmp/package-versions.json.tmp && mv /tmp/package-versions.json.tmp /tmp/package-versions.json
+fi
+
+if [[ -n "$PYTHON38" ]]; then
+	cat /tmp/package-versions.json | jq --arg version ${PYTHON38} '. + {"python38": $version}' > /tmp/package-versions.json.tmp && mv /tmp/package-versions.json.tmp /tmp/package-versions.json
+fi
+
+
 chmod 744 /tmp/package-versions.json
 
 exit 0

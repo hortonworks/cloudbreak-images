@@ -83,18 +83,24 @@ function version { echo "$@" | awk -F. '{ printf("%d%03d%03d%03d\n", $1,$2,$3,$4
 function centos7_update_python27() {
   echo "Updating Python 2.7..."
   yum update -y python
+
+  echo PYTHON27=$(yum list installed | grep ^python\\.x86_64 | grep -oi " [^\s]* " | xargs) >> /tmp/python_install.properties
 }
 
 function centos7_install_python36() {
   echo "Installing Python 3.6 with dependencies..."
   yum -y install centos-release-scl
   yum install -y python36 python36-pip python36-devel python36-setuptools
+
+  echo PYTHON36=$(yum list installed | grep ^python36\\.x86_64 | grep -oi " [^\s]* " | xargs) >> /tmp/python_install.properties
 }
 
 function centos7_install_python38() {
   echo "Installing Python 3.8 with dependencies..."
   yum -y install centos-release-scl
   yum -y install openssl-devel libffi-devel bzip2-devel rh-python38-python-pip rh-python38-python-libs rh-python38-python-devel rh-python38-python-cffi rh-python38-python-lxml rh-python38-python-psycopg2
+
+  echo PYTHON38=$(yum list installed | grep ^rh-python38-python\\.x86_64 | grep -oi " [^\s]* " | xargs) >> /tmp/python_install.properties
 
   ### We'll need this in case in the future we want to make Python 3.8 the default python3 (7.2.18+)
   # We need this because the rh-python38-* packages apparently use a non-standard location... duh!
@@ -113,6 +119,7 @@ function redhat7_install_python36() {
   echo "Installing Python 3.6 with dependencies..."
   yum-config-manager --enable rhscl
   yum -y install rh-python36
+
   # pip workaround
   echo "source scl_source enable rh-python36; python3.6 -m pip \$@" > /usr/bin/pip
   chmod +x /usr/bin/pip
@@ -122,6 +129,7 @@ function redhat7_install_python38() {
   echo "Installing Python 3.8 with dependencies..."
   yum-config-manager --enable rhscl
   yum -y install rh-python38
+
   # pip workaround
   echo "source scl_source enable rh-python38; python3.8 -m pip \$@" > /usr/bin/pip
   chmod +x /usr/bin/pip
@@ -131,6 +139,8 @@ function redhat8_update_python36() {
   echo "Installing python3-devel (the rest should be already installed in case of RHEL8)..."
   yum update -y python3
   yum install -y python3-devel
+  
+  echo PYTHON36=$(yum list installed | grep ^python36\\.x86_64 | grep -oi " [^\s]* " | xargs) >> /tmp/python_install.properties
 
   # CM agent needs this to work
   alternatives --set python /usr/bin/python3
@@ -140,6 +150,8 @@ function redhat8_install_python38() {
   echo "Installing Python 3.8 with dependencies..."
   yum install -y python38
   yum install -y python38-devel python38-libs python38-cffi python38-lxml python38-psycopg2
+
+  echo PYTHON38=$(yum list installed | grep ^python38\\.x86_64 | grep -oi " [^\s]* " | xargs) >> /tmp/python_install.properties
 
   # We need to create this "hack", because Saltstack's pip.installed only accepts a pip/pip3
   # wrapper, but apparently can't call "python3 -m pip", so without this, we can't install
@@ -156,6 +168,10 @@ function redhat8_update_python36_to_38() {
   yum remove -y python3
   yum install -y python38
   yum install -y python38-devel python38-libs python38-cffi python38-lxml python38-psycopg2
+
+  echo PYTHON36=$(yum list installed | grep ^python36\\.x86_64 | grep -oi " [^\s]* " | xargs) >> /tmp/python_install.properties
+  echo PYTHON38=$(yum list installed | grep ^python38\\.x86_64 | grep -oi " [^\s]* " | xargs) >> /tmp/python_install.properties
+
   alternatives --set python /usr/bin/python3.8
 }
 
