@@ -57,14 +57,21 @@ function wait_for_image_and_check() {
   log "Querying snapshots in region $REGION for image $AMI_IN_REGION"
   SNAPSHOT_IDS=$(aws ec2 describe-images --image-ids $AMI_IN_REGION --region $REGION --query "Images[*].BlockDeviceMappings[*].Ebs.SnapshotId" --output "text")
 
-  echo $SNAPSHOT_IDS | while read SNAPSHOT_ID
-  do
-    log "Setting snapshot $SNAPSHOT_ID visibility to public in region $REGION for image $AMI_IN_REGION"
-    aws ec2 modify-snapshot-attribute --snapshot-id $SNAPSHOT_ID --region $REGION --create-volume-permission "Add=[{Group=all}]"
-  done
+  if [ "$MAKE_PUBLIC_SNAPSHOTS" == "yes" ]; then
+    echo $SNAPSHOT_IDS | while read SNAPSHOT_ID
+    do
+      log "Setting snapshot $SNAPSHOT_ID visibility to public in region $REGION for image $AMI_IN_REGION"
+      aws ec2 modify-snapshot-attribute --snapshot-id $SNAPSHOT_ID --region $REGION --create-volume-permission "Add=[{Group=all}]"
+    done
+  fi
 
-  log "Setting launch permissions to public in region $REGION for image $AMI_IN_REGION"
-  aws ec2 modify-image-attribute --image-id $AMI_IN_REGION --region $REGION --launch-permission "Add=[{Group=all}]"
+  if [ "$MAKE_PUBLIC_AMIS" == "yes" ]; then
+    log "Setting launch permissions to public in region $REGION for image $AMI_IN_REGION"
+    aws ec2 modify-image-attribute --image-id $AMI_IN_REGION --region $REGION --launch-permission "Add=[{Group=all}]"
+  elif [ -n "$AWS_AMI_ORG_ARN" ]; then
+    log "Setting launch permissions only for organization in region $REGION for image $AMI_IN_REGION"
+    aws ec2 modify-image-attribute --image-id $AMI_IN_REGION --region $REGION --launch-permission "Add=[{OrganizationArn=$AWS_AMI_ORG_ARN}]"
+  fi
 
   IMAGESTATUS=""
   for ((i=0; i<5; i++))

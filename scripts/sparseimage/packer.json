@@ -16,7 +16,7 @@
         "aws_ami_base_snapshot" : "{{env `SOURCE_AMI_SNAPSHOT`}}",
         "aws_ami_base_snapshot_size" : "32",
         "aws_snapshot_groups": "{{ env `AWS_SNAPSHOT_GROUPS` }}",
-        "aws_ami_groups": "{{ env `AWS_AMI_GROUPS` }}",        
+        "aws_ami_groups": "{{ env `AWS_AMI_GROUPS` }}",
         "aws_access_key": "{{env `AWS_ACCESS_KEY_ID`}}",
         "aws_secret_key": "{{env `AWS_SECRET_ACCESS_KEY`}}",
         "aws_ami_regions": "{{ env `AWS_AMI_REGIONS` }}",
@@ -54,7 +54,7 @@
                 "volume_size": "{{user `root_volume_size`}}",
                 "volume_type" : "gp2",
                 "omit_from_artifact": true
-            },          
+            },
             {
                 "volume_type" : "gp2",
                 "device_name" : "/dev/xvdb",
