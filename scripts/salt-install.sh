@@ -208,7 +208,7 @@ function install_python_pip() {
       centos7_install_python38
     fi
   # Runtime images 7.2.15 or lower:
-  #  CentOS7: Python 2.7 + Python 3.6
+  #  CentOS7: Python 2.7 + Python 3.6 + Python 3.8
   #  RHEL7  : Python 2.7 + Python 3.6
   #  RHEL8  : n/a
   elif [ $(version $STACK_VERSION) -le $(version "7.2.15") ]; then
@@ -218,6 +218,7 @@ function install_python_pip() {
     elif [ "${OS}" == "centos7" ] ; then
       centos7_update_python27
       centos7_install_python36
+      centos7_install_python38
     fi
 
   # Runtime images with 7.2.16
