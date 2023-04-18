@@ -348,6 +348,7 @@ build-aws-gov-redhat8:
 	HTTPS_PROXY=http://usgw1-egress.gov-dev.cloudera.com:3128 \
 	HTTP_PROXY=http://usgw1-egress.gov-dev.cloudera.com:3128 \
 	NO_PROXY=172.20.0.0/16,127.0.0.1,localhost,169.254.169.254,internal,local,s3.us-gov-west-1.amazonaws.com,us-gov-west-1.eks.amazonaws.com \
+	PACKER_VERSION="1.8.3" \
 	./scripts/packer.sh build -color=false -only=aws-gov-redhat8 $(PACKER_OPTS)
 
 generate-aws-gov-centos7-changelog:
