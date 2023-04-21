@@ -9,7 +9,11 @@ then
   exit 1
 fi
 
-echo "Restoring image $IMAGE_NAME ($AMI_ID) from region $SOURCE_LOCATION to regions $AWS_AMI_REGIONS"
+
+echo "Installing jq..."
+yum install -q -y jq
+
+echo "Copying image $IMAGE_NAME ($AMI_ID) from region $SOURCE_LOCATION to regions $AWS_AMI_REGIONS"
 IMAGES=""
 
 declare -a JOBS
@@ -76,18 +80,41 @@ function wait_for_image_and_check() {
   IMAGESTATUS=""
   for ((i=0; i<5; i++))
   do
-    IMAGE_DESC=$(aws ec2 describe-images --region $REGION --image-ids $AMI_IN_REGION --output yaml)
-    REGEX_PUBLIC="Public: true"
-    REGEX_STATE="State: available"
-    if [[ $IMAGE_DESC =~ $REGEX_PUBLIC ]] && [[ $IMAGE_DESC =~ $REGEX_STATE ]]; then
-      IMAGESTATUS="OK"
-      break
+    IMAGE_DESC=$(aws ec2 describe-images --region $REGION --image-ids $AMI_IN_REGION --output json)
+    IMAGE_AVAILABLE=$(echo $IMAGE_DESC | jq -r '.Images[0].State')
+
+    if [ "${IMAGE_AVAILABLE}" == "available" ]; then
+      log "The $AMI_IN_REGION in $REGION region is available, checking permissions..."
+      IMAGE_PUBLIC=$(echo $IMAGE_DESC | jq -r '.Images[0].Public')
+      if [ "$MAKE_PUBLIC_AMIS" == "yes" ]; then
+        if [ "${IMAGE_PUBLIC}" == "true" ]; then
+          log "The $AMI_IN_REGION in $REGION region is public"
+          IMAGESTATUS="OK"
+        fi
+      elif [ -n "$AWS_AMI_ORG_ARN" ]; then
+        IMAGE_PERMISSIONS=$(aws ec2 describe-image-attribute --region $REGION --image-id $AMI_IN_REGION --attribute launchPermission --output json)
+        IMAGE_ORGANIZATION_ARN=$(echo $IMAGE_PERMISSIONS | jq -r '.LaunchPermissions[0].OrganizationArn')
+        if [ "${IMAGE_PUBLIC}" == "false" ] && [ "${IMAGE_ORGANIZATION_ARN}" == "$AWS_AMI_ORG_ARN" ]; then
+          log "The $AMI_IN_REGION in $REGION region is only shared with an organization"
+          IMAGESTATUS="OK"
+        fi
+      else
+        if [ "${IMAGE_PUBLIC}" == "false" ]; then
+          log "The $AMI_IN_REGION in $REGION region is private"
+          IMAGESTATUS="OK"
+        fi
+      fi
     fi
-    sleep 60
+
+    if [ "${IMAGESTATUS}" == "OK" ]; then
+      break
+    else
+      sleep 60
+    fi
   done
 
   if [ "${IMAGESTATUS}" = "OK" ]; then 
-    log "The $AMI_IN_REGION is PUBLIC and AVAILABLE in $REGION region."
+    log "The $AMI_IN_REGION in $REGION region is available and in correct state."
   else
     log "FAILURE | The $AMI_IN_REGION in $REGION region is not available or not in correct state."
     exit 1

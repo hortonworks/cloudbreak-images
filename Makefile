@@ -304,6 +304,9 @@ copy-aws-images:
 		-e AWS_AMI_REGIONS=$(AWS_AMI_REGIONS) \
 		-e IMAGE_NAME=$(IMAGE_NAME) \
 		-e SOURCE_LOCATION=$(SOURCE_LOCATION) \
+		-e MAKE_PUBLIC_AMIS=$(MAKE_PUBLIC_AMIS) \
+		-e MAKE_PUBLIC_SNAPSHOTS=$(MAKE_PUBLIC_SNAPSHOTS) \
+		-e AWS_AMI_ORG_ARN=$(AWS_AMI_ORG_ARN) \
 		--entrypoint="/bin/bash" \
 		amazon/aws-cli -c "./aws-copy.sh"
 
@@ -371,6 +374,9 @@ copy-aws-gov-images:
 		-e AWS_AMI_REGIONS=$(AWS_GOV_AMI_REGIONS) \
 		-e IMAGE_NAME=$(IMAGE_NAME) \
 		-e SOURCE_LOCATION=$(SOURCE_LOCATION) \
+		-e MAKE_PUBLIC_AMIS=$(MAKE_PUBLIC_AMIS) \
+		-e MAKE_PUBLIC_SNAPSHOTS=$(MAKE_PUBLIC_SNAPSHOTS) \
+		-e AWS_AMI_ORG_ARN=$(AWS_AMI_ORG_ARN) \
 		--entrypoint="/bin/bash" \
 		amazon/aws-cli -c "./aws-copy.sh"
 
