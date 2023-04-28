@@ -15,6 +15,14 @@
 /etc/pki/rpm-gpg/RPM-GPG-KEY-PGDG-11:
   file.managed:
     - source: salt://postgresql/yum/pgdg11-gpg
+
+/etc/yum.repos.d/pgdg14.repo:
+  file.managed:
+    - source: salt://postgresql/yum/postgres14-el7.repo
+
+/etc/pki/rpm-gpg/RPM-GPG-KEY-PGDG-14:
+  file.managed:
+    - source: salt://postgresql/yum/pgdg14-gpg
 {% endif %}
 
 {% if pillar['OS'] == 'redhat8' %}
@@ -25,6 +33,8 @@ install-postgres:
         dnf module -y disable postgresql
         dnf clean all
         dnf -y install postgresql11-server postgresql11 postgresql11-devel --skip-broken --nobest
+        dnf -y install postgresql14-server postgresql14 postgresql14-devel --skip-broken --nobest
+
 {% elif grains['os_family'] == 'RedHat' and grains['osmajorrelease'] | int == 7  %}
 install-postgres:
   pkg.installed:
@@ -46,106 +56,15 @@ install-postgres11:
       - postgresql11-docs
       - postgresql11-devel
 
-pgsql-ld-conf:
-  alternatives.set:
-    - path: /usr/pgsql-10/share/postgresql-10-libs.conf
-
-pgsql-psql:
-  alternatives.set:
-    - path: /usr/pgsql-10/bin/psql
-
-pgsql-clusterdb:
-  alternatives.set:
-    - path: /usr/pgsql-10/bin/clusterdb
-
-pgsql-createdb:
-  alternatives.set:
-    - path: /usr/pgsql-10/bin/createdb
-
-pgsql-createuser:
-  alternatives.set:
-    - path: /usr/pgsql-10/bin/createuser
-
-pgsql-dropdb:
-  alternatives.set:
-    - path: /usr/pgsql-10/bin/dropdb
-
-pgsql-dropuser:
-  alternatives.set:
-    - path: /usr/pgsql-10/bin/dropuser
-
-pgsql-pg_basebackup:
-  alternatives.set:
-    - path: /usr/pgsql-10/bin/pg_basebackup
-
-pgsql-pg_dump:
-  alternatives.set:
-    - path: /usr/pgsql-10/bin/pg_dump
-
-pgsql-pg_dumpall:
-  alternatives.set:
-    - path: /usr/pgsql-10/bin/pg_dumpall
-
-pgsql-pg_restore:
-  alternatives.set:
-    - path: /usr/pgsql-10/bin/pg_restore
-
-pgsql-reindexdb:
-  alternatives.set:
-    - path: /usr/pgsql-10/bin/reindexdb
-
-pgsql-vacuumdb:
-  alternatives.set:
-    - path: /usr/pgsql-10/bin/vacuumdb
-
-pgsql-clusterdbman:
-  alternatives.set:
-    - path: /usr/pgsql-10/share/man/man1/clusterdb.1
-
-pgsql-createdbman:
-  alternatives.set:
-    - path: /usr/pgsql-10/share/man/man1/createdb.1
-
-pgsql-createuserman:
-  alternatives.set:
-    - path: /usr/pgsql-10/share/man/man1/createuser.1
-
-pgsql-dropdbman:
-  alternatives.set:
-    - path: /usr/pgsql-10/share/man/man1/dropdb.1
-
-pgsql-dropuserman:
-  alternatives.set:
-    - path: /usr/pgsql-10/share/man/man1/dropuser.1
-
-pgsql-pg_basebackupman:
-  alternatives.set:
-    - path: /usr/pgsql-10/share/man/man1/pg_basebackup.1
-
-pgsql-pg_dumpman:
-  alternatives.set:
-    - path: /usr/pgsql-10/share/man/man1/pg_dump.1
-
-pgsql-pg_dumpallman:
-  alternatives.set:
-    - path: /usr/pgsql-10/share/man/man1/pg_dumpall.1
-
-pgsql-pg_restoreman:
-  alternatives.set:
-    - path: /usr/pgsql-10/share/man/man1/pg_restore.1
-
-pgsql-psqlman:
-  alternatives.set:
-    - path: /usr/pgsql-10/share/man/man1/psql.1
-
-pgsql-reindexdbman:
-  alternatives.set:
-    - path: /usr/pgsql-10/share/man/man1/reindexdb.1
-
-pgsql-vacuumdbman:
-  alternatives.set:
-    - path: /usr/pgsql-10/share/man/man1/vacuumdb.1
-
+install-postgres14:
+  pkg.installed:
+    - pkgs:
+        - postgresql14-server
+        - postgresql-jdbc
+        - postgresql14
+        - postgresql14-contrib
+        - postgresql14-docs
+        - postgresql14-devel
 {% else %}
 remove-old-postgres:
   pkg.removed:
@@ -185,15 +104,122 @@ install-postgres:
 {% endif %}
 {% endif %}
 
-{% if  pillar['OS'] != 'redhat8' %}
+{% if pillar['OS'] == 'redhat8' %}
+  {% set pg_default_version = '11' %}
+{% elif grains['os_family'] == 'RedHat' and grains['osmajorrelease'] | int == 7 %}
+  # the override to 11 for runtimes >= 7.2.7 is handled in CB
+  {% set pg_default_version = '10' %}
+{% endif %}
+
+{% if pg_default_version %}
+pgsql-ld-conf:
+  alternatives.set:
+    - path: /usr/pgsql-{{ pg_default_version }}/share/postgresql-{{ pg_default_version }}-libs.conf
+
+pgsql-psql:
+  alternatives.set:
+    - path: /usr/pgsql-{{ pg_default_version }}/bin/psql
+
+pgsql-clusterdb:
+  alternatives.set:
+    - path: /usr/pgsql-{{ pg_default_version }}/bin/clusterdb
+
+pgsql-createdb:
+  alternatives.set:
+    - path: /usr/pgsql-{{ pg_default_version }}/bin/createdb
+
+pgsql-createuser:
+  alternatives.set:
+    - path: /usr/pgsql-{{ pg_default_version }}/bin/createuser
+
+pgsql-dropdb:
+  alternatives.set:
+    - path: /usr/pgsql-{{ pg_default_version }}/bin/dropdb
+
+pgsql-dropuser:
+  alternatives.set:
+    - path: /usr/pgsql-{{ pg_default_version }}/bin/dropuser
+
+pgsql-pg_basebackup:
+  alternatives.set:
+    - path: /usr/pgsql-{{ pg_default_version }}/bin/pg_basebackup
+
+pgsql-pg_dump:
+  alternatives.set:
+    - path: /usr/pgsql-{{ pg_default_version }}/bin/pg_dump
+
+pgsql-pg_dumpall:
+  alternatives.set:
+    - path: /usr/pgsql-{{ pg_default_version }}/bin/pg_dumpall
+
+pgsql-pg_restore:
+  alternatives.set:
+    - path: /usr/pgsql-{{ pg_default_version }}/bin/pg_restore
+
+pgsql-reindexdb:
+  alternatives.set:
+    - path: /usr/pgsql-{{ pg_default_version }}/bin/reindexdb
+
+pgsql-vacuumdb:
+  alternatives.set:
+    - path: /usr/pgsql-{{ pg_default_version }}/bin/vacuumdb
+
+pgsql-clusterdbman:
+  alternatives.set:
+    - path: /usr/pgsql-{{ pg_default_version }}/share/man/man1/clusterdb.1
+
+pgsql-createdbman:
+  alternatives.set:
+    - path: /usr/pgsql-{{ pg_default_version }}/share/man/man1/createdb.1
+
+pgsql-createuserman:
+  alternatives.set:
+    - path: /usr/pgsql-{{ pg_default_version }}/share/man/man1/createuser.1
+
+pgsql-dropdbman:
+  alternatives.set:
+    - path: /usr/pgsql-{{ pg_default_version }}/share/man/man1/dropdb.1
+
+pgsql-dropuserman:
+  alternatives.set:
+    - path: /usr/pgsql-{{ pg_default_version }}/share/man/man1/dropuser.1
+
+pgsql-pg_basebackupman:
+  alternatives.set:
+    - path: /usr/pgsql-{{ pg_default_version }}/share/man/man1/pg_basebackup.1
+
+pgsql-pg_dumpman:
+  alternatives.set:
+    - path: /usr/pgsql-{{ pg_default_version }}/share/man/man1/pg_dump.1
+
+pgsql-pg_dumpallman:
+  alternatives.set:
+    - path: /usr/pgsql-{{ pg_default_version }}/share/man/man1/pg_dumpall.1
+
+pgsql-pg_restoreman:
+  alternatives.set:
+    - path: /usr/pgsql-{{ pg_default_version }}/share/man/man1/pg_restore.1
+
+pgsql-psqlman:
+  alternatives.set:
+    - path: /usr/pgsql-{{ pg_default_version }}/share/man/man1/psql.1
+
+pgsql-reindexdbman:
+  alternatives.set:
+    - path: /usr/pgsql-{{ pg_default_version }}/share/man/man1/reindexdb.1
+
+pgsql-vacuumdbman:
+  alternatives.set:
+    - path: /usr/pgsql-{{ pg_default_version }}/share/man/man1/vacuumdb.1
+
 /usr/bin/initdb:
   file.symlink:
     - mode: 755
-    - target: /usr/pgsql-10/bin/initdb
+    - target: /usr/pgsql-{{ pg_default_version }}/bin/initdb
     - force: True
 {% endif %}
 
-{% if  pillar['OS'] == 'redhat8' %}
+{% if pillar['OS'] == 'redhat8' %}
 
 init-pg-database:
   cmd.run:
