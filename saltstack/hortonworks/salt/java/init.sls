@@ -32,6 +32,14 @@ install_openjdk:
   pkg.installed:
     - pkgs: {{ pillar['openjdk_packages'] }}
 
+{% if pillar['OS'] == 'centos7' %}
+openjdk17-centos7:
+  archive.extracted:
+    - name: /usr/lib/jvm/
+    - source: https://download.java.net/java/GA/jdk17.0.2/dfd4a8d0985749f896bed50d7138ee7f/8/GPL/openjdk-17.0.2_linux-x64_bin.tar.gz
+    - source_hash: sha256=0022753d0cceecacdd3a795dd4cea2bd7ffdf9dc06e22ffd1be98411742fbb44
+{% endif %}
+
 {% if grains['os_family'] == 'Debian' %}
 create_jvm_symlink:
   file.symlink:
