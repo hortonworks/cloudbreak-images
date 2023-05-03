@@ -95,6 +95,9 @@ ifeq ($(OS),centos7)
 	ifeq ($(CLOUD_PROVIDER),GCP)
 		IMAGE_SIZE ?= 48
 	endif
+	ifeq ($(CLOUD_PROVIDER),AWS)
+		IMAGE_SIZE ?= 36
+	endif
 	IMAGE_SIZE ?= 32
 else
 	IMAGE_SIZE ?= 64

@@ -14,7 +14,7 @@
         "root_volume_size": "90",
         "instance_size" : "m4.xlarge",
         "aws_ami_base_snapshot" : "{{env `SOURCE_AMI_SNAPSHOT`}}",
-        "aws_ami_base_snapshot_size" : "32",
+        "aws_ami_base_snapshot_size" : "36",
         "aws_snapshot_groups": "{{ env `AWS_SNAPSHOT_GROUPS` }}",
         "aws_ami_groups": "{{ env `AWS_AMI_GROUPS` }}",
         "aws_access_key": "{{env `AWS_ACCESS_KEY_ID`}}",
