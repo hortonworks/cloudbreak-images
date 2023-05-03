@@ -23,6 +23,10 @@ enable_faillock:
       - salt://{{ slspath }}/etc/security/faillock.conf
     - mode: 644
 
+select-profile:
+  cmd.run:
+    - name: authselect select sssd --force
+
 enable-faillock:
   cmd.run:
     - name: authselect enable-feature with-faillock

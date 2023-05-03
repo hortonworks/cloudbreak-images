@@ -137,13 +137,16 @@ function redhat7_install_python38() {
 
 function redhat8_update_python36() {
   echo "Installing python3-devel (the rest should be already installed in case of RHEL8)..."
-  yum update -y python3
+  yum update -y python3 || yum update -y python36
   yum install -y python3-devel
   
   echo PYTHON36=$(yum list installed | grep ^python36\\.x86_64 | grep -oi " [^\s]* " | xargs) >> /tmp/python_install.properties
 
   # CM agent needs this to work
   alternatives --set python /usr/bin/python3
+
+  # Required dependency for IdM
+  pip3 install pyasn1-modules
 }
 
 function redhat8_install_python38() {
