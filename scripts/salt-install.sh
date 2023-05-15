@@ -64,20 +64,25 @@ function install_with_yum() {
 }
 
 function update_yum_repos() {
-  # Remove RHEL official repos and use the internal mirror in case of RHEL8 and non aws_gov provider
-  if [[ "${OS}" == "redhat8" && "${CLOUD_PROVIDER}" != "AWS_GOV" ]]; then
-    RHEL_VERSION=$(cat /etc/redhat-release | grep -oP "[0-9\.]*")
-    RHEL_VERSION=${RHEL_VERSION/.0/}
-    REPO_FILE=rhel${RHEL_VERSION}_cldr_mirrors.repo
-    rm /etc/yum.repos.d/*.repo -f
-    curl https://mirror.infra.cloudera.com/repos/rhel/server/8/${RHEL_VERSION}/${REPO_FILE} --fail > /etc/yum.repos.d/${REPO_FILE}
-
-    # Workaround on resolving the hostname as for some reason the DNS can't resolve it at provision time
-    if [ "${IMAGE_BURNING_TYPE}" == "base" ] ; then
-      if [[ "${CLOUD_PROVIDER}" != "Azure" ]] ; then
-        yum install -y dnsutils
+  if [[ "${OS}" == "redhat8" ]]; then
+    # Remove RHEL official repos and use the internal mirror in case of RHEL8
+    if [[ "${CLOUD_PROVIDER}" != "AWS_GOV" ]]; then
+      if [[ "${ARCHITECTURE}" != "arm64" ]]; then
+        # Internal repo is not yet available for AWS_GOV and arm64 images
+        RHEL_VERSION=$(cat /etc/redhat-release | grep -oP "[0-9\.]*")
+        RHEL_VERSION=${RHEL_VERSION/.0/}
+        REPO_FILE=rhel${RHEL_VERSION}_cldr_mirrors.repo
+        rm /etc/yum.repos.d/*.repo -f
+        curl https://mirror.infra.cloudera.com/repos/rhel/server/8/${RHEL_VERSION}/${REPO_FILE} --fail > /etc/yum.repos.d/${REPO_FILE}
       fi
-      echo "$(dig +short mirror.infra.cloudera.com A | tail -1) mirror.infra.cloudera.com" >> /etc/hosts
+
+      # Workaround on resolving the hostname as for some reason the DNS can't resolve it at provision time
+      if [ "${IMAGE_BURNING_TYPE}" == "base" ] ; then
+        if [[ "${CLOUD_PROVIDER}" != "Azure" ]] ; then
+          yum install -y dnsutils
+        fi
+        echo "$(dig +short mirror.infra.cloudera.com A | tail -1) mirror.infra.cloudera.com" >> /etc/hosts
+      fi
     fi
   else
     # Workaround based on the official documentation: https://cloud.google.com/compute/docs/troubleshooting/known-issues#known_issues_for_linux_vm_instances
@@ -134,7 +139,7 @@ function redhat8_update_python36() {
   yum update -y python3 || yum update -y python36
   yum install -y python3-devel
   
-  echo PYTHON36=$(yum list installed | grep ^python36\\.x86_64 | grep -oi " [^\s]* " | xargs) >> /tmp/python_install.properties
+  echo PYTHON36=$(yum list installed | grep ^python36\\. | grep -oi " [^\s]* " | xargs) >> /tmp/python_install.properties
   
   echo "RedHat8 update python36. OS: $OS CLOUD_PROVIDER: $CLOUD_PROVIDER"
   if [ "${OS}" == "redhat8" ] &&  [ "${CLOUD_PROVIDER}" == "YARN" ]; then
@@ -156,7 +161,7 @@ function redhat8_install_python38() {
   yum install -y python38
   yum install -y python38-devel python38-libs python38-cffi python38-lxml
 
-  echo PYTHON38=$(yum list installed | grep ^python38\\.x86_64 | grep -oi " [^\s]* " | xargs) >> /tmp/python_install.properties
+  echo PYTHON38=$(yum list installed | grep ^python38\\. | grep -oi " [^\s]* " | xargs) >> /tmp/python_install.properties
 
   # We need to create this "hack", because Saltstack's pip.installed only accepts a pip/pip3
   # wrapper, but apparently can't call "python3 -m pip", so without this, we can't install
@@ -173,7 +178,7 @@ function redhat8_install_python39() {
   yum install -y python39
   yum install -y python39-devel python39-libs python39-cffi python39-lxml
 
-  echo PYTHON39=$(yum list installed | grep ^python39\\.x86_64 | grep -oi " [^\s]* " | xargs) >> /tmp/python_install.properties
+  echo PYTHON39=$(yum list installed | grep ^python39\\. | grep -oi " [^\s]* " | xargs) >> /tmp/python_install.properties
 
   # We need to create this "hack", because Saltstack's pip.installed only accepts a pip/pip3
   # wrapper, but apparently can't call "python3 -m pip", so without this, we can't install
@@ -189,7 +194,7 @@ function redhat8_install_python311() {
   echo "Installing Python 3.11 with dependencies..."
   yum install -y python3.11 python3.11-pip python3.11-devel python3.11-libs python3.11-cffi python3.11-lxml
 
-  echo PYTHON311=$(yum list installed | grep ^python3\\.11\\.x86_64 | grep -oi " [^\s]* " | xargs) >> /tmp/python_install.properties
+  echo PYTHON311=$(yum list installed | grep ^python3\\.11\\. | grep -oi " [^\s]* " | xargs) >> /tmp/python_install.properties
 
   # We need to create this "hack", because Saltstack's pip.installed only accepts a pip/pip3
   # wrapper, but apparently can't call "python3 -m pip", so without this, we can't install

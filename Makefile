@@ -10,6 +10,7 @@ IMAGE_OWNER ?= "cloudbreak-dev"
 OPTIONAL_STATES ?= ""
 # for splitting image copy (test and prod phases)
 IMAGE_COPY_PHASE ?= ""
+ARCHITECTURE ?= x86_64
 
 # Azure VM image specifications
 ifeq ($(CLOUD_PROVIDER),Azure)
@@ -57,13 +58,20 @@ $(error Unexpected OS type $(OS) for Azure)
 	endif
 endif
 
-# AWS source ami specification
+# AWS source ami and instance type specification
 ifeq ($(CLOUD_PROVIDER),AWS)
 	ifeq ($(OS),centos7)
 		AWS_SOURCE_AMI ?= ami-098f55b4287a885ba
+		AWS_INSTANCE_TYPE ?= t3.2xlarge
 	endif
 	ifeq ($(OS),redhat8)
-		AWS_SOURCE_AMI ?= ami-039ce2eddc1949546
+		ifeq ($(ARCHITECTURE),arm64)
+			AWS_SOURCE_AMI ?= ami-014a329a8d775a418
+			AWS_INSTANCE_TYPE ?= r7gd.2xlarge
+		else
+			AWS_SOURCE_AMI ?= ami-039ce2eddc1949546
+			AWS_INSTANCE_TYPE ?= t3.2xlarge
+		endif
 	endif
 endif
 
@@ -275,6 +283,7 @@ build-aws-centos7-base:
 	$(ENVS) \
 	AWS_AMI_REGIONS="us-west-1" \
 	AWS_SOURCE_AMI=$(AWS_SOURCE_AMI) \
+	AWS_INSTANCE_TYPE=$(AWS_INSTANCE_TYPE) \
 	OS=centos7 \
 	OS_TYPE=redhat7 \
 	ATLAS_ARTIFACT_TYPE=amazon \
@@ -289,6 +298,7 @@ build-aws-centos7:
 	$(ENVS) \
 	AWS_AMI_REGIONS="$(AWS_AMI_REGIONS)" \
 	AWS_SOURCE_AMI=$(AWS_SOURCE_AMI) \
+	AWS_INSTANCE_TYPE=$(AWS_INSTANCE_TYPE) \
 	ATLAS_ARTIFACT_TYPE=amazon \
 	GIT_REV=$(GIT_REV) \
 	GIT_BRANCH=$(GIT_BRANCH) \
@@ -310,8 +320,10 @@ build-aws-redhat8:
 	$(ENVS) \
 	AWS_AMI_REGIONS="us-west-1" \
 	AWS_SOURCE_AMI=$(AWS_SOURCE_AMI) \
+	AWS_INSTANCE_TYPE=$(AWS_INSTANCE_TYPE) \
 	OS=redhat8 \
 	OS_TYPE=redhat8 \
+	ARCHITECTURE=$(ARCHITECTURE) \
 	ATLAS_ARTIFACT_TYPE=amazon \
 	SALT_INSTALL_OS=redhat \
 	GIT_REV=$(GIT_REV) \

@@ -39,6 +39,7 @@
     "git_rev": "{{ env `GIT_REV` }}",
     "git_branch": "{{ env `GIT_BRANCH` }}",
     "git_tag": "{{ env `GIT_TAG` }}",
+    "architecture": "{{ env `ARCHITECTURE` }}",
     "os": "{{ env `OS` }}",
     "os_type": "{{ env `OS_TYPE` }}",
     "os_user": "cloudbreak",
@@ -69,7 +70,7 @@
     "salt_version": "{{ env `SALT_VERSION` }}",
     "salt_path": "{{ env `SALT_PATH` }}",
     "pyzmq_version": "{{ env `PYZMQ_VERSION` }}",
-    "aws_instance_type": "t3.2xlarge",
+    "aws_instance_type": "{{ env `AWS_INSTANCE_TYPE` }}",
     "azure_instance_type": "Standard_D8d_v5",
     "gcp_instance_type": "n1-standard-8",
     "aws_source_ami": "{{ env `AWS_SOURCE_AMI` }}",
@@ -539,6 +540,7 @@
       "expect_disconnect": true,
       "environment_vars": [
         "OS={{user `os`}}",
+        "ARCHITECTURE={{user `architecture`}}",
         "CLOUD_PROVIDER={{user `cloud_provider`}}"
       ],
       "remote_folder": "/opt/provision-scripts"
@@ -560,11 +562,6 @@
     },
     {
       "type": "file",
-      "source": "scripts/hardcoded-packages.csv",
-      "destination": "/tmp/hardcoded-packages.csv"
-    },
-    {
-      "type": "file",
       "source": "scripts/rhel8_salt_fix.patch",
       "destination": "/tmp/rhel8_salt_fix.patch"
     },
@@ -574,6 +571,7 @@
       "environment_vars": [
         "OS_TYPE={{user `os_type`}}",
         "OS={{user `os`}}",
+        "ARCHITECTURE={{user `architecture`}}",
         "SALT_INSTALL_OS={{ user `salt_install_os` }}",
         "INSTALLATION_STATE=base"
       ],
@@ -594,6 +592,7 @@
         "SLES_REGISTRATION_CODE={{user `sles_registration_code`}}",
         "OS_TYPE={{user `os_type`}}",
         "OS={{user `os`}}",
+        "ARCHITECTURE={{user `architecture`}}",
         "PYTHON_APT_VERSION={{user `python_apt_version`}}",
         "SALT_PATH={{user `salt_path`}}",
         "SALT_REPO_FILE={{user `salt_repo_file` }}",
@@ -642,6 +641,7 @@
         "ARCHIVE_BASE_URL={{user `archive_base_url`}}",
         "ARCHIVE_CREDENTIALS={{user `archive_credentials`}}",
         "OS={{user `os`}}",
+        "ARCHITECTURE={{user `architecture`}}",
         "GIT_REV={{user `git_rev`}}",
         "STACK_REPOSITORY_VERSION={{user `repository_version`}}",
         "COPY_AWS_MARKETPLACE_EULA={{user `copy_aws_marketplace_eula`}}",
@@ -683,6 +683,7 @@
       "environment_vars": [
         "OS_TYPE={{user `os_type`}}",
         "OS={{user `os`}}",
+        "ARCHITECTURE={{user `architecture`}}",
         "SALT_INSTALL_OS={{ user `salt_install_os` }}",
         "INSTALLATION_STATE=complete",
         "SALT_PATH={{user `salt_path`}}",
@@ -705,7 +706,8 @@
       "script": "scripts/generate-tags.sh",
       "environment_vars": [
         "TAGS={{user `tags`}}",
-        "OS={{user `os`}}"
+        "OS={{user `os`}}",
+        "ARCHITECTURE={{user `architecture`}}"
       ],
       "execute_command": "chmod +x {{ .Path }}; sudo {{ .Vars }} {{ .Path }}",
       "remote_folder": "/opt/provision-scripts"
@@ -739,6 +741,7 @@
       "script": "scripts/repo_cleanup.sh",
       "environment_vars": [
         "OS={{user `os`}}",
+        "ARCHITECTURE={{user `architecture`}}",
         "CLOUD_PROVIDER={{ user `cloud_provider` }}",
         "IMAGE_BURNING_TYPE={{ user `image_burning_type` }}"
       ],
@@ -780,6 +783,7 @@
         "git_branch={{user `git_branch`}}",
         "git_tag={{user `git_tag`}}",
         "artifact_type={{user `atlas_artifact_type`}}",
+        "architecture={{user `architecture`}}",
         "os={{user `os`}}",
         "os_user={{user `os_user` }}",
         "os_type={{user `os_type` }}",

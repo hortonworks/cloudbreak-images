@@ -1,4 +1,4 @@
-{% if salt['environ.get']('CLOUD_PROVIDER') == 'AWS_GOV' %}
+{% if salt['environ.get']('CLOUD_PROVIDER') == 'AWS_GOV' or salt['environ.get']('ARCHITECTURE') == 'arm64' %}
 update-packages:
   cmd.run:
     - name: dnf update -y --releasever=8.8 --nobest
@@ -80,7 +80,7 @@ missing_cloudprovider:
 
 download_awscli:
   cmd.run:
-    - name: wget https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip -q -O /tmp/awscli.zip && unzip -q -d /tmp/awscli/ /tmp/awscli.zip && rm -f /tmp/awscli.zip
+    - name: wget https://awscli.amazonaws.com/awscli-exe-linux-{{ grains['osarch'] }}.zip -q -O /tmp/awscli.zip && unzip -q -d /tmp/awscli/ /tmp/awscli.zip && rm -f /tmp/awscli.zip
 
 install_awscli:
   cmd.run:

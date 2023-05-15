@@ -100,17 +100,6 @@ EOF
   chmod 600 /etc/salt-bootstrap/security-config.yml
 }
 
-create_certificates_cert_tool() {
-  echo n | cert-tool -d=/etc/certs -o=gateway -s localhost -s 127.0.0.1
-  rm /etc/certs/client-key.pem /etc/certs/client.pem /etc/certs/ca-key.pem
-  mv /etc/certs/server.pem /etc/certs/cluster.pem
-  cp /etc/certs/cluster.pem /tmp/cluster.pem
-  mv /etc/certs/server-key.pem /etc/certs/cluster-key.pem
-  cp /etc/certs/cluster.pem /etc/jumpgate/cluster.pem
-  chmod 600 /etc/jumpgate/cluster.pem
-  chown jumpgate:jumpgate /etc/jumpgate/cluster.pem
-}
-
 create_certificates_certm() {
   CERT_ROOT_PATH=/etc/certs
   certm -d $CERT_ROOT_PATH ca generate -o=gateway --overwrite
@@ -138,14 +127,7 @@ start_nginx() {
 setup_tls() {
   mkdir -p /etc/certs
   echo $CB_CERT | base64 --decode > /etc/certs/cb-client.pem
-  if [[ -f /sbin/certm ]]
-  then
-    echo "certm exists on the fs"
-    create_certificates_certm
-  else
-    echo "cert-tool exists on the fs (backward compatibility)"
-    create_certificates_cert_tool
-  fi
+  create_certificates_certm
 
   if [[ "$IS_CCM_V2_ENABLED" == "true" ]]; then
     if [[ "$IS_CCM_V2_JUMPGATE_ENABLED" == "true" ]]; then
