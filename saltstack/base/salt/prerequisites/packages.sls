@@ -1,12 +1,6 @@
-{% if salt['environ.get']('CLOUD_PROVIDER') == 'AWS_GOV' %}
 update-packages:
   cmd.run:
     - name: dnf update -y --releasever=8.8 --nobest
-{% elif pillar['subtype'] != 'Docker' %}
-update-packages:
-  pkg.uptodate:
-    - refresh: True
-{% endif %}
 
 {% if pillar['OS'] == 'redhat8' %}
 remove_unused_rhel8_packages:

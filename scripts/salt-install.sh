@@ -69,16 +69,16 @@ function update_yum_repos() {
     RHEL_VERSION=$(cat /etc/redhat-release | grep -oP "[0-9\.]*")
     RHEL_VERSION=${RHEL_VERSION/.0/}
     REPO_FILE=rhel${RHEL_VERSION}_cldr_mirrors.repo
-    rm /etc/yum.repos.d/*.repo -f
-    curl https://mirror.infra.cloudera.com/repos/rhel/server/8/${RHEL_VERSION}/${REPO_FILE} --fail > /etc/yum.repos.d/${REPO_FILE}
-
-    # Workaround on resolving the hostname as for some reason the DNS can't resolve it at provision time
-    if [ "${IMAGE_BURNING_TYPE}" == "base" ] ; then
-      if [[ "${CLOUD_PROVIDER}" != "Azure" ]] ; then
-        yum install -y dnsutils
-      fi
-      echo "$(dig +short mirror.infra.cloudera.com A | tail -1) mirror.infra.cloudera.com" >> /etc/hosts
-    fi
+#    rm /etc/yum.repos.d/*.repo -f
+#    curl https://mirror.infra.cloudera.com/repos/rhel/server/8/${RHEL_VERSION}/${REPO_FILE} --fail > /etc/yum.repos.d/${REPO_FILE}
+#
+#    # Workaround on resolving the hostname as for some reason the DNS can't resolve it at provision time
+#    if [ "${IMAGE_BURNING_TYPE}" == "base" ] ; then
+#      if [[ "${CLOUD_PROVIDER}" != "Azure" ]] ; then
+#        yum install -y dnsutils
+#      fi
+#      echo "$(dig +short mirror.infra.cloudera.com A | tail -1) mirror.infra.cloudera.com" >> /etc/hosts
+#    fi
   else
     # Workaround based on the official documentation: https://cloud.google.com/compute/docs/troubleshooting/known-issues#known_issues_for_linux_vm_instances
     if [ "${CLOUD_PROVIDER}" == "GCP" ]; then

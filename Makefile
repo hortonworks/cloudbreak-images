@@ -136,10 +136,10 @@ ifeq ($(MAKE_PUBLIC_AMIS),yes)
 endif
 
 TAG_CUSTOMER_DELIVERED ?= "No"
-INCLUDE_FLUENT ?= "Yes"
-INCLUDE_CDP_TELEMETRY ?= "Yes"
+INCLUDE_FLUENT ?= "No"
+INCLUDE_CDP_TELEMETRY ?= "No"
 INCLUDE_METERING ?= "Yes"
-USE_TELEMETRY_ARCHIVE ?= "Yes"
+USE_TELEMETRY_ARCHIVE ?= "No"
 ARCHIVE_BASE_URL ?= "https://archive.cloudera.com"
 ARCHIVE_CREDENTIALS ?= ":"
 
@@ -147,10 +147,10 @@ CDP_TELEMETRY_VERSION ?= ""
 CDP_LOGGING_AGENT_VERSION ?= ""
 
 # This one is OS-independent (right?)
-DEFAULT_JUMPGATE_AGENT_RPM_URL := https://archive.cloudera.com/ccm/3.0.8/jumpgate-agent.rpm
+DEFAULT_JUMPGATE_AGENT_RPM_URL := "" #https://archive.cloudera.com/ccm/3.0.8/jumpgate-agent.rpm
 
 # This one is OS-independent (v2.0 is a rewrite done in GoLang)
-DEFAULT_METERING_AGENT_RPM_URL := "https://archive.cloudera.com/cp_clients/thunderhead-metering-heartbeat-application-2.0.0-b12639.x86_64.rpm"
+DEFAULT_METERING_AGENT_RPM_URL := ""# "https://archive.cloudera.com/cp_clients/thunderhead-metering-heartbeat-application-2.0.0-b12639.x86_64.rpm"
 
 # This one is theoretically OS-dependent and will be overridden in packer.sh for RHEL8, even though apparently packages work regardless of the OS.
 DEFAULT_FREEIPA_PLUGIN_RPM_URL := "https://archive.cloudera.com/cdp-freeipa-artifacts/cdp-hashed-pwd-1.0-20240306130845git17cc467.el7.x86_64.rpm"
@@ -317,7 +317,7 @@ build-aws-redhat8:
 	GIT_REV=$(GIT_REV) \
 	GIT_BRANCH=$(GIT_BRANCH) \
 	GIT_TAG=$(GIT_TAG) \
-	./scripts/packer.sh build -color=false -only=aws-redhat8 $(PACKER_OPTS)
+	./scripts/packer.sh build -color=false -only=aws-redhat8 -on-error=abort $(PACKER_OPTS)
 
 generate-aws-redhat8-changelog:
 ifdef IMAGE_UUID

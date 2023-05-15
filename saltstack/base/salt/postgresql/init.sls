@@ -27,19 +27,17 @@
 
 {% if pillar['OS'] == 'redhat8' %}
 
-{% set postgres_install_flags = '' %}
-{% if salt['environ.get']('CLOUD_PROVIDER') == 'AWS_GOV' %}
-  {% set postgres_install_flags = '--skip-broken --nobest' %}
-{% endif %}
+{% set postgres_install_flags = '--skip-broken --nobest' %}
 
 /etc/yum.repos.d/postgres11-el8.repo:
   file.managed:
     - source: salt://postgresql/yum/postgres11-el8.repo
+    - template: jinja
 
 install-postgres:
   cmd.run:
     - name: |
-        dnf -y install https://download.postgresql.org/pub/repos/yum/reporpms/EL-8-x86_64/pgdg-redhat-repo-latest.noarch.rpm
+        dnf -y install https://download.postgresql.org/pub/repos/yum/reporpms/EL-8-{{ grains['osarch'] }}/pgdg-redhat-repo-latest.noarch.rpm
         dnf module -y disable postgresql
         dnf clean all
 {% if pillar['subtype'] != 'Docker' %}
@@ -48,6 +46,7 @@ install-postgres:
         dnf -y remove postgresql11-server postgresql11 postgresql11-devel
 {% endif %}
         dnf -y install postgresql14-server postgresql14 postgresql14-devel {{ postgres_install_flags }}
+    - failhard: True
 
 {% if pillar['OS'] == 'redhat8' and pillar['subtype'] == 'Docker' %}
 timeoutstop-postgres-ycloud:

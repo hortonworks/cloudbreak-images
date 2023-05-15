@@ -175,7 +175,7 @@ Chrony_config:
 {% endif %}
 {% if cloud_provider != 'GCP' and not (cloud_provider == 'Azure' and os == 'redhat8')  %}
   # fat is required for gcp and azure rhel8 images
-  {% do filesystems_to_disable.append('fat') %}
+  # it is also required for aws arm images: modprobe: FATAL: Module fat is in use.
 {% endif %}
 
 create modrobe blacklist:

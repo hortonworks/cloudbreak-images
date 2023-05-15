@@ -83,10 +83,12 @@ packer_in_container() {
       export JUMPGATE_AGENT_RPM_URL=$DEFAULT_JUMPGATE_AGENT_RPM_URL
   fi
 
-  ## Download the jumpgate-agent rpm, get the version and call REDB to lookup the GBN
-  wget $JUMPGATE_AGENT_RPM_URL
-  JUMPGATE_AGENT_VERSION=$(rpm -qp --queryformat '%{VERSION}' ${JUMPGATE_AGENT_RPM_URL##*/})
-  JUMPGATE_AGENT_GBN=$(curl -Ls "https://release.infra.cloudera.com/hwre-api/latestcompiledbuild?stack=JUMPGATE&release=$JUMPGATE_AGENT_VERSION" --fail | jq -r '.gbn')
+  if [ -n "$JUMPGATE_AGENT_RPM_URL" ]; then
+    ## Download the jumpgate-agent rpm, get the version and call REDB to lookup the GBN
+    wget $JUMPGATE_AGENT_RPM_URL
+    JUMPGATE_AGENT_VERSION=$(rpm -qp --queryformat '%{VERSION}' ${JUMPGATE_AGENT_RPM_URL##*/})
+    JUMPGATE_AGENT_GBN=$(curl -Ls "https://release.infra.cloudera.com/hwre-api/latestcompiledbuild?stack=JUMPGATE&release=$JUMPGATE_AGENT_VERSION" --fail | jq -r '.gbn')
+  fi
 
   if ! [[ $METERING_AGENT_RPM_URL =~ ^http.*rpm$ ]]; then
     export METERING_AGENT_RPM_URL=$DEFAULT_METERING_AGENT_RPM_URL
