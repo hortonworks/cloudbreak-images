@@ -32,7 +32,7 @@ This section provides information about the packages of specified images to be i
 - PyOpenSSL
 
 ## Base packages
-- cert-tool
+- certm
 - corkscrew
 - jinja2
 - wget

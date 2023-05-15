@@ -1,6 +1,6 @@
 [pgdg11]
 name=PostgreSQL 11
-baseurl=https://yum-archive.postgresql.org/11/redhat/rhel-8-x86_64
+baseurl=https://yum-archive.postgresql.org/11/redhat/rhel-8-{{ grains['osarch'] }}
 enabled=1
 priority=1
 gpgcheck=1

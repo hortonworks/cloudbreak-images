@@ -54,6 +54,7 @@ cat  > ${image_name}_$metadata_filename_postfix.json <<EOF
 "git_branch": "${git_branch}",
 "git_tag": "${git_tag}",
 "os": "${os}",
+"architecture": "${architecture}",
 "os_user": "${os_user}",
 "os_type": "${os_type}",
 "orchestrator": "${orchestrator}",
