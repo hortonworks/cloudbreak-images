@@ -29,7 +29,7 @@
 install-postgres:
   cmd.run:
     - name: |
-        dnf -y install https://download.postgresql.org/pub/repos/yum/reporpms/EL-8-x86_64/pgdg-redhat-repo-latest.noarch.rpm
+        dnf -y install https://download.postgresql.org/pub/repos/yum/reporpms/EL-8-{{ grains['osarch'] }}/pgdg-redhat-repo-latest.noarch.rpm
         dnf module -y disable postgresql
         dnf clean all
         dnf -y install postgresql11-server postgresql11 postgresql11-devel --skip-broken --nobest

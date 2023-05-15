@@ -109,17 +109,17 @@ ifeq ($(MAKE_PUBLIC_AMIS),yes)
 endif
 
 TAG_CUSTOMER_DELIVERED ?= "No"
-INCLUDE_FLUENT ?= "Yes"
-INCLUDE_CDP_TELEMETRY ?= "Yes"
+INCLUDE_FLUENT ?= "No"
+INCLUDE_CDP_TELEMETRY ?= "No"
 INCLUDE_METERING ?= "Yes"
-USE_TELEMETRY_ARCHIVE ?= "Yes"
+USE_TELEMETRY_ARCHIVE ?= "No"
 ARCHIVE_BASE_URL ?= "https://archive.cloudera.com"
 ARCHIVE_CREDENTIALS ?= ":"
 
 CDP_TELEMETRY_VERSION ?= ""
 CDP_LOGGING_AGENT_VERSION ?= ""
 
-DEFAULT_JUMPGATE_AGENT_RPM_URL := "https://cloudera-build-us-west-1.vpc.cloudera.com/s3/build/38343515/jumpgate/3.x/redhat8/yum/jumpgate-agent.rpm"
+DEFAULT_JUMPGATE_AGENT_RPM_URL := "" #"https://cloudera-build-us-west-1.vpc.cloudera.com/s3/build/38343515/jumpgate/3.x/redhat8/yum/jumpgate-agent.rpm"
 DEFAULT_METERING_AGENT_RPM_URL := "https://archive.cloudera.com/cp_clients/thunderhead-metering-heartbeat-application-1.0.0-b8780.x86_64.rpm"
 DEFAULT_FREEIPA_PLUGIN_RPM_URL := "https://cloudera-service-delivery-cache.s3.amazonaws.com/cdp-hashed-pwd/workloads/cdp-hashed-pwd-1.0-20200319002729gitc964030.x86_64.rpm"
 DEFAULT_FREEIPA_HEALTH_AGENT_RPM_URL := "https://cloudera-service-delivery-cache.s3.amazonaws.com/freeipa-health-agent/packages/freeipa-health-agent-0.1-20230125124737git1961633.x86_64.rpm"
@@ -257,7 +257,7 @@ build-aws-redhat8:
 	GIT_REV=$(GIT_REV) \
 	GIT_BRANCH=$(GIT_BRANCH) \
 	GIT_TAG=$(GIT_TAG) \
-	./scripts/packer.sh build -color=false -only=aws-redhat8 $(PACKER_OPTS)
+	./scripts/packer.sh build -color=false -only=aws-redhat8 -on-error=abort $(PACKER_OPTS)
 
 build-azure-redhat8:
 	$(ENVS) \
