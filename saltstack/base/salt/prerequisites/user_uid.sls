@@ -1,3 +1,11 @@
+{% if pillar['OS'] == 'redhat8' %}
+  {% 
+    set ids = {
+      'cloudera_scm_user': '10001',
+      'cloudera_scm_group': '10001',
+    } 
+  %}
+{% else %}
 {% set ids = salt['grains.filter_by']({
     'amazon-ebs': {
         'cloudera_scm_user': '992',
@@ -15,6 +23,7 @@
 grain='builder_type',
 default='amazon-ebs'
 )%}
+{% endif %}
 
 create_cloudera_scm_group:
   group.present:

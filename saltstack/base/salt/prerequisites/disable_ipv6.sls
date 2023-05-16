@@ -22,6 +22,11 @@ net.ipv6.conf.{{ pillar['network_interface'] }}.disable_ipv6:
     - repl: "NETWORKING_IPV6=\"no\""
     - append_if_not_found: True
 
+
+create_missing_ifcfg_file:
+  cmd.run:
+    - name: touch /etc/sysconfig/network-scripts/ifcfg-{{ pillar['network_interface'] }}
+
 /etc/sysconfig/network-scripts/ifcfg-{{ pillar['network_interface'] }}:
   file.replace:
     - name: /etc/sysconfig/network-scripts/ifcfg-{{ pillar['network_interface'] }}
