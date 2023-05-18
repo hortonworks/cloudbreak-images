@@ -1,16 +1,16 @@
 {
-  "created": 1684126917,
-  "published": 1684130787,
-  "date": "2023-05-15",
+  "created": 1684365082,
+  "published": 1684368554,
+  "date": "2023-05-17",
   "description": "Official Cloudbreak image",
   "images": {
     "aws": {
-      "us-west-1": "ami-0bb66f594c6bc7711"
+      "us-west-1": "ami-057818f0b193042c0"
     }
   },
   "os": "centos7",
   "os_type": "redhat7",
-  "uuid": "c66187de-a398-4ee8-b443-25b4e22feb7e",
+  "uuid": "30325c00-383c-43ab-8dd3-cc9d6df57462",
   "package-versions": {
     "blackbox-exporter": "0.19.0",
     "cdp-logging-agent": "0.3.6",
@@ -18,7 +18,7 @@
     "cdp-prometheus": "2.36.2",
     "cdp-request-signer": "0.2.4",
     "cdp-telemetry": "0.4.31",
-    "cloudbreak_images": "0df164fdd263b186efbf8a893d498f34fb172a8d",
+    "cloudbreak_images": "b2e26f5e78b96af0d3ce1fa7fa9a96d0db3959bc",
     "freeipa-health-agent": "0.1-20230125124737git1961633",
     "freeipa-ldap-agent": "1.0.0-b8901",
     "freeipa-plugin": "1.0-20200319002729gitc964030",
