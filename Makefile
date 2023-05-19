@@ -119,7 +119,7 @@ ARCHIVE_CREDENTIALS ?= ":"
 CDP_TELEMETRY_VERSION ?= ""
 CDP_LOGGING_AGENT_VERSION ?= ""
 
-DEFAULT_JUMPGATE_AGENT_RPM_URL := "https://cloudera-build-us-west-1.vpc.cloudera.com/s3/build/38343515/jumpgate/3.x/redhat8/yum/jumpgate-agent.rpm"
+DEFAULT_JUMPGATE_AGENT_RPM_URL := "https://cloudera-build-us-west-1.vpc.cloudera.com/s3/build/39405153/jumpgate/3.x/redhat8/yum/jumpgate-agent.rpm"
 DEFAULT_METERING_AGENT_RPM_URL := "https://archive.cloudera.com/cp_clients/thunderhead-metering-heartbeat-application-1.0.0-b8780.x86_64.rpm"
 DEFAULT_FREEIPA_PLUGIN_RPM_URL := "https://cloudera-service-delivery-cache.s3.amazonaws.com/cdp-hashed-pwd/workloads/cdp-hashed-pwd-1.0-20200319002729gitc964030.x86_64.rpm"
 DEFAULT_FREEIPA_HEALTH_AGENT_RPM_URL := "https://cloudera-service-delivery-cache.s3.amazonaws.com/freeipa-health-agent/packages/freeipa-health-agent-0.1-20230125124737git1961633.x86_64.rpm"
