@@ -5,7 +5,8 @@ lsblk
 df -h
 
 
-if [ "${OS}" == "centos7" ] && [ "${CLOUD_PROVIDER}" == "Azure" ] ; then
+if [ "${CLOUD_PROVIDER}" == "Azure" ] ; then
+  if [ "${OS}" == "centos7" ] ; then
     (
     echo d # Delete
     echo 2 # 2nd partition
@@ -17,4 +18,7 @@ if [ "${OS}" == "centos7" ] && [ "${CLOUD_PROVIDER}" == "Azure" ] ; then
     echo w # Write changes
     ) | fdisk /dev/sda
     reboot
+  elif [ "${OS}" == "redhat8" ] ; then
+    lvextend -r -l +100%FREE /dev/mapper/rootvg-rootlv
+  fi
 fi
