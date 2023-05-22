@@ -46,7 +46,7 @@ $(error "AZURE_IMAGE_VHD and Marketplace image properties (AZURE_IMAGE_PUBLISHER
 		else ifeq ($(OS),redhat8)
 			AZURE_IMAGE_PUBLISHER ?= RedHat
 			AZURE_IMAGE_OFFER ?= RHEL
-			AZURE_IMAGE_SKU ?= 8_6
+			AZURE_IMAGE_SKU ?= 8_7
 		else ifeq ($(OS),centos7)
 			AZURE_IMAGE_PUBLISHER ?= OpenLogic
 			AZURE_IMAGE_OFFER ?= CentOS
@@ -131,7 +131,7 @@ GITHUB_ORG ?= hortonworks
 GITHUB_REPO ?= cloudbreak-images-metadata
 
 # it testing, atlas uploads should go to mocking artifact slush
-#PACKER_VARS=
+#PACKER_VARS=-on-error=abort
 GIT_REV=$(shell git rev-parse HEAD)
 GIT_BRANCH=$(shell git rev-parse --abbrev-ref HEAD)
 GIT_TAG=$(shell git describe --exact-match --tags 2>/dev/null)

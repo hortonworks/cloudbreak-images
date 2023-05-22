@@ -48,6 +48,14 @@ function install_with_yum() {
     fi
   fi
 
+  if [ "${OS}" == "redhat8" ] ; then
+    RHEL_VERSION=$(cat /etc/redhat-release | grep -oP "[0-9\.]*")
+    RHEL_VERSION=${RHEL_VERSION/.0/}
+    REPO_FILE=rhel${RHEL_VERSION}_cldr_mirrors.repo
+    rm /etc/yum.repos.d/redhat*.repo -f
+    curl https://mirror.infra.cloudera.com/repos/rhel/server/8/${RHEL_VERSION}/${REPO_FILE} > /etc/yum.repos.d/${REPO_FILE}
+  fi
+  
   yum install -y yum-utils yum-plugin-versionlock
   yum clean metadata
   enable_epel_repository
