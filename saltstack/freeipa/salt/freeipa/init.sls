@@ -18,6 +18,7 @@ freeipa-install:
         - ntp
         - ipa-server
         - ipa-server-dns
+        - python36-dbus
 {% else %}
   cmd.run:
     - name: yum module -y reset idm && yum -y install @idm:DL1 && yum -y install freeipa-server && yum -y install ipa-server-dns bind-dyndb-ldap
