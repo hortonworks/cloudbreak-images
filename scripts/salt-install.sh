@@ -34,19 +34,7 @@ function install_salt_with_pip3() {
 }
 
 function install_with_yum() {
-  # Workaround based on the official documentation: https://cloud.google.com/compute/docs/troubleshooting/known-issues#known_issues_for_linux_vm_instances
-  if [ "${CLOUD_PROVIDER}" == "GCP" ]; then
-    sudo sed -i 's/repo_gpgcheck=1/repo_gpgcheck=0/g' /etc/yum.repos.d/google-cloud.repo
-  fi
-
-  # The host http://olcentgbl.trafficmanager.net keeps causing problems, so we re-enable the default mirrorlist instead.
-  # Also, this is the recommended way for YUM updates to work anyway. https://wiki.centos.org/PackageManagement/Yum/FastestMirror
-  if [ "${CLOUD_PROVIDER}" == "Azure" ]; then
-    if [ "${OS}" == "centos7" ] ; then
-      sudo sed -i 's/\#mirrorlist/mirrorlist/g' /etc/yum.repos.d/CentOS-Base.repo
-      sudo sed -i 's/baseurl/\#baseurl/g' /etc/yum.repos.d/CentOS-Base.repo
-    fi
-  fi
+  update_yum_repos
 
   yum install -y yum-utils yum-plugin-versionlock
   yum clean metadata
@@ -66,6 +54,31 @@ function install_with_yum() {
   install_salt_with_pip3
   
   create_temp_minion_config
+}
+
+function update_yum_repos() {
+  # Remove RHEL official repos and use the internal mirror in case of RHEL8 and non aws_gov provider
+  if [[ "${OS}" == "redhat8" && "${CLOUD_PROVIDER}" != "AWS_GOV" ]]; then
+    RHEL_VERSION=$(cat /etc/redhat-release | grep -oP "[0-9\.]*")
+    RHEL_VERSION=${RHEL_VERSION/.0/}
+    REPO_FILE=rhel${RHEL_VERSION}_cldr_mirrors.repo
+    rm /etc/yum.repos.d/*.repo -f
+    curl https://mirror.infra.cloudera.com/repos/rhel/server/8/${RHEL_VERSION}/${REPO_FILE} > /etc/yum.repos.d/${REPO_FILE}
+  else
+    # Workaround based on the official documentation: https://cloud.google.com/compute/docs/troubleshooting/known-issues#known_issues_for_linux_vm_instances
+    if [ "${CLOUD_PROVIDER}" == "GCP" ]; then
+      sudo sed -i 's/repo_gpgcheck=1/repo_gpgcheck=0/g' /etc/yum.repos.d/google-cloud.repo
+    fi
+
+    # The host http://olcentgbl.trafficmanager.net keeps causing problems, so we re-enable the default mirrorlist instead.
+    # Also, this is the recommended way for YUM updates to work anyway. https://wiki.centos.org/PackageManagement/Yum/FastestMirror
+    if [ "${CLOUD_PROVIDER}" == "Azure" ]; then
+      if [ "${OS}" == "centos7" ] ; then
+        sudo sed -i 's/\#mirrorlist/mirrorlist/g' /etc/yum.repos.d/CentOS-Base.repo
+        sudo sed -i 's/baseurl/\#baseurl/g' /etc/yum.repos.d/CentOS-Base.repo
+      fi
+    fi
+  fi
 }
 
 function enable_epel_repository() {
