@@ -12,7 +12,7 @@ install_pyyaml:
 install_jq:
   file.managed:
     - name: /usr/bin/jq
-    - source: https://stedolan.github.io/jq/download/linux64/jq
-    - source_hash: md5=89c7bb6138fa6a5c989aca6b71586acc
+    - source: https://github.com/jqlang/jq/releases/download/jq-1.6/jq-linux64
+    - source_hash: sha256=af986793a515d500ab2d35f8d2aecd656e764504b789b66d7e1a0b727a124c44
     - skip_verify: True
     - mode: 755

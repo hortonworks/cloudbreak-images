@@ -85,7 +85,7 @@ The following are requirements for the image building environment:
 
 - [Docker](https://www.docker.com/)
 - [GNU Make](https://www.gnu.org/software/make/)
-- [jq](https://stedolan.github.io/jq/)
+- [jq](https://jqlang.github.io/jq/)
 
 ### AWS
 
