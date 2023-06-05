@@ -34,26 +34,12 @@ function install_salt_with_pip3() {
 }
 
 function install_with_yum() {
-  # Workaround based on the official documentation: https://cloud.google.com/compute/docs/troubleshooting/known-issues#known_issues_for_linux_vm_instances
-  if [ "${CLOUD_PROVIDER}" == "GCP" ]; then
-    sudo sed -i 's/repo_gpgcheck=1/repo_gpgcheck=0/g' /etc/yum.repos.d/google-cloud.repo
-  fi
-
-  # The host http://olcentgbl.trafficmanager.net keeps causing problems, so we re-enable the default mirrorlist instead.
-  # Also, this is the recommended way for YUM updates to work anyway. https://wiki.centos.org/PackageManagement/Yum/FastestMirror
-  if [ "${CLOUD_PROVIDER}" == "Azure" ]; then
-    if [ "${OS}" == "centos7" ] ; then
-      sudo sed -i 's/\#mirrorlist/mirrorlist/g' /etc/yum.repos.d/CentOS-Base.repo
-      sudo sed -i 's/baseurl/\#baseurl/g' /etc/yum.repos.d/CentOS-Base.repo
-    fi
-  fi
+  update_yum_repos
 
   if [ "${OS_TYPE}" == "redhat8" ] ; then
     yum install -y redhat-lsb-core
     cp /tmp/repos/jumpgate-gpg-key.pub /etc/pki/rpm-gpg/jumpgate-gpg-key.pub
     rpm --import /etc/pki/rpm-gpg/jumpgate-gpg-key.pub
-    cp /tmp/repos/cdptools-gpg-key.pub /etc/pki/rpm-gpg/cdptools-gpg-key.pub
-    rpm --import /etc/pki/rpm-gpg/cdptools-gpg-key.pub
     cp /tmp/repos/gpg-key-jenkins-build-us-west1.pub /etc/pki/rpm-gpg/gpg-key-jenkins-build-us-west1.pub
     rpm --import /etc/pki/rpm-gpg/gpg-key-jenkins-build-us-west1.pub
     yum update -y python3
@@ -81,6 +67,31 @@ function install_with_yum() {
   create_temp_minion_config
 }
 
+function update_yum_repos() {
+  # Remove RHEL official repos and use the internal mirror in case of RHEL8 and non aws_gov provider
+  if [[ "${OS}" == "redhat8" && "${CLOUD_PROVIDER}" != "AWS_GOV" ]]; then
+    RHEL_VERSION=$(cat /etc/redhat-release | grep -oP "[0-9\.]*")
+    RHEL_VERSION=${RHEL_VERSION/.0/}
+    REPO_FILE=rhel${RHEL_VERSION}_cldr_mirrors.repo
+    rm /etc/yum.repos.d/*.repo -f
+    curl https://mirror.infra.cloudera.com/repos/rhel/server/8/${RHEL_VERSION}/${REPO_FILE} > /etc/yum.repos.d/${REPO_FILE}
+  else
+    # Workaround based on the official documentation: https://cloud.google.com/compute/docs/troubleshooting/known-issues#known_issues_for_linux_vm_instances
+    if [ "${CLOUD_PROVIDER}" == "GCP" ]; then
+      sudo sed -i 's/repo_gpgcheck=1/repo_gpgcheck=0/g' /etc/yum.repos.d/google-cloud.repo
+    fi
+
+    # The host http://olcentgbl.trafficmanager.net keeps causing problems, so we re-enable the default mirrorlist instead.
+    # Also, this is the recommended way for YUM updates to work anyway. https://wiki.centos.org/PackageManagement/Yum/FastestMirror
+    if [ "${CLOUD_PROVIDER}" == "Azure" ]; then
+      if [ "${OS}" == "centos7" ] ; then
+        sudo sed -i 's/\#mirrorlist/mirrorlist/g' /etc/yum.repos.d/CentOS-Base.repo
+        sudo sed -i 's/baseurl/\#baseurl/g' /etc/yum.repos.d/CentOS-Base.repo
+      fi
+    fi
+  fi
+}
+
 function enable_epel_repository() {
   if [ "${OS}" == "redhat8" ] ; then
     dnf install -y https://dl.fedoraproject.org/pub/epel/epel-release-latest-8.noarch.rpm
@@ -96,18 +107,24 @@ function version { echo "$@" | awk -F. '{ printf("%d%03d%03d%03d\n", $1,$2,$3,$4
 function centos7_update_python27() {
   echo "Updating Python 2.7..."
   yum update -y python
+
+  echo PYTHON27=$(yum list installed | grep ^python\\.x86_64 | grep -oi " [^\s]* " | xargs) >> /tmp/python_install.properties
 }
 
 function centos7_install_python36() {
   echo "Installing Python 3.6 with dependencies..."
   yum -y install centos-release-scl
   yum install -y python36 python36-pip python36-devel python36-setuptools
+
+  echo PYTHON36=$(yum list installed | grep ^python3\\.x86_64 | grep -oi " [^\s]* " | xargs) >> /tmp/python_install.properties
 }
 
 function centos7_install_python38() {
   echo "Installing Python 3.8 with dependencies..."
   yum -y install centos-release-scl
   yum -y install openssl-devel libffi-devel bzip2-devel rh-python38-python-pip rh-python38-python-libs rh-python38-python-devel rh-python38-python-cffi rh-python38-python-lxml rh-python38-python-psycopg2
+
+  echo PYTHON38=$(yum list installed | grep ^rh-python38-python\\.x86_64 | grep -oi " [^\s]* " | xargs) >> /tmp/python_install.properties
 
   ### We'll need this in case in the future we want to make Python 3.8 the default python3 (7.2.18+)
   # We need this because the rh-python38-* packages apparently use a non-standard location... duh!
@@ -126,6 +143,7 @@ function redhat7_install_python36() {
   echo "Installing Python 3.6 with dependencies..."
   yum-config-manager --enable rhscl
   yum -y install rh-python36
+
   # pip workaround
   echo "source scl_source enable rh-python36; python3.6 -m pip \$@" > /usr/bin/pip
   chmod +x /usr/bin/pip
@@ -135,6 +153,7 @@ function redhat7_install_python38() {
   echo "Installing Python 3.8 with dependencies..."
   yum-config-manager --enable rhscl
   yum -y install rh-python38
+
   # pip workaround
   echo "source scl_source enable rh-python38; python3.8 -m pip \$@" > /usr/bin/pip
   chmod +x /usr/bin/pip
@@ -142,17 +161,24 @@ function redhat7_install_python38() {
 
 function redhat8_update_python36() {
   echo "Installing python3-devel (the rest should be already installed in case of RHEL8)..."
-  yum update -y python3
+  yum update -y python3 || yum update -y python36
   yum install -y python3-devel
+  
+  echo PYTHON36=$(yum list installed | grep ^python36\\.x86_64 | grep -oi " [^\s]* " | xargs) >> /tmp/python_install.properties
 
   # CM agent needs this to work
   alternatives --set python /usr/bin/python3
+
+  # Required dependency for IdM
+  pip3 install pyasn1-modules
 }
 
 function redhat8_install_python38() {
   echo "Installing Python 3.8 with dependencies..."
   yum install -y python38
   yum install -y python38-devel python38-libs python38-cffi python38-lxml python38-psycopg2
+
+  echo PYTHON38=$(yum list installed | grep ^python38\\.x86_64 | grep -oi " [^\s]* " | xargs) >> /tmp/python_install.properties
 
   # We need to create this "hack", because Saltstack's pip.installed only accepts a pip/pip3
   # wrapper, but apparently can't call "python3 -m pip", so without this, we can't install
@@ -169,6 +195,10 @@ function redhat8_update_python36_to_38() {
   yum remove -y python3
   yum install -y python38
   yum install -y python38-devel python38-libs python38-cffi python38-lxml python38-psycopg2
+
+  echo PYTHON36=$(yum list installed | grep ^python36\\.x86_64 | grep -oi " [^\s]* " | xargs) >> /tmp/python_install.properties
+  echo PYTHON38=$(yum list installed | grep ^python38\\.x86_64 | grep -oi " [^\s]* " | xargs) >> /tmp/python_install.properties
+
   alternatives --set python /usr/bin/python3.8
 }
 
@@ -205,7 +235,7 @@ function install_python_pip() {
       centos7_install_python38
     fi
   # Runtime images 7.2.15 or lower:
-  #  CentOS7: Python 2.7 + Python 3.6
+  #  CentOS7: Python 2.7 + Python 3.6 + Python 3.8
   #  RHEL7  : Python 2.7 + Python 3.6
   #  RHEL8  : n/a
   elif [ $(version $STACK_VERSION) -le $(version "7.2.15") ]; then
@@ -215,6 +245,7 @@ function install_python_pip() {
     elif [ "${OS}" == "centos7" ] ; then
       centos7_update_python27
       centos7_install_python36
+      centos7_install_python38
     fi
 
   # Runtime images with 7.2.16

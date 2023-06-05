@@ -16,6 +16,14 @@ set_version_for_rpm_pkg() {
 	fi
 }
 
+set_version() {
+  package_name=$1
+  package_version=$2
+  cat /tmp/package-versions.json | jq --arg package_name ${package_name} --arg package_version ${package_version} \
+    '. + {($package_name): $package_version}' > /tmp/package-versions.json.tmp \
+    && mv /tmp/package-versions.json.tmp /tmp/package-versions.json
+}
+
 echo '{}' | jq --arg sb "$(salt-bootstrap --version | awk '{print $2}')" '. + {"salt-bootstrap": $sb}' > /tmp/package-versions.json
 cat /tmp/package-versions.json | jq --arg sv "$($SALT_PATH/bin/salt-call --local grains.get saltversion --out json | jq -r .local)" '. + {"salt": $sv}' > /tmp/package-versions.json
 
@@ -105,7 +113,30 @@ elif [[ "$CUSTOM_IMAGE_TYPE" == "hortonworks" ]]; then
 			cat /tmp/package-versions.json | jq --arg java_version_key ${JAVA_VERSION_KEY} --arg java_version ${JAVA_VERSION} '. + {($java_version_key): $java_version}' > /tmp/package-versions.json.tmp && mv /tmp/package-versions.json.tmp /tmp/package-versions.json
 		done
 	fi
+
+	set_version "psql" "$(psql -V | grep -oP "psql \(PostgreSQL\) \K\d+" || true)"
+  alternatives --display pgsql-psql | grep priority | grep -oP '^[^ ]*psql' | while read -r psql_path ; do
+    PSQL_VERSION_KEY="psql$($psql_path -V | grep -oP "psql \(PostgreSQL\) \K\d+" || true)"
+    PSQL_VERSION=$($psql_path -V | grep -oP "psql \(PostgreSQL\) \K.*" || true)
+    set_version "$PSQL_VERSION_KEY" "$PSQL_VERSION"
+  done
 fi
+
+
+source /tmp/python_install.properties
+
+if [[ -n "$PYTHON27" ]]; then
+	cat /tmp/package-versions.json | jq --arg version ${PYTHON27} '. + {"python27": $version}' > /tmp/package-versions.json.tmp && mv /tmp/package-versions.json.tmp /tmp/package-versions.json
+fi
+
+if [[ -n "$PYTHON36" ]]; then
+	cat /tmp/package-versions.json | jq --arg version ${PYTHON36} '. + {"python36": $version}' > /tmp/package-versions.json.tmp && mv /tmp/package-versions.json.tmp /tmp/package-versions.json
+fi
+
+if [[ -n "$PYTHON38" ]]; then
+	cat /tmp/package-versions.json | jq --arg version ${PYTHON38} '. + {"python38": $version}' > /tmp/package-versions.json.tmp && mv /tmp/package-versions.json.tmp /tmp/package-versions.json
+fi
+
 
 chmod 744 /tmp/package-versions.json
 
