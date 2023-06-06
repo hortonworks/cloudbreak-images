@@ -644,4 +644,10 @@ update_pam.d_su:
     - repl: 'auth required pam_wheel.so use_uid'
     - append_if_not_found: True
 
+#### 2.2.18 Ensure rpcbind is not installed or the rpcbind services are masked - rpcbind
+#https://jira.cloudera.com/browse/CB-21585
+mask_rpcbind_service:
+ service.masked:
+   - name: rpcbind
+
 {% endif %}
