@@ -9,11 +9,17 @@
 
 {% if pillar['OS'] == 'centos7' %}
 
-# fat is required for gcp image
-# udf is required for Azure to mount cdrom - See CB-11012
-{% set filesystems = ['cramfs', 'freevxfs', 'jffs2', 'hfs', 'hfsplus', 'squashfs'] %}
+{% set filesystems_to_disable = ['cramfs', 'freevxfs', 'jffs2', 'hfs', 'hfsplus', 'squashfs'] %}
+{% if salt['environ.get']('CLOUD_PROVIDER') != 'Azure' %}
+  # udf is required for Azure to mount cdrom - See CB-11012
+  {% do filesystems_to_disable.append('udf') %}
+{% endif %}
+{% if salt['environ.get']('CLOUD_PROVIDER') != 'GCP' %}
+  # fat is required for gcp image
+  {% do filesystems_to_disable.append('fat') %}
+{% endif %}
 
-{% for fs in filesystems %}
+{% for fs in filesystems_to_disable %}
 
 {{ fs }} create modrobe blacklist:
     cmd.run:
