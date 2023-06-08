@@ -33,3 +33,7 @@ include:
     - template: jinja
     - include_empty: True
     - file_mode: 755
+
+install_cdp_jenkins_build_us_west1_gpg_key:
+  cmd.run:
+    - name: "cp /tmp/repos/gpg-key-jenkins-build-us-west1.pub /etc/pki/rpm-gpg/gpg-key-jenkins-build-us-west1.pub && rpm --import /etc/pki/rpm-gpg/gpg-key-jenkins-build-us-west1.pub"

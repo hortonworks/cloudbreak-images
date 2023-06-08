@@ -38,10 +38,6 @@ function install_with_yum() {
 
   if [ "${OS_TYPE}" == "redhat8" ] ; then
     yum install -y redhat-lsb-core
-    cp /tmp/repos/jumpgate-gpg-key.pub /etc/pki/rpm-gpg/jumpgate-gpg-key.pub
-    rpm --import /etc/pki/rpm-gpg/jumpgate-gpg-key.pub
-    cp /tmp/repos/gpg-key-jenkins-build-us-west1.pub /etc/pki/rpm-gpg/gpg-key-jenkins-build-us-west1.pub
-    rpm --import /etc/pki/rpm-gpg/gpg-key-jenkins-build-us-west1.pub
     yum update -y python3
   else
     yum update -y python

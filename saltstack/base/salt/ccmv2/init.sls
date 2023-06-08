@@ -16,6 +16,10 @@
     - mode: 644
 
 {% if jumpgate_agent_rpm_url %}
+install_cdp_jumpgate_gpg_key:
+  cmd.run:
+    - name: "cp /tmp/repos/jumpgate-gpg-key.pub /etc/pki/rpm-gpg/jumpgate-gpg-key.pub && rpm --import /etc/pki/rpm-gpg/jumpgate-gpg-key.pub"
+
 install_jumpgate_agent:
   pkg.installed:
     - sources:
