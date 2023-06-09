@@ -558,6 +558,13 @@ dev_shm_noexec:
 dev_shm_remount:
   cmd.run:
     - name: 'sudo mount -o remount,noexec,nodev,nosuid /dev/shm'
+#1.1.2 Ensure /tmp is configured
+unmask_tmp_mount:
+  service.unmasked:
+    - name: tmp.mount
+enable_tmp_mount:
+  service.enabled:
+    - name: tmp.mount
 
 #### CIS - Strengthen the System file permissions
 # https://jira.cloudera.com/browse/CB-8934
