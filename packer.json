@@ -110,7 +110,8 @@
     "gov_http_proxy": "{{ env `HTTP_PROXY` }}",
     "gov_no_proxy": "{{ env `NO_PROXY` }}",
     "image_uuid": "{{ env `IMAGE_UUID` }}",
-    "cloud_provider": "{{ env `CLOUD_PROVIDER` }}"
+    "cloud_provider": "{{ env `CLOUD_PROVIDER` }}",
+    "ssh_public_key": "{{ env `SSH_PUBLIC_KEY` }}"
   },
   "builders": [
     {
@@ -385,7 +386,7 @@
         "Owner": "{{ user `image_owner` }}",
         "Customer Delivered": "{{user `tag_customer_delivered`}}"
       }
-    },    
+    },
     {
       "name": "gc-centos7",
       "type": "googlecompute",
@@ -448,6 +449,14 @@
     }
   ],
   "provisioners": [
+    {
+      "type": "shell",
+      "script": "scripts/create-debug-user.sh",
+      "environment_vars": [
+        "SSH_PUBLIC_KEY={{ user `ssh_public_key` }}"
+      ],
+      "execute_command": "chmod +x {{ .Path }}; sudo {{ .Vars }} {{ .Path }}"
+    },
     {
       "type": "shell",
       "scripts": [
@@ -633,6 +642,11 @@
       "source": "/tmp/installed-full-packages.csv",
       "destination": "installed-full-packages.csv",
       "direction" : "download"
+    },
+    {
+      "type": "shell",
+      "script": "scripts/remove-debug-user.sh",
+      "execute_command": "chmod +x {{ .Path }}; sudo {{ .Vars }} {{ .Path }}"
     }
   ],
   "post-processors": [
