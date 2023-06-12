@@ -9,6 +9,7 @@ include:
   - {{ slspath }}.disable_ipv6
   - {{ slspath }}.selinux
 {% endif %}
+  - {{ slspath }}.motd
   - {{ slspath }}.ssh
   - {{ slspath }}.pip
   - {{ slspath }}.cert-tool
