@@ -650,4 +650,11 @@ mask_rpcbind_service:
  service.masked:
    - name: rpcbind
 
+#### 2.2.7 Remove the "bind" package
+ensure_no_bind_packages:
+  pkg.removed:
+    - pkgs:
+      - bind
+      - bind-utils
+
 {% endif %}

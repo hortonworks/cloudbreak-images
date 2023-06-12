@@ -37,7 +37,6 @@ packages_install:
     {% if pillar['OS'] != 'redhat7' and pillar['OS'] != 'redhat8' %}
       - snappy-devel
     {% endif %}
-      - bind-utils
     {% if grains['osmajorrelease'] | int == 7 %}
       - iptables-services
     {% endif %}
