@@ -275,7 +275,11 @@ main() {
 
     echo $(date +%Y-%m-%d:%H:%M:%S) >> /var/cb-init-executed
   fi
-  [ -e /usr/bin/ssh-aliases ] && /usr/bin/ssh-aliases create
+
+  # Fix root ssh access for pre-7.2.8
+  if [ -f /etc/motd-login ]; then
+    sed -i 's#command=".*" ssh-rsa#command="cat /etc/motd-login;sleep 5" ssh-rsa#' /root/.ssh/authorized_keys
+  fi
 }
 
 [[ "$0" == "$BASH_SOURCE" ]] && main "$@"

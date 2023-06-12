@@ -19,6 +19,23 @@ sshd_configure_gssapiauthentication_replace:
     - repl: "GSSAPIAuthentication no"
     - append_if_not_found: True
 
+#Root user login via SSH needs to be disabled from version 7.2.8
+{% set version = salt['environ.get']('STACK_VERSION') %}
+{% if pillar['CUSTOM_IMAGE_TYPE'] == 'freeipa' or (version and version.split('.') | map('int') | list >= [7, 2, 8]) %}
+sshd_harden_PermitRootLogin:
+  file.replace:
+    - name: /etc/ssh/sshd_config
+    - pattern: "^PermitRootLogin.*"
+    - repl: "PermitRootLogin no"
+    - append_if_not_found: True
+{% else %}
+# Place motd-login file that will be used by user-data-helper.sh
+/etc/motd-login:
+  file.managed:
+    - contents: |
+        Please either login with the default "cloudbreak" user or an SSO user, rather than the user "root".
+{%- endif %}
+
 {%- set ssh_banner | indent(8) -%}
 {%- if salt['environ.get']('CLOUD_PROVIDER') == 'AWS_GOV' -%}
 You are accessing a U.S. Government (USG) Information System (IS) that is provided for USG-authorized use only.
