@@ -67,7 +67,9 @@ packer_in_container() {
     
     ## The RPM_URL is overwritten due to FIPS compatibility
     ## It will be deleted after the proper rpm will be available via the base url
-    CDP_LOGGING_AGENT_RPM_URL="https://cloudera-build-us-west-1.vpc.cloudera.com/s3/build/39697508/cdp-infra-tools/1.x/redhat8/yum/cdp_logging_agent-0.3.7.x86_64.rpm"
+    if [[ "$CLOUD_PROVIDER" == "AWS_GOV" ]]; then
+      CDP_LOGGING_AGENT_RPM_URL="https://cloudera-build-us-west-1.vpc.cloudera.com/s3/build/39697508/cdp-infra-tools/1.x/redhat8/yum/cdp_logging_agent-0.3.7.x86_64.rpm"
+    fi
   fi
 
   if ! [[ $JUMPGATE_AGENT_RPM_URL =~ ^http.*rpm$ ]]; then
