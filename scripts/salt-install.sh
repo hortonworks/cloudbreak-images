@@ -36,6 +36,13 @@ function install_salt_with_pip3() {
 function install_with_yum() {
   update_yum_repos
 
+  if [ "${OS_TYPE}" == "redhat8" ] ; then
+    yum install -y redhat-lsb-core
+    yum update -y python3
+  else
+    yum update -y python
+  fi
+
   yum install -y yum-utils yum-plugin-versionlock
   yum clean metadata
   enable_epel_repository

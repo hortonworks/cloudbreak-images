@@ -3,7 +3,11 @@ package=${1:?"usage: <package>"}
 archive_base_url=${2:?"usage: <archive_url>"}
 auth=${3:?"usage: <username:password>"}
 s3_url=$4
-archive_telemetry_base_url="$archive_base_url/cdp-infra-tools/latest/redhat7/yum"
+
+## The RPM_URL is overwritten due to FIPS compatibility
+## It will be deleted after the proper rpm will be available via the base url
+#archive_telemetry_base_url="$archive_base_url/cdp-infra-tools/latest/redhat7/yum"
+archive_telemetry_base_url="https://cloudera-build-us-west-1.vpc.cloudera.com/s3/build/39697508/cdp-infra-tools/1.x/redhat8/yum/"
 artifacts_url="$archive_telemetry_base_url/artifacts.txt"
 rpm_package=$(echo "$package" | tr '_' '-')
 
@@ -19,6 +23,11 @@ is_rpm_package_installed=$(is_component_installed $rpm_package)
 if [[ "$is_rpm_package_installed" == "0" ]]; then
   echo "Component $rpm_package has been already installed."
   exit 0
+fi
+
+result=$?
+if [ "$result" != "0" ]; then
+  echo "BULD-ID result code: $result"
 fi
 
 status_code=$(curl -L -k -s -u $auth -o /tmp/artifacts.txt -w "%{http_code}" "$artifacts_url")
