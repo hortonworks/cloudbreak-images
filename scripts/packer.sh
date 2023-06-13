@@ -69,6 +69,8 @@ packer_in_container() {
     ## It will be deleted after the proper rpm will be available via the base url
     if [[ "$CLOUD_PROVIDER" == "AWS_GOV" ]]; then
       CDP_LOGGING_AGENT_RPM_URL="https://cloudera-build-us-west-1.vpc.cloudera.com/s3/build/39697508/cdp-infra-tools/1.x/redhat8/yum/cdp_logging_agent-0.3.7.x86_64.rpm"
+    else
+      CDP_LOGGING_AGENT_RPM_URL="https://cloudera-service-delivery-cache.s3.amazonaws.com/telemetry/cdp-logging-agent/0.2.16/cdp_logging_agent-0.2.16.x86_64.rpm"
     fi
   fi
 
