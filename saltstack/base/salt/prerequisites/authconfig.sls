@@ -23,6 +23,20 @@ enable_faillock:
       - salt://{{ slspath }}/etc/security/faillock.conf
     - mode: 644
 
+#sssd-invalidate-cache-step1:
+#  service.dead:
+#    - name: sssd
+#    - enable: False
+
+sssd-invalidate-cache-step2:
+  cmd.run:
+    - name: rm -rf /var/lib/sss/db/*
+
+#sssd-invalidate-cache-step3:
+#  service.running:
+#    - name: sssd
+#    - enable: True
+
 select-profile:
   cmd.run:
     - name: authselect select sssd --force
