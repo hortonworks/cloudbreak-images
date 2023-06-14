@@ -80,6 +80,7 @@ cat  > ${image_name}_$metadata_filename_postfix.json <<EOF
 "package_versions": $(if [ -f package-versions.json ]; then cat package-versions.json; else echo "{}"; fi),
 "pre_warm_parcels": $(if [[ -z "$pre_warm_parcels" ]]; then echo null; else echo $pre_warm_parcels; fi),
 "pre_warm_csd": $(if [[ -z "$pre_warm_csd" ]]; then echo null; else echo $pre_warm_csd; fi)
+$(if [ -f tags.json ]; then echo ,\"tags\": $(cat tags.json); fi)
 }
 EOF
 
