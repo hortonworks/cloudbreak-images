@@ -468,6 +468,9 @@ ifdef SOURCE_IMAGE
 endif
 endif
 
+get-azure-storage-accounts:
+	@ AZURE_STORAGE_ACCOUNTS="$(AZURE_STORAGE_ACCOUNTS)" TARGET_LOCATIONS="$(TARGET_LOCATIONS)" ./scripts/get-azure-storage-accounts.sh
+
 copy-azure-images:
 	TRACE=1 AZURE_STORAGE_ACCOUNTS="$(AZURE_STORAGE_ACCOUNTS)" AZURE_IMAGE_NAME="$(AZURE_IMAGE_NAME)" ./scripts/azure-copy.sh
 
