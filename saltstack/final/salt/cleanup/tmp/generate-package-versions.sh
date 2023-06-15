@@ -138,6 +138,6 @@ if [[ -n "$PYTHON38" ]]; then
 fi
 
 
-chmod 744 /tmp/package-versions.json
+chmod 644 /tmp/package-versions.json
 
 exit 0
