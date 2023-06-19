@@ -635,11 +635,14 @@ wheel_group_add:
     - pattern: '^wheel:x:10:.*'
     - repl: 'wheel:x:10:centos,cloudbreak,saltuser,root'
     - append_if_not_found: True
+sugroup_group:
+  group.present:
+    - name: sugroup
 update_pam.d_su:
   file.replace:
     - name: /etc/pam.d/su
     - pattern: '^auth\s*required\s*pam_wheel\.so.*'
-    - repl: 'auth required pam_wheel.so use_uid'
+    - repl: 'auth required pam_wheel.so use_uid group=sugroup'
     - append_if_not_found: True
 
 #### 2.2.18 Ensure rpcbind is not installed or the rpcbind services are masked - rpcbind
