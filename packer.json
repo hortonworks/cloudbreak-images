@@ -635,6 +635,12 @@
     },
     {
       "type": "file",
+      "source": "/tmp/tags.json",
+      "destination": "tags.json",
+      "direction" : "download"
+    },
+    {
+      "type": "file",
       "source": "/tmp/installed-delta-packages.csv",
       "destination": "installed-delta-packages.csv",
       "direction" : "download"
