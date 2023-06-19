@@ -404,22 +404,45 @@ Ensure TIPC is disabled:
     - pattern: "^install tipc /bin/true"
     - repl: install tipc /bin/true
     - append_if_not_found: True
-#3.6.3 Ensure loopback traffic is configured
-Loopback_Interface_input1:
+
+#3.5.3.2 Configure iptables
+configure_iptables:
   cmd.run:
-    - name: sudo iptables -A INPUT -i lo -j ACCEPT
-Loopback_Interface_output:
+    - name: |
+        # Configure loopback traffic
+        iptables -A INPUT -i lo -j ACCEPT
+        iptables -A OUTPUT -o lo -j ACCEPT
+        iptables -A INPUT -s 127.0.0.0/8 -j DROP
+        # Accept all other traffic
+        iptables -A INPUT -j ACCEPT
+        iptables -A OUTPUT -j ACCEPT
+        iptables -A FORWARD -j ACCEPT
+        # Set default policies to DROP
+        iptables -P INPUT DROP
+        iptables -P OUTPUT DROP
+        iptables -P FORWARD DROP
+        # Save and enable iptables
+        service iptables save
+        systemctl enable iptables
+#3.5.3.3 Configure ip6tables
+configure_ip6tables:
   cmd.run:
-    - name: sudo iptables -A OUTPUT -o lo -j ACCEPT
-Loopback_Interface_input2:
-  cmd.run:
-    - name: sudo iptables -A INPUT -s 127.0.0.0/8 -j DROP
-Loopback_save_config:
-  cmd.run:
-    - name: sudo service iptables save
-Iptables_enable_onboot:
-  cmd.run:
-    - name: sudo systemctl enable iptables
+    - name: |
+        # Configure loopback traffic
+        ip6tables -A INPUT -i lo -j ACCEPT
+        ip6tables -A OUTPUT -o lo -j ACCEPT
+        ip6tables -A INPUT -s ::1 -j DROP
+        # Accept all other traffic
+        ip6tables -A INPUT -j ACCEPT
+        ip6tables -A OUTPUT -j ACCEPT
+        ip6tables -A FORWARD -j ACCEPT
+        # Set default policies to DROP
+        ip6tables -P INPUT DROP
+        ip6tables -P OUTPUT DROP
+        ip6tables -P FORWARD DROP
+        # Save and enable ip6tables
+        service ip6tables save
+        systemctl enable ip6tables
 
 #### CIS: Enable filesystem Integrity Checking
 # https://jira.cloudera.com/browse/CB-8919
