@@ -655,6 +655,28 @@
       "type": "shell",
       "script": "scripts/remove-debug-user.sh",
       "execute_command": "chmod +x {{ .Path }}; sudo {{ .Vars }} {{ .Path }}"
+    },
+    {
+      "type": "shell",
+      "script": "scripts/cis_control.sh",
+      "environment_vars": [
+        "OS={{user `os`}}",
+        "IMAGE_BASE_NAME={{ user `base_name` }}",
+        "CLOUD_PROVIDER={{ user `cloud_provider` }}"
+      ],
+      "execute_command": "chmod +x {{ .Path }}; sudo {{ .Vars }} {{ .Path }}"
+    },
+    {
+      "type": "file",
+      "source": "/tmp/cis_log.txt",
+      "destination": "cis_log.txt",
+      "direction" : "download",
+      "only": [
+        "aws-redhat8",
+        "aws-gov-redhat8",
+        "arm-redhat8",
+        "gc-redhat8"
+      ]
     }
   ],
   "post-processors": [
