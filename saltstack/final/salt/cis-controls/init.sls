@@ -326,13 +326,16 @@ net.ipv6.conf.all.accept_redirects:
 net.ipv6.conf.default.accept_redirects:
   sysctl.present:
     - value: 0
-net.ipv6.route.flush:
-  sysctl.present:
-    - value: 1
 #3.2.1 Ensure IP forwarding is disabled
 net.ipv4.ip_forward:
   sysctl.present:
     - value: 0
+net.ipv6.conf.all.forwarding:
+  sysctl.present:
+    - value: 0
+net.ipv6.route.flush:
+  sysctl.present:
+    - value: 1
 #3.3.1 Ensure source routed packets are not accepted
 net.ipv4.conf.all.accept_source_route:
   sysctl.present:
