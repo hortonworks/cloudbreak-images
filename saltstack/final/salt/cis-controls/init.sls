@@ -340,6 +340,12 @@ net.ipv4.conf.all.accept_source_route:
 net.ipv4.conf.default.accept_source_route:
   sysctl.present:
     - value: 0
+net.ipv6.conf.all.accept_source_route:
+  sysctl.present:
+    - value: 0
+net.ipv6.conf.default.accept_source_route:
+  sysctl.present:
+    - value: 0
 #3.3.5 Ensure broadcast ICMP requests are ignored
 net.ipv4.icmp_echo_ignore_broadcasts:
   sysctl.present:
