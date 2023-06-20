@@ -85,7 +85,12 @@ packer_in_container() {
       export METERING_AGENT_RPM_URL=$DEFAULT_METERING_AGENT_RPM_URL
   fi
   if ! [[ $FREEIPA_PLUGIN_RPM_URL =~ ^http.*rpm$ ]]; then
+    # The RHEL8 version is not backward-compatible, so we have to override the default CentOS 7 version.
+    if [[ "$OS" == "redhat8" ]]; then
+      export FREEIPA_PLUGIN_RPM_URL="https://cloudera-build-us-west-1.vpc.cloudera.com/s3/build/42085718/thunderhead/1.x/redhat8/yum/cdp-hashed-pwd-1.0-20230613035802git1c2c21d.el8.x86_64.rpm"
+    else
       export FREEIPA_PLUGIN_RPM_URL=$DEFAULT_FREEIPA_PLUGIN_RPM_URL
+    fi
   fi
   if ! [[ $FREEIPA_HEALTH_AGENT_RPM_URL =~ ^http.*rpm$ ]]; then
       export FREEIPA_HEALTH_AGENT_RPM_URL=$DEFAULT_FREEIPA_HEALTH_AGENT_RPM_URL
