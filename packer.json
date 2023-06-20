@@ -673,8 +673,6 @@
       "direction" : "download",
       "only": [
         "aws-redhat8",
-        "aws-gov-redhat8",
-        "arm-redhat8",
         "gc-redhat8"
       ]
     }
