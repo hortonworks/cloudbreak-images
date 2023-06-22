@@ -7,7 +7,7 @@
 #### CIS: Disable unused filesystems
 #https://jira.cloudera.com/browse/CB-8897
 
-{% if pillar['OS'] == 'centos7' %}
+{% if pillar['OS'] == 'centos7' and pillar['subtype'] != 'Docker' %}
 
 {% set filesystems_to_disable = ['cramfs', 'freevxfs', 'jffs2', 'hfs', 'hfsplus', 'squashfs'] %}
 {% if salt['environ.get']('CLOUD_PROVIDER') != 'Azure' %}

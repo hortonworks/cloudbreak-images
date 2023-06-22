@@ -251,7 +251,7 @@ systemd-link:
     - unless: cat /usr/lib/systemd/system/postgresql-10.service | grep postgresql.service
 
 
-{% if salt['file.directory_exists']('/yarn-private') %}  # systemctl reenable does not work on ycloud so we create the symlink manually
+{% if pillar['subtype'] == 'Docker' %}  # systemctl reenable does not work on ycloud so we create the symlink manually
 create-postgres-service-link:
   cmd.run:
     - name: ln -sf /usr/lib/systemd/system/postgresql-10.service /usr/lib/systemd/system/postgresql.service && systemctl disable postgresql-10 && systemctl enable postgresql
@@ -302,9 +302,10 @@ log-postgres-service-status:
 configure-listen-address:
   cmd.run:
     - name: su postgres -c '/opt/salt/scripts/conf_pgsql_listen_address.sh' && echo $(date +%Y-%m-%d:%H:%M:%S) >> /var/log/pgsql_listen_address_configured
+    - env:
+      - SUBTYPE: {{ pillar['subtype'] }}
     - require:
       - file: /opt/salt/scripts/conf_pgsql_listen_address.sh
-
 {% if pillar['subtype'] != 'Docker' %}
       - service: start-postgresql
 {% endif %}

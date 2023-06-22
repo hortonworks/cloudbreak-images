@@ -1,4 +1,4 @@
-FROM docker-sandbox.infra.cloudera.com/ycloud-base/base-centos7.9:0.1.0.0-120
+FROM docker-sandbox.infra.cloudera.com/ycloud-base/base-centos7.9:0.1.0.0-135
 
 ARG SALT_VERSION
 ARG SALT_PATH
