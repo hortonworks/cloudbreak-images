@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-if grep -q :/docker/ /proc/1/cgroup; then
+if [ "$SUBTYPE" == "Docker" ]; then
     # inside docker container
     CONFIG_FILE=$(find /etc/postgresql /var/lib/pgsql -type f -name postgresql.conf 2>/dev/null | head -1)
 else
