@@ -160,7 +160,7 @@
       "type": "amazon-ebs",
       "region": "us-west-1",
       "ssh_pty": true,
-      "source_ami": "ami-0186e3fec9b0283ee",
+      "source_ami": "ami-0b798df66a27251ec",
       "instance_type": "{{ user `aws_instance_type` }}",
       "ssh_username": "ec2-user",
       "ena_support": true,
@@ -202,7 +202,7 @@
       "type": "amazon-ebs",
       "region": "us-gov-west-1",
       "ssh_pty": true,
-      "source_ami": "ami-0ac4e06a69870e5be",
+      "source_ami": "ami-0309ccdec409f4129",
       "instance_type": "{{ user `aws_instance_type` }}",
       "ssh_username": "ec2-user",
       "ena_support": true,
@@ -386,6 +386,11 @@
         "cb-creation-timestamp": "{{timestamp}}",
         "Owner": "{{ user `image_owner` }}",
         "Customer Delivered": "{{user `tag_customer_delivered`}}"
+      },
+      "plan_info": {
+        "plan_name": "rhel-lvm88",
+        "plan_product": "rhel-byos",
+        "plan_publisher": "redhat"
       }
     },
     {
