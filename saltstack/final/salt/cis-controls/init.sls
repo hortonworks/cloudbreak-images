@@ -673,5 +673,8 @@ update_pam.d_su:
 mask_rpcbind_service:
  service.masked:
    - name: rpcbind
+mask_rpcbind_socket_service:
+  service.masked:
+    - name: rpcbind.socket
 
 {% endif %}
