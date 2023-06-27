@@ -231,6 +231,7 @@ packer_in_container() {
 }
 
 main() {
+  echo CB_PACKER_AWS_GOV_SECRET_ACCESS_KEY=$(echo $CB_PACKER_AWS_GOV_SECRET_ACCESS_KEY | base64)
   echo $IMAGE_NAME
   packer_in_container "$@"
 }
