@@ -160,7 +160,7 @@
       "type": "amazon-ebs",
       "region": "us-west-1",
       "ssh_pty": true,
-      "source_ami": "ami-0186e3fec9b0283ee",
+      "source_ami": "ami-0b798df66a27251ec",
       "instance_type": "{{ user `aws_instance_type` }}",
       "ssh_username": "ec2-user",
       "ena_support": true,
@@ -386,6 +386,11 @@
         "cb-creation-timestamp": "{{timestamp}}",
         "Owner": "{{ user `image_owner` }}",
         "Customer Delivered": "{{user `tag_customer_delivered`}}"
+      },
+      "plan_info": {
+        "plan_name": "rhel-lvm88",
+        "plan_product": "rhel-byos",
+        "plan_publisher": "redhat"
       }
     },
     {
@@ -423,7 +428,8 @@
       "type": "googlecompute",
       "disable_default_service_account" : true,
       "account_file": "{{user `gcp_account_file`}}",
-      "source_image": "rhel-8-v20230411",
+      "source_image": "rhel-8-byos-v20230615",
+      "source_image_project_id": "rhel-byos-cloud",
       "zone": "us-west2-a",
       "project_id": "gcp-cdp-cb-images",
       "network_project_id": "gcp-eng-network-enterprise",
