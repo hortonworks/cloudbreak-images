@@ -89,9 +89,7 @@ function update_yum_repos() {
 }
 
 function enable_epel_repository() {
-  if [ "${OS}" == "redhat8" ] ; then
-    dnf install -y https://dl.fedoraproject.org/pub/epel/epel-release-latest-8.noarch.rpm
-  elif [ "${OS}" == "redhat7" ] ; then
+  if [ "${OS}" == "redhat7" ] ; then
     curl https://dl.fedoraproject.org/pub/epel/epel-release-latest-7.noarch.rpm -o epel-release-latest-7.noarch.rpm && yum install --nogpgcheck -y ./epel-release-latest-7.noarch.rpm
   elif [ "${OS}" == "centos7" ] ; then
     yum install -y epel-release
