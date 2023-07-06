@@ -681,6 +681,15 @@
         "aws-redhat8",
         "gc-redhat8"
       ]
+    },
+    {
+      "type": "shell",
+      "script": "scripts/repo_cleanup.sh",
+      "environment_vars": [
+        "OS={{user `os`}}",
+        "CLOUD_PROVIDER={{ user `cloud_provider` }}"
+      ],
+      "execute_command": "chmod +x {{ .Path }}; sudo {{ .Vars }} {{ .Path }}"
     }
   ],
   "post-processors": [
