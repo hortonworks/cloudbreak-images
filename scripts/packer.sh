@@ -82,10 +82,9 @@ packer_in_container() {
       export JUMPGATE_AGENT_RPM_URL=$DEFAULT_JUMPGATE_AGENT_RPM_URL
   fi
   if ! [[ $METERING_AGENT_RPM_URL =~ ^http.*rpm$ ]]; then
-    ## The RPM_URL is overwritten due to FIPS compatibility
-    ## It will be deleted after the proper rpm will be available via the base url
-    if [[ "$CLOUD_PROVIDER" == "AWS_GOV" ]]; then
-      METERING_AGENT_RPM_URL="https://cloudera-build-us-west-1.vpc.cloudera.com/s3/build/42626487/thunderhead/1.x/redhat8/yum/thunderhead-metering-heartbeat-application-2.0.0-b10713.x86_64.rpm"
+    # The RHEL8 version is not backward-compatible, so we have to override the default CentOS 7 version.
+    if [[ "$OS" == "redhat8" ]]; then
+      export METERING_AGENT_RPM_URL="https://cloudera-build-us-west-1.vpc.cloudera.com/s3/build/42626487/thunderhead/1.x/redhat8/yum/thunderhead-metering-heartbeat-application-2.0.0-b10713.x86_64.rpm"
     else
       export METERING_AGENT_RPM_URL=$DEFAULT_METERING_AGENT_RPM_URL
     fi
