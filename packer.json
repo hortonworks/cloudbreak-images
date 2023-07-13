@@ -664,6 +664,15 @@
     },
     {
       "type": "shell",
+      "script": "scripts/repo_cleanup.sh",
+      "environment_vars": [
+        "OS={{user `os`}}",
+        "CLOUD_PROVIDER={{ user `cloud_provider` }}"
+      ],
+      "execute_command": "chmod +x {{ .Path }}; sudo {{ .Vars }} {{ .Path }}"
+    },
+    {
+      "type": "shell",
       "script": "scripts/cis_control.sh",
       "environment_vars": [
         "OS={{user `os`}}",
@@ -681,15 +690,6 @@
         "aws-redhat8",
         "gc-redhat8"
       ]
-    },
-    {
-      "type": "shell",
-      "script": "scripts/repo_cleanup.sh",
-      "environment_vars": [
-        "OS={{user `os`}}",
-        "CLOUD_PROVIDER={{ user `cloud_provider` }}"
-      ],
-      "execute_command": "chmod +x {{ .Path }}; sudo {{ .Vars }} {{ .Path }}"
     }
   ],
   "post-processors": [
