@@ -26,6 +26,5 @@ if [[ "${OS}" == "redhat8" && "$CLOUD_PROVIDER" != "Azure"  && "$CLOUD_PROVIDER"
 
     #Cleanup
     rm -rf /tmp/ansible-compliance-playbooks
-    yum remove -y git
     python3 -m pip uninstall -y ansible
 fi
