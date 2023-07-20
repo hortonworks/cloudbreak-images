@@ -5,11 +5,13 @@ ATLAS_PROJECT ?= "cloudbreak"
 ENABLE_POSTPROCESSORS ?= ""
 CUSTOM_IMAGE_TYPE ?= "hortonworks"
 IMAGE_OWNER ?= "cloudbreak-dev"
-#for oracle JDK use oracle-java
+# for oracle JDK use oracle-java
 OPTIONAL_STATES ?= ""
 # only for oracle JDK
 ORACLE_JDK8_URL_RPM ?= ""
 SLES_REGISTRATION_CODE ?= "73D5EBB68CB348"
+# for splitting image copy (test and prod phases)
+IMAGE_COPY_PHASE ?= ""
 
 # Azure VM image specifications
 ifeq ($(CLOUD_PROVIDER),Azure)
@@ -162,24 +164,29 @@ endif
 GCP_STORAGE_BUNDLE ?= cloudera-$(BASE_NAME)-images
 GCP_STORAGE_BUNDLE_LOG ?= cloudera-$(BASE_NAME)-images
 
-define GCP_AMI_REGIONS
-asia-east1,asia-east2,asia-south2,asia-southeast1,australia-southeast1,australia-southeast2,asia-northeast3,europe-west1,europe-west2,europe-west3,europe-west4,us-west1,us-west2,us-west3,europe-west6,us-west4,southamerica-east1,us-central1,europe-north1,europe-central2,northamerica-northeast1,northamerica-northeast2,us-east4,asia-south1,us-east1,asia-northeast2,asia-northeast1,asia-southeast2,southamerica-west1
+# AWS AMI region definitions for the different states
+define AWS_AMI_REGIONS_TEST_PHASE
+us-west-1,us-west-2,eu-central-1
+endef
+
+define AWS_AMI_REGIONS_ALL
+ap-northeast-1,ap-northeast-2,ap-south-1,ap-southeast-1,ap-southeast-2,ap-southeast-3,ca-central-1,eu-central-1,eu-west-1,eu-west-2,eu-west-3,sa-east-1,us-east-1,us-east-2,us-west-1,us-west-2,eu-north-1,eu-south-1,af-south-1,me-south-1,ap-east-1,eu-south-2,eu-central-2,me-central-1
 endef
 
 ifndef AWS_AMI_REGIONS
-define AWS_AMI_REGIONS
-ap-northeast-1,ap-northeast-2,ap-south-1,ap-southeast-1,ap-southeast-2,ap-southeast-3,ca-central-1,eu-central-1,eu-west-1,eu-west-2,eu-west-3,sa-east-1,us-east-1,us-east-2,us-west-1,us-west-2,eu-north-1,eu-south-1,af-south-1,me-south-1,ap-east-1,eu-south-2,eu-central-2,me-central-1
-endef
+AWS_AMI_REGIONS=$(AWS_AMI_REGIONS_ALL)
+ifeq ($(IMAGE_COPY_PHASE),test)
+	AWS_AMI_REGIONS=$(AWS_AMI_REGIONS_TEST_PHASE)
+endif
 endif
 
-ifndef AWS_GOV_AMI_REGIONS
-define AWS_GOV_AMI_REGIONS
-us-gov-west-1,us-gov-east-1
+# Azure storage account definitions for the different states
+define AZURE_STORAGE_ACCOUNTS_TEST_PHASE
+West US:cldrwestus,\
+West US 2:cldrwestus2
 endef
-endif
 
-ifndef AZURE_STORAGE_ACCOUNTS
-define AZURE_STORAGE_ACCOUNTS
+define AZURE_STORAGE_ACCOUNTS_ALL
 East Asia:cldreastasia,\
 East US:cldreastus,\
 Central US:cldrcentralus,\
@@ -213,6 +220,23 @@ France Central:cldrfrancecentral,\
 Switzerland North:cldrswitzerlandnorth,\
 Germany West Central:cldrgermanywestcentral,\
 Norway East:cldrnorwayeast
+endef
+
+ifndef AZURE_STORAGE_ACCOUNTS
+AZURE_STORAGE_ACCOUNTS=$(AZURE_STORAGE_ACCOUNTS_ALL)
+ifeq ($(IMAGE_COPY_PHASE),test)
+	AZURE_STORAGE_ACCOUNTS=$(AZURE_STORAGE_ACCOUNTS_TEST_PHASE)
+endif
+endif
+
+# GCP region definition
+define GCP_AMI_REGIONS
+asia-east1,asia-east2,asia-south2,asia-southeast1,australia-southeast1,australia-southeast2,asia-northeast3,europe-west1,europe-west2,europe-west3,europe-west4,us-west1,us-west2,us-west3,europe-west6,us-west4,southamerica-east1,us-central1,europe-north1,europe-central2,northamerica-northeast1,northamerica-northeast2,us-east4,asia-south1,us-east1,asia-northeast2,asia-northeast1,asia-southeast2,southamerica-west1
+endef
+
+ifndef AWS_GOV_AMI_REGIONS
+define AWS_GOV_AMI_REGIONS
+us-gov-west-1,us-gov-east-1
 endef
 endif
 
@@ -582,3 +606,10 @@ generate-image-properties:
 	STACK_TYPE=$(STACK_TYPE) \
 	STACK_VERSION=$(STACK_VERSION) \
 	./scripts/generate-image-properties.sh
+
+check-image-regions:
+	AWS_AMI_REGIONS=$(AWS_AMI_REGIONS_ALL) \
+	AZURE_STORAGE_ACCOUNTS=$(AZURE_STORAGE_ACCOUNTS_ALL) \
+	CLOUD_PROVIDER=$(CLOUD_PROVIDER) \
+	IMAGE_REGIONS=$(IMAGE_REGIONS) \
+	./scripts/check-image-regions.sh
