@@ -1,3 +1,5 @@
+{% set cloud_provider = salt['environ.get']('CLOUD_PROVIDER') %}
+
 set_java_home_user:
   file.managed:
     - name: /etc/profile.d/java.sh
@@ -69,3 +71,12 @@ add_openjdk_gplv2:
 run_java_sh:
   cmd.run:
     - name: . /etc/profile.d/java.sh
+
+{% if cloud_provider == "AWS_GOV" %}
+fips_disable_default_keystore:
+  file.replace:
+    - name: {{ pillar['JAVA_HOME'] }}/jre/lib/security/java.security
+    - pattern: "^fips.keystore.type=PKCS11"
+    - repl: "# fips.keystore.type=PKCS11"
+    - append_if_not_found: False
+{% endif %}
