@@ -326,18 +326,27 @@ net.ipv6.conf.all.accept_redirects:
 net.ipv6.conf.default.accept_redirects:
   sysctl.present:
     - value: 0
-net.ipv6.route.flush:
-  sysctl.present:
-    - value: 1
 #3.2.1 Ensure IP forwarding is disabled
 net.ipv4.ip_forward:
   sysctl.present:
     - value: 0
+net.ipv6.conf.all.forwarding:
+  sysctl.present:
+    - value: 0
+net.ipv6.route.flush:
+  sysctl.present:
+    - value: 1
 #3.3.1 Ensure source routed packets are not accepted
 net.ipv4.conf.all.accept_source_route:
   sysctl.present:
     - value: 0
 net.ipv4.conf.default.accept_source_route:
+  sysctl.present:
+    - value: 0
+net.ipv6.conf.all.accept_source_route:
+  sysctl.present:
+    - value: 0
+net.ipv6.conf.default.accept_source_route:
   sysctl.present:
     - value: 0
 #3.3.5 Ensure broadcast ICMP requests are ignored
@@ -395,22 +404,45 @@ Ensure TIPC is disabled:
     - pattern: "^install tipc /bin/true"
     - repl: install tipc /bin/true
     - append_if_not_found: True
-#3.6.3 Ensure loopback traffic is configured
-Loopback_Interface_input1:
+
+#3.5.3.2 Configure iptables
+configure_iptables:
   cmd.run:
-    - name: sudo iptables -A INPUT -i lo -j ACCEPT
-Loopback_Interface_output:
+    - name: |
+        # Configure loopback traffic
+        iptables -A INPUT -i lo -j ACCEPT
+        iptables -A OUTPUT -o lo -j ACCEPT
+        iptables -A INPUT -s 127.0.0.0/8 -j DROP
+        # Accept all other traffic
+        iptables -A INPUT -j ACCEPT
+        iptables -A OUTPUT -j ACCEPT
+        iptables -A FORWARD -j ACCEPT
+        # Set default policies to DROP
+        iptables -P INPUT DROP
+        iptables -P OUTPUT DROP
+        iptables -P FORWARD DROP
+        # Save and enable iptables
+        service iptables save
+        systemctl enable iptables
+#3.5.3.3 Configure ip6tables
+configure_ip6tables:
   cmd.run:
-    - name: sudo iptables -A OUTPUT -o lo -j ACCEPT
-Loopback_Interface_input2:
-  cmd.run:
-    - name: sudo iptables -A INPUT -s 127.0.0.0/8 -j DROP
-Loopback_save_config:
-  cmd.run:
-    - name: sudo service iptables save
-Iptables_enable_onboot:
-  cmd.run:
-    - name: sudo systemctl enable iptables
+    - name: |
+        # Configure loopback traffic
+        ip6tables -A INPUT -i lo -j ACCEPT
+        ip6tables -A OUTPUT -o lo -j ACCEPT
+        ip6tables -A INPUT -s ::1 -j DROP
+        # Accept all other traffic
+        ip6tables -A INPUT -j ACCEPT
+        ip6tables -A OUTPUT -j ACCEPT
+        ip6tables -A FORWARD -j ACCEPT
+        # Set default policies to DROP
+        ip6tables -P INPUT DROP
+        ip6tables -P OUTPUT DROP
+        ip6tables -P FORWARD DROP
+        # Save and enable ip6tables
+        service ip6tables save
+        systemctl enable ip6tables
 
 #### CIS: Enable filesystem Integrity Checking
 # https://jira.cloudera.com/browse/CB-8919
@@ -626,11 +658,14 @@ wheel_group_add:
     - pattern: '^wheel:x:10:.*'
     - repl: 'wheel:x:10:centos,cloudbreak,saltuser,root'
     - append_if_not_found: True
+sugroup_group:
+  group.present:
+    - name: sugroup
 update_pam.d_su:
   file.replace:
     - name: /etc/pam.d/su
     - pattern: '^auth\s*required\s*pam_wheel\.so.*'
-    - repl: 'auth required pam_wheel.so use_uid'
+    - repl: 'auth required pam_wheel.so use_uid group=sugroup'
     - append_if_not_found: True
 
 #### 2.2.18 Ensure rpcbind is not installed or the rpcbind services are masked - rpcbind
@@ -638,5 +673,8 @@ update_pam.d_su:
 mask_rpcbind_service:
  service.masked:
    - name: rpcbind
+mask_rpcbind_socket_service:
+  service.masked:
+    - name: rpcbind.socket
 
 {% endif %}
