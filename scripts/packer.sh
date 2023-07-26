@@ -54,10 +54,12 @@ packer_in_container() {
     fi
     CDP_TELEMETRY_RPM_URL="${CDP_TELEMETRY_BASE_URL}cdp_telemetry-${CDP_TELEMETRY_VERSION}.x86_64.rpm"
     
-    ## The RPM_URL is overwritten due to FIPS compatibility
+    ## The RPM_URL is overwritten due to FIPS/redhat8 compatibility
     ## It will be deleted after the proper rpm will be available via the base url
     if [[ "$CLOUD_PROVIDER" == "AWS_GOV" ]]; then
       CDP_TELEMETRY_RPM_URL="https://cloudera-build-us-west-1.vpc.cloudera.com/s3/build/39697508/cdp-infra-tools/1.x/redhat8/yum/cdp_telemetry-0.4.36.x86_64.rpm"
+    elif [[ "$OS" == "redhat8" ]]; then
+      CDP_TELEMETRY_RPM_URL="https://cloudera-build-us-west-1.vpc.cloudera.com/s3/build/42376166/cdp-infra-tools/1.x/redhat8/yum/cdp_telemetry-0.4.36.x86_64.rpm"
     else
       CDP_TELEMETRY_RPM_URL="https://archive.cloudera.com/cdp-infra-tools/latest/redhat7/yum/cdp_telemetry-0.4.31.x86_64.rpm"
     fi
@@ -69,10 +71,12 @@ packer_in_container() {
     fi
     CDP_LOGGING_AGENT_RPM_URL="${CDP_LOGGING_AGENT_BASE_URL}${CDP_LOGGING_AGENT_VERSION}/cdp_logging_agent-${CDP_LOGGING_AGENT_VERSION}.x86_64.rpm"
     
-    ## The RPM_URL is overwritten due to FIPS compatibility
+    ## The RPM_URL is overwritten due to FIPS/redhat8 compatibility
     ## It will be deleted after the proper rpm will be available via the base url
     if [[ "$CLOUD_PROVIDER" == "AWS_GOV" ]]; then
       CDP_LOGGING_AGENT_RPM_URL="https://cloudera-build-us-west-1.vpc.cloudera.com/s3/build/42375326/cdp-infra-tools/1.x/redhat8/yum/cdp_logging_agent-0.3.7.x86_64.rpm"
+    elif [[ "$OS" == "redhat8" ]]; then
+      CDP_LOGGING_AGENT_RPM_URL="https://cloudera-build-us-west-1.vpc.cloudera.com/s3/build/42376166/cdp-infra-tools/1.x/redhat8/yum/cdp_logging_agent-0.3.7.x86_64.rpm"
     else
       CDP_LOGGING_AGENT_RPM_URL="https://archive.cloudera.com/cdp-infra-tools/latest/redhat7/yum/cdp_logging_agent-0.3.6.x86_64.rpm"
     fi
