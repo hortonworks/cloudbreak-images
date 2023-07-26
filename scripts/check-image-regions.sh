@@ -20,6 +20,23 @@ if [ -z "${IMAGE_REGIONS}" ] ; then
   exit 1
 fi
 
+function trim_region() {
+  local provider="$1"
+  local region="$2"
+  case "$provider" in
+    AWS)
+      retVal="$(echo "$region" | sed -e 's/^[[:space:]]*//')"
+      ;;
+    Azure)
+      retVal="$(echo "$region" | cut -d":" -f 1 | sed -e 's/^[[:space:]]*//')"
+      ;;
+    *)
+      echo Unexpected provider
+      exit 1
+  esac
+  echo $retVal
+}
+
 case "$CLOUD_PROVIDER" in
   AWS)
     ALL_REGIONS=$AWS_AMI_REGIONS
@@ -32,16 +49,25 @@ case "$CLOUD_PROVIDER" in
     exit 1
 esac
 
-ALL_REGIONS_ARRAY=(${ALL_REGIONS//,/ })
-IFS=$'\n' EXPECTED_REGIONS=($(sort <<<"${ALL_REGIONS_ARRAY[*]}")); unset IFS
-IMAGE_REGIONS_ARRAY=(${IMAGE_REGIONS//,/ })
-IFS=$'\n' CURRENT_REGIONS=($(sort <<<"${IMAGE_REGIONS_ARRAY[*]}")); unset IFS
+declare -a TRIMMED_ALL_REGIONS_ARRAY=()
+IFS=',' read -ra ALL_REGIONS_ARRAY <<< "$ALL_REGIONS"
+for region in "${ALL_REGIONS_ARRAY[@]}"; do
+  TRIMMED_ALL_REGIONS_ARRAY+=("$(trim_region "$CLOUD_PROVIDER" "$region")")
+done
+IFS=$'\n' EXPECTED_REGIONS=($(sort <<<"${TRIMMED_ALL_REGIONS_ARRAY[*]}")); unset IFS
+
+declare -a TRIMMED_IMAGE_REGIONS_ARRAY=()
+IFS=',' read -ra IMAGE_REGIONS_ARRAY <<< "$IMAGE_REGIONS"
+for region in "${IMAGE_REGIONS_ARRAY[@]}"; do
+  TRIMMED_IMAGE_REGIONS_ARRAY+=("$(trim_region "$CLOUD_PROVIDER" "$region")")
+done
+IFS=$'\n' CURRENT_REGIONS=($(sort <<<"${TRIMMED_IMAGE_REGIONS_ARRAY[*]}")); unset IFS
 
 REGIONS_1=${EXPECTED_REGIONS[@]};
 REGIONS_2=${CURRENT_REGIONS[@]};
 if [ "$REGIONS_1" != "$REGIONS_2" ]; then
   echo "Image does not contain all required regions"
-  DIFF=$(echo ${EXPECTED_REGIONS[@]} ${CURRENT_REGIONS[@]} | tr ' ' '\n' | sort | uniq -u)
+  DIFF=$(printf '%s\n' "${EXPECTED_REGIONS[@]}" "${CURRENT_REGIONS[@]}" | sort | uniq -u)
   echo "Missing: $DIFF"
   exit 1
 else

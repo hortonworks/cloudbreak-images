@@ -608,8 +608,8 @@ generate-image-properties:
 	./scripts/generate-image-properties.sh
 
 check-image-regions:
-	AWS_AMI_REGIONS=$(AWS_AMI_REGIONS_ALL) \
-	AZURE_STORAGE_ACCOUNTS=$(AZURE_STORAGE_ACCOUNTS_ALL) \
+	AWS_AMI_REGIONS="$(AWS_AMI_REGIONS_ALL)" \
+	AZURE_STORAGE_ACCOUNTS="$(AZURE_STORAGE_ACCOUNTS_ALL)" \
 	CLOUD_PROVIDER=$(CLOUD_PROVIDER) \
-	IMAGE_REGIONS=$(IMAGE_REGIONS) \
+	IMAGE_REGIONS="$(IMAGE_REGIONS)" \
 	./scripts/check-image-regions.sh
