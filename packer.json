@@ -458,11 +458,19 @@
   "provisioners": [
     {
       "type": "shell",
+      "inline": [
+        "sudo mkdir -p /opt/provision-scripts",
+        "sudo chmod -R a+w /opt/provision-scripts"
+      ]
+    },
+    {
+      "type": "shell",
       "script": "scripts/create-debug-user.sh",
       "environment_vars": [
         "SSH_PUBLIC_KEY={{ user `ssh_public_key` }}"
       ],
-      "execute_command": "chmod +x {{ .Path }}; sudo {{ .Vars }} {{ .Path }}"
+      "execute_command": "chmod +x {{ .Path }}; sudo {{ .Vars }} {{ .Path }}",
+      "remote_folder": "/opt/provision-scripts"
     },
     {
       "type": "shell",
@@ -474,7 +482,8 @@
       "environment_vars": [
         "OS={{user `os`}}",
         "CLOUD_PROVIDER={{user `cloud_provider`}}"
-      ]
+      ],
+      "remote_folder": "/opt/provision-scripts"
     },
     {
       "type": "shell",
@@ -487,7 +496,8 @@
       "environment_vars": [
         "OS={{user `os`}}",
         "CLOUD_PROVIDER={{user `cloud_provider`}}"
-      ]
+      ],
+      "remote_folder": "/opt/provision-scripts"
     },
     {
       "type": "file",
@@ -523,7 +533,8 @@
         "SALT_INSTALL_OS={{ user `salt_install_os` }}",
         "INSTALLATION_STATE=base"
       ],
-      "execute_command": "chmod +x {{ .Path }}; sudo {{ .Vars }} {{ .Path }}"
+      "execute_command": "chmod +x {{ .Path }}; sudo {{ .Vars }} {{ .Path }}",
+      "remote_folder": "/opt/provision-scripts"
     },
     {
       "type": "shell",
@@ -543,7 +554,8 @@
         "SALT_REPO_FILE={{user `salt_repo_file` }}",
         "CLOUD_PROVIDER={{user `cloud_provider`}}"
       ],
-      "execute_command": "chmod +x {{ .Path }}; sudo {{ .Vars }} {{ .Path }}"
+      "execute_command": "chmod +x {{ .Path }}; sudo {{ .Vars }} {{ .Path }}",
+      "remote_folder": "/opt/provision-scripts"
     },
     {
       "type": "shell",
@@ -615,11 +627,13 @@
         "no_proxy={{ user `gov_no_proxy` }}",
         "NO_PROXY={{ user `gov_no_proxy` }}",
         "CLOUD_PROVIDER={{user `cloud_provider`}}"
-      ]
+      ],
+      "remote_folder": "/opt/provision-scripts"
     },
     {
       "type": "shell",
       "script": "scripts/generate-delta-package-list.sh",
+      "remote_folder": "/opt/cloudera",
       "environment_vars": [
         "OS_TYPE={{user `os_type`}}",
         "OS={{user `os`}}",
@@ -631,7 +645,8 @@
         "PRE_WARM_PARCELS={{ user `pre_warm_parcels` }}",
         "PRE_WARM_CSD={{ user `pre_warm_csd` }}"
       ],
-      "execute_command": "chmod +x {{ .Path }}; sudo {{ .Vars }} {{ .Path }}"
+      "execute_command": "chmod +x {{ .Path }}; sudo {{ .Vars }} {{ .Path }}",
+      "remote_folder": "/opt/provision-scripts"
     },
     {
       "type": "file",
@@ -660,7 +675,8 @@
     {
       "type": "shell",
       "script": "scripts/remove-debug-user.sh",
-      "execute_command": "chmod +x {{ .Path }}; sudo {{ .Vars }} {{ .Path }}"
+      "execute_command": "chmod +x {{ .Path }}; sudo {{ .Vars }} {{ .Path }}",
+      "remote_folder": "/opt/provision-scripts"
     },
     {
       "type": "shell",
@@ -669,17 +685,15 @@
         "OS={{user `os`}}",
         "CLOUD_PROVIDER={{ user `cloud_provider` }}"
       ],
-      "execute_command": "chmod +x {{ .Path }}; sudo {{ .Vars }} {{ .Path }}"
+      "execute_command": "chmod +x {{ .Path }}; sudo {{ .Vars }} {{ .Path }}",
+      "remote_folder": "/opt/provision-scripts"
     },
     {
       "type": "shell",
-      "script": "scripts/cis_control.sh",
-      "environment_vars": [
-        "OS={{user `os`}}",
-        "IMAGE_BASE_NAME={{ user `base_name` }}",
-        "CLOUD_PROVIDER={{ user `cloud_provider` }}"
+      "inline": [
+        "sudo rm -rf /opt/provision-scripts"
       ],
-      "execute_command": "chmod +x {{ .Path }}; sudo {{ .Vars }} {{ .Path }}"
+      "remote_folder": "/opt/provision-scripts"
     },
     {
       "type": "file",
