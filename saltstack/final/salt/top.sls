@@ -7,6 +7,7 @@ final:
     - waagent
 {% endif %}
     - krb5
+{% if pillar['subtype'] != 'Docker' and salt['environ.get']('CLOUD_PROVIDER') != 'AWS_GOV' %}
     - cis-controls
+{% endif %}
     - cleanup
-
