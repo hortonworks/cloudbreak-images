@@ -6,6 +6,7 @@ final:
 {% if salt['file.file_exists']('/etc/waagent.conf') %}
     - waagent
 {% endif %}
+    - krb5
     - cis-controls
     - cleanup
 
