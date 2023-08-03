@@ -112,7 +112,8 @@
     "gov_no_proxy": "{{ env `NO_PROXY` }}",
     "image_uuid": "{{ env `IMAGE_UUID` }}",
     "cloud_provider": "{{ env `CLOUD_PROVIDER` }}",
-    "ssh_public_key": "{{ env `SSH_PUBLIC_KEY` }}"
+    "ssh_public_key": "{{ env `SSH_PUBLIC_KEY` }}",
+    "source_image_id": "{{ env `SOURCE_IMAGE_ID` }}"
   },
   "builders": [
     {
@@ -614,7 +615,8 @@
         "https_proxy={{ user `gov_https_proxy` }}",
         "no_proxy={{ user `gov_no_proxy` }}",
         "NO_PROXY={{ user `gov_no_proxy` }}",
-        "CLOUD_PROVIDER={{user `cloud_provider`}}"
+        "CLOUD_PROVIDER={{user `cloud_provider`}}",
+        "SOURCE_IMAGE_ID={{user `source_image_id`}}"
       ]
     },
     {

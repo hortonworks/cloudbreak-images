@@ -108,6 +108,25 @@ packer_in_container() {
       export FREEIPA_LDAP_AGENT_RPM_URL=$DEFAULT_FREEIPA_LDAP_AGENT_RPM_URL
   fi
 
+  if [[ -z "$AZURE_IMAGE_PUBLISHER" && -z "$AZURE_IMAGE_OFFER" && -z $AZURE_IMAGE_SKU]]; then
+    docker run -i --rm \
+    -v $PWD:/work \
+    -w /work \
+    -e TRACE=$TRACE \
+    -e ARM_CLIENT_ID=$ARM_CLIENT_ID \
+    -e ARM_CLIENT_SECRET=$ARM_CLIENT_SECRET \
+    -e ARM_TENANT_ID=$ARM_TENANT_ID \
+    -e AZURE_IMAGE_PUBLISHER=$AZURE_IMAGE_PUBLISHER \
+    -e AZURE_IMAGE_OFFER=$AZURE_IMAGE_OFFER \
+    -e AZURE_IMAGE_SKU=$AZURE_IMAGE_SKU \
+    -e AZURE_IMAGE_VERSION="8.8"
+    -e SKIP_THIS="gen2"
+    --entrypoint azure-get-source-image-id \
+    hortonworks/cloudbreak-azure-cli-tools:1.20.0
+
+    SOURCE_IMAGE_ID=`cat rhel8_source_image_id.out`
+  fi
+
   [[ "$TRACE" ]] && set -x
   ${DRY_RUN:+echo ===} docker run -i $TTY_OPTS --rm \
     -e MOCK=$MOCK \
@@ -226,6 +245,7 @@ packer_in_container() {
     -e IMAGE_UUID="$IMAGE_UUID" \
     -e CLOUD_PROVIDER="$CLOUD_PROVIDER" \
     -e SSH_PUBLIC_KEY="$SSH_PUBLIC_KEY" \
+    -e SOURCE_IMAGE_ID="$SOURCE_IMAGE_ID" \
     -v /var/run/docker.sock:/var/run/docker.sock \
     -v $PWD:$PWD \
     -w $PWD \
