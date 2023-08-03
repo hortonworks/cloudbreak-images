@@ -8,7 +8,7 @@ if [[ "${OS}" == "redhat8" && "$CLOUD_PROVIDER" != "AWS_GOV" ]] ; then
     # The list of tags of ansible tasks from the above-mentioned playbook that would break functionality, so we are skipping temporarily
     SKIP_TAGS="package_firewalld_installed,service_firewalld_enabled"
     if [ "${IMAGE_BASE_NAME}" == "freeipa" ] ; then
-        SKIP_TAGS+=",service_httpd_disabled"
+        SKIP_TAGS+=",service_httpd_disabled,package_openldap-clients_removed"
     fi
     if [ "${CLOUD_PROVIDER}" == "Azure" ]; then
         # Azure needs UDF to execute custom data: https://learn.microsoft.com/en-us/azure/virtual-machines/linux/using-cloud-init#cloud-init-vm-provisioning-without-a-udf-driver
