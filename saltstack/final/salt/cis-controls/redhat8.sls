@@ -30,3 +30,19 @@ set-autossh-nologin-shell:
   user.present:
     - name: autossh
     - shell: {{ salt['cmd.run']('which nologin') }}
+
+# 5.1.9 Ensure at is restricted to authorized users
+remove_at_deny:
+  file.absent:
+    - name: /etc/at.deny
+
+create_at_allow:
+  file.managed:
+    - name: /etc/at.allow
+    - mode: 600
+    - user: root
+    - group: root
+    - contents: |
+        cloudera-scm
+        apache
+        mail
