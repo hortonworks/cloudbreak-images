@@ -24,3 +24,9 @@ blacklist_cramfs:
     - pattern: "^blacklist cramfs"
     - repl: "blacklist cramfs"
     - append_if_not_found: True
+
+# 5.6.2 Ensure system accounts are secured - non login
+set-autossh-nologin-shell:
+  user.present:
+    - name: autossh
+    - shell: {{ salt['cmd.run']('which nologin') }}

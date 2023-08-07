@@ -36,4 +36,4 @@ jumpgate_user:
     - system: True
     - gid: jumpgate
     - home: /etc/jumpgate/
-    - shell: /sbin/nologin
+    - shell: {{ salt['cmd.run']('which nologin') }}

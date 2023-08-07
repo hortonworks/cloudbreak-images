@@ -34,7 +34,7 @@ create_cloudera_scm_user:
   user.present:
     - name: cloudera-scm
     - fullname: Cloudera Manager
-    - shell: /sbin/nologin
+    - shell: {{ salt['cmd.run']('which nologin') }}
     - home: /var/lib/cloudera-scm-server
     - createhome: False
     - uid: {{ ids.cloudera_scm_user }}
