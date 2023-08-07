@@ -1,10 +1,3 @@
-/opt/cdp-prometheus:
-  file.directory:
-    - name: /opt/cdp-prometheus
-    - user: root
-    - group: root
-    - mode: 700
-
 install_prometheus:
   archive.extracted:
     - name: /opt/cdp-prometheus/
@@ -13,3 +6,13 @@ install_prometheus:
     - archive_format: tar
     - enforce_toplevel: False
     - options: --strip-components=1 --exclude='promtool'
+
+/opt/cdp-prometheus:
+  file.directory:
+    - name: /opt/cdp-prometheus
+    - user: root
+    - group: root
+    - mode: 700
+    - recurse:
+      - user
+      - group
