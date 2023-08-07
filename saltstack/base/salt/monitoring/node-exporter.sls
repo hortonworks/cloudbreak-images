@@ -13,3 +13,5 @@ install_node_exporter:
     - archive_format: tar
     - enforce_toplevel: False
     - options: --strip-components=1
+    - user: root
+    - group: root
