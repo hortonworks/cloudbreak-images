@@ -313,7 +313,7 @@ configure-listen-address:
 set-postgres-nologin-shell:
   user.present:
     - name: postgres
-    - shell: /usr/sbin/nologin
+    - shell: {{ salt['cmd.run']('which nologin') }}
 
 # Needed for installing psycopg2 in saltstack/base/salt/postgresql/init.sls
 {% if '/usr/pgsql-11/bin' not in salt['environ.get']('PATH') %}
