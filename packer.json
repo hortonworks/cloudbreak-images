@@ -633,7 +633,6 @@
     {
       "type": "shell",
       "script": "scripts/generate-delta-package-list.sh",
-      "remote_folder": "/opt/cloudera",
       "environment_vars": [
         "OS_TYPE={{user `os_type`}}",
         "OS={{user `os`}}",
