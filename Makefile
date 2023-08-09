@@ -57,7 +57,42 @@ $(error "AZURE_IMAGE_VHD and Marketplace image properties (AZURE_IMAGE_PUBLISHER
 		else ifdef OS
 $(error Unexpected OS type $(OS) for Azure)
 		endif
-		AZURE_IMAGE_VERSION ?= $(shell ./scripts/get-azure-vm-image-version.sh $(AZURE_IMAGE_PUBLISHER) $(AZURE_IMAGE_OFFER) $(AZURE_IMAGE_SKU))
+		ifneq ($(and $(ARM_CLIENT_ID),$(ARM_CLIENT_SECRET),$(ARM_TENANT_ID)),)
+			AZURE_IMAGE_VERSION ?= $(shell ./scripts/get-azure-vm-image-version.sh $(AZURE_IMAGE_PUBLISHER) $(AZURE_IMAGE_OFFER) $(AZURE_IMAGE_SKU))
+			ifeq ($(AZURE_IMAGE_VERSION),)
+	$(error "Failed to query AZURE_IMAGE_VERSION")
+			endif
+		endif
+	endif
+endif
+
+# AWS source ami specification
+ifeq ($(CLOUD_PROVIDER),AWS)
+	ifeq ($(OS),centos7)
+		AWS_SOURCE_AMI ?= ami-098f55b4287a885ba
+	endif
+	ifeq ($(OS),redhat8)
+		AWS_SOURCE_AMI ?= ami-0b798df66a27251ec
+	endif
+endif
+
+# AWS_GOV source ami specification
+ifeq ($(CLOUD_PROVIDER),AWS_GOV)
+    ifeq ($(OS),centos7)
+		AWS_GOV_SOURCE_AMI ?= ami-bbba86da
+	endif
+	ifeq ($(OS),redhat8)
+		AWS_GOV_SOURCE_AMI ?= ami-0ac4e06a69870e5be
+	endif
+endif
+
+# GCP source image specification
+ifeq ($(CLOUD_PROVIDER),GCP)
+	ifeq ($(OS),centos7)
+		GCP_SOURCE_IMAGE ?= centos-7-v20200811
+	endif
+	ifeq ($(OS),redhat8)
+		GCP_SOURCE_IMAGE ?= rhel-8-byos-v20230615
 	endif
 endif
 
@@ -253,6 +288,7 @@ show-image-name:
 build-aws-centos7-base:
 	$(ENVS) \
 	AWS_AMI_REGIONS="us-west-1" \
+	AWS_SOURCE_AMI=$(AWS_SOURCE_AMI) \
 	OS=centos7 \
 	OS_TYPE=redhat7 \
 	ATLAS_ARTIFACT_TYPE=amazon \
@@ -266,6 +302,7 @@ build-aws-centos7:
 	@ METADATA_FILENAME_POSTFIX=$(METADATA_FILENAME_POSTFIX) make build-aws-centos7-base
 	$(ENVS) \
 	AWS_AMI_REGIONS="$(AWS_AMI_REGIONS)" \
+	AWS_SOURCE_AMI=$(AWS_SOURCE_AMI) \
 	ATLAS_ARTIFACT_TYPE=amazon \
 	GIT_REV=$(GIT_REV) \
 	GIT_BRANCH=$(GIT_BRANCH) \
@@ -286,6 +323,7 @@ endif
 build-aws-redhat8:
 	$(ENVS) \
 	AWS_AMI_REGIONS="us-west-1" \
+	AWS_SOURCE_AMI=$(AWS_SOURCE_AMI) \
 	OS=redhat8 \
 	OS_TYPE=redhat8 \
 	ATLAS_ARTIFACT_TYPE=amazon \
@@ -323,6 +361,7 @@ build-gc-redhat8:
 	OS=redhat8 \
 	OS_TYPE=redhat8 \
 	GCP_AMI_REGIONS=$(GCP_AMI_REGIONS) \
+	GCP_SOURCE_IMAGE=$(GCP_SOURCE_IMAGE) \
 	ATLAS_ARTIFACT_TYPE=google \
 	GCP_STORAGE_BUNDLE=$(GCP_STORAGE_BUNDLE) \
 	GCP_STORAGE_BUNDLE_LOG=$(GCP_STORAGE_BUNDLE_LOG) \
@@ -350,6 +389,7 @@ copy-aws-images:
 build-aws-gov-centos7-base:
 	$(ENVS) \
 	AWS_AMI_REGIONS="us-gov-west-1" \
+	AWS_GOV_SOURCE_AMI=$(AWS_GOV_SOURCE_AMI) \
 	OS=centos7 \
 	OS_TYPE=redhat7 \
 	ATLAS_ARTIFACT_TYPE=amazon-gov \
@@ -366,6 +406,7 @@ build-aws-gov-centos7:
 	@ METADATA_FILENAME_POSTFIX=$(METADATA_FILENAME_POSTFIX) make build-aws-gov-centos7-base
 	$(ENVS) \
 	AWS_AMI_REGIONS="$(AWS_GOV_AMI_REGIONS)" \
+	AWS_GOV_SOURCE_AMI=$(AWS_GOV_SOURCE_AMI) \
 	ATLAS_ARTIFACT_TYPE=amazon-gov \
 	GIT_REV=$(GIT_REV) \
 	GIT_BRANCH=$(GIT_BRANCH) \
@@ -378,6 +419,7 @@ build-aws-gov-centos7:
 build-aws-gov-redhat8:
 	$(ENVS) \
 	AWS_AMI_REGIONS="us-gov-west-1" \
+	AWS_GOV_SOURCE_AMI=$(AWS_GOV_SOURCE_AMI) \
 	OS=redhat8 \
 	OS_TYPE=redhat8 \
 	ATLAS_ARTIFACT_TYPE=amazon-gov \
@@ -431,6 +473,7 @@ build-gc-centos7:
 	OS=centos7 \
 	OS_TYPE=redhat7 \
 	GCP_AMI_REGIONS=$(GCP_AMI_REGIONS) \
+    GCP_SOURCE_IMAGE=$(GCP_SOURCE_IMAGE) \
 	ATLAS_ARTIFACT_TYPE=google \
 	GCP_STORAGE_BUNDLE=$(GCP_STORAGE_BUNDLE) \
 	GCP_STORAGE_BUNDLE_LOG=$(GCP_STORAGE_BUNDLE_LOG) \

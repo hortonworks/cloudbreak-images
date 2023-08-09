@@ -1,9 +1,0 @@
-08/08/2023 15:08:39 - Lookup VM image by publisher=RedHat offer=rhel-byos and sku=rhel-lvm88 
-08/08/2023 15:08:40 - VM image URN from Azure:  
-08/08/2023 15:08:40 - VM image version:  
-08/08/2023 15:15:34 - Lookup VM image by publisher=RedHat offer=rhel-byos and sku=rhel-lvm88 
-08/08/2023 15:15:35 - VM image URN from Azure:  
-08/08/2023 15:15:35 - VM image version:  
-08/08/2023 15:19:27 - Lookup VM image by publisher=RedHat offer=rhel-byos and sku=rhel-lvm88 
-08/08/2023 15:19:35 - VM image URN from Azure: RedHat:rhel-byos:rhel-lvm88:8.8.2023053015 
-08/08/2023 15:19:35 - VM image version: 8.8.2023053015 
