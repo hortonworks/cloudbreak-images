@@ -226,6 +226,7 @@ packer_in_container() {
     -e IMAGE_UUID="$IMAGE_UUID" \
     -e CLOUD_PROVIDER="$CLOUD_PROVIDER" \
     -e SSH_PUBLIC_KEY="$SSH_PUBLIC_KEY" \
+    -e FIPS_MODE="$FIPS_MODE" \
     -v /var/run/docker.sock:/var/run/docker.sock \
     -v $PWD:$PWD \
     -w $PWD \

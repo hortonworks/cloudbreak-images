@@ -2,7 +2,7 @@
 
 echo "FIPS mode setup"
 
-if [ "${OS}" == "redhat8" ] && [ "${CLOUD_PROVIDER}" == "AWS_GOV" ] ; then
+if [ "${FIPS_MODE}" == "true" ]; then
     echo "Set FIPS enabled and then reboot..."
     fips-mode-setup --enable
     reboot

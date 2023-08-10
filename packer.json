@@ -112,7 +112,8 @@
     "gov_no_proxy": "{{ env `NO_PROXY` }}",
     "image_uuid": "{{ env `IMAGE_UUID` }}",
     "cloud_provider": "{{ env `CLOUD_PROVIDER` }}",
-    "ssh_public_key": "{{ env `SSH_PUBLIC_KEY` }}"
+    "ssh_public_key": "{{ env `SSH_PUBLIC_KEY` }}",
+    "fips_mode": "{{ env `FIPS_MODE` }}"
   },
   "builders": [
     {
@@ -480,8 +481,7 @@
       "execute_command": "chmod +x {{ .Path }}; sudo {{ .Vars }} {{ .Path }}",
       "expect_disconnect": true,
       "environment_vars": [
-        "OS={{user `os`}}",
-        "CLOUD_PROVIDER={{user `cloud_provider`}}"
+        "FIPS_MODE={{user `fips_mode`}}"
       ],
       "remote_folder": "/opt/provision-scripts"
     },
