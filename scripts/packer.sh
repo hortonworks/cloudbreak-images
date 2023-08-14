@@ -1,5 +1,7 @@
 #!/bin/bash
 
+[[ "$TRACE" ]] && set -x
+
 packer_in_container() {
   local dockerOpts=""
   local packerFile="packer.json"
@@ -108,8 +110,7 @@ packer_in_container() {
       export FREEIPA_LDAP_AGENT_RPM_URL=$DEFAULT_FREEIPA_LDAP_AGENT_RPM_URL
   fi
 
-  [[ "$TRACE" ]] && set -x
-  ${DRY_RUN:+echo ===} docker run -i $TTY_OPTS --rm \
+    ${DRY_RUN:+echo ===} docker run -i $TTY_OPTS --rm \
     -e MOCK=$MOCK \
     -e ORIG_USER=$USER \
     -e GIT_REV=$GIT_REV \
