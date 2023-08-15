@@ -56,10 +56,8 @@ packer_in_container() {
     
     ## The RPM_URL is overwritten due to FIPS/redhat8 compatibility
     ## It will be deleted after the proper rpm will be available via the base url
-    if [[ "$CLOUD_PROVIDER" == "AWS_GOV" ]]; then
-      CDP_TELEMETRY_RPM_URL="https://cloudera-build-us-west-1.vpc.cloudera.com/s3/build/39697508/cdp-infra-tools/1.x/redhat8/yum/cdp_telemetry-0.4.36.x86_64.rpm"
-    elif [[ "$OS" == "redhat8" ]]; then
-      CDP_TELEMETRY_RPM_URL="https://cloudera-build-us-west-1.vpc.cloudera.com/s3/build/42376166/cdp-infra-tools/1.x/redhat8/yum/cdp_telemetry-0.4.36.x86_64.rpm"
+    if [[ "$OS" == "redhat8" ]]; then
+      CDP_TELEMETRY_RPM_URL="https://cloudera-build-us-west-1.vpc.cloudera.com/s3/build/44198886/cdp-infra-tools/1.x/redhat8/yum/cdp_telemetry-0.4.36.x86_64.rpm"
     else
       CDP_TELEMETRY_RPM_URL="https://archive.cloudera.com/cdp-infra-tools/latest/redhat7/yum/cdp_telemetry-0.4.31.x86_64.rpm"
     fi
@@ -73,10 +71,8 @@ packer_in_container() {
     
     ## The RPM_URL is overwritten due to FIPS/redhat8 compatibility
     ## It will be deleted after the proper rpm will be available via the base url
-    if [[ "$CLOUD_PROVIDER" == "AWS_GOV" ]]; then
-      CDP_LOGGING_AGENT_RPM_URL="https://cloudera-build-us-west-1.vpc.cloudera.com/s3/build/42375326/cdp-infra-tools/1.x/redhat8/yum/cdp_logging_agent-0.3.7.x86_64.rpm"
-    elif [[ "$OS" == "redhat8" ]]; then
-      CDP_LOGGING_AGENT_RPM_URL="https://cloudera-build-us-west-1.vpc.cloudera.com/s3/build/42376166/cdp-infra-tools/1.x/redhat8/yum/cdp_logging_agent-0.3.7.x86_64.rpm"
+    if [[ "$OS" == "redhat8" ]]; then
+      CDP_LOGGING_AGENT_RPM_URL="https://cloudera-build-us-west-1.vpc.cloudera.com/s3/build/44198886/cdp-infra-tools/1.x/redhat8/yum/cdp_logging_agent-0.3.7.x86_64.rpm"
     else
       CDP_LOGGING_AGENT_RPM_URL="https://archive.cloudera.com/cdp-infra-tools/latest/redhat7/yum/cdp_logging_agent-0.3.6.x86_64.rpm"
     fi
@@ -88,7 +84,7 @@ packer_in_container() {
   if ! [[ $METERING_AGENT_RPM_URL =~ ^http.*rpm$ ]]; then
     # The RHEL8 version is not backward-compatible, so we have to override the default CentOS 7 version.
     if [[ "$OS" == "redhat8" ]]; then
-      export METERING_AGENT_RPM_URL="https://cloudera-build-us-west-1.vpc.cloudera.com/s3/build/42626487/thunderhead/1.x/redhat8/yum/thunderhead-metering-heartbeat-application-2.0.0-b10713.x86_64.rpm"
+      export METERING_AGENT_RPM_URL="https://cloudera-build-us-west-1.vpc.cloudera.com/s3/build/44238847/thunderhead/1.x/redhat8/yum/thunderhead-metering-heartbeat-application-2.0.0-b11100.x86_64.rpm"
     else
       export METERING_AGENT_RPM_URL=$DEFAULT_METERING_AGENT_RPM_URL
     fi
