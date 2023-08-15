@@ -1,5 +1,5 @@
 #!/bin/bash
-set -xe
+set -ex -o pipefail -o errexit
 
 # Remediating the system to align with the CIS L1 baseline using an SSG Ansible playbook
 # The ansible playbook is available at https://github.com/AutomateCompliance/AnsibleCompliancePlaybooks/blob/main/rhel8-playbook-cis_server_l1.yml
