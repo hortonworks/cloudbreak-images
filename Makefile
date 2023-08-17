@@ -221,7 +221,8 @@ South Africa North:cldrsouthafricanorth,\
 France Central:cldrfrancecentral,\
 Switzerland North:cldrswitzerlandnorth,\
 Germany West Central:cldrgermanywestcentral,\
-Norway East:cldrnorwayeast
+Norway East:cldrnorwayeast,\
+Qatar Central:cldrqatarcentral
 endef
 
 ifndef AZURE_STORAGE_ACCOUNTS
