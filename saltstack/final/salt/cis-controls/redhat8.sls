@@ -64,3 +64,12 @@ dconf_update:
 disable_wwan:
   cmd.run:
     - name: nmcli radio wwan off
+
+# 5.2.2 Ensure permissions on SSH private host key files are configured
+set_permissions_for_private_host_keys:
+  cmd.run:
+    - name: find /etc/ssh -type f -name 'ssh_host_*_key' -exec chmod 600 {} \;
+
+set_owners_for_private_host_keys:
+  cmd.run:
+    - name: find /etc/ssh -type f -name 'ssh_host_*_key' -exec chown root:root {} \;
