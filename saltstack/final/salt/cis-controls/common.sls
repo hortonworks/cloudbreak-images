@@ -134,18 +134,13 @@ Chrony_config:
   cmd.run:
     - name: find /var/log -type f -exec chmod g-wx,o-rwx "{}" +
 
-# These log files may not be present in image burning time, but they will fail CIS checks
-{% set logfiles_to_modify = ['wtmp', 'sa/sa28', 'dmesg', 'btmp', 'lastlog'] %}
-{% for logfile in logfiles_to_modify %}
+/var/log_default_group_permission:
+  cmd.run:
+    - name: setfacl -R -d -m g::r /var/log
 
-{{ logfile }}_modify_permission:
-  file.managed:
-    - name: /var/log/{{ logfile }}
-    - makedirs: True
-    - replace: False
-    - mode: 600
-
-{% endfor %}
+/var/log_default_other_permission:
+  cmd.run:
+    - name: setfacl -R -d -m o::--- /var/log
 
 #### CIS: Disable unused filesystems
 #https://jira.cloudera.com/browse/CB-8897
