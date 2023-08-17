@@ -59,3 +59,8 @@ disable_automount:
 dconf_update:
   cmd.run:
     - name: dconf update
+
+# 3.1.4 Ensure wireless interfaces are disabled
+disable_wwan:
+  cmd.run:
+    - name: nmcli radio wwan off
