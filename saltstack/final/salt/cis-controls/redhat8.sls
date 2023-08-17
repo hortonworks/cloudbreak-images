@@ -46,3 +46,16 @@ create_at_allow:
         cloudera-scm
         apache
         mail
+
+# 1.8.5 Ensure automatic mounting of removable media is disabled
+disable_automount:
+  file.managed:
+    - name: /etc/dconf/db/local.d/00-media-automount
+    - contents: |
+        [org/gnome/desktop/media-handling]
+        automount=false
+        automount-open=false
+
+dconf_update:
+  cmd.run:
+    - name: dconf update
