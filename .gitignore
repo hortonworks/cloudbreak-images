@@ -21,3 +21,5 @@ test-folder
 *.code-workspace
 scripts/images_in_regions
 image.properties
+*.log
+*.out

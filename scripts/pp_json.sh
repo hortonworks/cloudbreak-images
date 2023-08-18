@@ -2,23 +2,36 @@
 
 set -xe
 
-if [ -f package-versions.json -a "$stack_version" != "" -a "$clustermanager_version" != "" ]; then
+if [ -f package-versions.json ]; then
     wget https://github.com/jqlang/jq/releases/download/jq-1.6/jq-linux64
     chmod +x jq-linux64
     mv jq-linux64 /bin/jq
 
-    cat package-versions.json
-    if [ "$stack_type" == "CDH" ]; then
-        cat package-versions.json | jq --arg stack_version $stack_version --arg clustermanager_version $clustermanager_version --arg cm_build_number $cm_build_number --arg stack_build_number $stack_build_number --arg composite_gbn "$composite_gbn" '. += {"stack" : $stack_version,  "cm" : $clustermanager_version,  "cm-build-number" : $cm_build_number,  "cdh-build-number" : $stack_build_number, "composite_gbn": $composite_gbn}' > package-versions-tmp.json && mv package-versions-tmp.json package-versions.json
+    if [ -n "$stack_version" ] && [ -n "$clustermanager_version" ]; then
+        if [ "$stack_type" == "CDH" ]; then
+            cat package-versions.json | jq --arg stack_version $stack_version --arg clustermanager_version $clustermanager_version --arg cm_build_number $cm_build_number --arg stack_build_number $stack_build_number --arg composite_gbn "$composite_gbn" '. += {"stack" : $stack_version,  "cm" : $clustermanager_version,  "cm-build-number" : $cm_build_number,  "cdh-build-number" : $stack_build_number, "composite_gbn": $composite_gbn}' > package-versions-tmp.json && mv package-versions-tmp.json package-versions.json
 
-        for parcel in ${parcel_list_with_versions//,/ } ; do 
-            parcel_versions=(`echo $parcel | tr ':' ' '`)
-            cat package-versions.json | jq --arg parcel "${parcel_versions[0]}" --arg version "${parcel_versions[1]}" --arg parcel_gbn "${parcel_versions[0]}_gbn" --arg gbn "${parcel_versions[2]}" '. += {($parcel) : $version, ($parcel_gbn) : $gbn}' >> package-versions-tmp.json && mv package-versions-tmp.json package-versions.json
-        done
-    else
-        cat package-versions.json | jq --arg stack_version $stack_version --arg clustermanager_version $clustermanager_version '. += {"stack" : $stack_version,  "ambari" : $clustermanager_version}' >> package-versions-tmp.json && mv package-versions-tmp.json package-versions.json
+            for parcel in ${parcel_list_with_versions//,/ } ; do 
+                parcel_versions=(`echo $parcel | tr ':' ' '`)
+                cat package-versions.json | jq --arg parcel "${parcel_versions[0]}" --arg version "${parcel_versions[1]}" --arg parcel_gbn "${parcel_versions[0]}_gbn" --arg gbn "${parcel_versions[2]}" '. += {($parcel) : $version, ($parcel_gbn) : $gbn}' >> package-versions-tmp.json && mv package-versions-tmp.json package-versions.json
+            done
+        else
+            cat package-versions.json | jq --arg stack_version $stack_version --arg clustermanager_version $clustermanager_version '. += {"stack" : $stack_version,  "ambari" : $clustermanager_version}' >> package-versions-tmp.json && mv package-versions-tmp.json package-versions.json
+        fi
     fi
-    cat package-versions.json
+    
+    if [ -n "$aws_source_ami" ]; then
+        source_image=$aws_source_ami
+    elif [ -n "$aws_gov_source_ami" ]; then
+        source_image=$aws_gov_source_ami
+    elif [ -n "$gcp_source_image" ]; then
+        source_image=$gcp_source_image
+    elif [ -n "$azure_image_publisher" ] && [ -n "$azure_image_offer" ] && [ -n "$azure_image_sku" ] && [ -n "$azure_image_version" ]; then
+        source_image=$(echo "$azure_image_publisher:$azure_image_offer:$azure_image_sku:$azure_image_version" | awk '{print tolower($0)}')
+    fi
+    if [ -n "$source_image" ]; then
+        cat package-versions.json | jq --arg sourceimage $source_image '. += {"source-image" : $sourceimage}' >> package-versions-tmp.json && mv package-versions-tmp.json package-versions.json
+    fi
 fi
 
 echo "pre_warm_parcels: ${pre_warm_parcels}"
