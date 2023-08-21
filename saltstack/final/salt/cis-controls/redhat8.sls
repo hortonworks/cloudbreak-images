@@ -78,3 +78,8 @@ set_permissions_for_private_host_keys:
 set_owners_for_private_host_keys:
   cmd.run:
     - name: find /etc/ssh -type f -name 'ssh_host_*_key' -exec chown root:root {} \;
+
+gpgcheck_pgdg:
+  cmd.run:
+    - name: sudo sed -i 's|gpgcheck=0|gpgcheck=1|g' /etc/yum.repos.d/pgdg-redhat-all.repo
+    - onlyif: "ls /etc/yum.repos.d/pgdg-redhat-all.repo"
