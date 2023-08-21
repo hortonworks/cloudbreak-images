@@ -5,3 +5,4 @@ include:
 {% elif pillar['OS'] == 'centos7' %}
   - {{ slspath }}.centos7
 {% endif %}
+  - {{ slspath }}.verify
