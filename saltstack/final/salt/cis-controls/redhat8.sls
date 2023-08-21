@@ -48,6 +48,11 @@ create_at_allow:
         mail
 
 # 1.8.5 Ensure automatic mounting of removable media is disabled
+dconf_install:
+  pkg.installed:
+    - pkgs:
+        - dconf
+
 disable_automount:
   file.managed:
     - name: /etc/dconf/db/local.d/00-media-automount
