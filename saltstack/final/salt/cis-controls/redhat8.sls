@@ -83,3 +83,9 @@ gpgcheck_pgdg:
   cmd.run:
     - name: sudo sed -i 's|gpgcheck=0|gpgcheck=1|g' /etc/yum.repos.d/pgdg-redhat-all.repo
     - onlyif: "ls /etc/yum.repos.d/pgdg-redhat-all.repo"
+
+# 5.2.4 Ensure SSH access is limited
+deny_nobody:
+  file.append:
+    - name: /etc/ssh/sshd_config
+    - text: "DenyUsers nobody"
