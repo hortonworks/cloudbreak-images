@@ -57,7 +57,7 @@ $(error "AZURE_IMAGE_VHD and Marketplace image properties (AZURE_IMAGE_PUBLISHER
 		else ifdef OS
 $(error Unexpected OS type $(OS) for Azure)
 		endif
-		ifneq ($(and $(ARM_CLIENT_ID),$(ARM_CLIENT_SECRET),$(ARM_TENANT_ID)),)
+		ifneq ($(and $(ARM_CLIENT_ID),$(ARM_CLIENT_SECRET),$(ARM_TENANT_ID),$(IMAGE_BURNING_TYPE)),)
 			AZURE_IMAGE_VERSION ?= $(shell ./scripts/get-azure-vm-image-version.sh $(AZURE_IMAGE_PUBLISHER) $(AZURE_IMAGE_OFFER) $(AZURE_IMAGE_SKU))
 			ifeq ($(AZURE_IMAGE_VERSION),)
 	$(error "Failed to query AZURE_IMAGE_VERSION")
