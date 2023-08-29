@@ -84,7 +84,7 @@ packer_in_container() {
   if ! [[ $METERING_AGENT_RPM_URL =~ ^http.*rpm$ ]]; then
     # The RHEL8 version is not backward-compatible, so we have to override the default CentOS 7 version.
     if [[ "$OS" == "redhat8" ]]; then
-      export METERING_AGENT_RPM_URL="https://cloudera-build-us-west-1.vpc.cloudera.com/s3/build/44238847/thunderhead/1.x/redhat8/yum/thunderhead-metering-heartbeat-application-2.0.0-b11100.x86_64.rpm"
+      export METERING_AGENT_RPM_URL="https://archive.cloudera.com/cp_clients/thunderhead-metering-heartbeat-application-2.0.0-b11100.x86_64.rpm"
     else
       export METERING_AGENT_RPM_URL=$DEFAULT_METERING_AGENT_RPM_URL
     fi
