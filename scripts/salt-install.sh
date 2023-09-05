@@ -71,6 +71,13 @@ function update_yum_repos() {
     REPO_FILE=rhel${RHEL_VERSION}_cldr_mirrors.repo
     rm /etc/yum.repos.d/*.repo -f
     curl https://mirror.infra.cloudera.com/repos/rhel/server/8/${RHEL_VERSION}/${REPO_FILE} > /etc/yum.repos.d/${REPO_FILE}
+
+    # Workaround on resolving the hostname as for some reason the DNS can't resolve it at provision time
+    if [ "${IMAGE_BURNING_TYPE}" == "base" ] ; then
+        echo "WhoAmI: $(whoami)"
+        MIRROR_IP=$(ping mirror.infra.cloudera.com -c1 | head -1 | grep -Eo '([0-9]{1,3}\.){3}[0-9]{1,3}')
+        echo "$MIRROR_IP mirror.infra.cloudera.com" >> /etc/hosts
+    fi
   else
     # Workaround based on the official documentation: https://cloud.google.com/compute/docs/troubleshooting/known-issues#known_issues_for_linux_vm_instances
     if [ "${CLOUD_PROVIDER}" == "GCP" ]; then

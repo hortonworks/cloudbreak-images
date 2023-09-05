@@ -1,6 +1,7 @@
 {
   "variables": {
     "base_name": "{{ env `BASE_NAME` }}",
+    "image_burning_type": "{{ env `IMAGE_BURNING_TYPE` }}",
     "mock": "{{ env `MOCK` }}",
     "description": "{{ env `DESCRIPTION` }}",
     "gcp_account_file": "{{env `GCP_ACCOUNT_FILE`}}",
@@ -548,6 +549,7 @@
       "script": "scripts/salt-install.sh",
       "environment_vars": [
         "IMAGE_BASE_NAME={{ user `base_name` }}",
+        "IMAGE_BURNING_TYPE={{ user `image_burning_type` }}",
         "SALT_INSTALL_OS={{ user `salt_install_os` }}",
         "SALT_INSTALL_REPO={{user `salt_install_repo` }}",
         "SALT_VERSION={{user `salt_version`}}",
@@ -689,7 +691,8 @@
       "script": "scripts/repo_cleanup.sh",
       "environment_vars": [
         "OS={{user `os`}}",
-        "CLOUD_PROVIDER={{ user `cloud_provider` }}"
+        "CLOUD_PROVIDER={{ user `cloud_provider` }}",
+        "IMAGE_BURNING_TYPE={{ user `image_burning_type` }}"
       ],
       "execute_command": "chmod +x {{ .Path }}; sudo {{ .Vars }} {{ .Path }}",
       "remote_folder": "/opt/provision-scripts"
