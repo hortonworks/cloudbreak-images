@@ -1,6 +1,6 @@
 [pgdg10]
 name=PostgreSQL 10
-baseurl=https://download.postgresql.org/pub/repos/yum/10/redhat/rhel-7-x86_64
+baseurl=https://yum-archive.postgresql.org/10/redhat/rhel-7-x86_64
 enabled=1
 priority=1
 gpgcheck=1
