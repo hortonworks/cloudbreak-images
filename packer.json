@@ -117,7 +117,9 @@
     "image_uuid": "{{ env `IMAGE_UUID` }}",
     "cloud_provider": "{{ env `CLOUD_PROVIDER` }}",
     "ssh_public_key": "{{ env `SSH_PUBLIC_KEY` }}",
-    "fips_mode": "{{ env `FIPS_MODE` }}"
+    "fips_mode": "{{ env `FIPS_MODE` }}",
+    "paywall_username": "{{ env `PAYWALL_USERNAME` }}",
+    "paywall_password": "{{ env `PAYWALL_PASSWORD` }}"
   },
   "builders": [
     {
@@ -633,7 +635,9 @@
         "https_proxy={{ user `gov_https_proxy` }}",
         "no_proxy={{ user `gov_no_proxy` }}",
         "NO_PROXY={{ user `gov_no_proxy` }}",
-        "CLOUD_PROVIDER={{user `cloud_provider`}}"
+        "CLOUD_PROVIDER={{user `cloud_provider`}}",
+        "PAYWALL_USERNAME={{user `paywall_username`}}",
+        "PAYWALL_PASSWORD={{user `paywall_password`}}"
       ],
       "remote_folder": "/opt/provision-scripts"
     },

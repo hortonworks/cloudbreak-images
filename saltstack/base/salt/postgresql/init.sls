@@ -3,6 +3,7 @@
 /etc/yum.repos.d/pgdg10.repo:
   file.managed:
     - source: salt://postgresql/yum/postgres10-el7.repo
+    - template: jinja
 
 /etc/pki/rpm-gpg/RPM-GPG-KEY-PGDG-10:
   file.managed:

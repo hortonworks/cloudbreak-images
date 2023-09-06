@@ -227,6 +227,8 @@ packer_in_container() {
     -e CLOUD_PROVIDER="$CLOUD_PROVIDER" \
     -e SSH_PUBLIC_KEY="$SSH_PUBLIC_KEY" \
     -e FIPS_MODE="$FIPS_MODE" \
+    -e PAYWALL_USERNAME="$(echo $CLOUDBREAK_INTERNAL_PAYWALL_CREDENTIAL | awk -F ":" '{print $1}')" \
+    -e PAYWALL_PASSWORD="$(echo $CLOUDBREAK_INTERNAL_PAYWALL_CREDENTIAL | awk -F ":" '{print $2}')" \
     -v /var/run/docker.sock:/var/run/docker.sock \
     -v $PWD:$PWD \
     -w $PWD \
