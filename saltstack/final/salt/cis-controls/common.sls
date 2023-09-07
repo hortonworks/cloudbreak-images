@@ -108,8 +108,10 @@ sugroup_group:
 update_pam.d_su:
   file.replace:
     - name: /etc/pam.d/su
-    - pattern: '^auth\s*required\s*pam_wheel\.so.*'
-    - repl: 'auth required pam_wheel.so use_uid group=sugroup'
+    - pattern: |
+        ^#?auth\s*required\s*pam_wheel\.so.*
+    - repl: |
+        auth required pam_wheel.so use_uid group=sugroup
     - append_if_not_found: True
 
 #Ensure SSH LoginGraceTime is set to one minute or less - sshd_config
