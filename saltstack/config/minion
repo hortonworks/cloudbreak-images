@@ -2,6 +2,7 @@ file_client: local
 requests_lib: True
 backend_requests: True
 pillarenv_from_saltenv: True
+metadata_server_grains: True
 
 pillar_roots:
   base:
