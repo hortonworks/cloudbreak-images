@@ -583,12 +583,16 @@ docker-build-yarn-loadbalancer:
 docker-build:
 	$(eval DOCKER_ENVS="OS=$(OS) OS_TYPE=$(OS_TYPE) SALT_VERSION=$(SALT_VERSION) SALT_PATH=$(SALT_PATH) PYZMQ_VERSION=$(PYZMQ_VERSION) PYTHON_APT_VERSION=$(PYTHON_APT_VERSION) TRACE=1")
 	$(eval DOCKER_BUILD_ARGS=$(shell echo ${DOCKER_ENVS} | xargs -n 1 echo "--build-arg " | xargs))
-	$(eval IMAGE_NAME=cloudbreak/${TAG}:$(shell date +%Y-%m-%d-%H-%M-%S))
-	docker build $(DOCKER_BUILD_ARGS) -t $(DOCKER_REPOSITORY)/${IMAGE_NAME} -f docker/${DIR}/Dockerfile .
-	make IMAGE_NAME=${IMAGE_NAME} push-docker-image-to-hwx-registry
+	$(eval DOCKER_IMAGE_NAME=cloudbreak/${TAG}:$(shell date +%Y-%m-%d-%H-%M-%S))
+	docker build $(DOCKER_BUILD_ARGS) -t $(DOCKER_REPOSITORY)/$(DOCKER_IMAGE_NAME) -f docker/${DIR}/Dockerfile .
+	make DOCKER_IMAGE_NAME=$(DOCKER_IMAGE_NAME) push-docker-image-to-hwx-registry
+	make DOCKER_IMAGE_NAME=$(DOCKER_IMAGE_NAME) generate-docker-manifest
 
 push-docker-image-to-hwx-registry:
-	docker login --username=$(DOCKER_REPO_USERNAME) --password=$(DOCKER_REPO_PASSWORD) $(DOCKER_REPOSITORY) && docker push $(DOCKER_REPOSITORY)/${IMAGE_NAME}
+	docker login --username=$(DOCKER_REPO_USERNAME) --password=$(DOCKER_REPO_PASSWORD) $(DOCKER_REPOSITORY) && docker push $(DOCKER_REPOSITORY)/${DOCKER_IMAGE_NAME}
+
+generate-docker-manifest:
+	DOCKER_REPOSITORY=$(DOCKER_REPOSITORY) IMAGE_UUID=$(IMAGE_UUID) TAG=$(TAG) IMAGE_NAME=$(IMAGE_NAME) OS=$(OS) OS_TYPE=$(OS_TYPE) METADATA_FILENAME_POSTFIX=$(METADATA_FILENAME_POSTFIX) ./scripts/generate-docker-manifest.sh
 
 build-in-docker:
 	docker run -it \
@@ -610,27 +614,24 @@ cleanup-metadata-repo:
 	rm -rf $(GITHUB_REPO)
 
 push-to-metadata-repo: cleanup-metadata-repo
-	git clone git@github.com:$(GITHUB_ORG)/$(GITHUB_REPO).git
-	$(eval FILE=$(shell (ls -1tr *_manifest.json | tail -1 | sed "s/_manifest//")))
-	cp $(FILE) $(GITHUB_REPO)
-	$(eval UUID=$(shell (cat $(FILE) | jq .uuid)))
-	mkdir -p "${GITHUB_REPO}/manifest"
-	cp installed-delta-packages.csv "${GITHUB_REPO}/manifest/${UUID}-manifest.csv"
-	cp installed-full-packages.csv "${GITHUB_REPO}/manifest/${UUID}-full-manifest.csv"
-	cd $(GITHUB_REPO) && git add -A && git commit -am"Upload new metadata files" && git push
+	GITHUB_ORG=$(GITHUB_ORG) GITHUB_REPO=$(GITHUB_REPO) CLOUD_PROVIDER=$(CLOUD_PROVIDER) IMAGE_NAME=$(IMAGE_NAME) ./scripts/push-to-metadata-repo.sh
 	make cleanup-metadata-repo
 
 upload-package-list:
+ifneq ($(CLOUD_PROVIDER),YARN)
 ifdef IMAGE_NAME
 	$(eval UUID:=$(shell (cat $(IMAGE_NAME)_$(METADATA_FILENAME_POSTFIX).json | jq -r '.uuid // empty')))
 	make UUID=${UUID} copy-manifest-to-s3-bucket
 endif
+endif
 
 copy-manifest-to-s3-bucket:
+ifneq ($(CLOUD_PROVIDER),YARN)
 ifdef UUID
 	cp -- installed-delta-packages.csv "${UUID}-manifest.csv"
 	AWS_DEFAULT_REGION=eu-west-1
 	aws s3 cp "${UUID}-manifest.csv" s3://cloudbreak-imagecatalog/image-manifests/ --acl public-read
+endif
 endif
 
 copy-changelog-to-s3-bucket:
