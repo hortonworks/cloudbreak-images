@@ -161,8 +161,8 @@ CDP_LOGGING_AGENT_VERSION ?= ""
 # This one is OS-independent (right?)
 DEFAULT_JUMPGATE_AGENT_RPM_URL := https://cloudera-build-us-west-1.vpc.cloudera.com/s3/build/41924420/jumpgate/3.x/redhat8/yum/jumpgate-agent.rpm
 
-# This one is OS-independent for now, but newer versions won't be.
-DEFAULT_METERING_AGENT_RPM_URL := "https://archive.cloudera.com/cp_clients/thunderhead-metering-heartbeat-application-1.0.0-b8780.x86_64.rpm"
+# This one is OS-independent (v2.0 is a rewrite done in GoLang)
+DEFAULT_METERING_AGENT_RPM_URL := "https://archive.cloudera.com/cp_clients/thunderhead-metering-heartbeat-application-2.0.0-b11100.x86_64.rpm"
 
 # This one is theoretically OS-dependent and will be overridden in packer.sh for RHEL8, even though apparently packages work regardless of the OS.
 DEFAULT_FREEIPA_PLUGIN_RPM_URL := "https://cloudera-build-us-west-1.vpc.cloudera.com/s3/build/43785931/thunderhead/1.x/redhat8/yum/cdp-hashed-pwd-1.0-20230801120433git59d04c9.el7.x86_64.rpm"
