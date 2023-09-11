@@ -74,9 +74,8 @@ function update_yum_repos() {
 
     # Workaround on resolving the hostname as for some reason the DNS can't resolve it at provision time
     if [ "${IMAGE_BURNING_TYPE}" == "base" ] ; then
-        echo "WhoAmI: $(whoami)"
-        MIRROR_IP=$(ping mirror.infra.cloudera.com -c1 | head -1 | grep -Eo '([0-9]{1,3}\.){3}[0-9]{1,3}')
-        echo "$MIRROR_IP mirror.infra.cloudera.com" >> /etc/hosts
+      yum install -y dnsutils
+      echo "$MIRROR_IP=$(dig +short mirror.infra.cloudera.com A | tail -1) mirror.infra.cloudera.com" >> /etc/hosts
     fi
   else
     # Workaround based on the official documentation: https://cloud.google.com/compute/docs/troubleshooting/known-issues#known_issues_for_linux_vm_instances

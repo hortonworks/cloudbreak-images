@@ -1,4 +1,5 @@
 #!/bin/bash
+set -ex -o pipefail -o errexit
 
 packer_in_container() {
   local dockerOpts=""
