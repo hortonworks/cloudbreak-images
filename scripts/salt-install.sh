@@ -74,7 +74,7 @@ function update_yum_repos() {
 
     # Workaround on resolving the hostname as for some reason the DNS can't resolve it at provision time
     if [ "${IMAGE_BURNING_TYPE}" == "base" ] ; then
-      yum install -y dnsutils
+      yum -q list installed dnsutils &>/dev/null && echo "DNSUtils already installed" || yum install -y dnsutils
       echo "$MIRROR_IP=$(dig +short mirror.infra.cloudera.com A | tail -1) mirror.infra.cloudera.com" >> /etc/hosts
     fi
   else
