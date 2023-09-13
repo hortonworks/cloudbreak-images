@@ -120,7 +120,8 @@
     "image_uuid": "{{ env `IMAGE_UUID` }}",
     "cloud_provider": "{{ env `CLOUD_PROVIDER` }}",
     "ssh_public_key": "{{ env `SSH_PUBLIC_KEY` }}",
-    "fips_mode": "{{ env `FIPS_MODE` }}"
+    "fips_mode": "{{ env `FIPS_MODE` }}",
+    "stig_enabled": "{{ env `STIG_ENABLED` }}"
   },
   "builders": [
     {
@@ -596,7 +597,8 @@
         "PYTHON_APT_VERSION={{user `python_apt_version`}}",
         "SALT_PATH={{user `salt_path`}}",
         "SALT_REPO_FILE={{user `salt_repo_file` }}",
-        "CLOUD_PROVIDER={{user `cloud_provider`}}"
+        "CLOUD_PROVIDER={{user `cloud_provider`}}",
+        "STIG_ENABLED={{user `stig_enabled`}}"
       ],
       "execute_command": "chmod +x {{ .Path }}; sudo {{ .Vars }} {{ .Path }}",
       "remote_folder": "/opt/provision-scripts"
@@ -670,7 +672,8 @@
         "no_proxy={{ user `gov_no_proxy` }}",
         "NO_PROXY={{ user `gov_no_proxy` }}",
         "CLOUD_PROVIDER={{user `cloud_provider`}}",
-        "IMAGE_BURNING_TYPE={{ user `image_burning_type` }}"
+        "IMAGE_BURNING_TYPE={{ user `image_burning_type` }}",
+        "STIG_ENABLED={{user `stig_enabled`}}"
       ],
       "remote_folder": "/opt/provision-scripts"
     },
