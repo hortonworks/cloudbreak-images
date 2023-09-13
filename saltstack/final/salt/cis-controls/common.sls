@@ -11,7 +11,7 @@ set_hardening_to_cis_server_l1:
   file.managed:
     - name: /var/log/hardening
     - contents:
-      - "cis_server_l1"
+      - "stig"
 
 #### CIS: Strengthen the ownership for job Scheduler
 # https://jira.cloudera.com/browse/CB-8932

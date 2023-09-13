@@ -1,23 +1,3 @@
-add_cis_control_sh:
-  file.managed:
-    - name: /tmp/cis_control.sh
-    - makedirs: True
-    - mode: 755
-    - source: salt://cis-controls/scripts/cis_control.sh
-
-execute_cis_control_sh:
-  cmd.run:
-    - name: /tmp/cis_control.sh
-    - env:
-      - IMAGE_BASE_NAME: {{ salt['environ.get']('IMAGE_BASE_NAME') }}
-      - CLOUD_PROVIDER: {{ salt['environ.get']('CLOUD_PROVIDER') }}
-
-remove_cis_control_sh:
-  file.absent:
-    - name: /tmp/cis_control.sh
-
-# Additional states to cover violations not fixed by AutomateCompliance
-
 blacklist_cramfs:
   file.replace:
     - name: /etc/modprobe.d/salt_cis.conf
@@ -71,13 +51,13 @@ disable_wwan:
     - name: nmcli radio wwan off
 
 # 5.2.2 Ensure permissions on SSH private host key files are configured
-set_permissions_for_private_host_keys:
+set_permissions_for_etc_ssh:
   cmd.run:
-    - name: find /etc/ssh -type f -name 'ssh_host_*_key' -exec chmod 600 {} \;
+    - name: chmod -v 600 /etc/ssh/*
 
-set_owners_for_private_host_keys:
+set_owners_for_etc_ssh:
   cmd.run:
-    - name: find /etc/ssh -type f -name 'ssh_host_*_key' -exec chown root:root {} \;
+    - name: chown -v root:root /etc/ssh/*
 
 gpgcheck_pgdg:
   cmd.run:
@@ -89,3 +69,21 @@ deny_nobody:
   file.append:
     - name: /etc/ssh/sshd_config
     - text: "DenyUsers nobody"
+
+add_cis_control_sh:
+  file.managed:
+    - name: /tmp/cis_control.sh
+    - makedirs: True
+    - mode: 755
+    - source: salt://cis-controls/scripts/cis_control.sh
+
+execute_cis_control_sh:
+  cmd.run:
+    - name: /tmp/cis_control.sh
+    - env:
+      - IMAGE_BASE_NAME: {{ salt['environ.get']('IMAGE_BASE_NAME') }}
+      - CLOUD_PROVIDER: {{ salt['environ.get']('CLOUD_PROVIDER') }}
+
+remove_cis_control_sh:
+  file.absent:
+    - name: /tmp/cis_control.sh
