@@ -72,7 +72,7 @@ function contains() {
 echo "Trying to collect changelogs regarding to the installed packages on ${OS}"
 
 case ${OS} in
-  centos|redhat|amazon)
+  centos*|redhat*|amazon)
     execute
     ;;
   debian|ubuntu|suse)

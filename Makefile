@@ -334,6 +334,17 @@ build-aws-redhat8:
 	GIT_TAG=$(GIT_TAG) \
 	./scripts/packer.sh build -color=false -only=aws-redhat8 $(PACKER_OPTS)
 
+generate-aws-redhat8-changelog:
+ifdef IMAGE_UUID
+ifdef SOURCE_IMAGE
+	$(ENVS) \
+	OS=redhat8 \
+	IMAGE_UUID=$(IMAGE_UUID) \
+	SOURCE_IMAGE=$(SOURCE_IMAGE) \
+	./scripts/changelog/packer.sh build -color=false -only=aws-redhat8 -force $(PACKER_OPTS)
+endif
+endif
+
 build-azure-redhat8:
 	$(ENVS) \
 	AZURE_STORAGE_ACCOUNTS=$(AZURE_BUILD_STORAGE_ACCOUNT) \
@@ -445,6 +456,17 @@ ifdef SOURCE_IMAGE
 endif
 endif
 
+generate-aws-gov-redhat8-changelog:
+ifdef IMAGE_UUID
+ifdef SOURCE_IMAGE
+	$(ENVS) \
+	OS=redhat8 \
+	IMAGE_UUID=$(IMAGE_UUID) \
+	SOURCE_IMAGE=$(SOURCE_IMAGE) \
+	./scripts/changelog/packer.sh build -color=false -only=aws-gov-redhat8 -force $(PACKER_OPTS)
+endif
+endif
+
 copy-aws-gov-images:
 	docker run -i --rm \
 		-v "${PWD}/scripts:/scripts" \
@@ -492,6 +514,17 @@ ifdef SOURCE_IMAGE
 	IMAGE_UUID=$(IMAGE_UUID) \
 	SOURCE_IMAGE=$(SOURCE_IMAGE) \
 	./scripts/changelog/packer.sh build -color=false -only=gc-centos7 -force $(PACKER_OPTS)
+endif
+endif
+
+generate-gc-redhat8-changelog:
+ifdef IMAGE_UUID
+ifdef SOURCE_IMAGE
+	$(ENVS) \
+	OS=redhat8 \
+	IMAGE_UUID=$(IMAGE_UUID) \
+	SOURCE_IMAGE=$(SOURCE_IMAGE) \
+	./scripts/changelog/packer.sh build -color=false -only=gc-redhat8 -force $(PACKER_OPTS)
 endif
 endif
 
@@ -544,6 +577,18 @@ ifdef IMAGE_UUID
 ifdef SOURCE_IMAGE
 	$(ENVS) \
 	OS=centos \
+	IMAGE_UUID=$(IMAGE_UUID) \
+	SOURCE_IMAGE=$(SOURCE_IMAGE) \
+	BUILD_RESOURCE_GROUP_NAME=$(BUILD_RESOURCE_GROUP_NAME) \
+	./scripts/changelog/packer.sh build -color=false -only=arm-centos7 -force $(PACKER_OPTS)
+endif
+endif
+
+generate-azure-redhat8-changelog:
+ifdef IMAGE_UUID
+ifdef SOURCE_IMAGE
+	$(ENVS) \
+	OS=redhat8 \
 	IMAGE_UUID=$(IMAGE_UUID) \
 	SOURCE_IMAGE=$(SOURCE_IMAGE) \
 	BUILD_RESOURCE_GROUP_NAME=$(BUILD_RESOURCE_GROUP_NAME) \
