@@ -2,6 +2,7 @@
   "variables": {
     "os": "{{ env `OS` }}",
     "source_image": "{{ env `SOURCE_IMAGE` }}",
+    "aws_instance_type": "t3.2xlarge",
     "image_uuid": "{{ env `IMAGE_UUID` }}",
     "image_name": "{{ env `IMAGE_NAME` }}",
     "image_size": "{{ env `IMAGE_SIZE` }}",
@@ -24,7 +25,46 @@
       "region": "us-west-1",
       "ssh_pty": true,
       "source_ami": "{{ user `source_image` }}",
-      "instance_type": "t3.2xlarge",
+      "instance_type": "{{ user `aws_instance_type` }}",
+      "ssh_username": "cloudbreak",
+      "ena_support": true,
+      "skip_region_validation": true,
+      "tags": {
+        "builder": "packer",
+        "cb-creation-timestamp": "{{timestamp}}",
+        "owner": "{{ user `image_owner` }}"
+      },
+      "run_tags": {
+        "owner": "{{ user `image_owner` }}"
+      },
+      "ami_block_device_mappings": [
+        {
+          "device_name": "/dev/sda1",
+          "volume_type": "gp2",
+          "delete_on_termination": true,
+          "volume_size": "{{user `image_size`}}"
+        }
+      ],
+      "launch_block_device_mappings": [
+        {
+          "device_name": "/dev/sda1",
+          "volume_type": "gp2",
+          "delete_on_termination": true,
+          "volume_size": "{{user `image_size`}}"
+        }
+      ],
+      "ami_name": "{{ user `image_name`}}",
+      "subnet_id": "{{ user `subnet_id`}}",
+      "vpc_id": "{{ user `vpc_id`}}",
+      "skip_create_ami": true
+    },
+    {
+      "name": "aws-redhat8",
+      "type": "amazon-ebs",
+      "region": "us-west-1",
+      "ssh_pty": true,
+      "source_ami": "{{ user `source_image` }}",
+      "instance_type": "{{ user `aws_instance_type` }}",
       "ssh_username": "cloudbreak",
       "ena_support": true,
       "skip_region_validation": true,
@@ -63,7 +103,46 @@
       "region": "us-gov-west-1",
       "ssh_pty": true,
       "source_ami": "{{ user `source_image` }}",
-      "instance_type": "t3.2xlarge",
+      "instance_type": "{{ user `aws_instance_type` }}",
+      "ssh_username": "cloudbreak",
+      "ena_support": true,
+      "skip_region_validation": true,
+      "tags": {
+        "builder": "packer",
+        "cb-creation-timestamp": "{{timestamp}}",
+        "owner": "{{ user `image_owner` }}"
+      },
+      "run_tags": {
+        "owner": "{{ user `image_owner` }}"
+      },
+      "ami_block_device_mappings": [
+        {
+          "device_name": "/dev/sda1",
+          "volume_type": "gp2",
+          "delete_on_termination": true,
+          "volume_size": "{{user `image_size`}}"
+        }
+      ],
+      "launch_block_device_mappings": [
+        {
+          "device_name": "/dev/sda1",
+          "volume_type": "gp2",
+          "delete_on_termination": true,
+          "volume_size": "{{user `image_size`}}"
+        }
+      ],
+      "ami_name": "{{ user `image_name`}}",
+      "subnet_id": "{{ user `subnet_id`}}",
+      "vpc_id": "{{ user `vpc_id`}}",
+      "skip_create_ami": true
+    },
+    {
+      "name": "aws-gov-redhat8",
+      "type": "amazon-ebs",
+      "region": "us-gov-west-1",
+      "ssh_pty": true,
+      "source_ami": "{{ user `source_image` }}",
+      "instance_type": "{{ user `aws_instance_type` }}",
       "ssh_username": "cloudbreak",
       "ena_support": true,
       "skip_region_validation": true,
@@ -129,6 +208,43 @@
       "communicator": "ssh"
     },
     {
+      "name": "arm-redhat8",
+      "type": "azure-arm",
+      "client_id": "{{user `client_id`}}",
+      "client_secret": "{{user `client_secret`}}",
+      "subscription_id": "{{user `subscription_id`}}",
+      "tenant_id": "{{user `tenant_id`}}",
+      "resource_group_name": "{{user `resource_group_name`}}",
+      "storage_account": "{{user `storage_account`}}",
+      "capture_container_name": "packer",
+      "capture_name_prefix": "{{user `image_name`}}",
+      "image_url": "{{ user `source_image` }}",
+      "ssh_pty": "true",
+      "username": "cloudbreak",
+      "os_type": "Linux",
+      "ssh_username": "cloudbreak",
+      "ssh_password": "S3cr3t",
+      "location": "westus",
+      "vm_size": "Standard_D4",
+      "os_disk_size_gb": "{{user `image_size`}}",
+      "virtual_network_resource_group_name":"{{user `virtual_network_resource_group_name`}}",
+      "virtual_network_name": "{{user `vpc_id`}}",
+      "virtual_network_subnet_name": "{{user `subnet_id`}}",
+      "private_virtual_network_with_public_ip": "false",
+      "azure_tags": {
+        "builder": "packer",
+        "cb-creation-timestamp": "{{timestamp}}",
+        "owner": "{{ user `image_owner` }}"
+      },
+      "plan_info": {
+        "plan_name": "rhel-lvm88",
+        "plan_product": "rhel-byos",
+        "plan_publisher": "redhat"
+      },
+      "skip_create_image": true,
+      "communicator": "ssh"
+    },
+    {
       "name": "gc-centos7",
       "type": "googlecompute",
       "disable_default_service_account" : true,
@@ -152,6 +268,38 @@
         "builder--packer",
         "cb-creation-timestamp--{{timestamp}}",
         "owner--{{ user `image_owner` | clean_resource_name }}",
+        "gcp-dev-cloudbreak-ingress-internet-deny",
+        "gcp-dev-cloudbreak-egress-internet-allow",
+        "gcp-dev-cloudbreak-ingress-rfc1918-allow"
+      ],
+      "skip_create_image": true
+    },
+    {
+      "name": "gc-redhat8",
+      "type": "googlecompute",
+      "disable_default_service_account" : true,
+      "account_file": "{{user `gcp_account_file`}}",
+      "source_image": "{{user `source_image`}}",
+      "source_image_project_id": "rhel-byos-cloud",
+      "zone": "us-west2-a",
+      "project_id": "gcp-cdp-cb-images",
+      "network_project_id": "gcp-eng-network-enterprise",
+      "ssh_username": "cloudbreak",
+      "ssh_pty": "true",
+      "machine_type": "n1-standard-2",
+      "preemptible": false,
+      "omit_external_ip": "true",
+      "use_internal_ip": "true",
+      "network": "{{user `vpc_id`}}",
+      "subnetwork": "{{user `subnet_id`}}",
+      "image_name": "{{user `image_name`}}",
+      "disk_size": "{{user `image_size`}}",
+      "state_timeout": "15m",
+      "tags": [
+        "builder--packer",
+        "cb-creation-timestamp--{{timestamp}}",
+        "owner--{{ user `image_owner` | clean_resource_name }}",
+        "customer-delivered--{{user `tag_customer_delivered` | clean_resource_name}}",
         "gcp-dev-cloudbreak-ingress-internet-deny",
         "gcp-dev-cloudbreak-egress-internet-allow",
         "gcp-dev-cloudbreak-ingress-rfc1918-allow"
