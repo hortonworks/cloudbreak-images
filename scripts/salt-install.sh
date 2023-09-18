@@ -206,6 +206,23 @@ function redhat8_update_python36_to_38() {
   alternatives --set python /usr/bin/python3.8
 }
 
+function redhat8_install_python39() {
+  echo "Installing Python 3.9 with dependencies..."
+  yum install -y python39
+  yum install -y python39-devel python39-libs python39-cffi python39-lxml python39-psycopg2
+
+  echo PYTHON39=$(yum list installed | grep ^python39\\.x86_64 | grep -oi " [^\s]* " | xargs) >> /tmp/python_install.properties
+
+  # We need to create this "hack", because Saltstack's pip.installed only accepts a pip/pip3
+  # wrapper, but apparently can't call "python3 -m pip", so without this, we can't install
+  # packages to the non-default python3 installation.
+  cat <<EOF >/usr/local/bin/pip3.9
+#!/bin/bash
+/usr/bin/python3.9 -m pip "\$@"
+EOF
+  chmod +x /usr/local/bin/pip3.9
+}
+
 function install_python_pip() {
   
   yum install -y openldap-devel
@@ -273,7 +290,7 @@ function install_python_pip() {
   # Runtime images 7.2.17 or newer:
   #  CentOS7: Python 2.7 + Python 3.6 + Python 3.8
   #  RHEL7  : Python 2.7 + Python 3.6 + Python 3.8
-  #  RHEL8  : Python 3.6 + Python 3.8
+  #  RHEL8  : Python 3.6 + Python 3.8 + Python 3.9
   # Note: this is currently the same as 7.2.16, but in the near future 
   # we make Python 3.8 the default for 7.2.17, hence the separate section.
   else
@@ -281,6 +298,7 @@ function install_python_pip() {
       #redhat8_update_python36_to_38
       redhat8_update_python36
       redhat8_install_python38
+      redhat8_install_python39
     elif [ "${OS}" == "redhat7" ] ; then
       redhat7_update_python27
       redhat7_install_python36
