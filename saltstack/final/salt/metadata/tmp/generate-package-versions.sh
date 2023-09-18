@@ -137,6 +137,9 @@ if [[ -n "$PYTHON38" ]]; then
 	cat /tmp/package-versions.json | jq --arg version ${PYTHON38} '. + {"python38": $version}' > /tmp/package-versions.json.tmp && mv /tmp/package-versions.json.tmp /tmp/package-versions.json
 fi
 
+if [[ -n "$PYTHON39" ]]; then
+	cat /tmp/package-versions.json | jq --arg version ${PYTHON39} '. + {"python39": $version}' > /tmp/package-versions.json.tmp && mv /tmp/package-versions.json.tmp /tmp/package-versions.json
+fi
 
 chmod 644 /tmp/package-versions.json
 
