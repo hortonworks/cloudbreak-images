@@ -34,11 +34,24 @@ install_openjdk:
   pkg.installed:
     - pkgs: {{ pillar['openjdk_packages'] }}
 
-{% if grains['os_family'] == 'Debian' %}
-create_jvm_symlink:
-  file.symlink:
-    - name: /usr/lib/jvm/java
-    - target: /usr/lib/jvm/java-{{ pillar['openjdk_version'] }}-openjdk-amd64
+{% if salt['environ.get']('OS') == 'redhat8' %}
+openjdk21-rhel8:
+  archive.extracted:
+    - name: /usr/lib/jvm/
+    - source: https://download.java.net/java/GA/jdk21/fd2272bbf8e04c3dbaee13770090416c/35/GPL/openjdk-21_linux-x64_bin.tar.gz
+    - source_hash: sha256=a30c454a9bef8f46d5f1bf3122830014a8fbe7ac03b5f8729bc3add4b92a1d0a
+openjdk21-rhel8-java-binary:
+  alternatives.install:
+    - name: java
+    - link: /usr/bin/java
+    - path: /usr/lib/jvm/jdk-21/bin/java
+    - priority: 1
+openjdk21-rhel8-javac-binary:
+  alternatives.install:
+    - name: javac
+    - link: /usr/bin/javac
+    - path: /usr/lib/jvm/jdk-21/bin/javac
+    - priority: 1
 {% endif %}
 
 add_openjdk_gplv2:
