@@ -19,6 +19,23 @@ create_corkscrew_softlink:
   cmd.run:
     - name: ln -s /usr/local/bin/corkscrew /usr/bin/corkscrew
 
+{% elif pillar['OS'] == 'redhat8' %}
+
+download_corkscrew_from_s3:
+  cmd.run:
+  - name: |
+      wget -c -q --no-cookies --no-check-certificate \
+            https://corkscrew-internal.s3.amazonaws.com/corkscrew \
+            -O /usr/local/bin/corkscrew
+
+make_corkscrew_executable:
+  cmd.run:
+    - name: chmod +x /usr/local/bin/corkscrew
+
+create_corkscrew_softlink:
+  cmd.run:
+    - name: ln -s /usr/local/bin/corkscrew /usr/bin/corkscrew
+
 {% else %}
 
 install_corkscrew:
