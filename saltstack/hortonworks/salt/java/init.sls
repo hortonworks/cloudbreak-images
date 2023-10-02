@@ -34,6 +34,7 @@ install_openjdk:
   pkg.installed:
     - pkgs: {{ pillar['openjdk_packages'] }}
 
+{# Temporarily removed - will adjust and re-enable once JDK21 gets a RedHat package repo
 {% if salt['environ.get']('OS') == 'redhat8' %}
 openjdk21-rhel8:
   archive.extracted:
@@ -53,6 +54,7 @@ openjdk21-rhel8-javac-binary:
     - path: /usr/lib/jvm/jdk-21/bin/javac
     - priority: 1
 {% endif %}
+#}
 
 add_openjdk_gplv2:
   file.managed:
