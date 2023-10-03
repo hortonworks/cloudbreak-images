@@ -33,8 +33,7 @@ JUMPGATE_AGENT_VERSION_INFO=$(jumpgate-agent --version)
 JUMPGATE_AGENT_VERSION_REGEX="jumpgate-agent version:\s([0-9]+\.[0-9]+\.[0-9]+\-b[0-9]+).*"
 if [[ $JUMPGATE_AGENT_VERSION_INFO =~ $JUMPGATE_AGENT_VERSION_REGEX ]]; then
 	cat /tmp/package-versions.json | jq --arg inverting_proxy_agent_version ${BASH_REMATCH[1]} '. + {"inverting-proxy-agent": $inverting_proxy_agent_version}' > /tmp/package-versions.json.tmp && mv /tmp/package-versions.json.tmp /tmp/package-versions.json
-
-	JUMPGATE_AGENT_GBN=$(curl -Ls "https://release.infra.cloudera.com/hwre-api/latestbuildinfo?stack=JUMPGATE&release=${BASH_REMATCH[1]}" --fail | jq -r '.redhat8 | .gbn')
+	JUMPGATE_AGENT_GBN=$(curl -Ls "https://release.infra.cloudera.com/hwre-api/latestcompiledbuild?stack=JUMPGATE&release=${BASH_REMATCH[1]}" --fail | jq -r '.gbn')
 	if [[ -n $JUMPGATE_AGENT_GBN ]]; then
 		cat /tmp/package-versions.json | jq --arg inverting_proxy_agent_gbn ${JUMPGATE_AGENT_GBN} '. + {"inverting-proxy-agent_gbn": $inverting_proxy_agent_gbn}' > /tmp/package-versions.json.tmp && mv /tmp/package-versions.json.tmp /tmp/package-versions.json
 	else
