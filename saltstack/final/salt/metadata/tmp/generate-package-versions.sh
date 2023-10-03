@@ -46,15 +46,6 @@ else
 	exit 1
 fi
 
-
-JUMPGATE_AGENT_GBN_REGEX=".*\/([0-9]+)\/.*"
-if [[ $JUMPGATE_AGENT_RPM_URL =~ $JUMPGATE_AGENT_GBN_REGEX ]]; then
-	
-else
-	echo "It is not possible to retrieve the gbn of Jumpgate Agent from the specified url."
-	exit 1
-fi
-
 set_version_for_rpm_pkg "cdp-telemetry"
 set_version_for_rpm_pkg "cdp-logging-agent"
 set_version_for_rpm_pkg "cdp-minifi-agent"
