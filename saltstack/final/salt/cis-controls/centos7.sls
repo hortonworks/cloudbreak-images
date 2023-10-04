@@ -55,15 +55,6 @@ sshd_harden_addressUserEnvPermit:
     - repl: "PermitUserEnvironment no"
     - append_if_not_found: True
 
-# 235 is the max value for ClientAliveInterval allowed by Azure Marketplace,
-# however during the VM provisioning stage Cloudbreak will set this to 1800,
-# which is essential for our own image validation process.
-sshd_harden_sshIdealTime_ClientAliveInterval:
-  file.replace:
-    - name: /etc/ssh/sshd_config
-    - pattern: "^ClientAliveInterval.*"
-    - repl: "ClientAliveInterval 180"
-    - append_if_not_found: True
 sshd_harden_sshIdealTime_ClientAliveCountMax:
   file.replace:
     - name: /etc/ssh/sshd_config

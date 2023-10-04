@@ -6,6 +6,8 @@ set -ex -o pipefail -o errexit
 
 # The list of tags of ansible tasks from the above-mentioned playbook that would break functionality, so we are skipping temporarily
 SKIP_TAGS="package_firewalld_installed,service_firewalld_enabled,package_openldap-clients_removed"
+EXTRA_VARS="sshd_idle_timeout_value=180"
+
 if [ "${IMAGE_BASE_NAME}" == "freeipa" ] ; then
     SKIP_TAGS+=",service_httpd_disabled"
 fi
@@ -25,7 +27,7 @@ git clone https://github.com/AutomateCompliance/AnsibleCompliancePlaybooks.git /
 ssh-keygen -A
 
 #Apply the SSG Ansible playbook
-~/.local/bin/ansible-playbook -i localhost, -c local /tmp/ansible-compliance-playbooks/rhel8-playbook-cis_server_l1.yml --skip-tags $SKIP_TAGS | tee /tmp/cis_log.txt
+~/.local/bin/ansible-playbook -i localhost, -c local /tmp/ansible-compliance-playbooks/rhel8-playbook-cis_server_l1.yml --skip-tags $SKIP_TAGS --extra-vars "$EXTRA_VARS" | tee /tmp/cis_log.txt
 chmod 644 /tmp/cis_log.txt
 
 #Cleanup

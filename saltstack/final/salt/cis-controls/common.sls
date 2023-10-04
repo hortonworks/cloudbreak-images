@@ -122,6 +122,14 @@ sshd_harden_addressLoginGraceTime:
     - repl: "LoginGraceTime 60"
     - append_if_not_found: True
 
+# 235 is the max value for ClientAliveInterval allowed by Azure Marketplace,
+sshd_harden_sshIdealTime_ClientAliveInterval:
+  file.replace:
+    - name: /etc/ssh/sshd_config
+    - pattern: "^ClientAliveInterval.*"
+    - repl: "ClientAliveInterval 180"
+    - append_if_not_found: True
+
 #2.2.1.2 Ensure chrony is configured
 Chrony_config:
   file.replace:
