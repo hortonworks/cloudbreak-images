@@ -159,7 +159,7 @@ CDP_TELEMETRY_VERSION ?= ""
 CDP_LOGGING_AGENT_VERSION ?= ""
 
 # This one is OS-independent (right?)
-DEFAULT_JUMPGATE_AGENT_RPM_URL := https://archive.cloudera.com/ccm/3.0.7/jumpgate-agent.rpm
+DEFAULT_JUMPGATE_AGENT_RPM_URL := https://cloudera-build-us-west-1.vpc.cloudera.com/s3/build/41924420/jumpgate/3.x/redhat8/yum/jumpgate-agent.rpm
 
 # This one is OS-independent (v2.0 is a rewrite done in GoLang)
 DEFAULT_METERING_AGENT_RPM_URL := "https://archive.cloudera.com/cp_clients/thunderhead-metering-heartbeat-application-2.0.0-b11100.x86_64.rpm"
