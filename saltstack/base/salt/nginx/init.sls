@@ -1,8 +1,17 @@
+{% if pillar['OS'] == 'redhat8' %}
+install_nginx_redhat8:
+  cmd.run:
+    - name: |
+        sudo dnf module reset nginx -y
+        sudo dnf module enable nginx:1.20 -y
+        sudo dnf install nginx -y
+{% else %}
 install_nginx:
   pkg.installed:
     - refresh: False
     - pkgs:
       - nginx
+{% endif %}
 
 /etc/nginx:
   file.managed:
@@ -20,8 +29,10 @@ install_nginx:
 enable_nginx:
   service.enabled:
     - name: nginx
+{% if pillar['OS'] == 'centos7' %}
     - require:
       - pkg: install_nginx
+{% endif %}
 
 nginxRestart:
   file.line:
