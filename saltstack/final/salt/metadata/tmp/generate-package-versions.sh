@@ -37,12 +37,10 @@ else
 	echo "It is not possible to retrieve the version of Jumpgate Agent from its --version param."
 	exit 1
 fi
-
-JUMPGATE_AGENT_GBN_REGEX=".*\/([0-9]+)\/.*"
-if [[ $JUMPGATE_AGENT_RPM_URL =~ $JUMPGATE_AGENT_GBN_REGEX ]]; then
-	cat /tmp/package-versions.json | jq --arg inverting_proxy_agent_gbn ${BASH_REMATCH[1]} '. + {"inverting-proxy-agent_gbn": $inverting_proxy_agent_gbn}' > /tmp/package-versions.json.tmp && mv /tmp/package-versions.json.tmp /tmp/package-versions.json
+if [[ -n $JUMPGATE_AGENT_GBN ]]; then
+	cat /tmp/package-versions.json | jq --arg inverting_proxy_agent_gbn ${JUMPGATE_AGENT_GBN} '. + {"inverting-proxy-agent_gbn": $inverting_proxy_agent_gbn}' > /tmp/package-versions.json.tmp && mv /tmp/package-versions.json.tmp /tmp/package-versions.json
 else
-	echo "It is not possible to retrieve the gbn of Jumpgate Agent from the specified url."
+	echo "JUMPGATE_AGENT_GBN environment variable is empty."
 	exit 1
 fi
 
