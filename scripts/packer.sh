@@ -82,6 +82,12 @@ packer_in_container() {
   if ! [[ $JUMPGATE_AGENT_RPM_URL =~ ^http.*rpm$ ]]; then
       export JUMPGATE_AGENT_RPM_URL=$DEFAULT_JUMPGATE_AGENT_RPM_URL
   fi
+
+  ## Download the jumpgate-agent rpm, get the version and call REDB to lookup the GBN
+  wget $JUMPGATE_AGENT_RPM_URL
+  JUMPGATE_AGENT_VERSION=$(rpm -qp --queryformat '%{VERSION}' ${JUMPGATE_AGENT_RPM_URL##*/})
+  JUMPGATE_AGENT_GBN=$(curl -Ls "https://release.infra.cloudera.com/hwre-api/latestcompiledbuild?stack=JUMPGATE&release=$JUMPGATE_AGENT_VERSION" --fail | jq -r '.gbn')
+
   if ! [[ $METERING_AGENT_RPM_URL =~ ^http.*rpm$ ]]; then
     export METERING_AGENT_RPM_URL=$DEFAULT_METERING_AGENT_RPM_URL
   fi
@@ -216,6 +222,7 @@ packer_in_container() {
     -e CDP_LOGGING_AGENT_VERSION="$CDP_LOGGING_AGENT_VERSION" \
     -e CDP_LOGGING_AGENT_RPM_URL="$CDP_LOGGING_AGENT_RPM_URL" \
     -e JUMPGATE_AGENT_RPM_URL="$JUMPGATE_AGENT_RPM_URL" \
+    -e JUMPGATE_AGENT_GBN="$JUMPGATE_AGENT_GBN" \
     -e METERING_AGENT_RPM_URL="$METERING_AGENT_RPM_URL" \
     -e FREEIPA_PLUGIN_RPM_URL="$FREEIPA_PLUGIN_RPM_URL" \
     -e FREEIPA_HEALTH_AGENT_RPM_URL="$FREEIPA_HEALTH_AGENT_RPM_URL" \
