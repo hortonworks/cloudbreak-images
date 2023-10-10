@@ -621,7 +621,6 @@
         "REPOSITORY_TYPE={{user `repository_type`}}",
         "SLES_REGISTRATION_CODE={{user `sles_registration_code`}}",
         "PACKAGE_VERSIONS={{user `package_versions`}}",
-        "TAGS={{user `tags`}}",
         "SALT_VERSION={{user `salt_version`}}",
         "SALT_PATH={{user `salt_path`}}",
         "PARCELS_ROOT={{ user `parcels_root` }}",
@@ -666,6 +665,16 @@
       "source": "/tmp/package-versions.json",
       "destination": "package-versions.json",
       "direction" : "download"
+    },
+    {
+      "type": "shell",
+      "script": "scripts/generate-tags.sh",
+      "environment_vars": [
+        "TAGS={{user `tags`}}",
+        "OS={{user `os`}}"
+      ],
+      "execute_command": "chmod +x {{ .Path }}; sudo {{ .Vars }} {{ .Path }}",
+      "remote_folder": "/opt/provision-scripts"
     },
     {
       "type": "file",
