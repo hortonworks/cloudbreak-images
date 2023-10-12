@@ -88,6 +88,7 @@
     "tags": "{{ env `TAGS` }}",
     "python_apt_version" : "{{ env `PYTHON_APT_VERSION` }}",
     "salt_repo_file": "{{ env `SALT_REPO_FILE` }}",
+    "aws_snapshot_users": "{{ env `AWS_SNAPSHOT_USER` }}",
     "aws_snapshot_groups": "{{ env `AWS_SNAPSHOT_GROUPS` }}",
     "aws_ami_groups": "{{ env `AWS_AMI_GROUPS` }}",
     "aws_ami_org_arns": "{{ env `AWS_AMI_ORG_ARN` }}",
@@ -182,6 +183,7 @@
       "run_tags": {
         "owner": "{{ user `image_owner` }}"
       },
+      "snapshot_users": "{{ user `aws_snapshot_users` }}",
       "snapshot_groups": "{{ user `aws_snapshot_groups` }}",
       "ami_groups": "{{ user `aws_ami_groups` }}",
       "ami_block_device_mappings": [
@@ -224,6 +226,7 @@
       "run_tags": {
         "owner": "{{ user `image_owner` }}"
       },
+      "snapshot_users": "{{ user `aws_snapshot_users` }}",
       "snapshot_groups": "{{ user `aws_snapshot_groups` }}",
       "ami_groups": "{{ user `aws_ami_groups` }}",
       "ami_org_arns": "{{ user `aws_ami_org_arns` }}",
