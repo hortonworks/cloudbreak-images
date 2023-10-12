@@ -8,7 +8,7 @@ final:
 {% endif %}
     - krb5
     - metadata
-{% if pillar['subtype'] != 'Docker' and salt['environ.get']('CLOUD_PROVIDER') != 'AWS_GOV' %}
+{% if pillar['subtype'] != 'Docker' %}
     - cis-controls
 {% endif %}
     - cleanup
