@@ -1,5 +1,7 @@
 #!/bin/bash
 
+set -ex
+
 AMI_ID=$IMAGE_NAME
 IMAGE_NAME=$(aws ec2 describe-images --region $SOURCE_LOCATION --filters "Name=image-id,Values=$AMI_ID" --owners "self" --query 'Images[*].[Name]' --output "text")
 
@@ -58,15 +60,15 @@ function wait_for_image_and_check() {
     fi
   fi
 
-  log "Querying snapshots in region $REGION for image $AMI_IN_REGION"
-  SNAPSHOT_IDS=$(aws ec2 describe-images --image-ids $AMI_IN_REGION --region $REGION --query "Images[*].BlockDeviceMappings[*].Ebs.SnapshotId" --output "text")
+  log "Querying snapshot in region $REGION for image $AMI_IN_REGION"
+  SNAPSHOT_ID=$(aws ec2 describe-images --image-ids $AMI_IN_REGION --region $REGION --query "Images[0].BlockDeviceMappings[0].Ebs.SnapshotId" --output "text")
 
   if [ "$MAKE_PUBLIC_SNAPSHOTS" == "yes" ]; then
-    echo $SNAPSHOT_IDS | while read SNAPSHOT_ID
-    do
-      log "Setting snapshot $SNAPSHOT_ID visibility to public in region $REGION for image $AMI_IN_REGION"
-      aws ec2 modify-snapshot-attribute --snapshot-id $SNAPSHOT_ID --region $REGION --create-volume-permission "Add=[{Group=all}]"
-    done
+    log "Setting snapshot $SNAPSHOT_ID visibility to public in region $REGION for image $AMI_IN_REGION"
+    aws ec2 modify-snapshot-attribute --snapshot-id $SNAPSHOT_ID --region $REGION --create-volume-permission "Add=[{Group=all}]"
+  elif [ -n "$AWS_SNAPSHOT_USER" ]; then
+    log "Setting snapshot $SNAPSHOT_ID visibility for user in region $REGION for image $AMI_IN_REGION"
+    aws ec2 modify-snapshot-attribute --snapshot-id $SNAPSHOT_ID --region $REGION --create-volume-permission "Add=[{UserId=$AWS_SNAPSHOT_USER}]"
   fi
 
   if [ "$MAKE_PUBLIC_AMIS" == "yes" ]; then
@@ -78,6 +80,7 @@ function wait_for_image_and_check() {
   fi
 
   IMAGESTATUS=""
+  SNAPSTATUS=""
   for ((i=0; i<5; i++))
   do
     IMAGE_DESC=$(aws ec2 describe-images --region $REGION --image-ids $AMI_IN_REGION --output json)
@@ -106,7 +109,24 @@ function wait_for_image_and_check() {
       fi
     fi
 
-    if [ "${IMAGESTATUS}" == "OK" ]; then
+    SNAPSHOT_PERMISSIONS=$(aws ec2 describe-snapshot-attribute --region $REGION --snapshot-id $SNAPSHOT_ID --attribute createVolumePermission --output json)
+    SNAPSHOT_PUBLIC=$(echo $SNAPSHOT_PERMISSIONS | jq -r '.CreateVolumePermissions | any(.Group == "all")')
+    if [ "${MAKE_PUBLIC_SNAPSHOTS}" == "yes" ]; then
+      if [ "${SNAPSHOT_PUBLIC}" == "true" ]; then
+        SNAPSTATUS="OK"
+      fi
+    elif [ -n "${AWS_SNAPSHOT_USER}" ]; then
+      SNAPSHOT_SHARED_WITH_USER=$(echo $SNAPSHOT_PERMISSIONS | jq -r --arg userId $AWS_SNAPSHOT_USER '.CreateVolumePermissions | any(.UserId == $userId)')
+      if [ "${SNAPSHOT_PUBLIC}" == "false" ] && [ "${SNAPSHOT_SHARED_WITH_USER}" == "true" ]; then
+        SNAPSTATUS="OK"
+      fi
+    else
+      if [ "${SNAPSHOT_PUBLIC}" == "false" ]; then
+        SNAPSTATUS="OK"
+      fi
+    fi
+
+    if [ "${IMAGESTATUS}" == "OK" ] && [ "${SNAPSTATUS}" == "OK" ]; then
       break
     else
       sleep 60
@@ -117,6 +137,13 @@ function wait_for_image_and_check() {
     log "The $AMI_IN_REGION in $REGION region is available and in correct state."
   else
     log "FAILURE | The $AMI_IN_REGION in $REGION region is not available or not in correct state."
+    exit 1
+  fi
+
+  if [ "${SNAPSTATUS}" = "OK" ]; then
+    log "The $SNAPSHOT_ID in $REGION region is available and in correct state."
+  else
+    log "FAILURE | The $SNAPSHOT_ID in $REGION region is not available or not in correct state."
     exit 1
   fi
 
