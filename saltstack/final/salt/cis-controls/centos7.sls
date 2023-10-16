@@ -516,3 +516,12 @@ mask_rpcbind_service:
 mask_rpcbind_socket_service:
   service.masked:
     - name: rpcbind.socket
+
+#Ensure default user shell timeout is 900 seconds
+/etc/profile.d/timeout.sh:
+  file.managed:
+    - user: root
+    - group: root
+    - source:
+      - salt://{{ slspath }}/etc/profile.d/timeout.sh
+    - mode: 755
