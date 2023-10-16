@@ -17,7 +17,6 @@ include:
   - {{ slspath }}.user
   - {{ slspath }}.firewall
   - {{ slspath }}.umask
-  - {{ slspath }}.timeout
   - {{ slspath }}.jinja
   - {{ slspath }}.corkscrew
   - {{ slspath }}.storage
