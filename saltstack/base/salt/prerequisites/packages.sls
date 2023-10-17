@@ -13,23 +13,12 @@ packages_install:
       - unzip
       - curl
       - net-tools
-  {% if grains['os_family'] == 'Suse' %}
-      - git-core
-      - man
-      - libxml2-tools
-  {% else %}
       - git
-      - tmux
-  {% endif %}
   {% if pillar['OS'] != 'redhat8' %}  
       - ntp
       - deltarpm
   {% endif %}
-  {% if grains['os'] != 'Amazon' %}
-      - bash-completion
-  {% endif %}
       - iptables
-      - mc
       - ruby
   {% if grains['os_family'] == 'RedHat' %}
       - snappy
@@ -41,20 +30,10 @@ packages_install:
     {% if grains['osmajorrelease'] | int == 7 %}
       - iptables-services
     {% endif %}
-  {% elif grains['os_family'] == 'Debian' %}
-      - iptables-persistent
-      - dnsutils
   {% endif %}
       - nvme-cli
       - openssl
-  {% if pillar['OS'] in ('centos7', 'redhat7', 'redhat8') %}
-      - vim-common
-  {% else %}
-      - vim
-  {% endif %}
-  {% if grains['os_family'] != 'Suse' and grains['osmajorrelease'] |int != 12 %}
       - autossh
-  {% endif %}
       - ipa-client
       - openldap
       - openldap-clients
@@ -109,25 +88,3 @@ remove_azcopy_extract:
 {% endif %}
 
 {% endif %}
-
-{% if grains['os_family'] == 'Suse' %}
-remove_snappy:
-  pkg.removed:
-    - pkgs:
-      - libsnappy1
-      - snappy-devel
-
-install_hostname:
-  cmd.run:
-    - name: zypper in --replacefiles -y hostname
-{% endif %}
-
-{% if grains['os'] == 'Amazon' %}
-install_bash_completion:
-  pkg.installed:
-    - refresh: False
-    - fromrepo: epel
-    - pkgs:
-      - bash-completion
-{% endif %}
-
