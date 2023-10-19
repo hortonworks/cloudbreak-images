@@ -9,7 +9,7 @@
 
 set_hardening_to_cis_server_l1:
   file.managed:
-    - name: /log/hardening
+    - name: /var/log/hardening
     - contents:
       - "cis_server_l1"
 

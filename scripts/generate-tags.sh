@@ -13,8 +13,8 @@ if [[ "$OS" == "redhat8" ]]; then
     TAGS=$(echo $TAGS | jq --arg fipsmode $FIPSMODE -r '. + {"fips-mode": $fipsmode}')
 fi
 
-if [ -f /log/hardening ]; then
-    HARDENING=$(cat /log/hardening)
+if [ -f /var/log/hardening ]; then
+    HARDENING=$(cat /var/log/hardening)
     TAGS=$(echo $TAGS | jq -r --arg hardening "$HARDENING" '. + {"hardening": $hardening}')
 fi
 
