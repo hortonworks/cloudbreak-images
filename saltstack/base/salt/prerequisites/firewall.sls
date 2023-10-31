@@ -21,9 +21,13 @@ disable_firewalld_service:
     - name: firewalld
     - enable: False
 
+{% if pillar['subtype'] != 'Docker' %}
+
 mask_firewalld_service:
   service.masked:
     - name: firewalld
+
+{% endif %}
 
 {% elif grains['os_family'] == 'Suse' %}
 

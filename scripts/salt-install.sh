@@ -169,9 +169,17 @@ function redhat8_update_python36() {
   yum install -y python3-devel
   
   echo PYTHON36=$(yum list installed | grep ^python36\\.x86_64 | grep -oi " [^\s]* " | xargs) >> /tmp/python_install.properties
-
-  # CM agent needs this to work
-  alternatives --set python /usr/bin/python3
+  
+  echo "RedHat8 update python36. OS: $OS CLOUD_PROVIDER: $CLOUD_PROVIDER"
+  if [ "${OS}" == "redhat8" ] &&  [ "${CLOUD_PROVIDER}" == "YARN" ]; then
+    update-alternatives --install /usr/bin/python python /usr/bin/python2.7 1
+    update-alternatives --install /usr/bin/python python /usr/bin/python3.6 2
+    alternatives --set python /usr/bin/python3.6
+    python -m pip install --upgrade pip
+  else
+    # CM agent needs this to work
+    alternatives --set python /usr/bin/python3
+  fi
 
   # Required dependency for IdM
   pip3 install pyasn1-modules
