@@ -138,7 +138,7 @@ except NameError:
     def place_parcel(parcel_path):
         print("Place parcel: {0}".format(parcel_path))
         base_folder, parcel_meta = read_parcel_meta(parcel_path)
-        subprocess.check_call("echo Decompress " + parcel_path + ";df -h", shell=True)
+        subprocess.check_call("echo Decompress " + parcel_path, shell=True)
 
         cmd = 'tar zxf "{0}" -C "{1}"'.format(parcel_path, PARCELS_ROOT)
         subprocess.check_call(cmd, shell=True)
@@ -148,11 +148,12 @@ except NameError:
 
         open(os.path.join(PARCELS_ROOT, parcel_meta["name"], ".dont_delete"), "w").close()
         activate_parcel(parcel_meta["name"], parcel_meta["version"])
+        check_storage()
 
 
     def place_parcels():
         for parcel_file_name, parcel_repository in PRE_WARM_PARCELS:
-            subprocess.check_call("echo Download " + parcel_file_name + ";df -h", shell=True)
+            subprocess.check_call("echo Download " + parcel_file_name, shell=True)
             parcel_url = normalize_url(parcel_repository) + "/" + parcel_file_name
             parcel_dest = os.path.join(PARCEL_REPO, parcel_file_name)
             print("Downloading parcel {0}, please wait ...".format(parcel_url))
@@ -161,17 +162,19 @@ except NameError:
             hash_method = download_parcel_checksum(parcel_url, parcel_dest)
             verify_checksum(hash_method, parcel_dest)
             place_parcel(parcel_dest)
+            check_storage()
 
 
     def place_csds():
         for csd_url in PRE_WARM_CSD:
-            subprocess.check_call("echo Download " + csd_url + ";df -h", shell=True)
+            subprocess.check_call("echo Download " + csd_url, shell=True)
             if isstr(csd_url):
                 download(csd_url, os.path.join(CSD_ROOT, csd_url.split("/")[-1]))
                 print("Downloaded CSD:" + csd_url)
             elif isinstance(csd_url, list):
                 download(csd_url[0], os.path.join(CSD_ROOT, csd_url[1]))
                 print("Downloaded CSD:" + csd_url[0])
+            check_storage()
 
 
     def create_users():
@@ -181,6 +184,9 @@ except NameError:
     def own_files():
         subprocess.check_call("chown -R cloudera-scm:cloudera-scm /opt/cloudera", shell=True)
 
+    def check_storage():
+        cmd = 'df -h; du -h -d2 /opt/cloudera'
+        subprocess.check_call(cmd, shell=True)
 
     if PRE_WARM_PARCELS:
         # ensure cloudera user and folders is here

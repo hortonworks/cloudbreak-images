@@ -136,6 +136,11 @@ ifeq ($(OS),centos7)
 	endif
 	IMAGE_SIZE ?= 36
 else
+	ifeq ($(CLOUD_PROVIDER),Azure)
+		ifeq ($(STACK_VERSION),7.2.18)
+			IMAGE_SIZE ?= 80
+		endif
+	endif
 	IMAGE_SIZE ?= 64
 endif
 
