@@ -234,7 +234,7 @@ North Central US:cldrnorthcentralus,\
 East US 2:cldreastus2,\
 Japan East:cldrjapaneast,\
 Japan West:cldrjapanwest,\
-South East Asia:cldrsoutheastasia,\
+Southeast Asia:cldrsoutheastasia,\
 West US:cldrwestus,\
 West Europe:cldrwesteurope,\
 Brazil South:cldrbrazilsouth,\
