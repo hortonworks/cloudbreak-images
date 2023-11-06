@@ -4,6 +4,13 @@ update-packages:
     - refresh: True
 {% endif %}
 
+# Apparently we have this on Azure RHEL8 images by default and it causes problems...
+{% if pillar['OS'] == 'redhat8' %}
+remove_sssd_krb5_package:
+  pkg.removed:
+    - name: sssd-krb5
+{% endif %}
+
 packages_install:
   pkg.installed:
     - refresh: False
@@ -35,6 +42,9 @@ packages_install:
       - openssl
       - autossh
       - ipa-client
+  {% if pillar['OS'] == 'redhat8' %}
+      - sssd
+  {% endif %}
       - openldap
       - openldap-clients
       - openldap-devel
