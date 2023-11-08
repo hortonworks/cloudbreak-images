@@ -9,10 +9,6 @@ update-packages:
 remove_sssd_krb5_package:
   pkg.removed:
     - name: sssd-krb5
-
-reinstall_sssd:
-  pkg.installed:
-    - name: sssd
 {% endif %}
 
 
