@@ -9,7 +9,12 @@ update-packages:
 remove_sssd_krb5_package:
   pkg.removed:
     - name: sssd-krb5
+
+reinstall_sssd:
+  pkg.installed:
+    - name: sssd
 {% endif %}
+
 
 packages_install:
   pkg.installed:
@@ -42,9 +47,6 @@ packages_install:
       - openssl
       - autossh
       - ipa-client
-  {% if pillar['OS'] == 'redhat8' %}
-      - sssd
-  {% endif %}
       - openldap
       - openldap-clients
       - openldap-devel
