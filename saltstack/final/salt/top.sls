@@ -8,7 +8,4 @@ final:
 {% endif %}
     - krb5
     - metadata
-{% if pillar['subtype'] != 'Docker' %}
-    - cis-controls
-{% endif %}
     - cleanup
