@@ -28,20 +28,21 @@ echo '{}' | jq --arg sb "$(salt-bootstrap --version | awk '{print $2}')" '. + {"
 cat /tmp/package-versions.json | jq --arg sv "$($SALT_PATH/bin/salt-call --local grains.get saltversion --out json | jq -r .local)" '. + {"salt": $sv}' > /tmp/package-versions.json
 
 cat /tmp/package-versions.json | jq --arg git_rev ${GIT_REV} '. + {"cloudbreak_images": $git_rev}' > /tmp/package-versions.json.tmp && mv /tmp/package-versions.json.tmp /tmp/package-versions.json
-
-JUMPGATE_AGENT_VERSION_INFO=$(jumpgate-agent --version)
-JUMPGATE_AGENT_VERSION_REGEX="jumpgate-agent version:\s([0-9]+\.[0-9]+\.[0-9]+\-b[0-9]+).*"
-if [[ $JUMPGATE_AGENT_VERSION_INFO =~ $JUMPGATE_AGENT_VERSION_REGEX ]]; then
-	cat /tmp/package-versions.json | jq --arg inverting_proxy_agent_version ${BASH_REMATCH[1]} '. + {"inverting-proxy-agent": $inverting_proxy_agent_version}' > /tmp/package-versions.json.tmp && mv /tmp/package-versions.json.tmp /tmp/package-versions.json
-else
-	echo "It is not possible to retrieve the version of Jumpgate Agent from its --version param."
-	exit 1
-fi
-if [[ -n $JUMPGATE_AGENT_GBN ]]; then
-	cat /tmp/package-versions.json | jq --arg inverting_proxy_agent_gbn ${JUMPGATE_AGENT_GBN} '. + {"inverting-proxy-agent_gbn": $inverting_proxy_agent_gbn}' > /tmp/package-versions.json.tmp && mv /tmp/package-versions.json.tmp /tmp/package-versions.json
-else
-	echo "JUMPGATE_AGENT_GBN environment variable is empty."
-	exit 1
+if [ "${OS}" != "redhat8" ] &&  [ "${CLOUD_PROVIDER}" != "YARN" ]; then
+	JUMPGATE_AGENT_VERSION_INFO=$(jumpgate-agent --version)
+	JUMPGATE_AGENT_VERSION_REGEX="jumpgate-agent version:\s([0-9]+\.[0-9]+\.[0-9]+\-b[0-9]+).*"
+	if [[ $JUMPGATE_AGENT_VERSION_INFO =~ $JUMPGATE_AGENT_VERSION_REGEX ]]; then
+		cat /tmp/package-versions.json | jq --arg inverting_proxy_agent_version ${BASH_REMATCH[1]} '. + {"inverting-proxy-agent": $inverting_proxy_agent_version}' > /tmp/package-versions.json.tmp && mv /tmp/package-versions.json.tmp /tmp/package-versions.json
+	else
+		echo "It is not possible to retrieve the version of Jumpgate Agent from its --version param."
+		exit 1
+	fi
+	if [[ -n $JUMPGATE_AGENT_GBN ]]; then
+		cat /tmp/package-versions.json | jq --arg inverting_proxy_agent_gbn ${JUMPGATE_AGENT_GBN} '. + {"inverting-proxy-agent_gbn": $inverting_proxy_agent_gbn}' > /tmp/package-versions.json.tmp && mv /tmp/package-versions.json.tmp /tmp/package-versions.json
+	else
+		echo "JUMPGATE_AGENT_GBN environment variable is empty."
+		exit 1
+	fi
 fi
 
 set_version_for_rpm_pkg "cdp-telemetry"

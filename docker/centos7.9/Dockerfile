@@ -35,6 +35,7 @@ COPY /saltstack /tmp/saltstack
 COPY /repos /tmp/repos
 COPY /scripts/salt-install.sh /tmp/saltstack/
 COPY /scripts/salt-setup.sh /tmp/saltstack/
+COPY /scripts/salt-final.sh /tmp/saltstack/
 COPY /scripts/salt_requirements.txt /tmp/salt_requirements.txt
 COPY docker/common/hwx-internal.repo /etc/yum.repos.d/hwx-internal.repo
 
@@ -73,6 +74,7 @@ ENV CLUSTERMANAGER_GPGKEY=${CLUSTERMANAGER_GPGKEY}
 RUN mkdir /yarn-private
 
 RUN /tmp/saltstack/salt-setup.sh hortonworks
+RUN /tmp/saltstack/salt-final.sh
 RUN rm -f /etc/salt/minion_id /etc/salt/pki/minion/minion.pem /etc/salt/pki/minion/minion.pub
 
 # restore systemctl to system default
