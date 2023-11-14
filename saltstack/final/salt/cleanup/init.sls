@@ -4,8 +4,8 @@ include:
   - {{ slspath }}.fstab
 {% if pillar['subtype'] != 'Docker' %}
   - {{ slspath }}.hostname
-{% endif %}
   - {{ slspath }}.kernel
+{% endif %}
   - {{ slspath }}.package
   - {{ slspath }}.sync_fs
   - {{ slspath }}.salt

@@ -28,7 +28,7 @@ echo '{}' | jq --arg sb "$(salt-bootstrap --version | awk '{print $2}')" '. + {"
 cat /tmp/package-versions.json | jq --arg sv "$($SALT_PATH/bin/salt-call --local grains.get saltversion --out json | jq -r .local)" '. + {"salt": $sv}' > /tmp/package-versions.json
 
 cat /tmp/package-versions.json | jq --arg git_rev ${GIT_REV} '. + {"cloudbreak_images": $git_rev}' > /tmp/package-versions.json.tmp && mv /tmp/package-versions.json.tmp /tmp/package-versions.json
-if [ "${OS}" != "redhat8" ] &&  [ "${CLOUD_PROVIDER}" != "YARN" ]; then
+if [[ -n $JUMPGATE_AGENT_RPM_URL ]]; then
 	JUMPGATE_AGENT_VERSION_INFO=$(jumpgate-agent --version)
 	JUMPGATE_AGENT_VERSION_REGEX="jumpgate-agent version:\s([0-9]+\.[0-9]+\.[0-9]+\-b[0-9]+).*"
 	if [[ $JUMPGATE_AGENT_VERSION_INFO =~ $JUMPGATE_AGENT_VERSION_REGEX ]]; then
@@ -91,13 +91,15 @@ if [[ "$CUSTOM_IMAGE_TYPE" == "freeipa" ]]; then
 		exit 1
 	fi
 elif [[ "$CUSTOM_IMAGE_TYPE" == "hortonworks" ]]; then
-	METERING_REGEX=".*\/[_a-z\-]*\-(.*)\-.*\.x86_64\.rpm"
-	if [[ $METERING_AGENT_RPM_URL =~ $METERING_REGEX ]]; then
-		cat /tmp/package-versions.json | jq --arg metering_agent_version ${BASH_REMATCH[1]} '. + {"metering_agent": $metering_agent_version}' > /tmp/package-versions.json.tmp && mv /tmp/package-versions.json.tmp /tmp/package-versions.json
-	else
-		echo "It is not possible to retrieve the version of Metering Agent from the specified url."
-		exit 1
-	fi
+  if [[ -n $METERING_AGENT_RPM_URL ]]; then
+    METERING_REGEX=".*\/[_a-z\-]*\-(.*)\-.*\.x86_64\.rpm"
+    if [[ $METERING_AGENT_RPM_URL =~ $METERING_REGEX ]]; then
+      cat /tmp/package-versions.json | jq --arg metering_agent_version ${BASH_REMATCH[1]} '. + {"metering_agent": $metering_agent_version}' > /tmp/package-versions.json.tmp && mv /tmp/package-versions.json.tmp /tmp/package-versions.json
+    else
+      echo "It is not possible to retrieve the version of Metering Agent from the specified url."
+      exit 1
+    fi
+  fi
 
 	if [ -n "$STACK_VERSION" ] && [ $(version $STACK_VERSION) -lt $(version "7.2.15") ]; then
 		echo "Skip java versions as CB should not allow to force java version before 7.2.15"

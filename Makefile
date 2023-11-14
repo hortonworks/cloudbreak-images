@@ -637,18 +637,18 @@ docker-build-yarn-loadbalancer:
 	@ OS=centos7 OS_TYPE=redhat7 CLOUD_PROVIDER=YARN TAG=yarn-loadbalancer DIR=yarn-loadbalancer make docker-build
 
 docker-build:
-	$(eval DOCKER_ENVS="OS=$(OS) OS_TYPE=$(OS_TYPE) CLOUD_PROVIDER=$(CLOUD_PROVIDER) SALT_VERSION=$(SALT_VERSION) SALT_PATH=$(SALT_PATH) PYZMQ_VERSION=$(PYZMQ_VERSION) PYTHON_APT_VERSION=$(PYTHON_APT_VERSION) TRACE=1")
-	$(eval DOCKER_BUILD_ARGS=$(shell echo ${DOCKER_ENVS} | xargs -n 1 echo "--build-arg " | xargs))
 	$(eval DOCKER_IMAGE_NAME=cloudbreak/${TAG}:$(shell date +%Y-%m-%d-%H-%M-%S))
+	$(eval DOCKER_ENVS="OS=$(OS) OS_TYPE=$(OS_TYPE) CLOUD_PROVIDER=$(CLOUD_PROVIDER) SALT_VERSION=$(SALT_VERSION) SALT_PATH=$(SALT_PATH) PYZMQ_VERSION=$(PYZMQ_VERSION) PYTHON_APT_VERSION=$(PYTHON_APT_VERSION) TRACE=1 CUSTOM_IMAGE_TYPE=$(CUSTOM_IMAGE_TYPE) DOCKER_IMAGE_NAME=$(DOCKER_IMAGE_NAME) DOCKER_REPOSITORY=$(DOCKER_REPOSITORY) IMAGE_UUID=$(IMAGE_UUID) TAG=$(TAG) IMAGE_NAME=$(IMAGE_NAME)" )
+	$(eval DOCKER_BUILD_ARGS=$(shell echo ${DOCKER_ENVS} | xargs -n 1 echo "--build-arg " | xargs))
 	docker build $(DOCKER_BUILD_ARGS) -t $(DOCKER_REPOSITORY)/$(DOCKER_IMAGE_NAME) -f docker/${DIR}/Dockerfile .
+	docker run --rm -v $(PWD)/docker:/tmp/docker -w /tmp --entrypoint /bin/bash $(DOCKER_REPOSITORY)/$(DOCKER_IMAGE_NAME) -c "cp /tmp/manifest.json /tmp/docker/"
+	$(eval MANIFEST_FILE="$(IMAGE_NAME)_$(METADATA_FILENAME_POSTFIX).json")
+	mv "$(PWD)/docker/manifest.json" $(MANIFEST_FILE)
 	make DOCKER_IMAGE_NAME=$(DOCKER_IMAGE_NAME) push-docker-image-to-hwx-registry
-	make DOCKER_IMAGE_NAME=$(DOCKER_IMAGE_NAME) generate-docker-manifest
 
 push-docker-image-to-hwx-registry:
 	docker login --username=$(DOCKER_REPO_USERNAME) --password=$(DOCKER_REPO_PASSWORD) $(DOCKER_REPOSITORY) && docker push $(DOCKER_REPOSITORY)/${DOCKER_IMAGE_NAME}
 
-generate-docker-manifest:
-	DOCKER_REPOSITORY=$(DOCKER_REPOSITORY) IMAGE_UUID=$(IMAGE_UUID) TAG=$(TAG) IMAGE_NAME=$(IMAGE_NAME) OS=$(OS) OS_TYPE=$(OS_TYPE) METADATA_FILENAME_POSTFIX=$(METADATA_FILENAME_POSTFIX) ./scripts/generate-docker-manifest.sh
 
 build-in-docker:
 	docker run -it \

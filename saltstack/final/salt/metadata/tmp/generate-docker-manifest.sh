@@ -11,9 +11,8 @@ set -ex -o pipefail
 : ${IMAGE_NAME?}
 : ${OS?}
 : ${OS_TYPE?}
-: ${METADATA_FILENAME_POSTFIX?}
 
-MANIFEST="${IMAGE_NAME}_${METADATA_FILENAME_POSTFIX}.json"
+MANIFEST=/tmp/manifest.json
 echo "{}" > $MANIFEST
 
 add_arg_to_manifest() {
