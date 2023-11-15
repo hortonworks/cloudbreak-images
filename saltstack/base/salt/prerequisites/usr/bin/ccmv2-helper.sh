@@ -17,7 +17,7 @@ setup_ccmv2() {
   touch "$AGENT_CERT_PATH"
 
   if [[ ! -z "$CCM_V2_AGENT_CERTIFICATE" &&  ! -z $CCM_V2_AGENT_ENCIPHERED_KEY ]]; then
-    CCM_V2_AGENT_KEY_HEX=$(echo -n $CCM_V2_AGENT_KEY_ID | od -An -tx1 -N16 | tr -d ' \n')
+    CCM_V2_AGENT_KEY_HEX=$(xxd -pu -l 16 <<< $CCM_V2_AGENT_KEY_ID)
     echo ${CCM_V2_AGENT_ENCIPHERED_KEY} | openssl enc -aes-128-cbc -d -A -a -K ${CCM_V2_AGENT_KEY_HEX} -iv ${LEGACY_IV} > ${AGENT_KEY_PATH}
     chmod 400 "$AGENT_KEY_PATH"
 
@@ -49,8 +49,8 @@ setup_ccmv2() {
         echo "HMAC for Machine User Private Key does not match the calculated value. Exiting."
         exit 1
       fi
-      CCM_V2_AGENT_KEY_HEX32=$(echo -n $CCM_V2_AGENT_KEY_ID | od -An -tx1 -N32 | tr -d ' \n')
-      CCM_V2_IV_HEX=$(echo -n $CCM_V2_IV | od -An -tx1 -N16 | tr -d ' \n')
+      CCM_V2_AGENT_KEY_HEX32=$(xxd -pu -l 32 -c 256 <<< $CCM_V2_AGENT_KEY_ID)
+      CCM_V2_IV_HEX=$(xxd -pu -l 16 <<< $CCM_V2_IV)
       ACCESS_KEY="$(echo ${CCM_V2_AGENT_ENCIPHERED_ACCESS_KEY} | openssl enc -aes-256-cbc -d -A -a -K ${CCM_V2_AGENT_KEY_HEX32} -iv ${CCM_V2_IV_HEX})"
     fi
 
