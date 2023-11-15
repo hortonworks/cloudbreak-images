@@ -1,7 +1,6 @@
 #!/bin/bash
 
-set -x
-set
+set -ex -o pipefail -o errexit
 
 : ${CLOUD_PLATFORM:? required}
 : ${START_LABEL:? required}
