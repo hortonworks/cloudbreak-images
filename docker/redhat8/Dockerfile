@@ -11,6 +11,9 @@ ARG CLOUD_PROVIDER
 ARG PRE_WARM_PARCELS
 ARG PRE_WARM_CSD
 
+RUN systemctl enable sshd
+RUN systemctl status sshd
+
 ENV SYSTEMCTL_REPLACEMENT=https://raw.githubusercontent.com/hortonworks/docker-systemctl-replacement/3a885817b377f0307bd03d82323fa5749136de8f/files/docker/systemctl.py
 ENV PRE_WARM_PARCELS=${PRE_WARM_PARCELS}
 ENV PRE_WARM_CSD=${PRE_WARM_CSD}
@@ -50,7 +53,7 @@ providers:\n\
 COPY docker/common/_grains/ /tmp/saltstack/base/salt/_grains/
 COPY docker/common/_grains/ /tmp/saltstack/hortonworks/salt/_grains/
 
-RUN /tmp/saltstack/salt-install.sh redhat
+RUN /tmp/saltstack/salt-install.sh redhat 
 
 ADD ${SYSTEMCTL_REPLACEMENT} /usr/bin
 RUN chmod 755 /usr/bin/$(basename ${SYSTEMCTL_REPLACEMENT}) && \
