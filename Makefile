@@ -72,7 +72,7 @@ ifeq ($(CLOUD_PROVIDER),AWS)
 		AWS_SOURCE_AMI ?= ami-098f55b4287a885ba
 	endif
 	ifeq ($(OS),redhat8)
-		AWS_SOURCE_AMI ?= ami-0b798df66a27251ec
+		AWS_SOURCE_AMI ?= ami-039ce2eddc1949546
 	endif
 endif
 
