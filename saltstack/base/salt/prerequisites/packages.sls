@@ -4,11 +4,14 @@ update-packages:
     - refresh: True
 {% endif %}
 
-# Apparently we have this on Azure RHEL8 images by default and it causes problems...
 {% if pillar['OS'] == 'redhat8' %}
-remove_sssd_krb5_package:
+remove_unused_rhel8_packages:
   pkg.removed:
-    - name: sssd-krb5
+    - pkgs:
+      # Apparently we have this on Azure RHEL8 images by default and it causes problems...
+      - sssd-krb5
+      # Not used but adds warnings to register system
+      - insights-client
 {% endif %}
 
 
