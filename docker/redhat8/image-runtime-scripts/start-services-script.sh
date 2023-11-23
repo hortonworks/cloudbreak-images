@@ -20,13 +20,14 @@ done
 
 echo "nameserver 127.0.0.1" >/etc/resolv.conf
 
-#### Generate input for Ambari from container_limits generated dynamically by YARN
-echo "using container_limits to create system resource overrides for ambari"
-memoryMb=`cat container_limits | grep memory= | awk -F= '{print $2}'`
-memoryKb=`expr $memoryMb \* 1024`
-cpu=`cat container_limits | grep vcores= | awk -F= '{print $2}'`
-mkdir -p /yarn-private/ambari/
-cat <<EOF > /yarn-private/ambari/ycloud.json
+if [ -f container_limits ]; then
+  #### Generate input for Ambari from container_limits generated dynamically by YARN
+  echo "using container_limits to create system resource overrides for ambari"
+  memoryMb=`cat container_limits | grep memory= | awk -F= '{print $2}'`
+  memoryKb=`expr $memoryMb \* 1024`
+  cpu=`cat container_limits | grep vcores= | awk -F= '{print $2}'`
+  mkdir -p /yarn-private/ambari/
+  cat <<EOF > /yarn-private/ambari/ycloud.json
 {
     "processorcount": "$cpu",
     "physicalprocessorcount": "$cpu",
@@ -35,6 +36,7 @@ cat <<EOF > /yarn-private/ambari/ycloud.json
     "memorytotal": "$memoryKb"
 }
 EOF
+fi
 
 ## Cloudbreak related setup
 if [[ -f "/etc/cloudbreak-config.props" ]]; then
@@ -55,6 +57,8 @@ fi
 
 ln -s /yarn-private/ambari /etc/resource_overrides
 ### End of generating input for Ambari ####################
+
+ssh-keygen -A
 
 # ReadHat8 has systemd
 systemctl enable sshd

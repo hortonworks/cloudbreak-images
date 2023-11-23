@@ -1,4 +1,4 @@
-FROM docker-sandbox.infra.cloudera.com/ycloud-base/base-rhel8.8:0.1.0.0-6
+FROM docker-sandbox.infra.cloudera.com/ycloud-base/base-rhel8.8:0.1.0.0-7
 
 ARG SALT_VERSION
 ARG SALT_PATH
@@ -89,6 +89,26 @@ ENV TAG=${TAG}
 ENV IMAGE_NAME=${IMAGE_NAME}
 ENV OS=${OS}
 ENV OS_TYPE=${OS_TYPE}
+
+ARG INCLUDE_FLUENT
+ARG INCLUDE_CDP_TELEMETRY
+ARG INCLUDE_METERING
+ARG CDP_TELEMETRY_RPM_URL
+ARG CDP_LOGGING_AGENT_RPM_URL
+ARG FREEIPA_PLUGIN_RPM_URL
+ARG FREEIPA_LDAP_AGENT_RPM_URL
+ARG JUMPGATE_AGENT_RPM_URL
+ARG JUMPGATE_AGENT_VERSION
+ARG JUMPGATE_AGENT_GBN
+
+ENV INCLUDE_FLUENT="Yes"
+ENV INCLUDE_CDP_TELEMETRY="Yes"
+ENV INCLUDE_METERING="Yes"
+ENV CDP_TELEMETRY_RPM_URL="https://cloudera-build-us-west-1.vpc.cloudera.com/s3/build/45882890/cdp-infra-tools/0.x/redhat8/yum/cdp_telemetry-0.4.36.x86_64.rpm"
+ENV CDP_LOGGING_AGENT_RPM_URL="https://cloudera-build-us-west-1.vpc.cloudera.com/s3/build/45882890/cdp-infra-tools/0.x/redhat8/yum/cdp_logging_agent-0.3.7.x86_64.rpm"
+ENV FREEIPA_PLUGIN_RPM_URL="https://cloudera-build-us-west-1.vpc.cloudera.com/s3/build/47284973/thunderhead/1.x/redhat8/yum/cdp-hashed-pwd-1.0-20231116055334git86cc2f9.el8.x86_64.rpm"
+ENV FREEIPA_LDAP_AGENT_RPM_URL="https://cloudera-build-us-west-1.vpc.cloudera.com/s3/build/46114150/thunderhead/1.x/redhat8/yum/freeipa-ldap-agent-1.0.0-b11628.x86_64.rpm"
+ENV JUMPGATE_AGENT_RPM_URL="https://archive.cloudera.com/ccm/3.0.7/jumpgate-agent.rpm"
 
 #we build logic on the existance of this directory, please DO NOT REMOVE
 RUN mkdir /yarn-private

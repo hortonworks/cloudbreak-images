@@ -35,6 +35,12 @@ install-postgres:
         dnf -y install postgresql11-server postgresql11 postgresql11-devel --skip-broken --nobest
         dnf -y install postgresql14-server postgresql14 postgresql14-devel --skip-broken --nobest
 
+{% if pillar['OS'] == 'redhat8' and pillar['subtype'] == 'Docker' %}
+timeoutstop-postgres-ycloud:
+  cmd.run:
+    - name: mkdir /etc/systemd/system/postgresql-11.service.d  && echo $'[Service]\nTimeoutStopSec=120s' > /etc/systemd/system/postgresql-11.service.d/timeout.conf && mkdir /etc/systemd/system/postgresql-14.service.d && echo $'[Service]\nTimeoutStopSec=120s' > /etc/systemd/system/postgresql-14.service.d/timeout.conf
+{% endif %}
+
 {% elif grains['os_family'] == 'RedHat' and grains['osmajorrelease'] | int == 7  %}
 install-postgres:
   pkg.installed:
@@ -65,6 +71,7 @@ install-postgres14:
         - postgresql14-contrib
         - postgresql14-docs
         - postgresql14-devel
+
 {% else %}
 remove-old-postgres:
   pkg.removed:
