@@ -3,12 +3,20 @@
 set -ex
 
 AMI_ID=$IMAGE_NAME
-IMAGE_NAME=$(aws ec2 describe-images --region $SOURCE_LOCATION --filters "Name=image-id,Values=$AMI_ID" --owners "self" --query 'Images[*].[Name]' --output "text")
+IMAGE_NAME=$(aws ec2 describe-images --region $SOURCE_LOCATION --filters "Name=image-id,Values=$AMI_ID" --query 'Images[*].[Name]' --output "text")
 
 if [ -z "$IMAGE_NAME" ]
 then
   echo "Source image $AMI_ID in region $SOURCE_LOCATION not found, exiting"
   exit 1
+fi
+
+SRC_ACCOUNT=""
+if [[ -z $SOURCE_ACCOUNT ]]; then
+  SRC_ACCOUNT=self
+else
+  SRC_ACCOUNT=$SOURCE_ACCOUNT
+  echo Source account is $SRC_ACCOUNT
 fi
 
 
@@ -160,7 +168,7 @@ do
     continue
   fi
 
-  AMI_IN_REGION=$(aws ec2 describe-images --owners self --filters "Name=name,Values=$IMAGE_NAME" --region $REGION --query "Images[*].[ImageId]" --output "text")
+  AMI_IN_REGION=$(aws ec2 describe-images --owners $SRC_ACCOUNT --filters "Name=name,Values=$IMAGE_NAME" --region $REGION --query "Images[*].[ImageId]" --output "text")
   if [ -n "$AMI_IN_REGION" ]
   then
     log "Image is already copied to region $REGION as $AMI_IN_REGION"
