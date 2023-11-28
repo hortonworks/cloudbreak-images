@@ -26,14 +26,20 @@
 {% endif %}
 
 {% if pillar['OS'] == 'redhat8' %}
+
+{% set postgres_install_flags = '' %}
+{% if salt['environ.get']('CLOUD_PROVIDER') == 'AWS_GOV' %}
+  {% set postgres_install_flags = '--skip-broken --nobest' %}
+{% endif %}
+
 install-postgres:
   cmd.run:
     - name: |
         dnf -y install https://download.postgresql.org/pub/repos/yum/reporpms/EL-8-x86_64/pgdg-redhat-repo-latest.noarch.rpm
         dnf module -y disable postgresql
         dnf clean all
-        dnf -y install postgresql11-server postgresql11 postgresql11-devel
-        dnf -y install postgresql14-server postgresql14 postgresql14-devel
+        dnf -y install postgresql11-server postgresql11 postgresql11-devel {{ postgres_install_flags }}
+        dnf -y install postgresql14-server postgresql14 postgresql14-devel {{ postgres_install_flags }}
 {% elif grains['os_family'] == 'RedHat' and grains['osmajorrelease'] | int == 7  %}
 install-postgres:
   pkg.installed:
