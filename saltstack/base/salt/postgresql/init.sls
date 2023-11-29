@@ -364,6 +364,13 @@ psycopg2-rhel8-py39:
     - bin_env: /usr/local/bin/pip3.9
     - onlyif: ls -la /usr/lib64/python3.9/site-packages
 
+# RHEL 8 + Python 3.11
+psycopg2-rhel8-py311:
+  pip.installed:
+    - name: psycopg2==2.9.3
+    - bin_env: /usr/local/bin/pip3.11
+    - onlyif: ls -la /usr/lib64/python3.11/site-packages
+
 # CentOS 7 + Python 3.8
 psycopg2-centos7-py38:
   pip.installed:
