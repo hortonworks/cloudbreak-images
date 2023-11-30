@@ -92,7 +92,7 @@ ifeq ($(CLOUD_PROVIDER),GCP)
 		GCP_SOURCE_IMAGE ?= centos-7-v20200811
 	endif
 	ifeq ($(OS),redhat8)
-		GCP_SOURCE_IMAGE ?= rhel-8-byos-v20230615
+		GCP_SOURCE_IMAGE ?= rhel-8-byos-v20231115
 	endif
 endif
 
