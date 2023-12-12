@@ -233,7 +233,7 @@ EOF
 
 function redhat8_install_python311() {
   echo "Installing Python 3.11 with dependencies..."
-  yum install -y python3.11 python3.11-devel python3.11-libs python3.11-cffi python3.11-lxml python3.11-psycopg2
+  yum install -y python3.11 python3.11-pip python3.11-devel python3.11-libs python3.11-cffi python3.11-lxml python3.11-psycopg2
 
   echo PYTHON311=$(yum list installed | grep ^python3\\.11\\.x86_64 | grep -oi " [^\s]* " | xargs) >> /tmp/python_install.properties
 
