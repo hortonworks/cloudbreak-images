@@ -34,27 +34,25 @@ install_openjdk:
   pkg.installed:
     - pkgs: {{ pillar['openjdk_packages'] }}
 
-{# Temporarily removed - will adjust and re-enable once JDK21 gets a RedHat package repo
-{% if salt['environ.get']('OS') == 'redhat8' %}
-openjdk21-rhel8:
-  archive.extracted:
-    - name: /usr/lib/jvm/
-    - source: https://download.java.net/java/GA/jdk21/fd2272bbf8e04c3dbaee13770090416c/35/GPL/openjdk-21_linux-x64_bin.tar.gz
-    - source_hash: sha256=a30c454a9bef8f46d5f1bf3122830014a8fbe7ac03b5f8729bc3add4b92a1d0a
-openjdk21-rhel8-java-binary:
-  alternatives.install:
-    - name: java
-    - link: /usr/bin/java
-    - path: /usr/lib/jvm/jdk-21/bin/java
-    - priority: 1
-openjdk21-rhel8-javac-binary:
-  alternatives.install:
-    - name: javac
-    - link: /usr/bin/javac
-    - path: /usr/lib/jvm/jdk-21/bin/javac
-    - priority: 1
+{% if grains['os'] == 'RedHat' and grains['osmajorrelease'] | int == 8 %}
+{% if salt['environ.get']('IMAGE_BURNING_TYPE') == 'base' or salt['environ.get']('STACK_VERSION').split('.') | map('int') | list >= '7.2.18'.split('.') | map('int') | list %}
+download_rhel8_repo:
+  file.managed:
+    - name: /etc/yum.repos.d/rhel8_cldr_mirrors.repo
+    - source: https://mirror.infra.cloudera.com/repos/rhel/server/8/8/rhel8_cldr_mirrors.repo
+    - skip_verify: True
+
+install_openjdk21:
+  pkg.installed:
+    - pkgs:
+      - java-21-openjdk-headless
+      - java-21-openjdk-devel
+
+delete_rhel8_repo:
+  file.absent:
+    - name: /etc/yum.repos.d/rhel8_cldr_mirrors.repo
 {% endif %}
-#}
+{% endif %}
 
 add_openjdk_gplv2:
   file.managed:

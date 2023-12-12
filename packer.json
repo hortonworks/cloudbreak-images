@@ -639,7 +639,8 @@
         "https_proxy={{ user `gov_https_proxy` }}",
         "no_proxy={{ user `gov_no_proxy` }}",
         "NO_PROXY={{ user `gov_no_proxy` }}",
-        "CLOUD_PROVIDER={{user `cloud_provider`}}"
+        "CLOUD_PROVIDER={{user `cloud_provider`}}",
+        "IMAGE_BURNING_TYPE={{ user `image_burning_type` }}"
       ],
       "remote_folder": "/opt/provision-scripts"
     },
