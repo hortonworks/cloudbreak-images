@@ -22,7 +22,7 @@ if [ ! -f ${PRIVATE_KEY} ]; then
     else
         IV=436c6f7564657261436c6f7564657261
         cat ${CCM_ENCIPHERED_PRIVATE_KEY_FILE} | openssl enc -aes-128-cbc -d -A -a \
-            -K $(xxd -pu <<< $(echo ${CCM_KEY_ID} | cut -c1-16) | cut -c1-32) \
+            -K $(echo ${CCM_KEY_ID} | cut -c1-16 | tr -d ' \n' | od -An -tx1 -N32 | tr -d ' \n') \
             -iv ${IV} > ${PRIVATE_KEY}
     fi
 else

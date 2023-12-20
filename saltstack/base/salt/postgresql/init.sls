@@ -26,14 +26,20 @@
 {% endif %}
 
 {% if pillar['OS'] == 'redhat8' %}
+
+{% set postgres_install_flags = '' %}
+{% if salt['environ.get']('CLOUD_PROVIDER') == 'AWS_GOV' %}
+  {% set postgres_install_flags = '--skip-broken --nobest' %}
+{% endif %}
+
 install-postgres:
   cmd.run:
     - name: |
         dnf -y install https://download.postgresql.org/pub/repos/yum/reporpms/EL-8-x86_64/pgdg-redhat-repo-latest.noarch.rpm
         dnf module -y disable postgresql
         dnf clean all
-        dnf -y install postgresql11-server postgresql11 postgresql11-devel --skip-broken --nobest
-        dnf -y install postgresql14-server postgresql14 postgresql14-devel --skip-broken --nobest
+        dnf -y install postgresql11-server postgresql11 postgresql11-devel {{ postgres_install_flags }}
+        dnf -y install postgresql14-server postgresql14 postgresql14-devel {{ postgres_install_flags }}
 
 {% if pillar['OS'] == 'redhat8' and pillar['subtype'] == 'Docker' %}
 timeoutstop-postgres-ycloud:
@@ -365,6 +371,13 @@ psycopg2-rhel8-py39:
     - name: psycopg2==2.9.3
     - bin_env: /usr/local/bin/pip3.9
     - onlyif: ls -la /usr/lib64/python3.9/site-packages
+
+# RHEL 8 + Python 3.11
+psycopg2-rhel8-py311:
+  pip.installed:
+    - name: psycopg2==2.9.3
+    - bin_env: /usr/local/bin/pip3.11
+    - onlyif: ls -la /usr/lib64/python3.11/site-packages
 
 # CentOS 7 + Python 3.8
 psycopg2-centos7-py38:
