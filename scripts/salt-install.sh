@@ -77,7 +77,7 @@ function update_yum_repos() {
       if [[ "${CLOUD_PROVIDER}" != "Azure" ]] ; then
         yum install -y dnsutils
       fi
-      echo "$MIRROR_IP=$(dig +short mirror.infra.cloudera.com A | tail -1) mirror.infra.cloudera.com" >> /etc/hosts
+      echo "$(dig +short mirror.infra.cloudera.com A | tail -1) mirror.infra.cloudera.com" >> /etc/hosts
     fi
   else
     # Workaround based on the official documentation: https://cloud.google.com/compute/docs/troubleshooting/known-issues#known_issues_for_linux_vm_instances
