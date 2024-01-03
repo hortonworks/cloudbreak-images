@@ -228,6 +228,7 @@ endif
 define AZURE_STORAGE_ACCOUNTS_TEST_PHASE
 West US:cldrwestus,\
 West US 2:cldrwestus2,\
+East US:cldreastus,\
 Central US:cldrcentralus
 endef
 
