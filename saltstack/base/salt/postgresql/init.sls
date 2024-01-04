@@ -32,6 +32,10 @@
   {% set postgres_install_flags = '--skip-broken --nobest' %}
 {% endif %}
 
+/etc/yum.repos.d/postgres11-el8.repo:
+  file.managed:
+    - source: salt://postgresql/yum/postgres11-el8.repo
+
 install-postgres:
   cmd.run:
     - name: |
