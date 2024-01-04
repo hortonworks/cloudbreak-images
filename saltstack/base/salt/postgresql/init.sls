@@ -1,5 +1,5 @@
 
-{% if pillar['OS'] == 'amazonlinux2' or ( grains['os_family'] == 'RedHat' and grains['osmajorrelease'] | int == 7 ) %}
+{% if grains['os_family'] == 'RedHat' and grains['osmajorrelease'] | int == 7 %}
 /etc/yum.repos.d/pgdg10.repo:
   file.managed:
     - source: salt://postgresql/yum/postgres10-el7.repo
