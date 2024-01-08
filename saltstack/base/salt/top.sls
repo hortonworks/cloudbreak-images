@@ -16,6 +16,6 @@ base:
     - ccmv2
     - custom
     - mount
-{% if pillar['subtype'] != 'Docker' %}
+{% if pillar['subtype'] != 'Docker' or pillar['OS'] == 'redhat8' %}
     - chrony
 {% endif %}
