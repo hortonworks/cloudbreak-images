@@ -1,8 +1,0 @@
-[network_utilities]
-name=Network Utilities (SLE_12_SP3)
-enabled=1
-autorefresh=0
-baseurl=http://download.opensuse.org/repositories/network:/utilities/SLE_12_SP3/
-type=rpm-md
-gpgcheck=1
-gpgkey=http://download.opensuse.org/repositories/network:/utilities/SLE_12_SP3/repodata/repomd.xml.key

@@ -5,11 +5,7 @@ create_cloudbreak_user:
     - shell: /bin/bash
     - password: '!!'
     - groups:
-{% if grains['os_family'] == 'Debian' %}
-      - sudo
-{% else %}
       - wheel
-{% endif %}
 
 add_cloudbreak_sudo_access:
   file.managed:
