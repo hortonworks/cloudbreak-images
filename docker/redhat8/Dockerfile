@@ -107,7 +107,7 @@ ENV INCLUDE_METERING="Yes"
 ENV CDP_TELEMETRY_RPM_URL="https://cloudera-build-us-west-1.vpc.cloudera.com/s3/build/45882890/cdp-infra-tools/0.x/redhat8/yum/cdp_telemetry-0.4.36.x86_64.rpm"
 ENV CDP_LOGGING_AGENT_RPM_URL="https://cloudera-build-us-west-1.vpc.cloudera.com/s3/build/45882890/cdp-infra-tools/0.x/redhat8/yum/cdp_logging_agent-0.3.7.x86_64.rpm"
 ENV FREEIPA_PLUGIN_RPM_URL="https://cloudera-build-us-west-1.vpc.cloudera.com/s3/build/49070467/thunderhead/1.x/redhat8/yum/cdp-hashed-pwd-1.0-20240109061814git4230396.el8.x86_64.rpm"
-ENV FREEIPA_LDAP_AGENT_RPM_URL="https://cloudera-build-us-west-1.vpc.cloudera.com/s3/build/46114150/thunderhead/1.x/redhat8/yum/freeipa-ldap-agent-1.0.0-b11628.x86_64.rpm"
+ENV FREEIPA_LDAP_AGENT_RPM_URL="https://cloudera-build-us-west-1.vpc.cloudera.com/s3/build/49050621/thunderhead/1.x/redhat8/yum/freeipa-ldap-agent-1.0.0-b12325.x86_64.rpm"
 ENV JUMPGATE_AGENT_RPM_URL="https://archive.cloudera.com/ccm/3.0.7/jumpgate-agent.rpm"
 
 #we build logic on the existance of this directory, please DO NOT REMOVE
