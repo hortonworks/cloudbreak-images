@@ -58,6 +58,7 @@ fi
 ln -s /yarn-private/ambari /etc/resource_overrides
 ### End of generating input for Ambari ####################
 
+# Generating new ssh key
 ssh-keygen -A
 
 # ReadHat8 has systemd
