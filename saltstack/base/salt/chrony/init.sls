@@ -1,3 +1,9 @@
+{% if pillar['OS'] == 'redhat8' %}
+chronyReinstall:
+  cmd.run:
+    - name: dnf reinstall chrony -y
+{% endif %}
+
 chronyRestart:
   file.line:
     - name: /usr/lib/systemd/system/chronyd.service

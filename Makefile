@@ -116,7 +116,12 @@ AWS_MAX_ATTEMPTS ?= 300
 PACKAGE_VERSIONS ?= ""
 SALT_VERSION ?= $(shell ./scripts/get-salt-version.sh $(BASE_NAME) $(STACK_VERSION))
 SALT_PATH ?= /opt/salt_$(SALT_VERSION)
-PYZMQ_VERSION ?= 19.0
+SALT_NEWER_PYZMQ = $(shell echo "$(SALT_VERSION)>=3006.4" | bc)
+ifeq ($(SALT_NEWER_PYZMQ),1)
+	PYZMQ_VERSION ?= 25.0.2
+else
+	PYZMQ_VERSION ?= 19.0
+endif
 
 # This block remains here for backward compatibility reasons when the IMAGE_NAME is not defined as an env variable
 ifndef IMAGE_NAME

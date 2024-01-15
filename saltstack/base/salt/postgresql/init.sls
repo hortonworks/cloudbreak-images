@@ -42,7 +42,9 @@ install-postgres:
         dnf -y install https://download.postgresql.org/pub/repos/yum/reporpms/EL-8-x86_64/pgdg-redhat-repo-latest.noarch.rpm
         dnf module -y disable postgresql
         dnf clean all
+{% if pillar['subtype'] != 'Docker' %}
         dnf -y install postgresql11-server postgresql11 postgresql11-devel {{ postgres_install_flags }}
+{% endif %}
         dnf -y install postgresql14-server postgresql14 postgresql14-devel {{ postgres_install_flags }}
 
 {% if pillar['OS'] == 'redhat8' and pillar['subtype'] == 'Docker' %}
@@ -120,13 +122,12 @@ install-postgres:
 {% endif %}
 
 {% if pillar['OS'] == 'redhat8' %}
-  {% set pg_default_version = '11' %}
-{% elif grains['os_family'] == 'RedHat' and grains['osmajorrelease'] | int == 7 %}
+  {% set pg_default_version = '14' %}
+{% else %}
   # the override to 11 for runtimes >= 7.2.7 is handled in CB
   {% set pg_default_version = '10' %}
 {% endif %}
 
-{% if pg_default_version %}
 pgsql-ld-conf:
   alternatives.set:
     - path: /usr/pgsql-{{ pg_default_version }}/share/postgresql-{{ pg_default_version }}-libs.conf
@@ -232,17 +233,16 @@ pgsql-vacuumdbman:
     - mode: 755
     - target: /usr/pgsql-{{ pg_default_version }}/bin/initdb
     - force: True
-{% endif %}
 
 {% if pillar['OS'] == 'redhat8' %}
 
 init-pg-database:
   cmd.run:
-    - name: /usr/pgsql-11/bin/postgresql-11-setup initdb
+    - name: /usr/pgsql-{{ pg_default_version }}/bin/postgresql-{{ pg_default_version }}-setup initdb
 
 reenable-postgres:
   cmd.run:
-    - name: systemctl enable --now postgresql-11
+    - name: systemctl enable --now postgresql-{{ pg_default_version }}
 
 {% elif  grains['os_family'] == 'RedHat' and grains['osmajorrelease'] | int == 7 %}
 /var/lib/pgsql/data:
@@ -260,20 +260,23 @@ init-pg11-database:
 
 systemd-link:
   file.replace:
-    - name: /usr/lib/systemd/system/postgresql-10.service
+    - name: /usr/lib/systemd/system/postgresql-{{ pg_default_version }}.service
     - pattern: "\\[Install\\]"
     - repl: "[Install]\nAlias=postgresql.service"
-    - unless: cat /usr/lib/systemd/system/postgresql-10.service | grep postgresql.service
+    - unless: cat /usr/lib/systemd/system/postgresql-{{ pg_default_version }}.service | grep postgresql.service
 
 
 {% if pillar['subtype'] == 'Docker' %}  # systemctl reenable does not work on ycloud so we create the symlink manually
 create-postgres-service-link:
   cmd.run:
-    - name: ln -sf /usr/lib/systemd/system/postgresql-10.service /usr/lib/systemd/system/postgresql.service && systemctl disable postgresql-10 && systemctl enable postgresql
+    - name: |
+        ln -sf /usr/lib/systemd/system/postgresql-{{ pg_default_version }}.service /usr/lib/systemd/system/postgresql.service
+        systemctl disable postgresql-{{ pg_default_version }}
+        systemctl enable postgresql
 {% else %}
 reenable-postgres:
   cmd.run:
-    - name: systemctl reenable postgresql-10.service
+    - name: systemctl reenable postgresql-{{ pg_default_version }}.service
 {% endif %}
 
 {% else %}
@@ -286,14 +289,14 @@ init-pg-database:
 start-postgresql:
   service.running:
 {% if  pillar['OS'] == 'redhat8' %}
-    - name: postgresql-11
+    - name: postgresql-{{ pg_default_version }}
 {% else %}
     - name: postgresql
 {% endif %}
 log-postgres-service-status:
   cmd.run:
 {% if  pillar['OS'] == 'redhat8' %}
-    - name: systemctl status postgresql-11.service
+    - name: systemctl status postgresql-{{ pg_default_version }}.service
 {% else %}
     - name: systemctl status postgresql.service
 {% endif %}
@@ -322,23 +325,20 @@ set-postgres-nologin-shell:
     - shell: {{ salt['cmd.run']('which nologin') }}
 
 # Needed for installing psycopg2 in saltstack/base/salt/postgresql/init.sls
-{% if '/usr/pgsql-11/bin' not in salt['environ.get']('PATH') %}
-/opt/salt/scripts/conf_pgconfig_path.sh:
-  file.managed:
-    - makedirs: True
-    - mode: 755
-    - source: salt://postgresql/scripts/conf_pgconfig_path.sh
+{% set pg_default_version_bin = '/usr/pgsql-' ~ pg_default_version ~ '/bin' %}
+{% if pg_default_version_bin not in salt['environ.get']('PATH') %}
+set-etc-environment-path-pgsql{{ pg_default_version }}-bin:
+  file.replace:
+    - name: /etc/environment
+    - pattern: |
+        ^PATH="(.*)"$
+    - repl: |
+        PATH="\1:{{ pg_default_version_bin }}"
 
-add-pgconfig-to-path:
-  cmd.run:
-    - name: /opt/salt/scripts/conf_pgconfig_path.sh
-    - require:
-      - file: /opt/salt/scripts/conf_pgconfig_path.sh
-
-set-path-pgsql11-bin:
+set-path-pgsql{{ pg_default_version }}-bin:
   environ.setenv:
     - name: PATH
-    - value: "{{ salt['environ.get']('PATH') }}:/usr/pgsql-11/bin"
+    - value: "{{ salt['environ.get']('PATH') }}:{{ pg_default_version_bin }}"
     - update_minion: True
 {% endif %}
 
