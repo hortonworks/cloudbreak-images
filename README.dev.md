@@ -10,7 +10,6 @@
       - [AWS Example](#aws-example)
     + [Custom repositories](#custom-repositories)
     + [Custom Script](#custom-script)
-    + [Oracle JDK](#oracle-jdk)
     + [Using preinstalled JDK](#using-preinstalled-jdk)
     + [JDBC connector's JAR for MySQL or Oracle External Database](#jdbc-connectors-jar-for-mysql-or-oracle-external-database)
     + [Secure /tmp with noexec option](#secure-tmp-with-noexec-option)
@@ -80,7 +79,6 @@ If you would like to start from a customized image, you could either:
 
 - Set Packer to start from your [own custom image](#custom-base-image)
 - Add your [custom logic](#custom-script) - either as custom script or as custom [Salt]((https://docs.saltstack.com/en/latest/)) state
-- Use [Oracle JDK](#oracle-jdk) instead of OpenJDK
 - Using [preinstalled JDK](#using-preinstalled-jdk)
 
 ### Custom Base Image
@@ -135,23 +133,6 @@ The provisioning steps are implemented with [Salt state files](https://docs.salt
 
  > Warning: Please ensure that your script runs without any errors or mandatory user inputs
 
-### Oracle JDK
-
-By default, OpenJDK is installed on the images. Alternatively, you can install Oracle JDK by using an optional Salt state.
-
-To enable Oracle JDK installation you have to set the `OPTIONAL_STATES` environment variable:
-```
-export OPTIONAL_STATES="oracle-java"
-```
-Also you have to set the Oracle JDK 8 download url, which can be copied from [Oracle JDK 8 download site](http://www.oracle.com/technetwork/java/javase/downloads/jdk8-downloads-2133151.html).
-> Warning: By using this JDK URL, Oracle JDK will be installed using this software and you will be agreeing to the Oracle Binary Code License agreement.
-
-> Warning: Please use Linux x64 RPM version
-
-To set the download url export `ORACLE_JDK8_URL_RPM` environment variable:
-```
-export ORACLE_JDK8_URL_RPM="https://www.oracle.com/path-to-jdk-rpm-file"
-```
 ### Using preinstalled JDK
 
 By default, OpenJDK is installed on the images. Alternatively, if you have an image with preinstalled JDK you can pass it's JAVA_HOME variable which would disable installation of OpenJDK.
@@ -160,7 +141,6 @@ To set your custom JAVA_HOME export `PREINSTALLED_JAVA_HOME` environment variabl
 ```
 export PREINSTALLED_JAVA_HOME=/path/to/installed/jdk
 ```
-> Note: If you specify preinstalled JDK but also choose Oracle JDK installation, then Oracle JDK will be installed and JAVA_HOME will be set to it
 
 ### JDBC connector's JAR for MySQL or Oracle External Database
 

@@ -1,4 +1,3 @@
-{% if grains['os_family'] == 'RedHat' %}
 create_clustermanager_repo:
   pkgrepo.managed:
     - name: clustermanager
@@ -7,16 +6,6 @@ create_clustermanager_repo:
     - gpgcheck: 1
     - gpgkey: "{{ pillar['CLUSTERMANAGER_GPGKEY'] }}"
     - priority: 1
-{% elif grains['os_family'] == 'Debian' %}
-create_clustermanager_repo:
-  pkgrepo.managed:
-    - humanname: "CLUSTERMANAGER.{{ pillar['CLUSTERMANAGER_VERSION'] }}"
-    - name: "deb {{ pillar['CLUSTERMANAGER_BASEURL'] }} clustermanager main"
-    - file: /etc/apt/sources.list.d/clustermanager.list
-    - keyid: "{{ pillar['CLUSTERMANAGER_GPGKEY'] }}"
-    - keyserver: keyserver.ubuntu.com
-    - priority: 1
-{% endif %}
 
 install_clustermanager_pgks:
   pkg.installed:

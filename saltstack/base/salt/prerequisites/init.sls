@@ -20,12 +20,8 @@ include:
   - {{ slspath }}.jinja
   - {{ slspath }}.corkscrew
   - {{ slspath }}.storage
-{% if pillar['OS'].startswith('ubuntu') %}
-  - {{ slspath }}.disable-unattended-upgrades
-{% endif %}
   - {{ slspath }}.authconfig
   - {{ slspath }}.ipa
-
 
 /usr/bin/:
   file.recurse:
