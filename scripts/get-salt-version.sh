@@ -29,6 +29,7 @@ compare_version () {
 
 BASE_NAME=$1
 STACK_VERSION=$2
+CLOUD_PROVIDER=$3
 
 SALT_VERSION=3001.8
 
@@ -47,7 +48,9 @@ if [[ $BASE_NAME == "cb" ]]; then
       SALT_VERSION=3006.4
     fi
   else # base image
-    SALT_VERSION=3006.4
+    if [[ ! $CLOUD_PROVIDER == "YARN" ]]; then
+      SALT_VERSION=3006.4
+    fi
   fi
 fi
 
