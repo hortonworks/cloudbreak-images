@@ -21,6 +21,11 @@ unbound_service:
 {% endif %}
 
 enable_unbound:
+{% if pillar['subtype'] != 'Docker' %}
   service.running:
     - name: unbound
     - enable: True
+{% else %}
+  cmd.run:
+    - name: systemctl enable --now unbound
+{% endif %}

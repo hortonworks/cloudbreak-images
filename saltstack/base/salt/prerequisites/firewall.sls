@@ -1,9 +1,15 @@
 {% if pillar['OS'] == 'redhat7' or pillar['OS'] == 'redhat8' %}
 
 disable_firewalld_service:
+{% if pillar['subtype'] != 'Docker' %}
   service.dead:
     - name: firewalld
     - enable: False
+{% else %}
+  cmd.run:
+    - name: systemctl disable --now firewalld
+    - onlyif: systemctl is-enabled firewalld
+{% endif %}
 
 {% if pillar['subtype'] != 'Docker' %}
 

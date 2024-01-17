@@ -27,8 +27,13 @@ install_nginx:
     - source: salt://{{ slspath }}/etc/nginx/ssl.conf
 
 enable_nginx:
+{% if pillar['subtype'] != 'Docker' %}
   service.enabled:
     - name: nginx
+{% else %}
+  cmd.run:
+    - name: systemctl enable nginx
+{% endif %}
 {% if pillar['OS'] == 'centos7' %}
     - require:
       - pkg: install_nginx

@@ -19,8 +19,13 @@ create_saltbootstrap_service_files:
     - source: salt://{{ slspath }}/etc/systemd/system/salt-bootstrap.service
 
 salt-bootstrap:
+{% if pillar['subtype'] != 'Docker' %}
   service.running:
     - enable: True
+{% else %}
+  cmd.run:
+    - name: systemctl enable salt-bootstrap
+{% endif %}
     - require:
       - install_saltbootstrap
       - create_saltbootstrap_service_files

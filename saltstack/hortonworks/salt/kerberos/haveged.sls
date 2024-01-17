@@ -7,7 +7,12 @@ install_haveged_packages:
 {% endif %}    
 
 service_haveged:
+{% if pillar['subtype'] != 'Docker' %}
   service.enabled:
     - name: haveged
+{% else %}
+  cmd.run:
+    - name: systemctl enable haveged
+{% endif %}
     - require:
       - pkg: install_haveged_packages
