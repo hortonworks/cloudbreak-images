@@ -16,5 +16,10 @@ disable_thp_service:
 {% endif %}
 
 ensure_disable_thp_enabled:
+{% if pillar['subtype'] != 'Docker' %}
   service.enabled:
     - name: disable-thp
+{% else %}
+  cmd.run:
+    - name: systemctl enable disable-thp
+{% endif %}

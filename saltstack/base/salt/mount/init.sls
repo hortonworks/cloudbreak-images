@@ -8,9 +8,11 @@
     'googlecompute': {
         'required': False,
     },
+    'default': {
+        'required': False,
+    },
 },
-grain='builder_type',
-default='amazon-ebs'
+grain='builder_type'
 )%}
 
 {% if platform.required and pillar['OS'] == 'centos7' %}

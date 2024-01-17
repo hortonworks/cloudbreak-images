@@ -8,12 +8,12 @@ include:
   - {{ slspath }}.sysctl
   - {{ slspath }}.disable_ipv6
   - {{ slspath }}.selinux
+  - {{ slspath }}.dnsmasq
 {% endif %}
   - {{ slspath }}.motd
   - {{ slspath }}.ssh
   - {{ slspath }}.pip
   - {{ slspath }}.cert-tool
-  - {{ slspath }}.dnsmasq
   - {{ slspath }}.user
   - {{ slspath }}.firewall
   - {{ slspath }}.umask

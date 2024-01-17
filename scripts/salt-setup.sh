@@ -31,7 +31,8 @@ EOF
 }
 
 function apply_rhel8_salt_patch {
-  if [ "${OS}" == "redhat8" ] ; then
+  if [ "${OS}" == "redhat8" ] && [ "${SALT_VERSION}" == "3001.8" ] ; then
+    # https://github.com/saltstack/salt/issues/60232
     if [ -f "/opt/salt_3001.8/lib/python3.6/site-packages/salt/modules/network.py" ]; then
       patch -t -u /opt/salt_3001.8/lib/python3.6/site-packages/salt/modules/network.py -i /tmp/rhel8_salt_fix.patch
     fi
@@ -65,12 +66,14 @@ function add_single_role_for_cluster_salt {
 }
 
 function add_builder_type_grain {
-  echo "Adding ${PACKER_BUILDER_TYPE} to the grains"
+  if [ -n "${PACKER_BUILDER_TYPE}" ]; then
+    echo "Adding ${PACKER_BUILDER_TYPE} to the grains"
 cat << EOF >> /tmp/saltstack/config/minion
 grains:
   builder_type:
     - ${PACKER_BUILDER_TYPE}
 EOF
+  fi
 }
 
 function add_prewarmed_roles {
