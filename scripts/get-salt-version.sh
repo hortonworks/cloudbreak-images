@@ -44,10 +44,10 @@ if [[ $BASE_NAME == "cb" ]]; then
     COMP_RESULT=$?
     # Stack version >= 7.2.18
     if [[ $COMP_RESULT -lt 2 ]]; then
-      SALT_VERSION=3006.5
+      SALT_VERSION=3001.8 # reverted from 3006.5 until CB-21080	is fixed
     fi
   else # base image
-    SALT_VERSION=3006.5
+    SALT_VERSION=3001.8 # reverted from 3006.5 until CB-21080 is fixed
   fi
 fi
 
