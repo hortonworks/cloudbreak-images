@@ -4,4 +4,8 @@
 disable_kcm_ccache:
   file.absent:
     - name: /etc/krb5.conf.d/kcm_default_ccache
+
+disable_sssd_conf_dir:
+  file.absent:
+    - name: /etc/krb5.conf.d/enable_sssd_conf_dir
 {% endif %}
