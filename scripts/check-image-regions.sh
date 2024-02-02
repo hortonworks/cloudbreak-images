@@ -15,6 +15,11 @@ if [ -z "${CLOUD_PROVIDER}" ] ; then
   exit 1
 fi
 
+if [ -z "${OS}" ] ; then
+  echo "OS env variable is mandatory."
+  exit 1
+fi
+
 if [ -z "${IMAGE_REGIONS}" ] ; then
   echo "IMAGE_REGIONS env variable is mandatory."
   exit 1
@@ -42,12 +47,28 @@ case "$CLOUD_PROVIDER" in
     ALL_REGIONS=$AWS_AMI_REGIONS
     ;;
   Azure)
-    ALL_REGIONS=$AZURE_STORAGE_ACCOUNTS
+    case "$OS" in
+      centos7)
+        ALL_REGIONS=$AZURE_STORAGE_ACCOUNTS
+        if [[ ! $ALL_REGIONS == *"default"* ]]; then
+          ALL_REGIONS+=",default"
+        fi
+        ;;
+      redhat8)
+        ALL_REGIONS="default"
+        ;;
+      *)
+        echo "Unexpected OS: $OS"
+        exit 1
+    esac
     ;;
   *)
-    echo Unexpected CLOUD_PROVIDER
+    echo "Unexpected CLOUD_PROVIDER: $CLOUD_PROVIDER"
     exit 1
 esac
+
+echo "Current image regions: $IMAGE_REGIONS"
+echo "Required image regions: $ALL_REGIONS"
 
 declare -a TRIMMED_ALL_REGIONS_ARRAY=()
 IFS=',' read -ra ALL_REGIONS_ARRAY <<< "$ALL_REGIONS"
