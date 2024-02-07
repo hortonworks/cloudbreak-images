@@ -285,6 +285,23 @@ init-pg-database:
     - name: find /var/lib/pgsql/ -name PG_VERSION | grep -q "data/PG_VERSION" || service postgresql initdb
 {% endif %}
 
+{% if pillar['subtype'] != 'Docker' %}
+start-postgresql:
+  service.running:
+{% if  pillar['OS'] == 'redhat8' %}
+    - name: postgresql-{{ pg_default_version }}
+{% else %}
+    - name: postgresql
+{% endif %}
+log-postgres-service-status:
+  cmd.run:
+{% if  pillar['OS'] == 'redhat8' %}
+    - name: systemctl status postgresql-{{ pg_default_version }}.service
+{% else %}
+    - name: systemctl status postgresql.service
+{% endif %}
+{% endif %}
+
 /opt/salt/scripts/conf_pgsql_listen_address.sh:
   file.managed:
     - makedirs: True
@@ -298,6 +315,19 @@ configure-listen-address:
       - SUBTYPE: {{ pillar['subtype'] }}
     - require:
       - file: /opt/salt/scripts/conf_pgsql_listen_address.sh
+{% if pillar['subtype'] != 'Docker' %}
+      - service: start-postgresql
+{% endif %}
+
+{% if pillar['subtype'] != 'Docker' %}
+stop-postgresql:
+  service.dead:
+{% if  pillar['OS'] == 'redhat8' %}
+    - name: postgresql-{{ pg_default_version }}
+{% else %}
+    - name: postgresql
+{% endif %}
+{% endif %}
 
 set-postgres-nologin-shell:
   user.present:
