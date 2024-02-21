@@ -136,14 +136,20 @@ ifeq ($(OS),centos7)
 	endif
 	IMAGE_SIZE ?= 36
 else
-	ifeq ($(STACK_VERSION),7.2.18)
+# The two legacy versions we still burn for RHEL8
+	ifeq ($(STACK_VERSION),7.2.16)
+		IMAGE_SIZE ?= 64
+	endif
+	ifeq ($(STACK_VERSION),7.2.17)
+		IMAGE_SIZE ?= 64
+	else
+# 7.2.18 and above require much bigger images
 		ifeq ($(CLOUD_PROVIDER),Azure)
 			IMAGE_SIZE ?= 90
 		else
 			IMAGE_SIZE ?= 72
 		endif
 	endif
-	IMAGE_SIZE ?= 64
 endif
 
 ifeq ($(MAKE_PUBLIC_SNAPSHOTS),yes)
