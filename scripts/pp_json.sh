@@ -84,7 +84,6 @@ cat  > ${image_name}_$metadata_filename_postfix.json <<EOF
 "aws_ami_regions": "${aws_ami_regions}",
 "azure_storage_accounts": "${azure_storage_accounts}",
 "gcp_storage_bundle": "${gcp_storage_bundle}",
-"gcp_ami_regions": "${gcp_ami_regions}",
 "hdp_repository_version": "${stack_repository_version}",
 "cdh_repository_version": "${stack_repository_version#*-}",
 "cm_build_number": "${cm_build_number}",
