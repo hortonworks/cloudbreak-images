@@ -45,7 +45,7 @@ $(error "AZURE_IMAGE_VHD and Marketplace image properties (AZURE_IMAGE_PUBLISHER
 		else ifeq ($(OS),redhat8)
 			AZURE_IMAGE_PUBLISHER ?= RedHat
 			AZURE_IMAGE_OFFER ?= rhel-byos
-			AZURE_IMAGE_SKU ?= rhel-lvm88
+			AZURE_IMAGE_SKU ?= rhel-lvm89
 		else ifeq ($(OS),centos7)
 			AZURE_IMAGE_PUBLISHER ?= OpenLogic
 			AZURE_IMAGE_OFFER ?= CentOS
@@ -68,7 +68,7 @@ ifeq ($(CLOUD_PROVIDER),AWS)
 		AWS_SOURCE_AMI ?= ami-098f55b4287a885ba
 	endif
 	ifeq ($(OS),redhat8)
-		AWS_SOURCE_AMI ?= ami-039ce2eddc1949546
+		AWS_SOURCE_AMI ?= ami-006f51698cac3e00c
 	endif
 endif
 
@@ -88,7 +88,7 @@ ifeq ($(CLOUD_PROVIDER),GCP)
 		GCP_SOURCE_IMAGE ?= centos-7-v20200811
 	endif
 	ifeq ($(OS),redhat8)
-		GCP_SOURCE_IMAGE ?= rhel-8-byos-v20230615
+		GCP_SOURCE_IMAGE ?= rhel-8-byos-v20231115
 	endif
 endif
 

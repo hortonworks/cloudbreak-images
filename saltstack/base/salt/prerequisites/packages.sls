@@ -1,8 +1,4 @@
-{% if salt['environ.get']('CLOUD_PROVIDER') == 'AWS_GOV' %}
-update-packages:
-  cmd.run:
-    - name: dnf update -y --releasever=8.8 --nobest
-{% elif pillar['subtype'] != 'Docker' %}
+{% if pillar['subtype'] != 'Docker' %}
 update-packages:
   pkg.uptodate:
     - refresh: True
