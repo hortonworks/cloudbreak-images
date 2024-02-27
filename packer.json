@@ -402,8 +402,8 @@
         "Customer Delivered": "{{user `tag_customer_delivered`}}"
       },
       "plan_info": {
-        "plan_name": "rhel-lvm88",
-        "plan_product": "rhel-byos",
+        "plan_name": "{{user `azure_image_sku`}}",
+        "plan_product": "{{user `azure_image_offer`}}",
         "plan_publisher": "redhat"
       }
     },
