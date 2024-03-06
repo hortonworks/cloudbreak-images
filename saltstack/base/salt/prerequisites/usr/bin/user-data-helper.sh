@@ -244,7 +244,7 @@ resize_partitions() {
       # Resize physical volume
       pvresize $PV_NAME
       # Extend logical volumes to satisfy CM free space checks and allocate remaining free space
-      lvextend -L12G -r /dev/mapper/rootvg-varlv
+      lvextend -L50G -r /dev/mapper/rootvg-varlv
       lvextend -L12G -r /dev/mapper/rootvg-tmplv
       # Extend root logical volume to remaining free space
       lvextend -l +100%free -r /dev/mapper/rootvg-rootlv
