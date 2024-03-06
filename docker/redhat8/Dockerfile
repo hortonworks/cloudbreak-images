@@ -38,7 +38,6 @@ COPY /scripts/salt-install.sh /tmp/saltstack/
 COPY /scripts/salt-setup.sh /tmp/saltstack/
 COPY /scripts/salt-final.sh /tmp/saltstack/
 COPY /scripts/salt_requirements.txt /tmp/salt_requirements.txt
-COPY docker/common/hwx-internal.repo /etc/yum.repos.d/hwx-internal.repo
 COPY /scripts/rhel8_salt_fix.patch /tmp/rhel8_salt_fix.patch
 
 # Workaround problem caused by sytemd not being pid-1:

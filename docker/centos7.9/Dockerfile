@@ -96,6 +96,7 @@ RUN mkdir /yarn-private
 RUN /tmp/saltstack/salt-setup.sh hortonworks
 RUN /tmp/saltstack/salt-final.sh
 RUN rm -f /etc/salt/minion_id /etc/salt/pki/minion/minion.pem /etc/salt/pki/minion/minion.pub
+RUN rm -f /etc/yum.repos.d/hwx-internal.repo
 
 # restore systemctl to system default
 RUN ln -sf /usr/bin/systemctl.orig /usr/bin/systemctl
