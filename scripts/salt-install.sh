@@ -255,10 +255,11 @@ function install_python_pip() {
   # FreeIPA images:
   #  CentOS7: Python 2.7 + Python 3.6
   #  RHEL7  : Python 2.7 + Python 3.6
-  #  RHEL8  : Python 3.6
+  #  RHEL8  : Python 3.6 + Python 3.8
   if [ "${IMAGE_BASE_NAME}" == "freeipa" ] ; then
     if [ "${OS}" == "redhat8" ] ; then
       redhat8_update_python36
+      redhat8_install_python38
     elif [ "${OS}" == "redhat7" ] ; then
       redhat7_update_python27
       redhat7_install_python36

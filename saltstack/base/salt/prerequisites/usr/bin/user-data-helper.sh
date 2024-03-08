@@ -72,6 +72,16 @@ reload_sysconf() {
   sysctl -p
 }
 
+create_luks_volume() {
+  ENCRYPTION_KEY_FILE="/etc/cdp-luks/passphrase_encryption_key"
+  install -m 600 /dev/null "$ENCRYPTION_KEY_FILE"
+  echo "$SECRET_ENCRYPTION_KEY_SOURCE" > "$ENCRYPTION_KEY_FILE"
+
+  echo "LUKS volume creation started."
+  /etc/cdp-luks/bin/create-luks-volume.sh
+  echo "LUKS volume creation finished."
+}
+
 configure-salt-bootstrap() {
   mkdir -p /etc/salt-bootstrap
   chmod 700 /etc/salt-bootstrap
@@ -253,6 +263,11 @@ resize_partitions() {
 }
 
 main() {
+  if [[ "$SECRET_ENCRYPTION_ENABLED" == "true" ]]; then
+    create_luks_volume
+    # then extract EC2 userdata secrets and store them (for example as plaintext on the LUKS volume)
+    # then move secrets to LUKS volume and symlink them to their original place
+  fi
   configure-salt-bootstrap
   reload_sysconf
   if [[ "$1" == "::" ]]; then

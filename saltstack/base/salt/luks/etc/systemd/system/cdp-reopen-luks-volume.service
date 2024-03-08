@@ -1,0 +1,23 @@
+[Unit]
+Description=CDP-LUKS volume reopen script service
+ConditionPathIsMountPoint=!/mnt/cdp-luks
+ConditionFileNotEmpty=/etc/cdp-luks/passphrase_encryption_key
+ConditionFileNotEmpty=/etc/cdp-luks/passphrase_ciphertext
+#TODO Add a Before directive here for services, which will have secrets stored in the LUKS volume
+#Note: Adding a Before directive for a service should only be absolutely necessary,
+#      if otherwise it would start before or in parallel with this service
+#      (for example, if it also starts when network-online.target is reached)
+After=network-online.target
+Wants=network-online.target
+StartLimitIntervalSec=600
+StartLimitBurst=5
+
+[Service]
+Type=oneshot
+ExecStart=/etc/cdp-luks/bin/reopen-luks-volume.sh
+RemainAfterExit=yes
+Restart=on-failure
+TimeoutSec=30
+
+[Install]
+WantedBy=network-online.target
