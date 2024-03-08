@@ -48,6 +48,9 @@ packages_install:
     {% if pillar['OS'] == 'redhat8' and pillar['subtype'] == 'Docker' %}
       - NetworkManager
     {% endif %}
+    {% if pillar['OS'] == 'redhat8' %}
+      - sos
+    {% endif %}
   {% endif %}
       - nvme-cli
       - openssl
