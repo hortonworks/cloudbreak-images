@@ -54,6 +54,9 @@ packages_install:
       - sos
     {% endif %}
   {% endif %}
+  {% if salt['environ.get']('CLOUD_PROVIDER') == 'AWS_GOV' %}
+      - cryptsetup
+  {% endif %}
       - nvme-cli
       - openssl
       - autossh
