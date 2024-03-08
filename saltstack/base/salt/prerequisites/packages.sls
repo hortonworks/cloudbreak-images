@@ -64,6 +64,7 @@ packages_install:
       - sysstat
       - goaccess
       - httpd-tools
+      - cryptsetup
 
 {% if pillar['subtype'] != 'Docker' %}
 
