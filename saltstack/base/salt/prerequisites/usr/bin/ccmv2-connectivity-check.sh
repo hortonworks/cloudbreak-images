@@ -90,6 +90,9 @@ function expand {
 function try_connect {
     local ip=$1
     log "Trying to connect to $ip via HTTPS"
+    if [[ -f /etc/cdp/proxy.env ]]; then
+      source /etc/cdp/proxy.env
+    fi
     curl --connect-timeout $CONNECTION_TIMEOUT -sk https://$ip > /dev/null
     local status=$?
     if [[ $status -eq 0 ]]; then
