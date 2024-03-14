@@ -138,10 +138,12 @@
         "version": "{{user `version`}}",
         "cb-creation-timestamp": "{{timestamp}}",
         "owner": "{{ user `image_owner` }}",
-        "Customer Delivered": "{{user `tag_customer_delivered`}}"
+        "Customer Delivered": "{{user `tag_customer_delivered`}}",
+        "Name": "{{ user `image_name`}}"
       },
       "run_tags": {
-        "owner": "{{ user `image_owner` }}"
+        "owner": "{{ user `image_owner` }}",
+        "Name": "Packer Builder"
       },
       "ami_block_device_mappings": [
         {
@@ -178,10 +180,12 @@
         "version": "{{user `version`}}",
         "cb-creation-timestamp": "{{timestamp}}",
         "owner": "{{ user `image_owner` }}",
-        "Customer Delivered": "{{user `tag_customer_delivered`}}"
+        "Customer Delivered": "{{user `tag_customer_delivered`}}",
+        "Name": "{{ user `image_name`}}"
       },
       "run_tags": {
-        "owner": "{{ user `image_owner` }}"
+        "owner": "{{ user `image_owner` }}",
+        "Name": "Packer Builder"
       },
       "snapshot_users": "{{ user `aws_snapshot_users` }}",
       "snapshot_groups": "{{ user `aws_snapshot_groups` }}",
@@ -192,6 +196,13 @@
           "volume_type": "gp2",
           "delete_on_termination": true,
           "volume_size": "{{user `image_size`}}"
+        },
+        {
+          "device_name": "/dev/sda2",
+          "volume_type": "gp2",
+          "delete_on_termination": true,
+          "volume_size": "50",
+          "no_device": true
         }
       ],
       "launch_block_device_mappings": [
@@ -200,6 +211,12 @@
           "volume_type": "gp2",
           "delete_on_termination": true,
           "volume_size": "{{user `image_size`}}"
+        },
+        {
+          "device_name": "/dev/sda2",
+          "volume_type": "gp2",
+          "delete_on_termination": true,
+          "volume_size": "50"
         }
       ],
       "ami_name": "{{ user `image_name`}}",
@@ -221,10 +238,12 @@
         "version": "{{user `version`}}",
         "cb-creation-timestamp": "{{timestamp}}",
         "owner": "{{ user `image_owner` }}",
-        "Customer Delivered": "{{user `tag_customer_delivered`}}"
+        "Customer Delivered": "{{user `tag_customer_delivered`}}",
+        "Name": "{{ user `image_name`}}"
       },
       "run_tags": {
-        "owner": "{{ user `image_owner` }}"
+        "owner": "{{ user `image_owner` }}",
+        "Name": "Packer Builder"
       },
       "snapshot_users": "{{ user `aws_snapshot_users` }}",
       "snapshot_groups": "{{ user `aws_snapshot_groups` }}",
@@ -265,10 +284,12 @@
         "version": "{{user `version`}}",
         "cb-creation-timestamp": "{{timestamp}}",
         "owner": "{{ user `image_owner` }}",
-        "Customer Delivered": "{{user `tag_customer_delivered`}}"
+        "Customer Delivered": "{{user `tag_customer_delivered`}}",
+        "Name": "{{ user `image_name`}}"
       },
       "run_tags": {
-        "owner": "{{ user `image_owner` }}"
+        "owner": "{{ user `image_owner` }}",
+        "Name": "Packer Builder"
       },
       "ami_block_device_mappings": [
         {
@@ -293,6 +314,7 @@
     {
       "name": "arm-centos7",
       "type": "azure-arm",
+      "communicator": "ssh",
       "client_id": "{{user `client_id`}}",
       "client_secret": "{{user `client_secret`}}",
       "subscription_id": "{{user `subscription_id`}}",
@@ -330,6 +352,7 @@
     {
       "name": "arm-redhat7",
       "type": "azure-arm",
+      "communicator": "ssh",
       "client_id": "{{user `client_id`}}",
       "client_secret": "{{user `client_secret`}}",
       "subscription_id": "{{user `subscription_id`}}",
@@ -367,6 +390,7 @@
     {
       "name": "arm-redhat8",
       "type": "azure-arm",
+      "communicator": "ssh",
       "client_id": "{{user `client_id`}}",
       "client_secret": "{{user `client_secret`}}",
       "subscription_id": "{{user `subscription_id`}}",
@@ -457,6 +481,13 @@
       "image_name": "{{user `image_name`}}",
       "disk_size": "{{user `image_size`}}",
       "state_timeout": "15m",
+      "disk_attachment": [
+        {
+          "volume_size": 50,
+          "volume_type": "pd-standard",
+          "device_name": "tmp"
+        }
+      ],
       "tags": [
         "builder--packer",
         "cb-creation-timestamp--{{timestamp}}",
