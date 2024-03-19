@@ -66,11 +66,9 @@ function install_with_yum() {
 function update_yum_repos() {
   # Remove RHEL official repos and use the internal mirror in case of RHEL8 and non aws_gov provider
   if [[ "${OS}" == "redhat8" && "${CLOUD_PROVIDER}" != "AWS_GOV" ]]; then
-    RHEL_VERSION=$(cat /etc/redhat-release | grep -oP "[0-9\.]*")
-    RHEL_VERSION=${RHEL_VERSION/.0/}
-    REPO_FILE=rhel${RHEL_VERSION}_cldr_mirrors.repo
+    REPO_FILE=rhel8_cldr_mirrors.repo
     rm /etc/yum.repos.d/*.repo -f
-    curl https://mirror.infra.cloudera.com/repos/rhel/server/8/${RHEL_VERSION}/${REPO_FILE} --fail > /etc/yum.repos.d/${REPO_FILE}
+    curl https://mirror.infra.cloudera.com/repos/rhel/server/8/8/${REPO_FILE} --fail > /etc/yum.repos.d/${REPO_FILE}
 
     # Workaround on resolving the hostname as for some reason the DNS can't resolve it at provision time
     if [ "${IMAGE_BURNING_TYPE}" == "base" ] ; then

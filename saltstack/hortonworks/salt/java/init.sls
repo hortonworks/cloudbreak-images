@@ -36,21 +36,11 @@ install_openjdk:
 
 {% if grains['os'] == 'RedHat' and grains['osmajorrelease'] | int == 8 %}
 {% if salt['environ.get']('IMAGE_BURNING_TYPE') == 'base' or salt['environ.get']('STACK_VERSION').split('.') | map('int') | list >= '7.2.18'.split('.') | map('int') | list %}
-download_rhel8_repo:
-  file.managed:
-    - name: /etc/yum.repos.d/rhel8_cldr_mirrors.repo
-    - source: https://mirror.infra.cloudera.com/repos/rhel/server/8/8/rhel8_cldr_mirrors.repo
-    - skip_verify: True
-
 install_openjdk21:
   pkg.installed:
     - pkgs:
       - java-21-openjdk-headless
       - java-21-openjdk-devel
-
-delete_rhel8_repo:
-  file.absent:
-    - name: /etc/yum.repos.d/rhel8_cldr_mirrors.repo
 {% endif %}
 {% endif %}
 
