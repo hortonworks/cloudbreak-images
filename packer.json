@@ -120,7 +120,9 @@
     "image_uuid": "{{ env `IMAGE_UUID` }}",
     "cloud_provider": "{{ env `CLOUD_PROVIDER` }}",
     "ssh_public_key": "{{ env `SSH_PUBLIC_KEY` }}",
-    "fips_mode": "{{ env `FIPS_MODE` }}"
+    "fips_mode": "{{ env `FIPS_MODE` }}",
+    "stig_enabled": "{{ env `STIG_ENABLED` }}"
+
   },
   "builders": [
     {
@@ -494,6 +496,18 @@
       "expect_disconnect": true,
       "environment_vars": [
         "FIPS_MODE={{user `fips_mode`}}"
+      ],
+      "remote_folder": "/opt/provision-scripts"
+    },
+    {
+      "type": "shell",
+      "scripts": [
+        "scripts/stig_enabled_setup.sh"
+      ],
+      "execute_command": "chmod +x {{ .Path }}; sudo {{ .Vars }} {{ .Path }}",
+      "expect_disconnect": true,
+      "environment_vars": [
+        "STIG_ENABLED={{user `stig_enabled`}}"
       ],
       "remote_folder": "/opt/provision-scripts"
     },

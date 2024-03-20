@@ -18,6 +18,10 @@ if [ -f /var/log/hardening ]; then
     TAGS=$(echo $TAGS | jq -r --arg hardening "$HARDENING" '. + {"hardening": $hardening}')
 fi
 
+if [[ "$STIG_ENABLED" == true ]]; then
+    TAGS=$(echo $TAGS | jq -r --arg hardening "stig" '. + {"hardening": $hardening}')
+fi
+
 echo $TAGS > /tmp/tags.json
 
 chmod 644 /tmp/tags.json
