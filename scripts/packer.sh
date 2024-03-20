@@ -230,6 +230,7 @@ packer_in_container() {
     -e CLOUD_PROVIDER="$CLOUD_PROVIDER" \
     -e SSH_PUBLIC_KEY="$SSH_PUBLIC_KEY" \
     -e FIPS_MODE="$FIPS_MODE" \
+    -e STIG_ENABLE="$STIG_ENABLE" \
     -v /var/run/docker.sock:/var/run/docker.sock \
     -v $PWD:$PWD \
     -w $PWD \
