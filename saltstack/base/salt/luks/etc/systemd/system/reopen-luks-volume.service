@@ -1,0 +1,19 @@
+[Unit]
+Description=LUKS volume reopen script service
+ConditionPathIsMountPoint=!/mnt/luks
+ConditionFileNotEmpty=/etc/luks/passphrase_encryption_key
+ConditionFileNotEmpty=/etc/luks/passphrase_ciphertext
+After=cloud-init.target
+Wants=cloud-init.target
+StartLimitIntervalSec=600
+StartLimitBurst=5
+
+[Service]
+Type=oneshot
+ExecStart=/etc/luks/bin/reopen-luks-volume.sh
+RemainAfterExit=yes
+Restart=on-failure
+TimeoutSec=30
+
+[Install]
+WantedBy=cloud-init.target

@@ -16,6 +16,7 @@ base:
     - ccmv2
     - custom
     - mount
+    - luks
 {% if pillar['subtype'] != 'Docker' or pillar['OS'] == 'redhat8' %}
     - chrony
 {% endif %}

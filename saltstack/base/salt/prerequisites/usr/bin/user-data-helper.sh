@@ -72,6 +72,12 @@ reload_sysconf() {
   sysctl -p
 }
 
+create_luks_volume() {
+  echo "LUKS volume creation started."
+  /etc/luks/bin/create-luks-volume.sh
+  echo "LUKS volume creation finished."
+}
+
 configure-salt-bootstrap() {
   mkdir -p /etc/salt-bootstrap
   chmod 700 /etc/salt-bootstrap
@@ -253,6 +259,11 @@ resize_partitions() {
 }
 
 main() {
+  if [[ "$SECRET_ENCRYPTION_ENABLED" == "true" ]]; then
+    echo "$SECRET_ENCRYPTION_KEY_SOURCE" 1> /etc/luks/passphrase_encryption_key
+    create_luks_volume
+    # then move secrets to LUKS volume and symlink them to their original place
+  fi
   configure-salt-bootstrap
   reload_sysconf
   if [[ "$1" == "::" ]]; then
