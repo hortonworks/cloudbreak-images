@@ -401,9 +401,9 @@
         "Customer Delivered": "{{user `tag_customer_delivered`}}"
       },
       "plan_info": {
-        "plan_name": "rhel-lvm88",
-        "plan_product": "rhel-byos",
-        "plan_publisher": "redhat"
+        "plan_name": "runtime-7_2_17",
+        "plan_product": "cdp-7_2_17",
+        "plan_publisher": "cloudera"
       }
     },
     {
@@ -473,198 +473,20 @@
       "type": "shell",
       "inline": [
         "sudo mkdir -p /opt/provision-scripts",
-        "sudo chmod -R a+w /opt/provision-scripts"
+        "sudo chmod -R 777 /opt/provision-scripts",
+        "sudo ls -la /opt | grep provision-scripts",
+        "echo Created /opt/provision-scripts...",
+        "touch /opt/provision-scripts/hello.txt"
       ]
     },
     {
       "type": "shell",
-      "script": "scripts/create-debug-user.sh",
-      "environment_vars": [
-        "SSH_PUBLIC_KEY={{ user `ssh_public_key` }}"
-      ],
-      "execute_command": "chmod +x {{ .Path }}; sudo {{ .Vars }} {{ .Path }}",
-      "remote_folder": "/opt/provision-scripts"
-    },
-    {
-      "type": "shell",
-      "scripts": [
-        "scripts/fips_mode_setup.sh"
-      ],
-      "execute_command": "chmod +x {{ .Path }}; sudo {{ .Vars }} {{ .Path }}",
-      "expect_disconnect": true,
-      "environment_vars": [
-        "FIPS_MODE={{user `fips_mode`}}"
-      ],
-      "remote_folder": "/opt/provision-scripts"
-    },
-    {
-      "type": "shell",
-      "scripts": [
-        "scripts/storage_setup.sh",
-        "scripts/storage_final.sh"
-      ],
-      "execute_command": "chmod +x {{ .Path }}; sudo {{ .Vars }} {{ .Path }}",
-      "expect_disconnect": true,
-      "environment_vars": [
-        "OS={{user `os`}}",
-        "CLOUD_PROVIDER={{user `cloud_provider`}}"
-      ],
-      "remote_folder": "/opt/provision-scripts"
-    },
-    {
-      "type": "file",
-      "source": "saltstack",
-      "destination": "/tmp/saltstack"
-    },
-    {
-      "type": "file",
-      "source": "repos",
-      "destination": "/tmp/repos"
-    },
-    {
-      "type": "file",
-      "source": "scripts/salt_requirements.txt",
-      "destination": "/tmp/salt_requirements.txt"
-    },
-    {
-      "type": "file",
-      "source": "scripts/hardcoded-packages.csv",
-      "destination": "/tmp/hardcoded-packages.csv"
-    },
-    {
-      "type": "file",
-      "source": "scripts/rhel8_salt_fix.patch",
-      "destination": "/tmp/rhel8_salt_fix.patch"
-    },
-    {
-      "type": "shell",
-      "script": "scripts/generate-delta-package-list.sh",
-      "environment_vars": [
-        "OS_TYPE={{user `os_type`}}",
-        "OS={{user `os`}}",
-        "SALT_INSTALL_OS={{ user `salt_install_os` }}",
-        "INSTALLATION_STATE=base"
-      ],
-      "execute_command": "chmod +x {{ .Path }}; sudo {{ .Vars }} {{ .Path }}",
-      "remote_folder": "/opt/provision-scripts"
-    },
-    {
-      "type": "shell",
-      "script": "scripts/salt-install.sh",
-      "environment_vars": [
-        "IMAGE_BASE_NAME={{ user `base_name` }}",
-        "IMAGE_BURNING_TYPE={{ user `image_burning_type` }}",
-        "SALT_INSTALL_OS={{ user `salt_install_os` }}",
-        "SALT_INSTALL_REPO={{user `salt_install_repo` }}",
-        "SALT_VERSION={{user `salt_version`}}",
-        "STACK_VERSION={{user `stack_version`}}",
-        "PYZMQ_VERSION={{user `pyzmq_version`}}",
-        "SLES_REGISTRATION_CODE={{user `sles_registration_code`}}",
-        "OS_TYPE={{user `os_type`}}",
-        "OS={{user `os`}}",
-        "PYTHON_APT_VERSION={{user `python_apt_version`}}",
-        "SALT_PATH={{user `salt_path`}}",
-        "SALT_REPO_FILE={{user `salt_repo_file` }}",
-        "CLOUD_PROVIDER={{user `cloud_provider`}}"
-      ],
-      "execute_command": "chmod +x {{ .Path }}; sudo {{ .Vars }} {{ .Path }}",
-      "remote_folder": "/opt/provision-scripts"
-    },
-    {
-      "type": "shell",
-      "scripts": [
-        "scripts/salt-setup.sh",
-        "scripts/reboot.sh",
-        "scripts/salt-final.sh"
-      ],
-      "expect_disconnect": true,
-      "execute_command": "chmod +x {{ .Path }}; sudo {{ .Vars }} {{ .Path }} ",
-      "environment_vars": [
-        "IMAGE_BASE_NAME={{ user `base_name` }}",
-        "CUSTOM_IMAGE_TYPE={{user `custom_image_type`}}",
-        "OS_USER={{ user `os_user` }}",
-        "CLUSTERMANAGER_VERSION={{user `clustermanager_version`}}",
-        "CLUSTERMANAGER_BASEURL={{user `clustermanager_baseurl`}}",
-        "CLUSTERMANAGER_GPGKEY={{user `clustermanager_gpgkey`}}",
-        "STACK_TYPE={{user `stack_type`}}",
-        "MPACK_URLS={{user `mpack_urls`}}",
-        "STACK_VERSION={{user `stack_version`}}",
-        "STACK_REPOID={{user `stack_repoid`}}",
-        "STACK_BASEURL={{user `stack_baseurl`}}",
-        "HDPUTIL_VERSION={{user `hdputil_version`}}",
-        "HDPUTIL_REPOID={{user `hdputil_repoid`}}",
-        "HDPUTIL_BASEURL={{user `hdputil_baseurl`}}",
-        "PREWARM_TAG={{user `prewarm_tag` }}",
-        "INCLUDE_FLUENT={{user `include_fluent`}}",
-        "FLUENT_PREWARM_TAG={{ user `fluent_prewarm_tag` }}",
-        "METERING_PREWARM_TAG={{ user `metering_prewarm_tag` }}",
-        "INCLUDE_CDP_TELEMETRY={{user `include_cdp_telemetry`}}",
-        "CDP_TELEMETRY_PREWARM_TAG={{ user `cdp_telemetry_prewarm_tag` }}",
-        "INCLUDE_METERING={{user `include_metering`}}",
-        "CDP_TELEMETRY_VERSION={{user `cdp_telemetry_version`}}",
-        "CDP_TELEMETRY_RPM_URL={{user `cdp_telemetry_rpm_url`}}",
-        "CDP_LOGGING_AGENT_VERSION={{user `cdp_logging_agent_version`}}",
-        "CDP_LOGGING_AGENT_RPM_URL={{user `cdp_logging_agent_rpm_url`}}",
-        "USE_TELEMETRY_ARCHIVE={{user `use_telemetry_archive`}}",
-        "ARCHIVE_BASE_URL={{user `archive_base_url`}}",
-        "ARCHIVE_CREDENTIALS={{user `archive_credentials`}}",
-        "OS={{user `os`}}",
-        "GIT_REV={{user `git_rev`}}",
-        "STACK_REPOSITORY_VERSION={{user `repository_version`}}",
-        "COPY_AWS_MARKETPLACE_EULA={{user `copy_aws_marketplace_eula`}}",
-        "OPTIONAL_STATES={{user `optional_states`}}",
-        "PREINSTALLED_JAVA_HOME={{user `preinstalled_java_home`}}",
-        "LOCAL_URL_AMBARI={{user `local_url_ambari`}}",
-        "LOCAL_URL_HDP={{user `local_url_hdp`}}",
-        "LOCAL_URL_HDP_UTILS={{user `local_url_hdp_utils`}}",
-        "REPOSITORY_TYPE={{user `repository_type`}}",
-        "SLES_REGISTRATION_CODE={{user `sles_registration_code`}}",
-        "PACKAGE_VERSIONS={{user `package_versions`}}",
-        "SALT_VERSION={{user `salt_version`}}",
-        "SALT_PATH={{user `salt_path`}}",
-        "PARCELS_ROOT={{ user `parcels_root` }}",
-        "PARCELS_NAME={{ user `parcels_name` }}",
-        "PRE_WARM_PARCELS={{ user `pre_warm_parcels` }}",
-        "PRE_WARM_CSD={{ user `pre_warm_csd` }}",
-        "JUMPGATE_AGENT_RPM_URL={{ user `jumpgate_agent_rpm_url` }}",
-        "JUMPGATE_AGENT_GBN={{ user `jumpgate_agent_gbn` }}",
-        "METERING_AGENT_RPM_URL={{ user `metering_agent_rpm_url` }}",
-        "FREEIPA_PLUGIN_RPM_URL={{ user `freeipa_plugin_rpm_url` }}",
-        "FREEIPA_HEALTH_AGENT_RPM_URL={{ user `freeipa_healthagent_rpm_url` }}",
-        "FREEIPA_LDAP_AGENT_RPM_URL={{ user `freeipa_ldapagent_rpm_url` }}",
-        "HTTPS_PROXY={{ user `gov_https_proxy` }}",
-        "HTTP_PROXY={{ user `gov_http_proxy` }}",
-        "http_proxy={{ user `gov_http_proxy` }}",
-        "https_proxy={{ user `gov_https_proxy` }}",
-        "no_proxy={{ user `gov_no_proxy` }}",
-        "NO_PROXY={{ user `gov_no_proxy` }}",
-        "CLOUD_PROVIDER={{user `cloud_provider`}}",
-        "IMAGE_BURNING_TYPE={{ user `image_burning_type` }}"
-      ],
-      "remote_folder": "/opt/provision-scripts"
-    },
-    {
-      "type": "shell",
-      "script": "scripts/generate-delta-package-list.sh",
-      "environment_vars": [
-        "OS_TYPE={{user `os_type`}}",
-        "OS={{user `os`}}",
-        "SALT_INSTALL_OS={{ user `salt_install_os` }}",
-        "INSTALLATION_STATE=complete",
-        "SALT_PATH={{user `salt_path`}}",
-        "PARCELS_NAME={{ user `parcels_name` }}",
-        "STACK_BASEURL={{user `stack_baseurl`}}",
-        "PRE_WARM_PARCELS={{ user `pre_warm_parcels` }}",
-        "PRE_WARM_CSD={{ user `pre_warm_csd` }}"
-      ],
-      "execute_command": "chmod +x {{ .Path }}; sudo {{ .Vars }} {{ .Path }}",
-      "remote_folder": "/opt/provision-scripts"
-    },
-    {
-      "type": "file",
-      "source": "/tmp/package-versions.json",
-      "destination": "package-versions.json",
-      "direction" : "download"
+      "inline": [
+        "sudo wget -O /etc/yum.repos.d/rhel8.8_cldr_mirrors.repo https://mirror.infra.cloudera.com/repos/rhel/server/8/8.8/rhel8.8_cldr_mirrors.repo",
+        "sudo yum update -y",
+        "sudo yum install telnet -y",
+        "echo Installed Telnet client..."
+      ]
     },
     {
       "type": "shell",
@@ -681,52 +503,6 @@
       "source": "/tmp/tags.json",
       "destination": "tags.json",
       "direction" : "download"
-    },
-    {
-      "type": "file",
-      "source": "/tmp/installed-delta-packages.csv",
-      "destination": "installed-delta-packages.csv",
-      "direction" : "download"
-    },
-    {
-      "type": "file",
-      "source": "/tmp/installed-full-packages.csv",
-      "destination": "installed-full-packages.csv",
-      "direction" : "download"
-    },
-    {
-      "type": "shell",
-      "script": "scripts/remove-debug-user.sh",
-      "execute_command": "chmod +x {{ .Path }}; sudo {{ .Vars }} {{ .Path }}",
-      "remote_folder": "/opt/provision-scripts"
-    },
-    {
-      "type": "shell",
-      "script": "scripts/repo_cleanup.sh",
-      "environment_vars": [
-        "OS={{user `os`}}",
-        "CLOUD_PROVIDER={{ user `cloud_provider` }}",
-        "IMAGE_BURNING_TYPE={{ user `image_burning_type` }}"
-      ],
-      "execute_command": "chmod +x {{ .Path }}; sudo {{ .Vars }} {{ .Path }}",
-      "remote_folder": "/opt/provision-scripts"
-    },
-    {
-      "type": "shell",
-      "inline": [
-        "sudo rm -rf /opt/provision-scripts"
-      ],
-      "remote_folder": "/opt/provision-scripts"
-    },
-    {
-      "type": "file",
-      "source": "/tmp/cis_log.txt",
-      "destination": "cis_log.txt",
-      "direction" : "download",
-      "only": [
-        "aws-redhat8",
-        "gc-redhat8"
-      ]
     }
   ],
   "post-processors": [
