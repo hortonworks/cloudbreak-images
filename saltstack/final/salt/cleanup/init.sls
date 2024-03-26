@@ -13,3 +13,8 @@ include:
   - {{ slspath }}.cloud-init
 {% endif %}
   - {{ slspath }}.user
+  - {{ slspath }}.mount
+
+storage_usage:
+  cmd.run:
+    - name: lsblk; df -h
