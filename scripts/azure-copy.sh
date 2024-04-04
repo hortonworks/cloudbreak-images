@@ -28,13 +28,13 @@ docker run -i --rm \
     -e AZURE_STORAGE_ACCOUNTS="$AZURE_STORAGE_ACCOUNTS" \
     -e AZURE_IMAGE_NAME="$AZURE_IMAGE_NAME" \
     --entrypoint azure-copy \
-    docker-sandbox.infra.cloudera.com/cloudbreak-tools/cloudbreak-azure-cli-tools:1.25.0
+    docker-sandbox.infra.cloudera.com/cloudbreak-tools/cloudbreak-azure-cli-tools:1.26.0
 
 docker run -i --rm \
     -v $PWD:/work \
     -w /work \
     --entrypoint pollprogress \
-    docker-sandbox.infra.cloudera.com/cloudbreak-tools/cloudbreak-azure-cli-tools:1.25.0 \
+    docker-sandbox.infra.cloudera.com/cloudbreak-tools/cloudbreak-azure-cli-tools:1.26.0 \
     checks.yml
 
 : "${AZURE_STORAGE_ACCOUNTS:?Storage account list must be provided}"
