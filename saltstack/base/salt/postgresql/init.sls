@@ -327,6 +327,7 @@ stop-postgresql:
 {% else %}
     - name: postgresql
 {% endif %}
+    - enable: False
 {% endif %}
 
 set-postgres-nologin-shell:
