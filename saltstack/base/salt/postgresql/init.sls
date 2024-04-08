@@ -324,10 +324,10 @@ stop-postgresql:
   service.dead:
 {% if  pillar['OS'] == 'redhat8' %}
     - name: postgresql-{{ pg_default_version }}
+    - enable: False
 {% else %}
     - name: postgresql
 {% endif %}
-    - enable: False
 {% endif %}
 
 set-postgres-nologin-shell:
