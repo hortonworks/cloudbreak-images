@@ -16,6 +16,8 @@ remove_unused_rhel8_packages:
       - sssd-krb5
       # Not used but adds warnings to register system
       - insights-client
+      # Enforces automatic updates that can end up destabilizing the instance
+      - dnf-automatic
 {% endif %}
 
 
