@@ -8,6 +8,8 @@ if [ -f package-versions.json ]; then
     mv jq-linux64 /bin/jq
 
     if [ -n "$stack_version" ] && [ -n "$clustermanager_version" ]; then
+        # This removes the -hX postfix from the CM version number
+        clustermanager_version=$(echo "$clustermanager_version" | sed 's/\-h[0-9]\+//g')
         if [ "$stack_type" == "CDH" ]; then
             cat package-versions.json | jq --arg stack_version $stack_version --arg clustermanager_version $clustermanager_version --arg cm_build_number $cm_build_number --arg stack_build_number $stack_build_number --arg composite_gbn "$composite_gbn" '. += {"stack" : $stack_version,  "cm" : $clustermanager_version,  "cm-build-number" : $cm_build_number,  "cdh-build-number" : $stack_build_number, "composite_gbn": $composite_gbn}' > package-versions-tmp.json && mv package-versions-tmp.json package-versions.json
 
