@@ -20,10 +20,10 @@ verify_parcel_checksum() {
   local SHA_TYPE=$1
 
   echo "Downloading sha file from $STACK_BASEURL/${PARCELS_NAME}.$SHA_TYPE"
-   curl -s -S "${STACK_BASEURL}/${PARCELS_NAME}.${SHA_TYPE}" -o "$PARCEL_ARCHIVE_PATH/$PARCELS_NAME.$SHA_TYPE"
-   cp "$PARCEL_ARCHIVE_PATH/$PARCELS_NAME.$SHA_TYPE" "$PARCEL_ARCHIVE_PATH/$PARCELS_NAME.sha"
-   sed "s/$/  ${PARCELS_NAME}/" "$PARCEL_ARCHIVE_PATH/$PARCELS_NAME.$SHA_TYPE" |
-     tee "$PARCEL_ARCHIVE_PATH/$PARCELS_NAME.shacheck" > /dev/null
+  curl -s -S "${STACK_BASEURL}/${PARCELS_NAME}.${SHA_TYPE}" -o "$PARCEL_ARCHIVE_PATH/$PARCELS_NAME.$SHA_TYPE"
+  cp "$PARCEL_ARCHIVE_PATH/$PARCELS_NAME.$SHA_TYPE" "$PARCEL_ARCHIVE_PATH/$PARCELS_NAME.sha"
+  sed "s/$/  ${PARCELS_NAME}/" "$PARCEL_ARCHIVE_PATH/$PARCELS_NAME.$SHA_TYPE" |
+    tee "$PARCEL_ARCHIVE_PATH/$PARCELS_NAME.shacheck" > /dev/null
 
   echo "Verifying parcel checksum"
   COMMAND="${SHA_TYPE}sum"
@@ -31,8 +31,8 @@ verify_parcel_checksum() {
     echo "Checksum verification failed"
     exit 1
   fi
+  mv "$PARCEL_ARCHIVE_PATH/$PARCELS_NAME.sha" $PARCEL_REPO
 }
-
 
 download_cdh_parcel() {
   id -u cloudera-scm &>/dev/null ||useradd -r cloudera-scm
