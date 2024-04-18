@@ -4,7 +4,7 @@ set -ex -o pipefail -o errexit
 packer_in_container() {
   local dockerOpts=""
   local packerFile="packer.json"
-  : "${PACKER_VERSION:="1.4.2"}"
+  : "${PACKER_VERSION:="1.10.2"}"
   echo "Using Packer version $PACKER_VERSION"
 
   if [[ "$GCP_ACCOUNT_FILE" ]]; then
@@ -231,11 +231,14 @@ packer_in_container() {
     -e SSH_PUBLIC_KEY="$SSH_PUBLIC_KEY" \
     -e FIPS_MODE="$FIPS_MODE" \
     -e STIG_ENABLE="$STIG_ENABLE" \
+    -e PACKER_VERSION="$PACKER_VERSION" \
     -v /var/run/docker.sock:/var/run/docker.sock \
     -v $PWD:$PWD \
     -w $PWD \
+    --entrypoint /bin/bash \
     $dockerOpts \
-    hashicorp/packer:$PACKER_VERSION "$@" $packerFile
+    hashicorp/packer:$PACKER_VERSION \
+    -c "./scripts/packer-command.sh $* $packerFile"
 }
 
 main() {

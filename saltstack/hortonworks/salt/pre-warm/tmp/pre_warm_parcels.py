@@ -21,6 +21,7 @@ if os.environ.get("PRE_WARM_PARCELS", "[]"):
     CSD_ROOT = os.environ.get("CSD_ROOT", "/opt/cloudera/csd")
     ACTIVE_PARCELS_PATH = "/var/lib/cloudera-scm-agent/active_parcels.json"
     CREATE_USERS = True
+    PARCEL_ARCHIVE_PATH = "/mnt/tmp"
     PARCEL_REPO = "/opt/cloudera/parcel-repo"
     PARCEL_CACHE = "/opt/cloudera/parcel-cache"
 
@@ -140,11 +141,19 @@ except NameError:
         base_folder, parcel_meta = read_parcel_meta(parcel_path)
         subprocess.check_call("echo Decompress " + parcel_path, shell=True)
 
+        # create an empty file in parcel repo
+        repo_file = parcel_path.replace(PARCEL_ARCHIVE_PATH, PARCEL_REPO)
+        cmd = 'touch {0}'.format(repo_file)
+        subprocess.check_call(cmd, shell=True)
+
         cmd = 'tar zxf "{0}" -C "{1}"'.format(parcel_path, PARCELS_ROOT)
         subprocess.check_call(cmd, shell=True)
 
         ln_cmd = 'cd {0}; ln -s {1} {2}'.format(PARCELS_ROOT, base_folder, parcel_meta["name"])
         subprocess.check_call(ln_cmd, shell=True)
+
+        cmd = 'rm -f "{0}"'.format(parcel_path)
+        subprocess.check_call(cmd, shell=True)
 
         open(os.path.join(PARCELS_ROOT, parcel_meta["name"], ".dont_delete"), "w").close()
         activate_parcel(parcel_meta["name"], parcel_meta["version"])
@@ -155,7 +164,7 @@ except NameError:
         for parcel_file_name, parcel_repository in PRE_WARM_PARCELS:
             subprocess.check_call("echo Download " + parcel_file_name, shell=True)
             parcel_url = normalize_url(parcel_repository) + "/" + parcel_file_name
-            parcel_dest = os.path.join(PARCEL_REPO, parcel_file_name)
+            parcel_dest = os.path.join(PARCEL_ARCHIVE_PATH, parcel_file_name)
             print("Downloading parcel {0}, please wait ...".format(parcel_url))
             download(parcel_url, parcel_dest)
             print("Downloaded parcel:", parcel_url)

@@ -44,6 +44,8 @@ install-postgres:
         dnf clean all
 {% if pillar['subtype'] != 'Docker' %}
         dnf -y install postgresql11-server postgresql11 postgresql11-devel {{ postgres_install_flags }}
+{% else %}
+        dnf -y remove postgresql11-server postgresql11 postgresql11-devel
 {% endif %}
         dnf -y install postgresql14-server postgresql14 postgresql14-devel {{ postgres_install_flags }}
 
@@ -324,6 +326,7 @@ stop-postgresql:
   service.dead:
 {% if  pillar['OS'] == 'redhat8' %}
     - name: postgresql-{{ pg_default_version }}
+    - enable: False
 {% else %}
     - name: postgresql
 {% endif %}

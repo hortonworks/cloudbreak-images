@@ -16,6 +16,8 @@ remove_unused_rhel8_packages:
       - sssd-krb5
       # Not used but adds warnings to register system
       - insights-client
+      # Enforces automatic updates that can end up destabilizing the instance
+      - dnf-automatic
 {% endif %}
 
 
@@ -51,6 +53,9 @@ packages_install:
     {% if pillar['OS'] == 'redhat8' %}
       - sos
     {% endif %}
+  {% endif %}
+  {% if salt['environ.get']('CLOUD_PROVIDER') == 'AWS_GOV' %}
+      - cryptsetup
   {% endif %}
       - nvme-cli
       - openssl

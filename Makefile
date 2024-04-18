@@ -131,27 +131,7 @@ ifndef IMAGE_NAME
 @echo IMAGE_NAME was not defined as an environment variable. Generated value: $(IMAGE_NAME)
 endif
 
-ifeq ($(OS),centos7)
-	ifeq ($(CLOUD_PROVIDER),GCP)
-		IMAGE_SIZE ?= 48
-	endif
-	IMAGE_SIZE ?= 36
-else
-# The two legacy versions we still burn for RHEL8
-	ifeq ($(STACK_VERSION),7.2.16)
-		IMAGE_SIZE ?= 64
-	endif
-	ifeq ($(STACK_VERSION),7.2.17)
-		IMAGE_SIZE ?= 64
-	else
-# 7.2.18 and above require much bigger images
-		ifeq ($(CLOUD_PROVIDER),Azure)
-			IMAGE_SIZE ?= 90
-		else
-			IMAGE_SIZE ?= 72
-		endif
-	endif
-endif
+IMAGE_SIZE=$(shell ./scripts/get-image-size.sh $(CLOUD_PROVIDER) $(OS) $(STACK_VERSION))
 
 ifeq ($(MAKE_PUBLIC_SNAPSHOTS),yes)
 	AWS_SNAPSHOT_GROUPS = "all"
@@ -221,7 +201,7 @@ us-west-1,us-west-2,eu-central-1
 endef
 
 define AWS_AMI_REGIONS_ALL
-ap-northeast-1,ap-northeast-2,ap-south-1,ap-southeast-1,ap-southeast-2,ap-southeast-3,ca-central-1,eu-central-1,eu-west-1,eu-west-2,eu-west-3,sa-east-1,us-east-1,us-east-2,us-west-1,us-west-2,eu-north-1,eu-south-1,af-south-1,me-south-1,ap-east-1,eu-south-2,eu-central-2,me-central-1,il-central-1
+ap-northeast-1,ap-northeast-2,ap-south-1,ap-south-2,ap-southeast-1,ap-southeast-2,ap-southeast-3,ca-central-1,eu-central-1,eu-west-1,eu-west-2,eu-west-3,sa-east-1,us-east-1,us-east-2,us-west-1,us-west-2,eu-north-1,eu-south-1,af-south-1,me-south-1,ap-east-1,eu-south-2,eu-central-2,me-central-1,il-central-1
 endef
 
 ifndef AWS_AMI_REGIONS
