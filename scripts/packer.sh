@@ -106,6 +106,11 @@ packer_in_container() {
       export FREEIPA_LDAP_AGENT_RPM_URL=$DEFAULT_FREEIPA_LDAP_AGENT_RPM_URL
   fi
 
+  #Fips mode is required for STIG
+  if [[ "$STIG_ENABLED" == "true" ]]; then
+    FIPS_MODE="true"
+  fi
+
   [[ "$TRACE" ]] && set -x
   ${DRY_RUN:+echo ===} docker run -i $TTY_OPTS --rm \
     -e MOCK=$MOCK \
@@ -230,7 +235,7 @@ packer_in_container() {
     -e CLOUD_PROVIDER="$CLOUD_PROVIDER" \
     -e SSH_PUBLIC_KEY="$SSH_PUBLIC_KEY" \
     -e FIPS_MODE="$FIPS_MODE" \
-    -e STIG_ENABLE="$STIG_ENABLE" \
+    -e STIG_ENABLED="$STIG_ENABLED" \
     -e PACKER_VERSION="$PACKER_VERSION" \
     -v /var/run/docker.sock:/var/run/docker.sock \
     -v $PWD:$PWD \
