@@ -3,6 +3,10 @@
 set -x
 set
 
+if [[ "$SECRET_ENCRYPTION_ENABLED" == "true" ]]; then
+  source /usr/bin/cdp-retrieve-userdata-secrets.sh &> /var/log/cdp-retrieve-userdata-secrets.log
+fi
+
 : ${CLOUD_PLATFORM:? required}
 : ${START_LABEL:? required}
 : ${PLATFORM_DISK_PREFIX:? required}
