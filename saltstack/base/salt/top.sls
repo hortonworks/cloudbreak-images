@@ -18,6 +18,7 @@ base:
     - mount
 {% if salt['environ.get']('CLOUD_PROVIDER') == 'AWS_GOV' %}
     - luks
+    - userdata-secrets
 {% endif %}
 {% if pillar['subtype'] != 'Docker' or pillar['OS'] == 'redhat8' %}
     - chrony
