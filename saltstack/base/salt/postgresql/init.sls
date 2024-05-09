@@ -43,6 +43,10 @@ install-postgres:
         dnf module -y disable postgresql
         dnf clean all
 {% if pillar['subtype'] != 'Docker' %}
+        {% if salt['environ.get']('CLOUD_PROVIDER') == 'AWS_GOV' %}
+            dnf -y remove
+            dnf install -y https://download.postgresql.org/pub/repos/yum/reporpms/EL-8-x86_64/pgdg-redhat-repo-latest.noarch.rpm
+        {% endif %}
         dnf -y install postgresql11-server postgresql11 postgresql11-devel {{ postgres_install_flags }}
 {% else %}
         dnf -y remove postgresql11-server postgresql11 postgresql11-devel

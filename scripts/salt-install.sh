@@ -188,7 +188,10 @@ function redhat8_update_python36() {
 function redhat8_install_python38() {
   echo "Installing Python 3.8 with dependencies..."
   yum install -y python38
-  yum install -y python38-devel python38-libs python38-cffi python38-lxml python38-psycopg2
+  yum install -y python38-devel python38-libs python38-cffi python38-lxml
+  if [ "${CLOUD_PROVIDER}" != "AWS_GOV" ]; then
+    yum install -y python38-psycopg2
+  fi
 
   echo PYTHON38=$(yum list installed | grep ^python38\\.x86_64 | grep -oi " [^\s]* " | xargs) >> /tmp/python_install.properties
 
