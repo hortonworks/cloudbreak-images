@@ -111,6 +111,14 @@ packer_in_container() {
     FIPS_MODE="true"
   fi
 
+  if [ "$CLOUD_PROVIDER" == "Azure" ]; then
+    AZURE_IMAGE_VERSION=$(./scripts/get-azure-vm-image-version.sh "$AZURE_IMAGE_PUBLISHER" "$AZURE_IMAGE_OFFER" "$AZURE_IMAGE_SKU")
+    if [ -z "$AZURE_IMAGE_VERSION" ]; then
+    	echo "Failed to query AZURE_IMAGE_VERSION"
+    	exit 1
+    fi
+  fi
+
   [[ "$TRACE" ]] && set -x
   ${DRY_RUN:+echo ===} docker run -i $TTY_OPTS --rm \
     -e MOCK=$MOCK \

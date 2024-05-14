@@ -125,13 +125,16 @@ except NameError:
         sha_hash = hashlib.sha1()
         if "sha256" == hash_method:
             sha_hash = hashlib.sha256()
+        sha_file = parcel_dest + ".sha"
 
         with open(parcel_dest,"rb") as f:
             for byte_block in iter(lambda: f.read(4096),b""):
                 sha_hash.update(byte_block)
 
-        if check_if_string_in_file(parcel_dest + ".sha", sha_hash.hexdigest()):
+        if check_if_string_in_file(sha_file, sha_hash.hexdigest()):
             print("Hash verification passed for {0}".format(parcel_dest))
+            cmd = 'mv {0} {1}'.format(sha_file, PARCEL_REPO)
+            subprocess.check_call(cmd, shell=True)
         else:
             raise Exception("Hash verification failed for {0}".format(parcel_dest))
 
