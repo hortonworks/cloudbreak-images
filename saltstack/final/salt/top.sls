@@ -10,5 +10,6 @@ final:
     - metadata
 {% if pillar['subtype'] != 'Docker' %}
     - cis-controls
+    - stig
 {% endif %}
     - cleanup

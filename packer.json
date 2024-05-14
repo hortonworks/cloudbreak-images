@@ -120,9 +120,7 @@
     "image_uuid": "{{ env `IMAGE_UUID` }}",
     "cloud_provider": "{{ env `CLOUD_PROVIDER` }}",
     "ssh_public_key": "{{ env `SSH_PUBLIC_KEY` }}",
-    "fips_mode": "{{ env `FIPS_MODE` }}",
-    "stig_enabled": "{{ env `STIG_ENABLED` }}"
-
+    "fips_mode": "{{ env `FIPS_MODE` }}"
   },
   "builders": [
     {
