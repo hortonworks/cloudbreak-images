@@ -7,11 +7,19 @@
 {% set cloud_provider = salt['environ.get']('CLOUD_PROVIDER') %}
 {% set os = salt['environ.get']('OS') %}
 
-set_hardening_to_cis_server_l1:
+{% if salt['environ.get']('STIG_ENABLED') == 'true' %}
+set_hardening_to_stig:
   file.managed:
     - name: /var/log/hardening
     - contents:
-      - "cis_server_l1"
+      - "stig"
+{% else %}
+set_hardening_to_stig:
+  file.managed:
+    - name: /var/log/hardening
+    - contents:
+      - "stig"
+{% endif %}
 
 #### CIS: Strengthen the ownership for job Scheduler
 # https://jira.cloudera.com/browse/CB-8932
