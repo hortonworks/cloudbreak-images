@@ -106,6 +106,11 @@ packer_in_container() {
       export FREEIPA_LDAP_AGENT_RPM_URL=$DEFAULT_FREEIPA_LDAP_AGENT_RPM_URL
   fi
 
+  #Fips mode is required for STIG
+  if [[ "$STIG_ENABLED" == "true" ]]; then
+    FIPS_MODE="true"
+  fi
+
   if [ "$CLOUD_PROVIDER" == "Azure" ]; then
     AZURE_IMAGE_VERSION=$(./scripts/get-azure-vm-image-version.sh "$AZURE_IMAGE_PUBLISHER" "$AZURE_IMAGE_OFFER" "$AZURE_IMAGE_SKU")
     if [ -z "$AZURE_IMAGE_VERSION" ]; then
@@ -238,6 +243,7 @@ packer_in_container() {
     -e CLOUD_PROVIDER="$CLOUD_PROVIDER" \
     -e SSH_PUBLIC_KEY="$SSH_PUBLIC_KEY" \
     -e FIPS_MODE="$FIPS_MODE" \
+    -e STIG_ENABLED="$STIG_ENABLED" \
     -e PACKER_VERSION="$PACKER_VERSION" \
     -v /var/run/docker.sock:/var/run/docker.sock \
     -v $PWD:$PWD \
