@@ -18,7 +18,7 @@ set_hardening_to_stig:
   file.managed:
     - name: /var/log/hardening
     - contents:
-      - "stig"
+      - "cis_server_l1"
 {% endif %}
 
 #### CIS: Strengthen the ownership for job Scheduler
