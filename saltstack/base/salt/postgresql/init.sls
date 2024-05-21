@@ -369,6 +369,16 @@ psycopg2-centos7-py36-verify:
     - name: /usr/local/bin/pip3 show psycopg2
     - onlyif: ls -la /usr/local/lib/python3.6/site-packages/
 
+psycopg2-centos7-py36-hue-link:
+  cmd.run:
+    - name: ln -s /usr/local/lib64/python3.6/site-packages/psycopg2 /usr/lib64/python3.6/site-packages/psycopg2
+    - onlyif: ls -la /usr/local/lib64/python3.6/site-packages/psycopg2
+
+psycopg2-centos7-py36-hue-link-2:
+  cmd.run:
+    - name: ln -s /usr/local/lib64/python3.6/site-packages/psycopg2-2.9.3-py3.6.egg-info /usr/lib64/python3.6/site-packages/psycopg2-2.9.3-py3.6.egg-info
+    - onlyif: ls -la /usr/local/lib64/python3.6/site-packages/psycopg2-2.9.3-py3.6.egg-info
+
 # RHEL 8 + Python 3.8
 psycopg2-rhel8-py38:
   pip.installed:
@@ -380,6 +390,16 @@ psycopg2-rhel8-py38-verify:
   cmd.run:
     - name: /usr/local/bin/pip3.8 show psycopg2
     - onlyif: ls -la /usr/lib64/python3.8/site-packages
+
+psycopg2-rhel8-py38-hue-link:
+  cmd.run:
+    - name: ln -s /usr/local/lib64/python3.8/site-packages/psycopg2 /usr/lib64/python3.8/site-packages/psycopg2
+    - onlyif: ls -la /usr/local/lib64/python3.8/site-packages/psycopg2
+
+psycopg2-rhel8-py38-hue-link-2:
+  cmd.run:
+    - name: ln -s /usr/local/lib64/python3.8/site-packages/psycopg2-2.9.3-py3.8.egg-info /usr/lib64/python3.8/site-packages/psycopg2-2.9.3-py3.8.egg-info
+    - onlyif: ls -la /usr/local/lib64/python3.8/site-packages/psycopg2-2.9.3-py3.8.egg-info
 
 # RHEL 8 + Python 3.9
 psycopg2-rhel8-py39:
@@ -393,6 +413,16 @@ psycopg2-rhel8-py39-verify:
     - name: /usr/local/bin/pip3.9 show psycopg2
     - onlyif: ls -la /usr/lib64/python3.9/site-packages
 
+psycopg2-rhel8-py39-hue-link:
+  cmd.run:
+    - name: ln -s /usr/local/lib64/python3.9/site-packages/psycopg2 /usr/lib64/python3.9/site-packages/psycopg2
+    - onlyif: ls -la /usr/local/lib64/python3.9/site-packages/psycopg2
+
+psycopg2-rhel8-py39-hue-link-2:
+  cmd.run:
+    - name: ln -s /usr/local/lib64/python3.9/site-packages/psycopg2-2.9.3-py3.9.egg-info /usr/lib64/python3.9/site-packages/psycopg2-2.9.3-py3.9.egg-info
+    - onlyif: ls -la /usr/local/lib64/python3.9/site-packages/psycopg2-2.9.3-py3.9.egg-info
+
 # RHEL 8 + Python 3.11
 psycopg2-rhel8-py311:
   pip.installed:
@@ -405,14 +435,19 @@ psycopg2-rhel8-py311-verify:
     - name: /usr/local/bin/pip3.11 show psycopg2
     - onlyif: ls -la /usr/lib64/python3.11/site-packages
 
+psycopg2-rhel8-py311-hue-link:
+  cmd.run:
+    - name: ln -s /usr/local/lib64/python3.11/site-packages/psycopg2 /usr/lib64/python3.11/site-packages/psycopg2
+    - onlyif: ls -la /usr/local/lib64/python3.11/site-packages/psycopg2
+
+psycopg2-rhel8-py311-hue-link-2:
+  cmd.run:
+    - name: ln -s /usr/local/lib64/python3.11/site-packages/psycopg2-2.9.3-py3.11.egg-info /usr/lib64/python3.11/site-packages/psycopg2-2.9.3-py3.11.egg-info
+    - onlyif: ls -la /usr/local/lib64/python3.11/site-packages/psycopg2-2.9.3-py3.11.egg-info
+
 # CentOS 7 + Python 3.8
 psycopg2-centos7-py38:
   pip.installed:
     - name: psycopg2==2.9.3
     - bin_env: /opt/rh/rh-python38/root/usr/bin/pip3
-    - onlyif: ls -la /opt/rh/rh-python38/root/usr/lib/python3.8/site-packages/
-
-psycopg2-centos7-py38-verify:
-  cmd.run:
-    - name: /opt/rh/rh-python38/root/usr/bin/pip3 show psycopg2
     - onlyif: ls -la /opt/rh/rh-python38/root/usr/lib/python3.8/site-packages/
