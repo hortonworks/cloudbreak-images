@@ -366,7 +366,7 @@ psycopg2-centos7-py36:
 
 psycopg2-centos7-py36-verify:
   cmd.run:
-    - name: /usr/local/bin/pip3 list
+    - name: /usr/local/bin/pip3 show psycopg2
     - onlyif: ls -la /usr/local/lib/python3.6/site-packages/
 
 # RHEL 8 + Python 3.8
@@ -378,7 +378,7 @@ psycopg2-rhel8-py38:
 
 psycopg2-rhel8-py38-verify:
   cmd.run:
-    - name: /usr/local/bin/pip3.8 list
+    - name: /usr/local/bin/pip3.8 show psycopg2
     - onlyif: ls -la /usr/lib64/python3.8/site-packages
 
 # RHEL 8 + Python 3.9
@@ -390,7 +390,7 @@ psycopg2-rhel8-py39:
 
 psycopg2-rhel8-py39-verify:
   cmd.run:
-    - name: /usr/local/bin/pip3.9 list
+    - name: /usr/local/bin/pip3.9 show psycopg2
     - onlyif: ls -la /usr/lib64/python3.9/site-packages
 
 # RHEL 8 + Python 3.11
@@ -402,7 +402,7 @@ psycopg2-rhel8-py311:
 
 psycopg2-rhel8-py311-verify:
   cmd.run:
-    - name: /usr/local/bin/pip3.11 list
+    - name: /usr/local/bin/pip3.11 show psycopg2
     - onlyif: ls -la /usr/lib64/python3.11/site-packages
 
 # CentOS 7 + Python 3.8
@@ -414,5 +414,5 @@ psycopg2-centos7-py38:
 
 psycopg2-centos7-py38-verify:
   cmd.run:
-    - name: /opt/rh/rh-python38/root/usr/bin/pip3 list
+    - name: /opt/rh/rh-python38/root/usr/bin/pip3 show psycopg2
     - onlyif: ls -la /opt/rh/rh-python38/root/usr/lib/python3.8/site-packages/
