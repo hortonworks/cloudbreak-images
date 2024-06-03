@@ -67,43 +67,46 @@ function update_yum_repos() {
   # Remove RHEL official repos and use the internal mirror in case of RHEL8 and non aws_gov provider
   if [[ "${OS}" == "redhat8" && "${CLOUD_PROVIDER}" != "AWS_GOV" ]]; then
     RHEL_VERSION=$(cat /etc/redhat-release | grep -oP "[0-9\.]*")
-    RHEL_VERSION=${RHEL_VERSION/.0/}
+
+    # Temporary Workaround to override version in an attempt to patch RHEL 8.9 up to 8.10
+    # RHEL_VERSION=${RHEL_VERSION/.0/}
+    RHEL_VERSION=8.10
     REPO_FILE=rhel${RHEL_VERSION}_cldr_mirrors.repo
     rm /etc/yum.repos.d/*.repo -f
     
-    # Temporary workaround for missing RHEL 8.9 repo file
-    # curl https://mirror.infra.cloudera.com/repos/rhel/server/8/${RHEL_VERSION}/${REPO_FILE} --fail > /etc/yum.repos.d/${REPO_FILE}
-    cat <<EOF >/etc/yum.repos.d/${REPO_FILE}
-# publish this file under /srv/mirrors/repos/rhel/server/8/8.9/
+    curl https://mirror.infra.cloudera.com/repos/rhel/server/8/${RHEL_VERSION}/${REPO_FILE} --fail > /etc/yum.repos.d/${REPO_FILE}
+# # Temporary workaround for missing RHEL 8.9 repo file
+#     cat <<EOF >/etc/yum.repos.d/${REPO_FILE}
+# # publish this file under /srv/mirrors/repos/rhel/server/8/8.9/
 
-[ubi-8.9-baseos-cldr]
-name = Red Hat Universal Base Image 8.9 (RPMs) - BaseOS CLDR
-baseurl = http://mirror.infra.cloudera.com/repos/rhel/server/8/8.9/x86_64/baseos/os
-enabled = 1
-gpgkey = file:///etc/pki/rpm-gpg/RPM-GPG-KEY-redhat-release
-gpgcheck = 1
+# [ubi-8.9-baseos-cldr]
+# name = Red Hat Universal Base Image 8.9 (RPMs) - BaseOS CLDR
+# baseurl = http://mirror.infra.cloudera.com/repos/rhel/server/8/8.9/x86_64/baseos/os
+# enabled = 1
+# gpgkey = file:///etc/pki/rpm-gpg/RPM-GPG-KEY-redhat-release
+# gpgcheck = 1
 
-[ubi-8.9-appstream-cldr]
-name=Cloudera Rhel 8.9 appsteam mirrors
-baseurl=http://mirror.infra.cloudera.com/repos/rhel/server/8/8.9/x86_64/appstream/os
-enabled=1
-gpgkey = file:///etc/pki/rpm-gpg/RPM-GPG-KEY-redhat-release
-gpgcheck = 1
+# [ubi-8.9-appstream-cldr]
+# name=Cloudera Rhel 8.9 appsteam mirrors
+# baseurl=http://mirror.infra.cloudera.com/repos/rhel/server/8/8.9/x86_64/appstream/os
+# enabled=1
+# gpgkey = file:///etc/pki/rpm-gpg/RPM-GPG-KEY-redhat-release
+# gpgcheck = 1
 
-[ubi-8.9-supplementary-cldr]
-name=Cloudera Rhel 8.9 appsteam mirrors
-baseurl=http://mirror.infra.cloudera.com/repos/rhel/server/8/8.9/x86_64/supplementary/os
-enabled=1
-gpgkey = file:///etc/pki/rpm-gpg/RPM-GPG-KEY-redhat-release
-gpgcheck = 1
+# [ubi-8.9-supplementary-cldr]
+# name=Cloudera Rhel 8.9 appsteam mirrors
+# baseurl=http://mirror.infra.cloudera.com/repos/rhel/server/8/8.9/x86_64/supplementary/os
+# enabled=1
+# gpgkey = file:///etc/pki/rpm-gpg/RPM-GPG-KEY-redhat-release
+# gpgcheck = 1
 
-[ubi-8.9-codeready-builder-cldr]
-name=Cloudera Rhel 8.9 codeready-builder mirror
-baseurl=http://mirror.infra.cloudera.com/repos/rhel/server/8/8.9/x86_64/codeready-builder/os
-enabled=1
-gpgkey = file:///etc/pki/rpm-gpg/RPM-GPG-KEY-redhat-release
-gpgcheck = 1
-EOF
+# [ubi-8.9-codeready-builder-cldr]
+# name=Cloudera Rhel 8.9 codeready-builder mirror
+# baseurl=http://mirror.infra.cloudera.com/repos/rhel/server/8/8.9/x86_64/codeready-builder/os
+# enabled=1
+# gpgkey = file:///etc/pki/rpm-gpg/RPM-GPG-KEY-redhat-release
+# gpgcheck = 1
+# EOF
 
     # Workaround on resolving the hostname as for some reason the DNS can't resolve it at provision time
     if [ "${IMAGE_BURNING_TYPE}" == "base" ] ; then
