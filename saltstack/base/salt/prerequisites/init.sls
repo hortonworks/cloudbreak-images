@@ -1,6 +1,7 @@
 include:
   - {{ slspath }}.path
   - {{ slspath }}.user_uid
+  - {{ slspath }}.subscription-manager
   - {{ slspath }}.repository
   - {{ slspath }}.packages
   - {{ slspath }}.sudo
