@@ -31,6 +31,8 @@ retry_until_non_placeholder_value() {
   echo "Userdata secret's value was retrieved after waiting $total_wait_time seconds."
 }
 
+set -x
+
 # Intermittent issues like throttling of AWS APIs are handled by the built in retry mechanism of the aws cli.
 # Waiting for CB to update the secret's value to the actual secrets is handled by the function above.
 main() {
@@ -53,11 +55,11 @@ main() {
     echo "Successfully retrieved userdata secrets!"
 
     echo "Deleting secret associated with this instance..."
-    AWS_RETRY_MODE="$aws_retry_mode" \
-    AWS_MAX_ATTEMPTS="$aws_max_attempts" \
-    aws secretsmanager delete-secret \
-      --force-delete-without-recovery \
-      --secret-id "$USERDATA_SECRET_ID"
+#    AWS_RETRY_MODE="$aws_retry_mode" \
+#    AWS_MAX_ATTEMPTS="$aws_max_attempts" \
+#    aws secretsmanager delete-secret \
+#      --force-delete-without-recovery \
+#      --secret-id "$USERDATA_SECRET_ID"
     echo "Successfully deleted secret associated with this instance!"
   else
     echo "Userdata secret retrieval not implemented for CLOUD_PLATFORM $CLOUD_PLATFORM."
