@@ -188,7 +188,7 @@ function redhat8_update_python36() {
 function redhat8_install_python38() {
   echo "Installing Python 3.8 with dependencies..."
   yum install -y python38
-  yum install -y python38-devel python38-libs python38-cffi python38-lxml python38-psycopg2
+  yum install -y python38-devel python38-libs python38-cffi python38-lxml
 
   echo PYTHON38=$(yum list installed | grep ^python38\\.x86_64 | grep -oi " [^\s]* " | xargs) >> /tmp/python_install.properties
 
@@ -206,7 +206,7 @@ function redhat8_update_python36_to_38() {
   echo "Upgrading Python 3.6 to Python 3.8..."
   yum remove -y python3
   yum install -y python38
-  yum install -y python38-devel python38-libs python38-cffi python38-lxml python38-psycopg2
+  yum install -y python38-devel python38-libs python38-cffi python38-lxml
 
   echo PYTHON36=$(yum list installed | grep ^python36\\.x86_64 | grep -oi " [^\s]* " | xargs) >> /tmp/python_install.properties
   echo PYTHON38=$(yum list installed | grep ^python38\\.x86_64 | grep -oi " [^\s]* " | xargs) >> /tmp/python_install.properties
@@ -217,7 +217,7 @@ function redhat8_update_python36_to_38() {
 function redhat8_install_python39() {
   echo "Installing Python 3.9 with dependencies..."
   yum install -y python39
-  yum install -y python39-devel python39-libs python39-cffi python39-lxml python39-psycopg2
+  yum install -y python39-devel python39-libs python39-cffi python39-lxml
 
   echo PYTHON39=$(yum list installed | grep ^python39\\.x86_64 | grep -oi " [^\s]* " | xargs) >> /tmp/python_install.properties
 
@@ -233,7 +233,7 @@ EOF
 
 function redhat8_install_python311() {
   echo "Installing Python 3.11 with dependencies..."
-  yum install -y python3.11 python3.11-pip python3.11-devel python3.11-libs python3.11-cffi python3.11-lxml python3.11-psycopg2
+  yum install -y python3.11 python3.11-pip python3.11-devel python3.11-libs python3.11-cffi python3.11-lxml
 
   echo PYTHON311=$(yum list installed | grep ^python3\\.11\\.x86_64 | grep -oi " [^\s]* " | xargs) >> /tmp/python_install.properties
 
@@ -300,12 +300,13 @@ function install_python_pip() {
   # Runtime images with 7.2.16
   #  CentOS7: Python 2.7 + Python 3.6 + Python 3.8
   #  RHEL7  : Python 2.7 + Python 3.6
-  #  RHEL8  : Python 3.6 + Python 3.8 (7.2.16.1+, AWS Gov only!)
+  #  RHEL8  : Python 3.6 + Python 3.8 + Python 3.11 (7.2.16.1+, AWS Gov only!)
   elif [ $(version $STACK_VERSION) == $(version "7.2.16") ]; then
     if [ "${OS}" == "redhat8" ] ; then
       #redhat8_update_python36_to_38
       redhat8_update_python36
       redhat8_install_python38
+      redhat8_install_python311
     elif [ "${OS}" == "redhat7" ] ; then
       redhat7_update_python27
       redhat7_install_python36
