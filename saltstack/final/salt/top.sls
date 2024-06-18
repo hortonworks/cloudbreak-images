@@ -11,4 +11,5 @@ final:
 {% if pillar['subtype'] != 'Docker' %}
     - cis-controls
 {% endif %}
+    - openscap
     - cleanup
