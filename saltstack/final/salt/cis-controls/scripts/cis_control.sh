@@ -55,11 +55,11 @@ ssh-keygen -A
 #Apply the SSG Ansible playbook
 if [ "${STIG_ENABLED}" == "True" ]; then
     ansible-playbook -i localhost, -c local $ANSIBLE_PATH//ansible-compliance-playbooks/rhel8-playbook-stig.yml --skip-tags $SKIP_TAGS | tee /tmp/stig_log.txt
+    chmod 644 /tmp/stig_log.txt
 else
     ansible-playbook -i localhost, -c local $ANSIBLE_PATH/ansible-compliance-playbooks/rhel8-playbook-cis_server_l1.yml --skip-tags $SKIP_TAGS --extra-vars "$EXTRA_VARS" | tee /tmp/cis_log.txt
+    chmod 644 /tmp/cis_log.txt
 fi
-
-chmod 644 /tmp/cis_log.txt
 
 #Clean up python stuff
 deactivate

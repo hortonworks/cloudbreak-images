@@ -759,6 +759,27 @@
       "direction" : "download",
       "only": [
         "aws-redhat8",
+        "gc-redhat8",
+
+      ]
+    },
+    {
+      "type": "file",
+      "source": "/tmp/stig_log.txt",
+      "destination": "stig_log.txt",
+      "direction" : "download",
+      "only": [
+        "aws-redhat8",
+        "gc-redhat8"
+      ]
+    },
+    {
+      "type": "file",
+      "source": "/tmp/oscap_log.txt",
+      "destination": "oscap_log.txt",
+      "direction" : "download",
+      "only": [
+        "aws-redhat8",
         "gc-redhat8"
       ]
     }
