@@ -99,8 +99,6 @@ function update_yum_repos() {
 function enable_epel_repository() {
   if [ "${OS}" == "redhat8" ] ; then
     dnf install -y https://dl.fedoraproject.org/pub/epel/epel-release-latest-8.noarch.rpm
-  elif [ "${OS}" == "redhat7" ] ; then
-    curl https://dl.fedoraproject.org/pub/epel/epel-release-latest-7.noarch.rpm -o epel-release-latest-7.noarch.rpm && yum install --nogpgcheck -y ./epel-release-latest-7.noarch.rpm
   elif [ "${OS}" == "centos7" ] ; then
     yum install -y epel-release
   fi
@@ -129,38 +127,6 @@ function centos7_install_python38() {
   yum -y install openssl-devel libffi-devel bzip2-devel rh-python38-python-pip rh-python38-python-libs rh-python38-python-devel rh-python38-python-cffi rh-python38-python-lxml rh-python38-python-psycopg2
 
   echo PYTHON38=$(yum list installed | grep ^rh-python38-python\\.x86_64 | grep -oi " [^\s]* " | xargs) >> /tmp/python_install.properties
-
-  ### We'll need this in case in the future we want to make Python 3.8 the default python3 (7.2.18+)
-  # We need this because the rh-python38-* packages apparently use a non-standard location... duh!
-  # echo "Updating /etc/environment for Python 3.8..."
-  # PATH=$PATH:/opt/rh/rh-python38/root/usr/local/bin:/opt/rh/rh-python38/root/usr/bin
-  # echo "PATH=\"$PATH\"" >>/etc/environment
-  # cat /etc/environment
-}
-
-function redhat7_update_python27() {
-  echo "Updating Python 2.7..."
-  yum update -y python
-}
-
-function redhat7_install_python36() {
-  echo "Installing Python 3.6 with dependencies..."
-  yum-config-manager --enable rhscl
-  yum -y install rh-python36
-
-  # pip workaround
-  echo "source scl_source enable rh-python36; python3.6 -m pip \$@" > /usr/bin/pip
-  chmod +x /usr/bin/pip
-}
-
-function redhat7_install_python38() {
-  echo "Installing Python 3.8 with dependencies..."
-  yum-config-manager --enable rhscl
-  yum -y install rh-python38
-
-  # pip workaround
-  echo "source scl_source enable rh-python38; python3.8 -m pip \$@" > /usr/bin/pip
-  chmod +x /usr/bin/pip
 }
 
 function redhat8_update_python36() {
@@ -202,18 +168,6 @@ EOF
   chmod +x /usr/local/bin/pip3.8
 }
 
-function redhat8_update_python36_to_38() {
-  echo "Upgrading Python 3.6 to Python 3.8..."
-  yum remove -y python3
-  yum install -y python38
-  yum install -y python38-devel python38-libs python38-cffi python38-lxml
-
-  echo PYTHON36=$(yum list installed | grep ^python36\\.x86_64 | grep -oi " [^\s]* " | xargs) >> /tmp/python_install.properties
-  echo PYTHON38=$(yum list installed | grep ^python38\\.x86_64 | grep -oi " [^\s]* " | xargs) >> /tmp/python_install.properties
-
-  alternatives --set python /usr/bin/python3.8
-}
-
 function redhat8_install_python39() {
   echo "Installing Python 3.9 with dependencies..."
   yum install -y python39
@@ -252,92 +206,15 @@ function install_python_pip() {
   
   yum install -y openldap-devel
   
-  # FreeIPA images:
-  #  CentOS7: Python 2.7 + Python 3.6
-  #  RHEL7  : Python 2.7 + Python 3.6
-  #  RHEL8  : Python 3.6 + Python 3.8
-  if [ "${IMAGE_BASE_NAME}" == "freeipa" ] ; then
-    if [ "${OS}" == "redhat8" ] ; then
-      redhat8_update_python36
-      redhat8_install_python38
-    elif [ "${OS}" == "redhat7" ] ; then
-      redhat7_update_python27
-      redhat7_install_python36
-    elif [ "${OS}" == "centos7" ] ; then
-      centos7_update_python27
-      centos7_install_python36
-    fi
-  # Base images:
-  #  CentOS7: Python 2.7 + Python 3.6 + Python 3.8
-  #  RHEL7  : n/a
-  #  RHEL8  : Python 3.6 + Python 3.8 + Python 3.9 + Python 3.11
-  elif [ $(version $STACK_VERSION) == $(version "0.0.0") ]; then
-    if [ "${OS}" == "redhat8" ] ; then
-      #redhat8_update_python36_to_38
-      redhat8_update_python36
-      redhat8_install_python38
-      redhat8_install_python39
-      redhat8_install_python311
-    elif [ "${OS}" == "centos7" ] ; then
-      centos7_update_python27
-      centos7_install_python36
-      centos7_install_python38
-    fi
-  # Runtime images 7.2.15 or lower:
-  #  CentOS7: Python 2.7 + Python 3.6 + Python 3.8
-  #  RHEL7  : Python 2.7 + Python 3.6
-  #  RHEL8  : n/a
-  elif [ $(version $STACK_VERSION) -le $(version "7.2.15") ]; then
-    if [ "${OS}" == "redhat7" ] ; then
-      redhat7_update_python27
-      redhat7_install_python36
-    elif [ "${OS}" == "centos7" ] ; then
-      centos7_update_python27
-      centos7_install_python36
-      centos7_install_python38
-    fi
-
-  # Runtime images with 7.2.16
-  #  CentOS7: Python 2.7 + Python 3.6 + Python 3.8
-  #  RHEL7  : Python 2.7 + Python 3.6
-  #  RHEL8  : Python 3.6 + Python 3.8 + Python 3.11 (7.2.16.1+, AWS Gov only!)
-  elif [ $(version $STACK_VERSION) == $(version "7.2.16") ]; then
-    if [ "${OS}" == "redhat8" ] ; then
-      #redhat8_update_python36_to_38
-      redhat8_update_python36
-      redhat8_install_python38
-      redhat8_install_python311
-    elif [ "${OS}" == "redhat7" ] ; then
-      redhat7_update_python27
-      redhat7_install_python36
-      redhat7_install_python38
-    elif [ "${OS}" == "centos7" ] ; then
-      centos7_update_python27
-      centos7_install_python36
-      centos7_install_python38
-    fi
-  # Runtime images 7.2.17 or newer:
-  #  CentOS7: Python 2.7 + Python 3.6 + Python 3.8
-  #  RHEL7  : Python 2.7 + Python 3.6 + Python 3.8
-  #  RHEL8  : Python 3.6 + Python 3.8 + Python 3.9 + Python 3.11
-  # Note: this is currently the same as 7.2.16, but in the future 
-  # we'll make Python 3.8 the default, hence the separate section.
-  else
-    if [ "${OS}" == "redhat8" ] ; then
-      #redhat8_update_python36_to_38
-      redhat8_update_python36
-      redhat8_install_python38
-      redhat8_install_python39
-      redhat8_install_python311
-    elif [ "${OS}" == "redhat7" ] ; then
-      redhat7_update_python27
-      redhat7_install_python36
-      redhat7_install_python38
-    elif [ "${OS}" == "centos7" ] ; then
-      centos7_update_python27
-      centos7_install_python36
-      centos7_install_python38
-    fi
+  if [ "${OS}" == "redhat8" ] ; then
+    redhat8_update_python36
+    redhat8_install_python38
+    redhat8_install_python39
+    redhat8_install_python311
+  elif [ "${OS}" == "centos7" ] ; then
+    centos7_update_python27
+    centos7_install_python36
+    centos7_install_python38
   fi
 }
 
