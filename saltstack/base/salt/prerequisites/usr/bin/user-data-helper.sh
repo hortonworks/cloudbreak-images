@@ -22,9 +22,9 @@ fi
 : ${PROXY_PROTOCOL:=http}
 
 {% if pillar['CUSTOM_IMAGE_TYPE'] == 'freeipa' %}
-IS_FREEIPA=true
+export IS_FREEIPA=true
 {% else %}
-IS_FREEIPA=false
+export IS_FREEIPA=false
 {% endif %}
 OS={{ pillar['OS'] }}
 
@@ -84,6 +84,12 @@ create_luks_volume() {
   echo "LUKS volume creation started."
   /etc/cdp-luks/bin/create-luks-volume.sh
   echo "LUKS volume creation finished."
+}
+
+populate_luks_volume() {
+  echo "LUKS volume population with secrets started."
+  /etc/cdp-luks/bin/populate-luks-volume.sh
+  echo "LUKS volume population with secrets finished."
 }
 
 configure-salt-bootstrap() {
@@ -251,8 +257,7 @@ resize_partitions() {
 main() {
   if [[ "$SECRET_ENCRYPTION_ENABLED" == "true" ]]; then
     create_luks_volume
-    # then extract EC2 userdata secrets and store them (for example as plaintext on the LUKS volume)
-    # then move secrets to LUKS volume and symlink them to their original place
+    populate_luks_volume
   fi
   configure-salt-bootstrap
   reload_sysconf
