@@ -124,7 +124,7 @@ mount_luks_volume() {
   if ! mountpoint -q "$MOUNT_POINT"; then
     # Mount the LUKS volume
     mount "$LUKS_MAPPER_DEVICE" "$MOUNT_POINT"
-    chmod 700 "$MOUNT_POINT"
+    chmod 755 "$MOUNT_POINT"
   else
     echo "Failed to mount the LUKS volume, as the path is already a mount point... Exiting LUKS volume creation with failed exit code!"
     exit 7
