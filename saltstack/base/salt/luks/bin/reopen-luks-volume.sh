@@ -72,7 +72,7 @@ remount_luks_volume() {
   if ! mountpoint "$MOUNT_POINT"; then
     # Remount the LUKS volume
     mount "$LUKS_MAPPER_DEVICE" "$MOUNT_POINT"
-    chmod 700 "$MOUNT_POINT"
+    chmod 755 "$MOUNT_POINT"
   else
     echo "Did not mount the LUKS volume, as the path is already a mount point... Exiting LUKS volume reopen script with failed exit code!"
     exit 4
