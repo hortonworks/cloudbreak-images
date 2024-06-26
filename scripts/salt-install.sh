@@ -235,7 +235,10 @@ echo "Network interfaces: $(ifconfig)"
 echo "Public address: $(curl -s https://checkip.amazonaws.com)"
 
 case ${SALT_INSTALL_OS} in
-  centos|redhat)
+  centos)
+    echo "Skipping installation as Salt is already present on the base image".
+    ;;
+  redhat)
     echo "Install with yum"
     install_with_yum
     ;;

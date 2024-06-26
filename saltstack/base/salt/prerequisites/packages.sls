@@ -71,7 +71,7 @@ packages_install:
       - httpd-tools
 
 {% if pillar['subtype'] != 'Docker' %}
-
+{% if pillar['OS'] != 'centos7' %}
 {% if salt['environ.get']('CLOUD_PROVIDER') == '' %}
 missing_cloudprovider:
   cmd.run:
@@ -112,5 +112,5 @@ remove_azcopy_extract:
     - name: /tmp/azcopy
     - clean: True
 {% endif %}
-
+{% endif %}
 {% endif %}
