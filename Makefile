@@ -77,6 +77,7 @@ endif
 
 # AWS_GOV source ami specification
 ifeq ($(CLOUD_PROVIDER),AWS_GOV)
+	AWS_INSTANCE_TYPE ?= t3.2xlarge
     ifeq ($(OS),centos7)
 		AWS_GOV_SOURCE_AMI ?= ami-bbba86da
 	endif
@@ -428,6 +429,7 @@ build-aws-gov-redhat8:
 	$(ENVS) \
 	AWS_AMI_REGIONS="us-gov-west-1" \
 	AWS_GOV_SOURCE_AMI=$(AWS_GOV_SOURCE_AMI) \
+	AWS_INSTANCE_TYPE=$(AWS_INSTANCE_TYPE) \
 	OS=redhat8 \
 	OS_TYPE=redhat8 \
 	ATLAS_ARTIFACT_TYPE=amazon-gov \
