@@ -12,7 +12,6 @@ include:
 {% if not salt['file.directory_exists']('/vagrant') %}
   - {{ slspath }}.cloud-init
 {% endif %}
-  - {{ slspath }}.user
   - {{ slspath }}.mount
 
 storage_usage:

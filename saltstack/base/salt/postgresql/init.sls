@@ -1,5 +1,9 @@
 
-{% if grains['os_family'] == 'RedHat' and grains['osmajorrelease'] | int == 7 %}
+# Set up repos & install PostgreSQL
+############################################################
+
+{% if pillar['OS'] == 'centos7' %}
+
 /etc/yum.repos.d/pgdg10.repo:
   file.managed:
     - source: salt://postgresql/yum/postgres10-el7.repo
@@ -23,9 +27,38 @@
 /etc/pki/rpm-gpg/RPM-GPG-KEY-PGDG-14:
   file.managed:
     - source: salt://postgresql/yum/pgdg14-gpg
-{% endif %}
 
-{% if pillar['OS'] == 'redhat8' %}
+install-postgres:
+  pkg.installed:
+    - pkgs:
+      - postgresql10-server
+      - postgresql-jdbc
+      - postgresql10
+      - postgresql10-contrib
+      - postgresql10-docs
+      - postgresql10-devel
+
+install-postgres11:
+  pkg.installed:
+    - pkgs:
+      - postgresql11-server
+      - postgresql-jdbc
+      - postgresql11
+      - postgresql11-contrib
+      - postgresql11-docs
+      - postgresql11-devel
+
+install-postgres14:
+  pkg.installed:
+    - pkgs:
+        - postgresql14-server
+        - postgresql-jdbc
+        - postgresql14
+        - postgresql14-contrib
+        - postgresql14-docs
+        - postgresql14-devel
+
+{% elif pillar['OS'] == 'redhat8' %}
 
 {% set postgres_install_flags = '' %}
 {% if salt['environ.get']('CLOUD_PROVIDER') == 'AWS_GOV' or salt['environ.get']('ARCHITECTURE') == 'arm64' %}
@@ -57,73 +90,10 @@ timeoutstop-postgres-ycloud:
     - name: mkdir /etc/systemd/system/postgresql-11.service.d  && echo $'[Service]\nTimeoutStopSec=120s' > /etc/systemd/system/postgresql-11.service.d/timeout.conf && mkdir /etc/systemd/system/postgresql-14.service.d && echo $'[Service]\nTimeoutStopSec=120s' > /etc/systemd/system/postgresql-14.service.d/timeout.conf
 {% endif %}
 
-{% elif grains['os_family'] == 'RedHat' and grains['osmajorrelease'] | int == 7  %}
-install-postgres:
-  pkg.installed:
-    - pkgs:
-      - postgresql10-server
-      - postgresql-jdbc
-      - postgresql10
-      - postgresql10-contrib
-      - postgresql10-docs
-      - postgresql10-devel
-
-install-postgres11:
-  pkg.installed:
-    - pkgs:
-      - postgresql11-server
-      - postgresql-jdbc
-      - postgresql11
-      - postgresql11-contrib
-      - postgresql11-docs
-      - postgresql11-devel
-
-install-postgres14:
-  pkg.installed:
-    - pkgs:
-        - postgresql14-server
-        - postgresql-jdbc
-        - postgresql14
-        - postgresql14-contrib
-        - postgresql14-docs
-        - postgresql14-devel
-
-{% else %}
-remove-old-postgres:
-  pkg.removed:
-    - pkgs:
-      - postgresql92-server-compat
-      - postgresql92-server
-      - postgresql92
-      - postgresql92-libs
-      - postgresql-server
-      - postgresql-libs
-      - postgresql
-
-ensure-postgres-home:
-  user.present:
-    - name: postgres
-    - home: /var/lib/pgsql
-
-remove-postgres-sysconfig:
-  file.absent:
-    - name: /etc/sysconfig/pgsql/postgresql
-
-install-postgres:
-  pkg.installed:
-    - pkgs:
-      - postgresql10-server
-      - postgresql10-contrib
-      - postgresql10-docs
-      - postgresql10-devel
-      - postgresql-jdbc
-      - postgresql10
-
-/etc/init.d/postgresql:
-  file.symlink:
-      - target: /etc/init.d/postgresql-10
-      - force: True
 {% endif %}
+
+# Set default PostgreSQL
+############################################################
 
 {% if pillar['OS'] == 'redhat8' %}
   {% set pg_default_version = '14' %}
@@ -131,6 +101,11 @@ install-postgres:
   # the override to 11 for runtimes >= 7.2.7 is handled in CB
   {% set pg_default_version = '10' %}
 {% endif %}
+
+# Configuration
+############################################################
+
+{% if salt['environ.get']('IMAGE_BURNING_TYPE') != 'base' %}
 
 pgsql-ld-conf:
   alternatives.set:
@@ -248,7 +223,7 @@ reenable-postgres:
   cmd.run:
     - name: systemctl enable --now postgresql-{{ pg_default_version }}
 
-{% elif  grains['os_family'] == 'RedHat' and grains['osmajorrelease'] | int == 7 %}
+{% elif pillar['OS'] == 'centos7' %}
 /var/lib/pgsql/data:
   file.symlink:
       - target: /var/lib/pgsql/10/data
@@ -268,7 +243,6 @@ systemd-link:
     - pattern: "\\[Install\\]"
     - repl: "[Install]\nAlias=postgresql.service"
     - unless: cat /usr/lib/systemd/system/postgresql-{{ pg_default_version }}.service | grep postgresql.service
-
 
 {% if pillar['subtype'] == 'Docker' %}  # systemctl reenable does not work on ycloud so we create the symlink manually
 create-postgres-service-link:
@@ -297,6 +271,7 @@ start-postgresql:
 {% else %}
     - name: postgresql
 {% endif %}
+
 log-postgres-service-status:
   cmd.run:
 {% if  pillar['OS'] == 'redhat8' %}
@@ -357,7 +332,12 @@ set-path-pgsql{{ pg_default_version }}-bin:
     - update_minion: True
 {% endif %}
 
+{% endif %}
+
 # Install psycopg2 globally
+############################################################
+
+{% if salt['environ.get']('IMAGE_BURNING_TYPE') != 'base' %}
 
 # CentOS 7 / RHEL 7 / RHEL 8 + Python 3.6
 psycopg2-centos7-py36:
@@ -453,3 +433,5 @@ psycopg2-centos7-py38:
     - name: psycopg2==2.9.3
     - bin_env: /opt/rh/rh-python38/root/usr/bin/pip3
     - onlyif: ls -la /opt/rh/rh-python38/root/usr/lib/python3.8/site-packages/
+
+{% endif %}
