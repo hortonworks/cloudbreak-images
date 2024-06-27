@@ -219,7 +219,9 @@ function install_python_pip() {
   elif [ "${OS}" == "centos7" ] ; then
     centos7_update_python27
     centos7_install_python36
-    centos7_install_python38
+    if [ "${IMAGE_BASE_NAME}" != "freeipa" ] ; then
+      centos7_install_python38
+    fi
   fi
 }
 
