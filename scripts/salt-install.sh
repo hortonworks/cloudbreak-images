@@ -90,14 +90,11 @@ function update_yum_repos() {
       sudo sed -i 's/repo_gpgcheck=1/repo_gpgcheck=0/g' /etc/yum.repos.d/google-cloud.repo
     fi
 
-    # The host http://olcentgbl.trafficmanager.net keeps causing problems, so we re-enable the default mirrorlist instead.
-    # Also, this is the recommended way for YUM updates to work anyway. https://wiki.centos.org/PackageManagement/Yum/FastestMirror
-    if [ "${CLOUD_PROVIDER}" == "Azure" ]; then
-      if [ "${OS}" == "centos7" ] ; then
-        sudo sed -i 's/\#mirrorlist/mirrorlist/g' /etc/yum.repos.d/CentOS-Base.repo
-        sudo sed -i 's/baseurl/\#baseurl/g' /etc/yum.repos.d/CentOS-Base.repo
-      fi
-    fi
+    # Replace repos on the image that are no longer working
+    sudo rm -rf /etc/yum.repos.d/CentOS*.repo
+    cp /tmp/repos/RPM-GPG-KEY-CentOS-SIG-SCLo /etc/pki/rpm-gpg/
+    cp /tmp/repos/centos-vault.repo /etc/yum.repos.d/
+    cat /etc/pki/rpm-gpg/RPM-GPG-KEY-CentOS-SIG-SCLo
   fi
 }
 
@@ -105,7 +102,7 @@ function enable_epel_repository() {
   if [ "${OS}" == "redhat8" ] ; then
     dnf install -y https://dl.fedoraproject.org/pub/epel/epel-release-latest-8.noarch.rpm
   elif [ "${OS}" == "centos7" ] ; then
-    yum install -y epel-release
+    yum install -y https://dl.fedoraproject.org/pub/epel/epel-release-latest-7.noarch.rpm
   fi
 }
 
@@ -114,23 +111,18 @@ function version { echo "$@" | awk -F. '{ printf("%d%03d%03d%03d\n", $1,$2,$3,$4
 function centos7_update_python27() {
   echo "Updating Python 2.7..."
   yum update -y python
-
   echo PYTHON27=$(yum list installed | grep ^python\\.x86_64 | grep -oi " [^\s]* " | xargs) >> /tmp/python_install.properties
 }
 
 function centos7_install_python36() {
   echo "Installing Python 3.6 with dependencies..."
-  yum -y install centos-release-scl
   yum install -y python36 python36-pip python36-devel python36-setuptools
-
   echo PYTHON36=$(yum list installed | grep ^python3\\.x86_64 | grep -oi " [^\s]* " | xargs) >> /tmp/python_install.properties
 }
 
 function centos7_install_python38() {
   echo "Installing Python 3.8 with dependencies..."
-  yum -y install centos-release-scl
   yum -y install openssl-devel libffi-devel bzip2-devel rh-python38-python-pip rh-python38-python-libs rh-python38-python-devel rh-python38-python-cffi rh-python38-python-lxml rh-python38-python-psycopg2
-
   echo PYTHON38=$(yum list installed | grep ^rh-python38-python\\.x86_64 | grep -oi " [^\s]* " | xargs) >> /tmp/python_install.properties
 }
 
