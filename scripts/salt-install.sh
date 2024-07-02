@@ -90,14 +90,64 @@ function update_yum_repos() {
       sudo sed -i 's/repo_gpgcheck=1/repo_gpgcheck=0/g' /etc/yum.repos.d/google-cloud.repo
     fi
 
-    # The host http://olcentgbl.trafficmanager.net keeps causing problems, so we re-enable the default mirrorlist instead.
-    # Also, this is the recommended way for YUM updates to work anyway. https://wiki.centos.org/PackageManagement/Yum/FastestMirror
-    if [ "${CLOUD_PROVIDER}" == "Azure" ]; then
-      if [ "${OS}" == "centos7" ] ; then
-        sudo sed -i 's/\#mirrorlist/mirrorlist/g' /etc/yum.repos.d/CentOS-Base.repo
-        sudo sed -i 's/baseurl/\#baseurl/g' /etc/yum.repos.d/CentOS-Base.repo
-      fi
-    fi
+    sudo rm -rf /etc/yum.repos.d/CentOS*.repo
+
+    sudo cat <<EOF >/etc/yum.repos.d/centos7-vault.repo
+[base]
+name=CentOS-7 - Base
+baseurl=https://vault.centos.org/7.9.2009/os/x86_64/
+gpgcheck=1
+gpgkey=file:///etc/pki/rpm-gpg/RPM-GPG-KEY-CentOS-7
+
+[updates]
+name=CentOS-7 - Updates
+baseurl=https://vault.centos.org/7.9.2009/updates/x86_64/
+gpgcheck=1
+gpgkey=file:///etc/pki/rpm-gpg/RPM-GPG-KEY-CentOS-7
+
+[extras]
+name=CentOS-7 - Extras
+baseurl=https://vault.centos.org/7.9.2009/extras/x86_64/
+gpgcheck=1
+gpgkey=file:///etc/pki/rpm-gpg/RPM-GPG-KEY-CentOS-7
+
+[sclo]
+name=CentOS-7 - SCLO
+baseurl=https://vault.centos.org/7.9.2009/sclo/x86_64/sclo/
+gpgcheck=1
+gpgkey=file:///etc/pki/rpm-gpg/RPM-GPG-KEY-CentOS-SIG-SCLo
+
+[sclo-rh]
+name=CentOS-7 - SCLO RH
+baseurl=https://vault.centos.org/7.9.2009/sclo/x86_64/rh/
+gpgcheck=1
+gpgkey=file:///etc/pki/rpm-gpg/RPM-GPG-KEY-CentOS-SIG-SCLo
+EOF
+
+    sudo cat <<EOF >/etc/pki/rpm-gpg/RPM-GPG-KEY-CentOS-SIG-SCLo
+-----BEGIN PGP PUBLIC KEY BLOCK-----
+Version: GnuPG v2.0.22 (GNU/Linux)
+
+mQENBFYM/AoBCADR9Q5cb+H5ndx+QkzNBQ88wcD+g112yvnHNlSiBMOnNEGHuKPJ
+tujZ+eWXP3K6ucJckT91WxfQ2fxPr9jQ0xpZytcHcZdTfn3vKL9+OwR0npp+qmcz
+rK8/EzVz/SWSgBQ5xT/HUvaeoVAbzBHSng0r2njnBAqABKAoTxgyRGKSCWduKD32
+7PF2ZpqeDFFhd99Ykt6ar8SlV8ToqH6F7An0ILeejINVbHUxd6+wsbpcOwQ4mGAa
+/CPXeqqLGj62ASBv36xQr34hlN/9zQMViaKkacl8zkuvwhuHf4b4VlGVCe6VILpQ
+8ytKMV/lcg7YpMfRq4KVWBjCwkvk6zg6KxaHABEBAAG0aENlbnRPUyBTb2Z0d2Fy
+ZUNvbGxlY3Rpb25zIFNJRyAoaHR0cHM6Ly93aWtpLmNlbnRvcy5vcmcvU3BlY2lh
+bEludGVyZXN0R3JvdXAvU0NMbykgPHNlY3VyaXR5QGNlbnRvcy5vcmc+iQE5BBMB
+AgAjBQJWDPwKAhsDBwsJCAcDAgEGFQgCCQoLBBYCAwECHgECF4AACgkQTrhOcfLu
+nVXNewgAg7RVclomjTY4w80XiztUuUaFlCHyR76KazdaGfx/8XckWH2GdQtwii+3
+Tg7+PT2H0Xyuj1aod+jVTPXTPVUr+rEHAjuNDY+xyAJrNljoOHiz111zs9pk7PLX
+CPwKWQLnmrcKIi8v/51L79FFsUMvhClTBdLUQ51lkCwbcXQi+bOhPvZTVbRhjoB/
+a9z0d8t65X16zEzE7fBhnVoj4xye/MPMbTH41Mv+FWVciBTuAepOLmgJ9oxODliv
+rgZa28IEWkvHQ8m9GLJ0y9mI6olh0cGFybnd5y4Ss1cMttlRGR4qthLhN2gHZpO9
+2y4WgkeVXCj1BK1fzVrDMLPbuNNCZQ==
+=UtPD
+-----END PGP PUBLIC KEY BLOCK-----    
+EOF
+
+    sudo ls /etc/yum.repos.d/*.repo
   fi
 }
 
@@ -105,7 +155,7 @@ function enable_epel_repository() {
   if [ "${OS}" == "redhat8" ] ; then
     dnf install -y https://dl.fedoraproject.org/pub/epel/epel-release-latest-8.noarch.rpm
   elif [ "${OS}" == "centos7" ] ; then
-    yum install -y epel-release
+    yum install -y https://dl.fedoraproject.org/pub/epel/epel-release-latest-7.noarch.rpm
   fi
 }
 
@@ -120,7 +170,7 @@ function centos7_update_python27() {
 
 function centos7_install_python36() {
   echo "Installing Python 3.6 with dependencies..."
-  yum -y install centos-release-scl
+  # yum -y install centos-release-scl
   yum install -y python36 python36-pip python36-devel python36-setuptools
 
   echo PYTHON36=$(yum list installed | grep ^python3\\.x86_64 | grep -oi " [^\s]* " | xargs) >> /tmp/python_install.properties
@@ -128,7 +178,7 @@ function centos7_install_python36() {
 
 function centos7_install_python38() {
   echo "Installing Python 3.8 with dependencies..."
-  yum -y install centos-release-scl
+  # yum -y install centos-release-scl
   yum -y install openssl-devel libffi-devel bzip2-devel rh-python38-python-pip rh-python38-python-libs rh-python38-python-devel rh-python38-python-cffi rh-python38-python-lxml rh-python38-python-psycopg2
 
   echo PYTHON38=$(yum list installed | grep ^rh-python38-python\\.x86_64 | grep -oi " [^\s]* " | xargs) >> /tmp/python_install.properties

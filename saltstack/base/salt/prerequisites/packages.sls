@@ -8,6 +8,12 @@ update-packages:
     - refresh: True
 {% endif %}
 
+{% if pillar['OS'] == 'centos7' %}
+remove_dead_repos_again:
+  cmd.run:
+    - name: sudo rm -rf /etc/yum.repos.d/CentOS*.repo
+{% endif %}
+
 {% if pillar['OS'] == 'redhat8' %}
 remove_unused_rhel8_packages:
   pkg.removed:
@@ -69,6 +75,19 @@ packages_install:
       - sysstat
       - goaccess
       - httpd-tools
+    {% if pillar['OS'] == 'centos7' %}
+
+      # Requirements for Telemetry / Monitoring
+      - redhat-lsb-core
+
+      # Requirements for CM
+      - mod_ssl
+      - httpd
+      - fuse-libs
+      - fuse
+      - cyrus-sasl-plain
+      - MySQL-python
+    {% endif %}      
 
 {% if pillar['subtype'] != 'Docker' %}
 
@@ -76,6 +95,7 @@ packages_install:
 missing_cloudprovider:
   cmd.run:
     - name: echo 'CLOUD_PROVIDER environment variable is missing!' && exit 1
+
 {% elif salt['environ.get']('CLOUD_PROVIDER').startswith('AWS') %}
 
 download_awscli:

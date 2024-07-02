@@ -23,3 +23,8 @@ function highstate {
 
 echo "Running validation and cleanup"
 highstate "final"
+
+if [[ "$IMAGE_BURNING_TYPE" == "base" ]]; then
+  sudo rm -rf /tmp/saltstack/
+  echo "Cleaned up initial Saltstack directory"
+fi
