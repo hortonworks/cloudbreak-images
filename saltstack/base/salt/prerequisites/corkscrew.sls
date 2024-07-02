@@ -1,5 +1,6 @@
 {%if pillar['subtype'] != 'Docker' %}
 
+{% if pillar['OS'] != 'centos7' %}
 clone_corkscrew:
   git.latest:
     - name: https://github.com/bryanpkc/corkscrew.git
@@ -18,6 +19,7 @@ cleanup_corkscrew:
 create_corkscrew_softlink:
   cmd.run:
     - name: ln -s /usr/local/bin/corkscrew /usr/bin/corkscrew
+{% endif %}
 
 {% elif pillar['OS'] == 'redhat8' %}
 

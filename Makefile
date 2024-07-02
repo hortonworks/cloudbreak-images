@@ -61,7 +61,7 @@ endif
 # AWS source ami and instance type specification
 ifeq ($(CLOUD_PROVIDER),AWS)
 	ifeq ($(OS),centos7)
-		AWS_SOURCE_AMI ?= ami-098f55b4287a885ba
+		AWS_SOURCE_AMI ?= ami-0f2d991bb08fccb7a
 		AWS_INSTANCE_TYPE ?= t3.2xlarge
 	endif
 	ifeq ($(OS),redhat8)
