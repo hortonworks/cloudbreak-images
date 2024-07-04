@@ -146,7 +146,7 @@ function redhat8_update_python36() {
     update-alternatives --install /usr/bin/python python /usr/bin/python2.7 1
     update-alternatives --install /usr/bin/python python /usr/bin/python3.6 2
     alternatives --set python /usr/bin/python3.6
-    python -m pip install --upgrade pip
+    pip config set global.log /tmp/pip_log.txt
   else
     # CM agent needs this to work
     alternatives --set python /usr/bin/python3
@@ -204,6 +204,7 @@ function redhat8_install_python311() {
 /usr/bin/python3.11 -m pip "\$@"
 EOF
   chmod +x /usr/local/bin/pip3.11
+  python -m pip config set --global log=/tmp/pip_log.txt
 }
 
 
