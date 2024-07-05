@@ -1,0 +1,29 @@
+[base]
+name=CentOS-7 - Base
+baseurl=https://vault.centos.org/7.9.2009/os/x86_64/
+gpgcheck=1
+gpgkey=file:///etc/pki/rpm-gpg/RPM-GPG-KEY-CentOS-7
+
+[updates]
+name=CentOS-7 - Updates
+baseurl=https://vault.centos.org/7.9.2009/updates/x86_64/
+gpgcheck=1
+gpgkey=file:///etc/pki/rpm-gpg/RPM-GPG-KEY-CentOS-7
+
+[extras]
+name=CentOS-7 - Extras
+baseurl=https://vault.centos.org/7.9.2009/extras/x86_64/
+gpgcheck=1
+gpgkey=file:///etc/pki/rpm-gpg/RPM-GPG-KEY-CentOS-7
+
+[sclo]
+name=CentOS-7 - SCLO
+baseurl=https://vault.centos.org/7.9.2009/sclo/x86_64/sclo/
+gpgcheck=1
+gpgkey=file:///etc/pki/rpm-gpg/RPM-GPG-KEY-CentOS-SIG-SCLo
+
+[sclo-rh]
+name=CentOS-7 - SCLO RH
+baseurl=https://vault.centos.org/7.9.2009/sclo/x86_64/rh/
+gpgcheck=1
+gpgkey=file:///etc/pki/rpm-gpg/RPM-GPG-KEY-CentOS-SIG-SCLo
