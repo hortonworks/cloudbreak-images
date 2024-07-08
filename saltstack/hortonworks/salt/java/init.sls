@@ -36,12 +36,16 @@ install_openjdk:
 
 {% if grains['os'] == 'RedHat' and grains['osmajorrelease'] | int == 8 %}
 {% if salt['environ.get']('IMAGE_BURNING_TYPE') == 'base' or salt['environ.get']('STACK_VERSION').split('.') | map('int') | list >= '7.2.18'.split('.') | map('int') | list %}
-{% if salt['environ.get']('ARCHITECTURE') != 'arm64' %} # FIXME after arm64 repo is available
 download_rhel8_repo:
   file.managed:
     - name: /etc/yum.repos.d/rhel8_cldr_mirrors.repo
     - source: https://mirror.infra.cloudera.com/repos/rhel/server/8/8/rhel8_cldr_mirrors.repo
     - skip_verify: True
+
+{% if salt['environ.get']('ARCHITECTURE') == 'arm64' %} # ubi-8.8-supplementary-cldr and ubi-8.8-codeready-builder-cldr are not yet available for arm64
+remove_unavailable_repos:
+  cmd.run:
+    - name: sed -i '16,$ d' /etc/yum.repos.d/rhel8_cldr_mirrors.repo
 {% endif %}
 
 install_openjdk21:
