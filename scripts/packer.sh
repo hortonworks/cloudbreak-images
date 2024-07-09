@@ -59,7 +59,6 @@ packer_in_container() {
     export INCLUDE_CDP_TELEMETRY=No
     export INCLUDE_FLUENT=No
     export USE_TELEMETRY_ARCHIVE=No
-    export DEFAULT_JUMPGATE_AGENT_RPM_URL=""
     export DEFAULT_METERING_AGENT_RPM_URL=""
   fi
 
