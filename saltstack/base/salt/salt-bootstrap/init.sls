@@ -1,4 +1,4 @@
-{% set version = '0.13.8' %}
+{% set version = '0.13.9' %}
 {% set url = 'https://github.com/hortonworks/salt-bootstrap/releases/download/v' ~ version ~ '/salt-bootstrap_' ~ version ~ '_Linux_' ~ salt['environ.get']('ARCHITECTURE') ~ '.tgz' %}
 
 install_saltbootstrap:
