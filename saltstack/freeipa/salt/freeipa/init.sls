@@ -16,8 +16,11 @@ freeipa-install:
   pkg.installed:
     - pkgs:
         - ntp
-        - ipa-server
-        - ipa-server-dns
+        - certifi: 2024.2.2
+        - ipa-common: 4.6.8-5.el7.centos.16
+        - ipa-client: 4.6.8-5.el7.centos.16
+        - ipa-server: 4.6.8-5.el7.centos.16
+        - ipa-server-dns: 4.6.8-5.el7.centos.16
         - python36-dbus
 {% else %}
   cmd.run:
