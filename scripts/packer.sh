@@ -111,7 +111,7 @@ packer_in_container() {
   if ! [[ $FREEIPA_PLUGIN_RPM_URL =~ ^http.*rpm$ ]]; then
     # The RHEL8 version is not backward-compatible, so we have to override the default CentOS 7 version.
     if [[ "$OS" == "redhat8" ]]; then
-      export FREEIPA_PLUGIN_RPM_URL="https://archive.cloudera.com/cdp-freeipa-artifacts/cdp-hashed-pwd-1.0-20240306130845git17cc467.el8.x86_64.rpm"
+      export FREEIPA_PLUGIN_RPM_URL="https://archive.cloudera.com/cdp-freeipa-artifacts/cdp-hashed-pwd-1.1-b847.el8.x86_64.rpm"
     else
       export FREEIPA_PLUGIN_RPM_URL=$DEFAULT_FREEIPA_PLUGIN_RPM_URL
     fi
