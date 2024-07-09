@@ -162,7 +162,7 @@ DEFAULT_JUMPGATE_AGENT_RPM_URL := https://archive.cloudera.com/ccm/3.0.9/jumpgat
 DEFAULT_METERING_AGENT_RPM_URL := "https://archive.cloudera.com/cp_clients/thunderhead-metering-heartbeat-application-2.0.0-b12639.x86_64.rpm"
 
 # This one is theoretically OS-dependent and will be overridden in packer.sh for RHEL8, even though apparently packages work regardless of the OS.
-DEFAULT_FREEIPA_PLUGIN_RPM_URL := "https://archive.cloudera.com/cdp-freeipa-artifacts/cdp-hashed-pwd-1.0-20240306130845git17cc467.el7.x86_64.rpm"
+DEFAULT_FREEIPA_PLUGIN_RPM_URL := "https://archive.cloudera.com/cdp-freeipa-artifacts/cdp-hashed-pwd-1.1-b847.el7.x86_64.rpm"
 
 # This one is OS-independent
 DEFAULT_FREEIPA_HEALTH_AGENT_RPM_URL := "https://archive.cloudera.com/cdp-freeipa-artifacts/freeipa-health-agent-0.1-20240306130845git17cc467.x86_64.rpm"
