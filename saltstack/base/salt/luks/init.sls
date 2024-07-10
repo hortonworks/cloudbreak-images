@@ -24,7 +24,7 @@
     - name: /mnt/cdp-luks
     - user: root
     - group: root
-    - mode: 700
+    - mode: 755
 
 /mnt/cdp-luks_passphrase_tmpfs:
   file.directory:
