@@ -69,22 +69,22 @@ function update_yum_repos() {
     if [[ "${CLOUD_PROVIDER}" != "AWS_GOV" ]]; then
       # Internal repo is not yet available for AWS_GOV images
       RHEL_VERSION=$(cat /etc/redhat-release | grep -oP "[0-9\.]*")
-      RHEL_VERSION=${RHEL_VERSION/.0/}
-      REPO_FILE=rhel${RHEL_VERSION}_cldr_mirrors.repo
-      rm /etc/yum.repos.d/*.repo -f
-      curl https://mirror.infra.cloudera.com/repos/rhel/server/8/${RHEL_VERSION}/${REPO_FILE} --fail > /etc/yum.repos.d/${REPO_FILE}
-      if [[ "${ARCHITECTURE}" == "arm64" ]]; then
-        # ubi-8.8-supplementary-cldr and ubi-8.8-codeready-builder-cldr are not yet available for arm64
-        sed -i '16,$ d' /etc/yum.repos.d/${REPO_FILE}
-      fi
-
-      # Workaround on resolving the hostname as for some reason the DNS can't resolve it at provision time
-      if [ "${IMAGE_BURNING_TYPE}" == "base" ] ; then
-        if [[ "${CLOUD_PROVIDER}" != "Azure" ]] ; then
-          yum install -y dnsutils
-        fi
-        echo "$(dig +short mirror.infra.cloudera.com A | tail -1) mirror.infra.cloudera.com" >> /etc/hosts
-      fi
+#      RHEL_VERSION=${RHEL_VERSION/.0/}
+#      REPO_FILE=rhel${RHEL_VERSION}_cldr_mirrors.repo
+#      rm /etc/yum.repos.d/*.repo -f
+#      curl https://mirror.infra.cloudera.com/repos/rhel/server/8/${RHEL_VERSION}/${REPO_FILE} --fail > /etc/yum.repos.d/${REPO_FILE}
+#      if [[ "${ARCHITECTURE}" == "arm64" ]]; then
+#        # ubi-8.8-supplementary-cldr and ubi-8.8-codeready-builder-cldr are not yet available for arm64
+#        sed -i '16,$ d' /etc/yum.repos.d/${REPO_FILE}
+#      fi
+#
+#      # Workaround on resolving the hostname as for some reason the DNS can't resolve it at provision time
+#      if [ "${IMAGE_BURNING_TYPE}" == "base" ] ; then
+#        if [[ "${CLOUD_PROVIDER}" != "Azure" ]] ; then
+#          yum install -y dnsutils
+#        fi
+#        echo "$(dig +short mirror.infra.cloudera.com A | tail -1) mirror.infra.cloudera.com" >> /etc/hosts
+#      fi
     fi
   else
     # Workaround based on the official documentation: https://cloud.google.com/compute/docs/troubleshooting/known-issues#known_issues_for_linux_vm_instances

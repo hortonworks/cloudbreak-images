@@ -1,3 +1,15 @@
+kernel-stuff2:
+  cmd.run:
+    - name: |
+        echo "Repos:"
+        yum repolist
+        echo "Installed kernels:"
+        rpm -q kernel
+        echo "Available kernels:"
+        yum repoquery kernel
+        echo "Update kernel:"
+        yum update -y kernel
+
 {% if grains['os_family'] == 'RedHat' %}
 
 current_kernel:

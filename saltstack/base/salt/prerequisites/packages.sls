@@ -1,12 +1,18 @@
-{% if salt['environ.get']('CLOUD_PROVIDER') == 'AWS_GOV' or salt['environ.get']('ARCHITECTURE') == 'arm64' %}
 update-packages:
   cmd.run:
     - name: dnf update -y --releasever=8.8 --nobest
-{% elif pillar['subtype'] != 'Docker' %}
-update-packages:
-  pkg.uptodate:
-    - refresh: True
-{% endif %}
+
+kernel-stuff:
+  cmd.run:
+    - name: |
+        echo "Repos:"
+        yum repolist
+        echo "Installed kernels:"
+        rpm -q kernel
+        echo "Available kernels:"
+        yum repoquery kernel
+        echo "Update kernel:"
+        yum update -y kernel
 
 # Apparently "yum update" on CentOS 7 puts these back in...
 {% if pillar['OS'] == 'centos7' %}
