@@ -48,6 +48,14 @@
     - group: root
     - mode: 700
 
+/etc/cdp-luks/bin/populate-luks-volume.sh:
+  file.managed:
+    - name: /etc/cdp-luks/bin/populate-luks-volume.sh
+    - source: salt://{{ slspath }}/bin/populate-luks-volume.sh
+    - user: root
+    - group: root
+    - mode: 700
+
 /etc/cdp-luks/bin/reopen-luks-volume.sh:
   file.managed:
     - name: /etc/cdp-luks/bin/reopen-luks-volume.sh
