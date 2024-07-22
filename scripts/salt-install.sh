@@ -77,14 +77,6 @@ function update_yum_repos() {
         # ubi-8.8-supplementary-cldr and ubi-8.8-codeready-builder-cldr are not yet available for arm64
         sed -i '16,$ d' /etc/yum.repos.d/${REPO_FILE}
       fi
-
-      # Workaround on resolving the hostname as for some reason the DNS can't resolve it at provision time
-      if [ "${IMAGE_BURNING_TYPE}" == "base" ] ; then
-        if [[ "${CLOUD_PROVIDER}" != "Azure" ]] ; then
-          yum install -y dnsutils
-        fi
-        echo "$(dig +short mirror.infra.cloudera.com A | tail -1) mirror.infra.cloudera.com" >> /etc/hosts
-      fi
     fi
   else
     # Workaround based on the official documentation: https://cloud.google.com/compute/docs/troubleshooting/known-issues#known_issues_for_linux_vm_instances
