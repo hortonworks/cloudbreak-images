@@ -1,4 +1,4 @@
-{% if salt['environ.get']('CLOUD_PROVIDER') == 'AWS_GOV' or salt['environ.get']('ARCHITECTURE') == 'arm64' %}
+{% if salt['environ.get']('CLOUD_PROVIDER') == 'AWS_GOV' %}
 update-packages:
   cmd.run:
     - name: dnf update -y --releasever=8.8 --nobest
