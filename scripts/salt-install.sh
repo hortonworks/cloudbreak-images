@@ -73,10 +73,6 @@ function update_yum_repos() {
       REPO_FILE=rhel${RHEL_VERSION}_cldr_mirrors.repo
       rm /etc/yum.repos.d/*.repo -f
       curl https://mirror.infra.cloudera.com/repos/rhel/server/8/${RHEL_VERSION}/${REPO_FILE} --fail > /etc/yum.repos.d/${REPO_FILE}
-      if [[ "${ARCHITECTURE}" == "arm64" ]]; then
-        # ubi-8.8-supplementary-cldr and ubi-8.8-codeready-builder-cldr are not yet available for arm64
-        sed -i '16,$ d' /etc/yum.repos.d/${REPO_FILE}
-      fi
     fi
   else
     # Workaround based on the official documentation: https://cloud.google.com/compute/docs/troubleshooting/known-issues#known_issues_for_linux_vm_instances
