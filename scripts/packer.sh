@@ -60,7 +60,6 @@ packer_in_container() {
     export INCLUDE_FLUENT=No
     export USE_TELEMETRY_ARCHIVE=No
     export DEFAULT_JUMPGATE_AGENT_RPM_URL=""
-    export DEFAULT_METERING_AGENT_RPM_URL=""
   fi
 
   if [[ "$INCLUDE_CDP_TELEMETRY" == "Yes" && -z "$CDP_TELEMETRY_RPM_URL" ]]; then
@@ -105,9 +104,6 @@ packer_in_container() {
     JUMPGATE_AGENT_GBN=$(curl -Ls "https://release.infra.cloudera.com/hwre-api/latestcompiledbuild?stack=JUMPGATE&release=$JUMPGATE_AGENT_VERSION" --fail | jq -r '.gbn')
   fi
 
-  if ! [[ $METERING_AGENT_RPM_URL =~ ^http.*rpm$ ]]; then
-    export METERING_AGENT_RPM_URL=$DEFAULT_METERING_AGENT_RPM_URL
-  fi
   if ! [[ $FREEIPA_PLUGIN_RPM_URL =~ ^http.*rpm$ ]]; then
     # The RHEL8 version is not backward-compatible, so we have to override the default CentOS 7 version.
     if [[ "$OS" == "redhat8" ]]; then
@@ -199,9 +195,7 @@ packer_in_container() {
     -e INCLUDE_FLUENT=$INCLUDE_FLUENT \
     -e INCLUDE_CDP_TELEMETRY=$INCLUDE_CDP_TELEMETRY \
     -e FLUENT_PREWARM_TAG=$FLUENT_PREWARM_TAG \
-    -e METERING_PREWARM_TAG=$METERING_PREWARM_TAG \
     -e CDP_TELEMETRY_PREWARM_TAG=$CDP_TELEMETRY_PREWARM_TAG \
-    -e INCLUDE_METERING=$INCLUDE_METERING \
     -e USE_TELEMETRY_ARCHIVE=$USE_TELEMETRY_ARCHIVE \
     -e ARCHIVE_BASE_URL=$ARCHIVE_BASE_URL \
     -e ARCHIVE_CREDENTIALS=$ARCHIVE_CREDENTIALS \
@@ -254,7 +248,6 @@ packer_in_container() {
     -e CDP_LOGGING_AGENT_RPM_URL="$CDP_LOGGING_AGENT_RPM_URL" \
     -e JUMPGATE_AGENT_RPM_URL="$JUMPGATE_AGENT_RPM_URL" \
     -e JUMPGATE_AGENT_GBN="$JUMPGATE_AGENT_GBN" \
-    -e METERING_AGENT_RPM_URL="$METERING_AGENT_RPM_URL" \
     -e FREEIPA_PLUGIN_RPM_URL="$FREEIPA_PLUGIN_RPM_URL" \
     -e FREEIPA_HEALTH_AGENT_RPM_URL="$FREEIPA_HEALTH_AGENT_RPM_URL" \
     -e FREEIPA_LDAP_AGENT_RPM_URL="$FREEIPA_LDAP_AGENT_RPM_URL" \
