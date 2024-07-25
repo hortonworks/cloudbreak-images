@@ -40,14 +40,10 @@ $(error BUILD_RESOURCE_GROUP_NAME and ARM_BUILD_REGION should not be set togethe
 $(error "AZURE_IMAGE_VHD and Marketplace image properties (AZURE_IMAGE_PUBLISHER, AZURE_IMAGE_OFFER, AZURE_IMAGE_SKU) should not be set together")
 		endif
 	else
-		ifeq ($(OS),redhat7)
-			AZURE_IMAGE_PUBLISHER ?= RedHat
-			AZURE_IMAGE_OFFER ?= RHEL
-			AZURE_IMAGE_SKU ?= 7_9
-		else ifeq ($(OS),redhat8)
+		ifeq ($(OS),redhat8)
 			AZURE_IMAGE_PUBLISHER ?= RedHat
 			AZURE_IMAGE_OFFER ?= rhel-byos
-			AZURE_IMAGE_SKU ?= rhel-lvm88
+			AZURE_IMAGE_SKU ?= rhel-lvm810
 		else ifeq ($(OS),centos7)
 			AZURE_IMAGE_PUBLISHER ?= OpenLogic
 			AZURE_IMAGE_OFFER ?= CentOS
@@ -66,10 +62,10 @@ ifeq ($(CLOUD_PROVIDER),AWS)
 	endif
 	ifeq ($(OS),redhat8)
 		ifeq ($(ARCHITECTURE),arm64)
-			AWS_SOURCE_AMI ?= ami-014a329a8d775a418
+			AWS_SOURCE_AMI ?= ami-05032c39067d77b1b
 			AWS_INSTANCE_TYPE ?= r7gd.2xlarge
 		else
-			AWS_SOURCE_AMI ?= ami-039ce2eddc1949546
+			AWS_SOURCE_AMI ?= ami-02073841a355a1e92
 			AWS_INSTANCE_TYPE ?= t3.2xlarge
 		endif
 	endif
