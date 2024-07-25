@@ -5,12 +5,8 @@ openscap_install:
 openscap_security_guide:
   cmd.run:
     - name: yum install -y scap-security-guide
-
-openscap_run1:
-  cmd.run:
-    - name: ls /usr/share/xml/scap/ssg/content/
     
-openscap_run2:
+openscap_info:
   cmd.run:
     - name: oscap info /usr/share/xml/scap/ssg/content/ssg-rhel8-ds.xml
 
@@ -20,4 +16,4 @@ openscap_run_stig:
 
 openscap_log_chmod:
   cmd.run:
-    - name: chmod 644 /tmp/cis/oscap_log.txt
+    - name: chmod 777 /tmp/cis/oscap_log.txt
