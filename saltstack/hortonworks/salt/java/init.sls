@@ -42,6 +42,12 @@ download_rhel8_repo:
     - source: https://mirror.infra.cloudera.com/repos/rhel/server/8/8/rhel8_cldr_mirrors.repo
     - skip_verify: True
 
+{% if salt['environ.get']('ARCHITECTURE') == 'arm64' %} # ubi-8-supplementary-cldr and ubi-8-codeready-builder-cldr are not yet available for arm64
+remove_unavailable_repos:
+  cmd.run:
+    - name: sed -i '16,$ d' /etc/yum.repos.d/rhel8_cldr_mirrors.repo
+{% endif %}
+
 install_openjdk21:
   pkg.installed:
     - pkgs:
@@ -51,6 +57,7 @@ install_openjdk21:
 delete_rhel8_repo:
   file.absent:
     - name: /etc/yum.repos.d/rhel8_cldr_mirrors.repo
+
 {% endif %}
 {% endif %}
 

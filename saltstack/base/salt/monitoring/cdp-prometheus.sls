@@ -1,11 +1,22 @@
+{% set version = '2.36.2' %}
+{% set path = 'https://github.com/prometheus/prometheus/releases/download/v' ~ version %}
+{% set architecture = 'arm64' if salt['environ.get']('ARCHITECTURE') == 'arm64' else 'amd64' %}
+{% set url = path ~ '/prometheus-' ~ version ~ '.linux-' ~ architecture ~ '.tar.gz' %}
+
 install_prometheus:
   archive.extracted:
     - name: /opt/cdp-prometheus/
-    - source: https://github.com/prometheus/prometheus/releases/download/v2.36.2/prometheus-2.36.2.linux-amd64.tar.gz
-    - source_hash: sha256=3f558531c6a575d8372b576b7e76578a98e2744da6b89982ea7021b6f000cddd
+    - source: {{ url }}
+    - source_hash: {{ path }}/sha256sums.txt
     - archive_format: tar
     - enforce_toplevel: False
     - options: --strip-components=1 --exclude='promtool'
+
+prometheus_hardcoded_package:
+  file.append:
+    - name: /tmp/hardcoded-packages.csv
+    - text: |
+        prometheus;{{ version }};Hardcoded;Apache License 2.0;Prometheus;{{ url }};The Prometheus monitoring system and time series database.
 
 /opt/cdp-prometheus:
   file.directory:

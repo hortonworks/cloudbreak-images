@@ -6,6 +6,7 @@
 
 {% set cloud_provider = salt['environ.get']('CLOUD_PROVIDER') %}
 {% set os = salt['environ.get']('OS') %}
+{% set architecture = salt['environ.get']('ARCHITECTURE') %}
 
 {% if salt['environ.get']('STIG_ENABLED') == 'true' %}
 set_hardening_to_stig:
@@ -173,8 +174,8 @@ Chrony_config:
   # udf is required for Azure to mount cdrom - See CB-11012
   {% do filesystems_to_disable.append('udf') %}
 {% endif %}
-{% if cloud_provider != 'GCP' and not (cloud_provider == 'Azure' and os == 'redhat8')  %}
-  # fat is required for gcp and azure rhel8 images
+{% if cloud_provider != 'GCP' and not (cloud_provider == 'Azure' and os == 'redhat8') and not architecture == 'arm64' %}
+  # fat is required for gcp and azure rhel8 and arm64 images
   {% do filesystems_to_disable.append('fat') %}
 {% endif %}
 

@@ -8,6 +8,13 @@ update-packages:
     - refresh: True
 {% endif %}
 
+# Apparently "yum update" on CentOS 7 puts these back in...
+{% if pillar['OS'] == 'centos7' %}
+remove_dead_repos_again:
+  cmd.run:
+    - name: sudo rm -rf /etc/yum.repos.d/CentOS*.repo
+{% endif %}
+
 {% if pillar['OS'] == 'redhat8' %}
 remove_unused_rhel8_packages:
   pkg.removed:
@@ -80,7 +87,7 @@ missing_cloudprovider:
 
 download_awscli:
   cmd.run:
-    - name: wget https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip -q -O /tmp/awscli.zip && unzip -q -d /tmp/awscli/ /tmp/awscli.zip && rm -f /tmp/awscli.zip
+    - name: wget https://awscli.amazonaws.com/awscli-exe-linux-{{ grains['osarch'] }}.zip -q -O /tmp/awscli.zip && unzip -q -d /tmp/awscli/ /tmp/awscli.zip && rm -f /tmp/awscli.zip
 
 install_awscli:
   cmd.run:

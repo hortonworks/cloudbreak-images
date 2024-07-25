@@ -48,6 +48,21 @@ packer_in_container() {
     jq 'del(."post-processors")' packer.json > packer_no_pp.json
     packerFile="packer_no_pp.json"
   fi
+
+  if [[ "$ARCHITECTURE" == "arm64" ]]; then
+    if [[ "$CLOUD_PROVIDER" != "AWS" ]]; then
+      echo "Architecture arm64 is only supported for AWS"
+      exit 1
+    fi
+
+    # FIXME when arm64 builds are available
+    export INCLUDE_CDP_TELEMETRY=No
+    export INCLUDE_FLUENT=No
+    export USE_TELEMETRY_ARCHIVE=No
+    export DEFAULT_JUMPGATE_AGENT_RPM_URL=""
+    export DEFAULT_METERING_AGENT_RPM_URL=""
+  fi
+
   if [[ "$INCLUDE_CDP_TELEMETRY" == "Yes" && -z "$CDP_TELEMETRY_RPM_URL" ]]; then
     CDP_TELEMETRY_BASE_URL="https://cloudera-service-delivery-cache.s3.amazonaws.com/telemetry/cdp-telemetry/"
     if [[ "$CDP_TELEMETRY_VERSION" == "" ]]; then
@@ -83,10 +98,12 @@ packer_in_container() {
       export JUMPGATE_AGENT_RPM_URL=$DEFAULT_JUMPGATE_AGENT_RPM_URL
   fi
 
-  ## Download the jumpgate-agent rpm, get the version and call REDB to lookup the GBN
-  wget $JUMPGATE_AGENT_RPM_URL
-  JUMPGATE_AGENT_VERSION=$(rpm -qp --queryformat '%{VERSION}' ${JUMPGATE_AGENT_RPM_URL##*/})
-  JUMPGATE_AGENT_GBN=$(curl -Ls "https://release.infra.cloudera.com/hwre-api/latestcompiledbuild?stack=JUMPGATE&release=$JUMPGATE_AGENT_VERSION" --fail | jq -r '.gbn')
+  if [ -n "$JUMPGATE_AGENT_RPM_URL" ]; then
+    ## Download the jumpgate-agent rpm, get the version and call REDB to lookup the GBN
+    wget $JUMPGATE_AGENT_RPM_URL
+    JUMPGATE_AGENT_VERSION=$(rpm -qp --queryformat '%{VERSION}' ${JUMPGATE_AGENT_RPM_URL##*/})
+    JUMPGATE_AGENT_GBN=$(curl -Ls "https://release.infra.cloudera.com/hwre-api/latestcompiledbuild?stack=JUMPGATE&release=$JUMPGATE_AGENT_VERSION" --fail | jq -r '.gbn')
+  fi
 
   if ! [[ $METERING_AGENT_RPM_URL =~ ^http.*rpm$ ]]; then
     export METERING_AGENT_RPM_URL=$DEFAULT_METERING_AGENT_RPM_URL
@@ -94,7 +111,7 @@ packer_in_container() {
   if ! [[ $FREEIPA_PLUGIN_RPM_URL =~ ^http.*rpm$ ]]; then
     # The RHEL8 version is not backward-compatible, so we have to override the default CentOS 7 version.
     if [[ "$OS" == "redhat8" ]]; then
-      export FREEIPA_PLUGIN_RPM_URL="https://archive.cloudera.com/cdp-freeipa-artifacts/cdp-hashed-pwd-1.0-20240306130845git17cc467.el8.x86_64.rpm"
+      export FREEIPA_PLUGIN_RPM_URL="https://archive.cloudera.com/cdp-freeipa-artifacts/cdp-hashed-pwd-1.1-b847.el8.x86_64.rpm"
     else
       export FREEIPA_PLUGIN_RPM_URL=$DEFAULT_FREEIPA_PLUGIN_RPM_URL
     fi
@@ -126,6 +143,7 @@ packer_in_container() {
     -e GIT_REV=$GIT_REV \
     -e GIT_BRANCH=$GIT_BRANCH \
     -e GIT_TAG=$GIT_TAG \
+    -e ARCHITECTURE=$ARCHITECTURE \
     -e OS=$OS \
     -e OS_TYPE=$OS_TYPE \
     -e CHECKPOINT_DISABLE=1 \
@@ -144,6 +162,7 @@ packer_in_container() {
     -e AWS_AMI_GROUPS="$AWS_AMI_GROUPS" \
     -e AWS_AMI_ORG_ARN="$AWS_AMI_ORG_ARN" \
     -e AWS_SOURCE_AMI="$AWS_SOURCE_AMI" \
+    -e AWS_INSTANCE_TYPE="$AWS_INSTANCE_TYPE" \
     -e AWS_GOV_SOURCE_AMI="$AWS_GOV_SOURCE_AMI" \
     -e AZURE_IMAGE_VHD=$AZURE_IMAGE_VHD \
     -e AZURE_IMAGE_PUBLISHER=$AZURE_IMAGE_PUBLISHER \

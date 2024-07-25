@@ -1,14 +1,23 @@
+{% set version = '0.13.9' %}
+{% set url = 'https://github.com/hortonworks/salt-bootstrap/releases/download/v' ~ version ~ '/salt-bootstrap_' ~ version ~ '_Linux_' ~ salt['environ.get']('ARCHITECTURE') ~ '.tgz' %}
+
 install_saltbootstrap:
   archive.extracted:
     - name: /usr/sbin/
-    - source: https://github.com/hortonworks/salt-bootstrap/releases/download/v0.13.6/salt-bootstrap_0.13.6_Linux_x86_64.tgz
-    - source_hash: sha256=ebb0a9f978c2a112622420359f6eb8afda0d36c8eff3ebb54c7d6e49ba823240
+    - source: {{ url }}
+    - source_hash: {{ url }}.sha256
     - archive_format: tar
     - enforce_toplevel: false
     - user: root
     - group: root
     - skip_verify: True
     - if_missing: /usr/sbin/salt-bootstrap
+
+saltbootstrap_hardcoded_package:
+  file.append:
+    - name: /tmp/hardcoded-packages.csv
+    - text: |
+        salt-bootstrap;{{ version }};Hardcoded;Apache License 2.0;Cloudera Inc.;{{ url }};Tool for bootstrapping VMs launched by Cloudbreak.
 
 create_saltbootstrap_service_files:
   file.managed:

@@ -10,6 +10,7 @@ IMAGE_OWNER ?= "cloudbreak-dev"
 OPTIONAL_STATES ?= ""
 # for splitting image copy (test and prod phases)
 IMAGE_COPY_PHASE ?= ""
+ARCHITECTURE ?= x86_64
 
 # Azure VM image specifications
 ifeq ($(CLOUD_PROVIDER),Azure)
@@ -57,18 +58,26 @@ $(error Unexpected OS type $(OS) for Azure)
 	endif
 endif
 
-# AWS source ami specification
+# AWS source ami and instance type specification
 ifeq ($(CLOUD_PROVIDER),AWS)
 	ifeq ($(OS),centos7)
 		AWS_SOURCE_AMI ?= ami-098f55b4287a885ba
+		AWS_INSTANCE_TYPE ?= t3.2xlarge
 	endif
 	ifeq ($(OS),redhat8)
-		AWS_SOURCE_AMI ?= ami-039ce2eddc1949546
+		ifeq ($(ARCHITECTURE),arm64)
+			AWS_SOURCE_AMI ?= ami-014a329a8d775a418
+			AWS_INSTANCE_TYPE ?= r7gd.2xlarge
+		else
+			AWS_SOURCE_AMI ?= ami-039ce2eddc1949546
+			AWS_INSTANCE_TYPE ?= t3.2xlarge
+		endif
 	endif
 endif
 
 # AWS_GOV source ami specification
 ifeq ($(CLOUD_PROVIDER),AWS_GOV)
+	AWS_INSTANCE_TYPE ?= t3.2xlarge
     ifeq ($(OS),centos7)
 		AWS_GOV_SOURCE_AMI ?= ami-bbba86da
 	endif
@@ -147,13 +156,13 @@ CDP_TELEMETRY_VERSION ?= ""
 CDP_LOGGING_AGENT_VERSION ?= ""
 
 # This one is OS-independent (right?)
-DEFAULT_JUMPGATE_AGENT_RPM_URL := https://archive.cloudera.com/ccm/3.0.8/jumpgate-agent.rpm
+DEFAULT_JUMPGATE_AGENT_RPM_URL := https://archive.cloudera.com/ccm/3.0.9/jumpgate-agent.rpm
 
 # This one is OS-independent (v2.0 is a rewrite done in GoLang)
 DEFAULT_METERING_AGENT_RPM_URL := "https://archive.cloudera.com/cp_clients/thunderhead-metering-heartbeat-application-2.0.0-b12639.x86_64.rpm"
 
 # This one is theoretically OS-dependent and will be overridden in packer.sh for RHEL8, even though apparently packages work regardless of the OS.
-DEFAULT_FREEIPA_PLUGIN_RPM_URL := "https://archive.cloudera.com/cdp-freeipa-artifacts/cdp-hashed-pwd-1.0-20240306130845git17cc467.el7.x86_64.rpm"
+DEFAULT_FREEIPA_PLUGIN_RPM_URL := "https://archive.cloudera.com/cdp-freeipa-artifacts/cdp-hashed-pwd-1.1-b847.el7.x86_64.rpm"
 
 # This one is OS-independent
 DEFAULT_FREEIPA_HEALTH_AGENT_RPM_URL := "https://archive.cloudera.com/cdp-freeipa-artifacts/freeipa-health-agent-0.1-20240306130845git17cc467.x86_64.rpm"
@@ -275,6 +284,7 @@ build-aws-centos7-base:
 	$(ENVS) \
 	AWS_AMI_REGIONS="us-west-1" \
 	AWS_SOURCE_AMI=$(AWS_SOURCE_AMI) \
+	AWS_INSTANCE_TYPE=$(AWS_INSTANCE_TYPE) \
 	OS=centos7 \
 	OS_TYPE=redhat7 \
 	ATLAS_ARTIFACT_TYPE=amazon \
@@ -289,6 +299,7 @@ build-aws-centos7:
 	$(ENVS) \
 	AWS_AMI_REGIONS="$(AWS_AMI_REGIONS)" \
 	AWS_SOURCE_AMI=$(AWS_SOURCE_AMI) \
+	AWS_INSTANCE_TYPE=$(AWS_INSTANCE_TYPE) \
 	ATLAS_ARTIFACT_TYPE=amazon \
 	GIT_REV=$(GIT_REV) \
 	GIT_BRANCH=$(GIT_BRANCH) \
@@ -310,8 +321,10 @@ build-aws-redhat8:
 	$(ENVS) \
 	AWS_AMI_REGIONS="us-west-1" \
 	AWS_SOURCE_AMI=$(AWS_SOURCE_AMI) \
+	AWS_INSTANCE_TYPE=$(AWS_INSTANCE_TYPE) \
 	OS=redhat8 \
 	OS_TYPE=redhat8 \
+	ARCHITECTURE=$(ARCHITECTURE) \
 	ATLAS_ARTIFACT_TYPE=amazon \
 	SALT_INSTALL_OS=redhat \
 	GIT_REV=$(GIT_REV) \
@@ -416,6 +429,7 @@ build-aws-gov-redhat8:
 	$(ENVS) \
 	AWS_AMI_REGIONS="us-gov-west-1" \
 	AWS_GOV_SOURCE_AMI=$(AWS_GOV_SOURCE_AMI) \
+	AWS_INSTANCE_TYPE=$(AWS_INSTANCE_TYPE) \
 	OS=redhat8 \
 	OS_TYPE=redhat8 \
 	ATLAS_ARTIFACT_TYPE=amazon-gov \

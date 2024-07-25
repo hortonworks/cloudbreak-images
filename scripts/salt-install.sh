@@ -64,20 +64,15 @@ function install_with_yum() {
 }
 
 function update_yum_repos() {
-  # Remove RHEL official repos and use the internal mirror in case of RHEL8 and non aws_gov provider
-  if [[ "${OS}" == "redhat8" && "${CLOUD_PROVIDER}" != "AWS_GOV" ]]; then
-    RHEL_VERSION=$(cat /etc/redhat-release | grep -oP "[0-9\.]*")
-    RHEL_VERSION=${RHEL_VERSION/.0/}
-    REPO_FILE=rhel${RHEL_VERSION}_cldr_mirrors.repo
-    rm /etc/yum.repos.d/*.repo -f
-    curl https://mirror.infra.cloudera.com/repos/rhel/server/8/${RHEL_VERSION}/${REPO_FILE} --fail > /etc/yum.repos.d/${REPO_FILE}
-
-    # Workaround on resolving the hostname as for some reason the DNS can't resolve it at provision time
-    if [ "${IMAGE_BURNING_TYPE}" == "base" ] ; then
-      if [[ "${CLOUD_PROVIDER}" != "Azure" ]] ; then
-        yum install -y dnsutils
-      fi
-      echo "$(dig +short mirror.infra.cloudera.com A | tail -1) mirror.infra.cloudera.com" >> /etc/hosts
+  if [[ "${OS}" == "redhat8" ]]; then
+    # Remove RHEL official repos and use the internal mirror in case of RHEL8
+    if [[ "${CLOUD_PROVIDER}" != "AWS_GOV" ]]; then
+      # Internal repo is not yet available for AWS_GOV images
+      RHEL_VERSION=$(cat /etc/redhat-release | grep -oP "[0-9\.]*")
+      RHEL_VERSION=${RHEL_VERSION/.0/}
+      REPO_FILE=rhel${RHEL_VERSION}_cldr_mirrors.repo
+      rm /etc/yum.repos.d/*.repo -f
+      curl https://mirror.infra.cloudera.com/repos/rhel/server/8/${RHEL_VERSION}/${REPO_FILE} --fail > /etc/yum.repos.d/${REPO_FILE}
     fi
   else
     # Workaround based on the official documentation: https://cloud.google.com/compute/docs/troubleshooting/known-issues#known_issues_for_linux_vm_instances
@@ -85,24 +80,19 @@ function update_yum_repos() {
       sudo sed -i 's/repo_gpgcheck=1/repo_gpgcheck=0/g' /etc/yum.repos.d/google-cloud.repo
     fi
 
-    # The host http://olcentgbl.trafficmanager.net keeps causing problems, so we re-enable the default mirrorlist instead.
-    # Also, this is the recommended way for YUM updates to work anyway. https://wiki.centos.org/PackageManagement/Yum/FastestMirror
-    if [ "${CLOUD_PROVIDER}" == "Azure" ]; then
-      if [ "${OS}" == "centos7" ] ; then
-        sudo sed -i 's/\#mirrorlist/mirrorlist/g' /etc/yum.repos.d/CentOS-Base.repo
-        sudo sed -i 's/baseurl/\#baseurl/g' /etc/yum.repos.d/CentOS-Base.repo
-      fi
-    fi
+    # Replace repos on the image that are no longer working
+    sudo rm -rf /etc/yum.repos.d/CentOS*.repo
+    cp /tmp/repos/RPM-GPG-KEY-CentOS-SIG-SCLo /etc/pki/rpm-gpg/
+    cp /tmp/repos/centos-vault.repo /etc/yum.repos.d/
+    cat /etc/pki/rpm-gpg/RPM-GPG-KEY-CentOS-SIG-SCLo
   fi
 }
 
 function enable_epel_repository() {
   if [ "${OS}" == "redhat8" ] ; then
     dnf install -y https://dl.fedoraproject.org/pub/epel/epel-release-latest-8.noarch.rpm
-  elif [ "${OS}" == "redhat7" ] ; then
-    curl https://dl.fedoraproject.org/pub/epel/epel-release-latest-7.noarch.rpm -o epel-release-latest-7.noarch.rpm && yum install --nogpgcheck -y ./epel-release-latest-7.noarch.rpm
   elif [ "${OS}" == "centos7" ] ; then
-    yum install -y epel-release
+    yum install -y https://dl.fedoraproject.org/pub/epel/epel-release-latest-7.noarch.rpm
   fi
 }
 
@@ -111,56 +101,19 @@ function version { echo "$@" | awk -F. '{ printf("%d%03d%03d%03d\n", $1,$2,$3,$4
 function centos7_update_python27() {
   echo "Updating Python 2.7..."
   yum update -y python
-
   echo PYTHON27=$(yum list installed | grep ^python\\.x86_64 | grep -oi " [^\s]* " | xargs) >> /tmp/python_install.properties
 }
 
 function centos7_install_python36() {
   echo "Installing Python 3.6 with dependencies..."
-  yum -y install centos-release-scl
   yum install -y python36 python36-pip python36-devel python36-setuptools
-
   echo PYTHON36=$(yum list installed | grep ^python3\\.x86_64 | grep -oi " [^\s]* " | xargs) >> /tmp/python_install.properties
 }
 
 function centos7_install_python38() {
   echo "Installing Python 3.8 with dependencies..."
-  yum -y install centos-release-scl
   yum -y install openssl-devel libffi-devel bzip2-devel rh-python38-python-pip rh-python38-python-libs rh-python38-python-devel rh-python38-python-cffi rh-python38-python-lxml rh-python38-python-psycopg2
-
   echo PYTHON38=$(yum list installed | grep ^rh-python38-python\\.x86_64 | grep -oi " [^\s]* " | xargs) >> /tmp/python_install.properties
-
-  ### We'll need this in case in the future we want to make Python 3.8 the default python3 (7.2.18+)
-  # We need this because the rh-python38-* packages apparently use a non-standard location... duh!
-  # echo "Updating /etc/environment for Python 3.8..."
-  # PATH=$PATH:/opt/rh/rh-python38/root/usr/local/bin:/opt/rh/rh-python38/root/usr/bin
-  # echo "PATH=\"$PATH\"" >>/etc/environment
-  # cat /etc/environment
-}
-
-function redhat7_update_python27() {
-  echo "Updating Python 2.7..."
-  yum update -y python
-}
-
-function redhat7_install_python36() {
-  echo "Installing Python 3.6 with dependencies..."
-  yum-config-manager --enable rhscl
-  yum -y install rh-python36
-
-  # pip workaround
-  echo "source scl_source enable rh-python36; python3.6 -m pip \$@" > /usr/bin/pip
-  chmod +x /usr/bin/pip
-}
-
-function redhat7_install_python38() {
-  echo "Installing Python 3.8 with dependencies..."
-  yum-config-manager --enable rhscl
-  yum -y install rh-python38
-
-  # pip workaround
-  echo "source scl_source enable rh-python38; python3.8 -m pip \$@" > /usr/bin/pip
-  chmod +x /usr/bin/pip
 }
 
 function redhat8_update_python36() {
@@ -168,7 +121,7 @@ function redhat8_update_python36() {
   yum update -y python3 || yum update -y python36
   yum install -y python3-devel
   
-  echo PYTHON36=$(yum list installed | grep ^python36\\.x86_64 | grep -oi " [^\s]* " | xargs) >> /tmp/python_install.properties
+  echo PYTHON36=$(yum list installed | grep ^python36\\. | grep -oi " [^\s]* " | xargs) >> /tmp/python_install.properties
   
   echo "RedHat8 update python36. OS: $OS CLOUD_PROVIDER: $CLOUD_PROVIDER"
   if [ "${OS}" == "redhat8" ] &&  [ "${CLOUD_PROVIDER}" == "YARN" ]; then
@@ -188,9 +141,9 @@ function redhat8_update_python36() {
 function redhat8_install_python38() {
   echo "Installing Python 3.8 with dependencies..."
   yum install -y python38
-  yum install -y python38-devel python38-libs python38-cffi python38-lxml python38-psycopg2
+  yum install -y python38-devel python38-libs python38-cffi python38-lxml
 
-  echo PYTHON38=$(yum list installed | grep ^python38\\.x86_64 | grep -oi " [^\s]* " | xargs) >> /tmp/python_install.properties
+  echo PYTHON38=$(yum list installed | grep ^python38\\. | grep -oi " [^\s]* " | xargs) >> /tmp/python_install.properties
 
   # We need to create this "hack", because Saltstack's pip.installed only accepts a pip/pip3
   # wrapper, but apparently can't call "python3 -m pip", so without this, we can't install
@@ -202,24 +155,12 @@ EOF
   chmod +x /usr/local/bin/pip3.8
 }
 
-function redhat8_update_python36_to_38() {
-  echo "Upgrading Python 3.6 to Python 3.8..."
-  yum remove -y python3
-  yum install -y python38
-  yum install -y python38-devel python38-libs python38-cffi python38-lxml python38-psycopg2
-
-  echo PYTHON36=$(yum list installed | grep ^python36\\.x86_64 | grep -oi " [^\s]* " | xargs) >> /tmp/python_install.properties
-  echo PYTHON38=$(yum list installed | grep ^python38\\.x86_64 | grep -oi " [^\s]* " | xargs) >> /tmp/python_install.properties
-
-  alternatives --set python /usr/bin/python3.8
-}
-
 function redhat8_install_python39() {
   echo "Installing Python 3.9 with dependencies..."
   yum install -y python39
-  yum install -y python39-devel python39-libs python39-cffi python39-lxml python39-psycopg2
+  yum install -y python39-devel python39-libs python39-cffi python39-lxml
 
-  echo PYTHON39=$(yum list installed | grep ^python39\\.x86_64 | grep -oi " [^\s]* " | xargs) >> /tmp/python_install.properties
+  echo PYTHON39=$(yum list installed | grep ^python39\\. | grep -oi " [^\s]* " | xargs) >> /tmp/python_install.properties
 
   # We need to create this "hack", because Saltstack's pip.installed only accepts a pip/pip3
   # wrapper, but apparently can't call "python3 -m pip", so without this, we can't install
@@ -233,9 +174,9 @@ EOF
 
 function redhat8_install_python311() {
   echo "Installing Python 3.11 with dependencies..."
-  yum install -y python3.11 python3.11-pip python3.11-devel python3.11-libs python3.11-cffi python3.11-lxml python3.11-psycopg2
+  yum install -y python3.11 python3.11-pip python3.11-devel python3.11-libs python3.11-cffi python3.11-lxml
 
-  echo PYTHON311=$(yum list installed | grep ^python3\\.11\\.x86_64 | grep -oi " [^\s]* " | xargs) >> /tmp/python_install.properties
+  echo PYTHON311=$(yum list installed | grep ^python3\\.11\\. | grep -oi " [^\s]* " | xargs) >> /tmp/python_install.properties
 
   # We need to create this "hack", because Saltstack's pip.installed only accepts a pip/pip3
   # wrapper, but apparently can't call "python3 -m pip", so without this, we can't install
@@ -252,89 +193,15 @@ function install_python_pip() {
   
   yum install -y openldap-devel
   
-  # FreeIPA images:
-  #  CentOS7: Python 2.7 + Python 3.6
-  #  RHEL7  : Python 2.7 + Python 3.6
-  #  RHEL8  : Python 3.6 + Python 3.8
-  if [ "${IMAGE_BASE_NAME}" == "freeipa" ] ; then
-    if [ "${OS}" == "redhat8" ] ; then
-      redhat8_update_python36
-      redhat8_install_python38
-    elif [ "${OS}" == "redhat7" ] ; then
-      redhat7_update_python27
-      redhat7_install_python36
-    elif [ "${OS}" == "centos7" ] ; then
-      centos7_update_python27
-      centos7_install_python36
-    fi
-  # Base images:
-  #  CentOS7: Python 2.7 + Python 3.6 + Python 3.8
-  #  RHEL7  : n/a
-  #  RHEL8  : Python 3.6 + Python 3.8 + Python 3.9 + Python 3.11
-  elif [ $(version $STACK_VERSION) == $(version "0.0.0") ]; then
-    if [ "${OS}" == "redhat8" ] ; then
-      #redhat8_update_python36_to_38
-      redhat8_update_python36
-      redhat8_install_python38
-      redhat8_install_python39
-      redhat8_install_python311
-    elif [ "${OS}" == "centos7" ] ; then
-      centos7_update_python27
-      centos7_install_python36
-      centos7_install_python38
-    fi
-  # Runtime images 7.2.15 or lower:
-  #  CentOS7: Python 2.7 + Python 3.6 + Python 3.8
-  #  RHEL7  : Python 2.7 + Python 3.6
-  #  RHEL8  : n/a
-  elif [ $(version $STACK_VERSION) -le $(version "7.2.15") ]; then
-    if [ "${OS}" == "redhat7" ] ; then
-      redhat7_update_python27
-      redhat7_install_python36
-    elif [ "${OS}" == "centos7" ] ; then
-      centos7_update_python27
-      centos7_install_python36
-      centos7_install_python38
-    fi
-
-  # Runtime images with 7.2.16
-  #  CentOS7: Python 2.7 + Python 3.6 + Python 3.8
-  #  RHEL7  : Python 2.7 + Python 3.6
-  #  RHEL8  : Python 3.6 + Python 3.8 (7.2.16.1+, AWS Gov only!)
-  elif [ $(version $STACK_VERSION) == $(version "7.2.16") ]; then
-    if [ "${OS}" == "redhat8" ] ; then
-      #redhat8_update_python36_to_38
-      redhat8_update_python36
-      redhat8_install_python38
-    elif [ "${OS}" == "redhat7" ] ; then
-      redhat7_update_python27
-      redhat7_install_python36
-      redhat7_install_python38
-    elif [ "${OS}" == "centos7" ] ; then
-      centos7_update_python27
-      centos7_install_python36
-      centos7_install_python38
-    fi
-  # Runtime images 7.2.17 or newer:
-  #  CentOS7: Python 2.7 + Python 3.6 + Python 3.8
-  #  RHEL7  : Python 2.7 + Python 3.6 + Python 3.8
-  #  RHEL8  : Python 3.6 + Python 3.8 + Python 3.9 + Python 3.11
-  # Note: this is currently the same as 7.2.16, but in the future 
-  # we'll make Python 3.8 the default, hence the separate section.
-  else
-    if [ "${OS}" == "redhat8" ] ; then
-      #redhat8_update_python36_to_38
-      redhat8_update_python36
-      redhat8_install_python38
-      redhat8_install_python39
-      redhat8_install_python311
-    elif [ "${OS}" == "redhat7" ] ; then
-      redhat7_update_python27
-      redhat7_install_python36
-      redhat7_install_python38
-    elif [ "${OS}" == "centos7" ] ; then
-      centos7_update_python27
-      centos7_install_python36
+  if [ "${OS}" == "redhat8" ] ; then
+    redhat8_update_python36
+    redhat8_install_python38
+    redhat8_install_python39
+    redhat8_install_python311
+  elif [ "${OS}" == "centos7" ] ; then
+    centos7_update_python27
+    centos7_install_python36
+    if [ "${IMAGE_BASE_NAME}" != "freeipa" ] ; then
       centos7_install_python38
     fi
   fi

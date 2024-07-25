@@ -147,6 +147,10 @@ if [[ -n "$PYTHON39" ]]; then
 	cat /tmp/package-versions.json | jq --arg version ${PYTHON39} '. + {"python39": $version}' > /tmp/package-versions.json.tmp && mv /tmp/package-versions.json.tmp /tmp/package-versions.json
 fi
 
+if [[ -n "$PYTHON311" ]]; then
+	cat /tmp/package-versions.json | jq --arg version ${PYTHON311} '. + {"python311": $version}' > /tmp/package-versions.json.tmp && mv /tmp/package-versions.json.tmp /tmp/package-versions.json
+fi
+
 if [[ "$CLOUD_PROVIDER" == "AWS"* ]]; then
 	cat /tmp/package-versions.json | jq '. + {"imds": "v2"}' > /tmp/package-versions.json.tmp && mv /tmp/package-versions.json.tmp /tmp/package-versions.json
 fi
