@@ -757,12 +757,13 @@
     },
     {
       "type": "file",
-      "source": "/tmp/cis_log.txt",
-      "destination": "cis_log.txt",
+      "source": "/tmp/cis/*",
+      "destination": "./",
       "direction" : "download",
       "only": [
         "aws-redhat8",
-        "gc-redhat8"
+        "gc-redhat8",
+        "arm-redhat8"
       ]
     }
   ],
