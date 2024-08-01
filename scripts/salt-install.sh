@@ -122,6 +122,10 @@ function redhat8_update_python36() {
   yum install -y python3-devel
   
   echo PYTHON36=$(yum list installed | grep ^python36\\. | grep -oi " [^\s]* " | xargs) >> /tmp/python_install.properties
+
+  # Update PIP and enable global logging
+  /usr/bin/python3.6 -m pip install -U pip
+  /usr/bin/python3.6 -m pip config set global.log /var/log/pip36.log
   
   echo "RedHat8 update python36. OS: $OS CLOUD_PROVIDER: $CLOUD_PROVIDER"
   if [ "${OS}" == "redhat8" ] &&  [ "${CLOUD_PROVIDER}" == "YARN" ]; then
@@ -145,6 +149,10 @@ function redhat8_install_python38() {
 
   echo PYTHON38=$(yum list installed | grep ^python38\\. | grep -oi " [^\s]* " | xargs) >> /tmp/python_install.properties
 
+  # Update PIP and enable global logging
+  /usr/bin/python3.8 -m pip install -U pip
+  /usr/bin/python3.8 -m pip config set global.log /var/log/pip38.log
+
   # We need to create this "hack", because Saltstack's pip.installed only accepts a pip/pip3
   # wrapper, but apparently can't call "python3 -m pip", so without this, we can't install
   # packages to the non-default python3 installation.
@@ -162,6 +170,10 @@ function redhat8_install_python39() {
 
   echo PYTHON39=$(yum list installed | grep ^python39\\. | grep -oi " [^\s]* " | xargs) >> /tmp/python_install.properties
 
+  # Update PIP and enable global logging
+  /usr/bin/python3.9 -m pip install -U pip
+  /usr/bin/python3.9 -m pip config set global.log /var/log/pip39.log
+
   # We need to create this "hack", because Saltstack's pip.installed only accepts a pip/pip3
   # wrapper, but apparently can't call "python3 -m pip", so without this, we can't install
   # packages to the non-default python3 installation.
@@ -177,6 +189,10 @@ function redhat8_install_python311() {
   yum install -y python3.11 python3.11-pip python3.11-devel python3.11-libs python3.11-cffi python3.11-lxml
 
   echo PYTHON311=$(yum list installed | grep ^python3\\.11\\. | grep -oi " [^\s]* " | xargs) >> /tmp/python_install.properties
+
+  # Update PIP and enable global logging
+  /usr/bin/python3.11 -m pip install -U pip
+  /usr/bin/python3.11 -m pip config set global.log /var/log/pip311.log
 
   # We need to create this "hack", because Saltstack's pip.installed only accepts a pip/pip3
   # wrapper, but apparently can't call "python3 -m pip", so without this, we can't install
