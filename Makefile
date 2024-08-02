@@ -136,9 +136,11 @@ endif
 
 IMAGE_SIZE=$(shell ./scripts/get-image-size.sh $(CLOUD_PROVIDER) $(OS) $(STACK_VERSION))
 
-ifeq ($(MAKE_PUBLIC_SNAPSHOTS),yes)
-	AWS_SNAPSHOT_GROUPS = "all"
-endif
+MAKE_PUBLIC_SNAPSHOTS=no
+
+#ifeq ($(MAKE_PUBLIC_SNAPSHOTS),yes)
+#	AWS_SNAPSHOT_GROUPS = "all"
+#endif
 
 ifeq ($(MAKE_PUBLIC_AMIS),yes)
 	AWS_AMI_GROUPS = "all"

@@ -99,7 +99,7 @@ if [[ $1 == aws ]]; then
     -e IMAGE_NAME=$3 \
     -e SOURCE_LOCATION=us-west-1 \
     -e MAKE_PUBLIC_AMIS=yes \
-    -e MAKE_PUBLIC_SNAPSHOTS=yes \
+    -e MAKE_PUBLIC_SNAPSHOTS=no \
     -e AWS_AMI_ORG_ARN= \
     -e AWS_SNAPSHOT_USER= \
     --entrypoint="/bin/bash" \
