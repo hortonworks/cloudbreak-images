@@ -30,6 +30,11 @@ function install_salt_with_pip3() {
 
   # Some packages can't be installed via salt_requirements.txt (don't ask why)
   python3 -m pip install pbr
+
+  sudo rpm --import https://repo.saltproject.io/salt/py3/redhat/8/x86_64/SALT-PROJECT-GPG-PUBKEY-2023.pub
+  curl -fsSL https://repo.saltproject.io/salt/py3/redhat/8/x86_64/3006.repo | sudo tee /etc/yum.repos.d/salt.repo
+  yum install -y salt-master salt-minion
+
   python3 -m pip install -r /tmp/salt_requirements.txt
 }
 
@@ -49,14 +54,6 @@ function install_with_yum() {
   yum groupinstall -y 'Development Tools'
   
   install_python_pip
-  
-  ### Do we need this section at all? Probably not...
-  if [ ! -z $(grep "^exclude=" /etc/yum.conf) ]; then
-    sed -i 's/^exclude=.*$/& salt/g' /etc/yum.conf
-  else
-    echo "exclude=salt" >> /etc/yum.conf
-  fi
-  ###
 
   install_salt_with_pip3
   
