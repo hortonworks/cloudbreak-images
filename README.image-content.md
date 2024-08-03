@@ -106,7 +106,6 @@ This section provides information about the packages of specified images to be i
 - krb5-kdc (Debian)
 - krb5 (Suse)
 - krb5-client (Suse)
-- metering-heartbeat-rpm (centos, redhat, amazonlinux2)
 - ambari-server
 - ambari-agent
 - mktorrent
