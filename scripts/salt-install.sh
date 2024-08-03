@@ -84,7 +84,6 @@ function update_yum_repos() {
     sudo rm -rf /etc/yum.repos.d/CentOS*.repo
     cp /tmp/repos/RPM-GPG-KEY-CentOS-SIG-SCLo /etc/pki/rpm-gpg/
     cp /tmp/repos/centos-vault.repo /etc/yum.repos.d/
-    cat /etc/pki/rpm-gpg/RPM-GPG-KEY-CentOS-SIG-SCLo
   fi
 }
 
@@ -92,7 +91,8 @@ function enable_epel_repository() {
   if [ "${OS}" == "redhat8" ] ; then
     dnf install -y https://dl.fedoraproject.org/pub/epel/epel-release-latest-8.noarch.rpm
   elif [ "${OS}" == "centos7" ] ; then
-    yum install -y https://dl.fedoraproject.org/pub/epel/epel-release-latest-7.noarch.rpm
+    cp /tmp/repos/RPM-GPG-KEY-CentOS-EPEL /etc/pki/rpm-gpg/
+    cp /tmp/repos/centos-epel.repo /etc/yum.repos.d/
   fi
 }
 
