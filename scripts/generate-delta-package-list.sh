@@ -83,8 +83,7 @@ function collect_python_packages() {
 function collect_virtualenv_python_packages() {
   file=$1
   echo "Collecting installed python packages in virtualenv used by Salt"
-  python3 -m virtualenv ${SALT_PATH}
-  source ${SALT_PATH}/bin/activate
+  source activate_salt_env
   python3 -m pip list --format json | jq -r '.[].name' | sort >> "$file"
   cat "$file"
   PYTHON_PACKAGE_NUMBER=$(wc -l < "$file")
@@ -235,8 +234,7 @@ function construct_detailed_packages_csv {
     done < "$PYTHON_PACKAGE_LIST_PATH"
   fi
   if [ -f $VIRTUALENV_PYTHON_PACKAGE_LIST_PATH ] ; then
-    python3 -m virtualenv ${SALT_PATH}
-    source ${SALT_PATH}/bin/activate
+    source activate_salt_env
     while read package; do
       if ! contains "$package" "${PYTHON_PACKAGE_ARRAY[@]}" ; then
         PYTHON_PACKAGE_ARRAY+=("$package")
