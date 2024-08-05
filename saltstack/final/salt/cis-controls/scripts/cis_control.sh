@@ -2,9 +2,6 @@
 set -ex -o pipefail -o errexit
 
 # Remediating the system to align with the CIS L1 baseline using an SSG Ansible playbook
-# The ansible playbook is available at
-# https://github.com/AutomateCompliance/AnsibleCompliancePlaybooks/blob/main/rhel8-playbook-cis_server_l1.yml
-# https://github.com/AutomateCompliance/AnsibleCompliancePlaybooks/blob/main/rhel8-playbook-stig.yml
 
 ANSIBLE_PATH=/mnt/tmp/ansible
 
@@ -46,8 +43,8 @@ fi
 python3 -m virtualenv $ANSIBLE_PATH
 source $ANSIBLE_PATH/bin/activate
 python3 -m pip install ansible
-yum install -y git
-git clone https://github.com/AutomateCompliance/AnsibleCompliancePlaybooks.git $ANSIBLE_PATH/ansible-compliance-playbooks
+yum install -y scap-security-guide
+ln -s /usr/share/scap-security-guide/ansible $ANSIBLE_PATH/ansible-compliance-playbooks
 
 #Generate missing host keys as they are needed by the playbook
 ssh-keygen -A
@@ -63,6 +60,7 @@ else
     chmod 777 /tmp/cis/cis_log.txt
 fi
 
-#Clean up python stuff
+#Clean up stuff related to hardening but otherwise not needed
 deactivate
 rm -rf $ANSIBLE_PATH
+yum remove -y scap-security-guide
