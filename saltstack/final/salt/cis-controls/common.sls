@@ -168,15 +168,12 @@ Chrony_config:
     - name: setfacl -R -d -m o::--- /var/log
 
 #### CIS: Disable unused filesystems
-#https://jira.cloudera.com/browse/CB-8897
+# https://jira.cloudera.com/browse/CB-8897
+# Starting with RHEL 8 FAT is used on all cloud providers (with earlier OSes we could disable it at least for AWS)
 {% set filesystems_to_disable = ['cramfs', 'freevxfs', 'jffs2', 'hfs', 'hfsplus', 'squashfs'] %}
 {% if cloud_provider != 'Azure' %}
   # udf is required for Azure to mount cdrom - See CB-11012
   {% do filesystems_to_disable.append('udf') %}
-{% endif %}
-{% if cloud_provider != 'GCP' and not (cloud_provider == 'Azure' and os == 'redhat8') and not architecture == 'arm64' %}
-  # fat is required for gcp and azure rhel8 and arm64 images
-  {% do filesystems_to_disable.append('fat') %}
 {% endif %}
 
 create modrobe blacklist:
