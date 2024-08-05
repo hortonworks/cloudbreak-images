@@ -20,7 +20,8 @@ function install_salt_with_pip3() {
 
   # OS specific packages required for Salt go here
   if [ "${OS}" == "redhat8" ] ; then
-    python3 -m pip install distro
+    python3.11 -m pip install distro
+    python3.11 -m pip install virtualenv
   elif [ "${OS}" == "redhat7" ] ; then
     echo "No OS specific packages required for RedHat 7"
   elif [ "${OS}" == "centos7" ] ; then
@@ -29,13 +30,13 @@ function install_salt_with_pip3() {
 
   # Anything installed after this point will end up Salt's venv
   mkdir ${SALT_PATH}
-  python3 -m virtualenv ${SALT_PATH}
+  python3.11 -m virtualenv ${SALT_PATH}
   source ${SALT_PATH}/bin/activate
   python3 -m pip install --upgrade pip
 
-  # Some packages can't be installed via salt_requirements.txt (don't ask why)
-  python3 -m pip install pbr
-  python3 -m pip install -r /tmp/salt_requirements.txt
+  python3 -m pip install CherryPy pyOpenSSL salt==${SALT_VERSION}
+
+  salt --versions-report
 }
 
 function install_with_yum() {
