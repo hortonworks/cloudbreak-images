@@ -61,6 +61,17 @@ delete_rhel8_repo:
 {% endif %}
 {% endif %}
 
+# Note: this should be 7.2.18+ + RHEL 8.10 only (but do we want RHEL 8.10 for 7.2.17 as well?!)
+set_openjdk_version_11:
+  file.append:
+    - name: /etc/profile.d/java.sh
+    - text:
+      - "sudo alternatives --set java java-11-openjdk.x86_64"
+      - "sudo ln -sfn /etc/alternatives/java_sdk_11 /usr/lib/jvm/java"
+      - "sudo mkdir -p /etc/alternatives/java_sdk_11/jre/lib/security"
+      - "sudo ln -sfn /etc/alternatives/java_sdk_11/conf/security/java.security /etc/alternatives/java_sdk_11/jre/lib/security/java.security"
+      - "sudo ln -sfn /etc/pki/java/cacerts /etc/alternatives/java_sdk_11/jre/lib/security/cacerts"
+
 add_openjdk_gplv2:
   file.managed:
     - name: {{ pillar['JAVA_HOME'] }}/OpenJDK_GPLv2_and_Classpath_Exception.pdf
