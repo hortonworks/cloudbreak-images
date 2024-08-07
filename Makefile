@@ -44,7 +44,7 @@ $(error "AZURE_IMAGE_VHD and Marketplace image properties (AZURE_IMAGE_PUBLISHER
 			AZURE_IMAGE_PUBLISHER ?= RedHat
 			AZURE_IMAGE_OFFER ?= rhel-byos
 			ifeq ($(STACK_VERSION),7.3.1)
-				AZURE_IMAGE_SKU ?= rhel-lvm810
+				AZURE_IMAGE_SKU ?= rhel-lvm88
 			else
 				AZURE_IMAGE_SKU ?= rhel-lvm88
 			endif
@@ -66,11 +66,11 @@ ifeq ($(CLOUD_PROVIDER),AWS)
 	endif
 	ifeq ($(OS),redhat8)
 		ifeq ($(ARCHITECTURE),arm64)
-			AWS_SOURCE_AMI ?= ami-05032c39067d77b1b
+			AWS_SOURCE_AMI ?= ami-014a329a8d775a418
 			AWS_INSTANCE_TYPE ?= r7gd.2xlarge
 		else
 			ifeq ($(STACK_VERSION),7.3.1)
-				AWS_SOURCE_AMI ?= ami-02073841a355a1e92
+				AWS_SOURCE_AMI ?= ami-039ce2eddc1949546
 			else
 				AWS_SOURCE_AMI ?= ami-039ce2eddc1949546
 			endif
@@ -97,7 +97,7 @@ ifeq ($(CLOUD_PROVIDER),GCP)
 	endif
 	ifeq ($(OS),redhat8)
 		ifeq ($(STACK_VERSION),7.3.1)
-			GCP_SOURCE_IMAGE ?= rhel-8-byos-v20240709
+			GCP_SOURCE_IMAGE ?= rhel-8-byos-v20230615
 		else
 			GCP_SOURCE_IMAGE ?= rhel-8-byos-v20230615
 		endif
