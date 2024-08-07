@@ -1,5 +1,6 @@
 include:
   - {{ slspath }}.path
+  - {{ slspath }}.setroubleshoot
   - {{ slspath }}.user_uid
   - {{ slspath }}.subscription-manager
   - {{ slspath }}.repository
