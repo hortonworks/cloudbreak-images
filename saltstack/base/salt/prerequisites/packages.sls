@@ -27,6 +27,8 @@ remove_unused_rhel8_packages:
       - dnf-automatic
       # Breaks SCM group creation on Azure
       - setroubleshoot
+      - setroubleshoot-server
+      - setroubleshoot-plugins
 {% endif %}
 
 
