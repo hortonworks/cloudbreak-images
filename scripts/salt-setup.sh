@@ -101,6 +101,11 @@ function add_prewarmed_roles {
   fi
 }
 
+if [ "${OS}" == "redhat8" ] ; then
+  RHEL_VERSION=$(cat /etc/redhat-release | grep -oP "[0-9\.]*")
+  export RHEL_VERSION=${RHEL_VERSION/.0/}
+fi
+
 : ${CUSTOM_IMAGE_TYPE:=$1}
 
 add_builder_type_grain
