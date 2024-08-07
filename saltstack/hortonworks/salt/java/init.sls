@@ -71,6 +71,7 @@ set_openjdk_version_11:
       - "sudo mkdir -p /etc/alternatives/java_sdk_11/jre/lib/security"
       - "sudo ln -sfn /etc/alternatives/java_sdk_11/conf/security/java.security /etc/alternatives/java_sdk_11/jre/lib/security/java.security"
       - "sudo ln -sfn /etc/pki/java/cacerts /etc/alternatives/java_sdk_11/jre/lib/security/cacerts"
+      - "sudo mkdir -p /etc/alternatives/java_sdk_11/jre/lib/ext"
 
 add_openjdk_gplv2:
   file.managed:
