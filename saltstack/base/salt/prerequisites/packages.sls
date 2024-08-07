@@ -25,10 +25,6 @@ remove_unused_rhel8_packages:
       - insights-client
       # Enforces automatic updates that can end up destabilizing the instance
       - dnf-automatic
-      # Breaks SCM group creation on Azure
-      - setroubleshoot
-      - setroubleshoot-server
-      - setroubleshoot-plugins
 {% endif %}
 
 
