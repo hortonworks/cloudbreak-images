@@ -63,7 +63,7 @@ delete_rhel8_repo:
 
 {% if salt['environ.get']('OS') == 'redhat8' %}
 
-{% if salt['environ.get']('STACK_VERSION').split('.') | map('int') | list >= '7.3.1.0'.split('.') | map('int') | list %}
+{% if salt['environ.get']('STACK_VERSION').split('.') | map('int') | list >= '7.3.1'.split('.') | map('int') | list %}
 set_openjdk_version_17:
   file.append:
     - name: /etc/profile.d/java.sh
