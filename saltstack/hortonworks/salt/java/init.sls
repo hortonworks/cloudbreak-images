@@ -39,7 +39,7 @@ install_openjdk:
 download_rhel8_repo:
   file.managed:
     - name: /etc/yum.repos.d/rhel8_cldr_mirrors.repo
-    - source: https://mirror.infra.cloudera.com/repos/rhel/server/8/8/rhel8_cldr_mirrors.repo
+    - source: https://mirror.infra.cloudera.com/repos/rhel/server/8/{{ salt['environ.get']('RHEL_VERSION') }}/rhel{{ salt['environ.get']('RHEL_VERSION') }}_cldr_mirrors.repo
     - skip_verify: True
 
 {% if salt['environ.get']('ARCHITECTURE') == 'arm64' %} # ubi-8-supplementary-cldr and ubi-8-codeready-builder-cldr are not yet available for arm64
@@ -59,6 +59,37 @@ delete_rhel8_repo:
     - name: /etc/yum.repos.d/rhel8_cldr_mirrors.repo
 
 {% endif %}
+{% endif %}
+
+{% if salt['environ.get']('OS') == 'redhat8' %}
+
+{% if salt['environ.get']('STACK_VERSION').split('.') | map('int') | list >= '7.3.1'.split('.') | map('int') | list %}
+set_openjdk_version_17:
+  file.append:
+    - name: /etc/profile.d/java.sh
+    - text:
+      - "sudo alternatives --set java java-17-openjdk.x86_64"
+      - "sudo ln -sfn /etc/alternatives/java_sdk_17 /usr/lib/jvm/java"
+      - "sudo mkdir -p /etc/alternatives/java_sdk_17/jre/lib/security"
+      - "sudo ln -sfn /etc/alternatives/java_sdk_17/conf/security/java.security /etc/alternatives/java_sdk_17/jre/lib/security/java.security"
+      - "sudo ln -sfn /etc/pki/java/cacerts /etc/alternatives/java_sdk_17/jre/lib/security/cacerts"
+      - "sudo mkdir -p /etc/alternatives/java_sdk_17/jre/lib/ext"
+
+{% elif salt['environ.get']('RHEL_VERSION') == '8.10' and cloud_provider != "AWS_GOV" %}
+set_openjdk_version_11:
+  file.append:
+    - name: /etc/profile.d/java.sh
+    - text:
+      - "sudo alternatives --set java java-11-openjdk.x86_64"
+      - "sudo ln -sfn /etc/alternatives/java_sdk_11 /usr/lib/jvm/java"
+      - "sudo mkdir -p /etc/alternatives/java_sdk_11/jre/lib/security"
+      - "sudo ln -sfn /etc/alternatives/java_sdk_11/conf/security/java.security /etc/alternatives/java_sdk_11/jre/lib/security/java.security"
+      - "sudo ln -sfn /etc/pki/java/cacerts /etc/alternatives/java_sdk_11/jre/lib/security/cacerts"
+      - "sudo mkdir -p /etc/alternatives/java_sdk_11/jre/lib/ext"
+{% endif %}
+
+# Else: we're staying with JDK 8 as default for now...
+
 {% endif %}
 
 add_openjdk_gplv2:

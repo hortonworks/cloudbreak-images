@@ -21,5 +21,10 @@ function highstate {
   ${SALT_PATH}/bin/salt-call --no-color --local state.highstate saltenv=${saltenv} -l info --log-file=/tmp/salt-build-${saltenv}.log --log-file-level=info --config-dir=/tmp/saltstack/config
 }
 
+if [ "${OS}" == "redhat8" ] ; then
+  RHEL_VERSION=$(cat /etc/redhat-release | grep -oP "[0-9\.]*")
+  export RHEL_VERSION=${RHEL_VERSION/.0/}
+fi
+
 echo "Running validation and cleanup"
 highstate "final"
