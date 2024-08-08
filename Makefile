@@ -594,12 +594,16 @@ copy-azure-images:
 	TRACE=1 AZURE_STORAGE_ACCOUNTS="$(AZURE_STORAGE_ACCOUNTS)" AZURE_IMAGE_NAME="$(AZURE_IMAGE_NAME)" ./scripts/azure-copy.sh
 
 docker-build-centos79:
-	echo "Building image for YCloud"
+	echo "Building CentOS 7.9 image for YCloud"
 	@ OS=centos7 OS_TYPE=redhat7 CLOUD_PROVIDER=YARN TAG=centos-79 DIR=centos7.9 make docker-build
 
+docker-build-redhat88:
+	echo "Building RHEL 8.8 image for YCloud"
+	@ OS=redhat8 OS_TYPE=redhat8 CLOUD_PROVIDER=YARN TAG=redhat-88 DIR=redhat8 make docker-build
+
 docker-build-redhat8:
-	echo "Building RedHat8 image for YCloud"
-	@ OS=redhat8 OS_TYPE=redhat8 CLOUD_PROVIDER=YARN TAG=redhat-8 DIR=redhat8 make docker-build
+	echo "Building RHEL 8.10 image for YCloud"
+	@ OS=redhat8 OS_TYPE=redhat8 CLOUD_PROVIDER=YARN TAG=redhat-8 DIR=redhat8.10 make docker-build
 
 docker-build-yarn-loadbalancer:
 	echo "Building loadbalancer image for YCloud"
