@@ -2,6 +2,8 @@
 
 set -e +x
 
+# DO NOT EXPORT environment variables in this file, because this file is called with `source` in `user-data-helper.sh`!
+
 # This function implements basically the same exponential backoff strategy as the aws cli in standard retry mode
 retry_until_non_placeholder_value() {
   local BASE_FACTOR=2
@@ -46,15 +48,15 @@ retry_until_non_placeholder_value() {
   echo "Userdata secret's value was retrieved after waiting $total_wait_time seconds."
 }
 
-# Helper function for passing aws-cli params related to the built-in retry mechanism
-aws_with_retry_params() {
+# Helper function for passing aws-cli params related to the built-in retry mechanism, and param to instruct aws-cli to use FIPS endpoints
+aws_with_cli_params() {
   # See: https://docs.aws.amazon.com/cli/latest/userguide/cli-configure-retries.html
   # aws cli with standard retry mode uses an exponential backoff with a base factor of 2 and a maximum backoff time of 20 seconds
   local aws_retry_mode=standard
   # AWS_MAX_ATTEMPTS=15 would mean a maximum wait time of approximately 4 minutes per aws cli command
   local aws_max_attempts=15
 
-  AWS_RETRY_MODE="$aws_retry_mode" AWS_MAX_ATTEMPTS="$aws_max_attempts" "$@"
+  AWS_RETRY_MODE="$aws_retry_mode" AWS_MAX_ATTEMPTS="$aws_max_attempts" AWS_USE_FIPS_ENDPOINT=true "$@"
 }
 
 # Intermittent issues like throttling of AWS APIs are handled by the built in retry mechanism of the aws cli.
@@ -68,7 +70,7 @@ main() {
   if [[ "$CLOUD_PLATFORM" == "AWS" ]]; then
     echo "Retrieving userdata secrets..."
     retry_until_non_placeholder_value \
-    aws_with_retry_params \
+    aws_with_cli_params \
     aws secretsmanager get-secret-value \
       --output text \
       --query SecretString \
@@ -77,7 +79,7 @@ main() {
     echo "Successfully retrieved userdata secrets!"
 
     echo "Deleting secret associated with this instance..."
-    aws_with_retry_params \
+    aws_with_cli_params \
     aws secretsmanager delete-secret \
       --force-delete-without-recovery \
       --secret-id "$USERDATA_SECRET_ID"

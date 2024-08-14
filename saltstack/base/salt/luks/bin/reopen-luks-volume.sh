@@ -13,6 +13,8 @@ export LUKS_LOG_DIR="/var/log/$LUKS_VOLUME_NAME"
 export LUKS_MAPPER_DEVICE="/dev/mapper/$LUKS_VOLUME_NAME"
 export ENCRYPTION_KEY_FILE="$LUKS_DIR/passphrase_encryption_key"
 
+export AWS_USE_FIPS_ENDPOINT=true
+
 recreate_loop_device() {
   if [[ $(losetup -j "$LUKS_BACKING_FILE" | wc -l | tr -d '\n') == 0 ]]; then
     # Recreate the loop device
