@@ -8,9 +8,14 @@ set -ex -o pipefail -o errexit
 function install_salt_with_pip3() {
 
   echo "Installing salt with version: $SALT_VERSION"
-  python3 -m pip install --upgrade pip
-  python3 -m pip install virtualenv
-  python3 -m pip install checkipaconsistency==2.7.10
+
+  # Why do we need to install CIPA globally? and why here?! Why not in a venv?
+  # So many questions... duh!
+  python3 -m pip install 'pyasn1==0.5.1' --ignore-installed
+  python3 -m pip install 'pyasn1-modules==0.3.0' --ignore-installed
+  python3 -m pip install 'checkipaconsistency==2.7.10'
+  
+  # What is this needed for?!
   python3 -m pip install 'PyYAML>=5.1' --ignore-installed
 
   # OS specific packages required for Salt go here
@@ -126,7 +131,11 @@ function redhat8_update_python36() {
   # Update PIP and enable global logging
   /usr/bin/python3.6 -m pip install -U pip
   /usr/bin/python3.6 -m pip config set global.log /var/log/pip36.log
-  
+
+  # General required dependency
+  /usr/bin/python3.6 -m pip install virtualenv
+
+  ## <Do we really need this?!>
   echo "RedHat8 update python36. OS: $OS CLOUD_PROVIDER: $CLOUD_PROVIDER"
   if [ "${OS}" == "redhat8" ] &&  [ "${CLOUD_PROVIDER}" == "YARN" ]; then
     update-alternatives --install /usr/bin/python python /usr/bin/python2.7 1
@@ -137,9 +146,7 @@ function redhat8_update_python36() {
     # CM agent needs this to work
     alternatives --set python /usr/bin/python3
   fi
-
-  # Required dependency for IdM
-  pip3 install pyasn1-modules
+  ## </Do we really need this?!>
 }
 
 function redhat8_install_python38() {
@@ -152,6 +159,9 @@ function redhat8_install_python38() {
   # Update PIP and enable global logging
   /usr/bin/python3.8 -m pip install -U pip
   /usr/bin/python3.8 -m pip config set global.log /var/log/pip38.log
+
+  # General required dependency
+  /usr/bin/python3.8 -m pip install virtualenv
 
   # We need to create this "hack", because Saltstack's pip.installed only accepts a pip/pip3
   # wrapper, but apparently can't call "python3 -m pip", so without this, we can't install
@@ -174,6 +184,9 @@ function redhat8_install_python39() {
   /usr/bin/python3.9 -m pip install -U pip
   /usr/bin/python3.9 -m pip config set global.log /var/log/pip39.log
 
+  # General required dependency
+  /usr/bin/python3.9 -m pip install virtualenv
+
   # We need to create this "hack", because Saltstack's pip.installed only accepts a pip/pip3
   # wrapper, but apparently can't call "python3 -m pip", so without this, we can't install
   # packages to the non-default python3 installation.
@@ -193,6 +206,9 @@ function redhat8_install_python311() {
   # Update PIP and enable global logging
   /usr/bin/python3.11 -m pip install -U pip
   /usr/bin/python3.11 -m pip config set global.log /var/log/pip311.log
+
+  # General required dependency
+  /usr/bin/python3.11 -m pip install virtualenv
 
   # We need to create this "hack", because Saltstack's pip.installed only accepts a pip/pip3
   # wrapper, but apparently can't call "python3 -m pip", so without this, we can't install
