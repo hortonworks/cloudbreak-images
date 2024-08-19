@@ -121,3 +121,26 @@ remove_azcopy_extract:
 {% endif %}
 
 {% endif %}
+
+# Security patches for RHEL 8.8 + Azure + 7.2.17 / 7.2.18 / FreeIPA
+# They are actually being pulled from a 8.10 repository, but we'll need these patches to tackle Azure's security checks.
+
+{% if pillar['OS'] == 'redhat8' and salt['environ.get']('CLOUD_PROVIDER') == 'Azure' %}
+{% if pillar['CUSTOM_IMAGE_TYPE'] == 'freeipa' or salt['environ.get']('STACK_VERSION').split('.') | map('int') | list <= '7.2.18'.split('.') | map('int') | list %}
+
+azure_security_add_repo:
+  file.managed:
+    - name: /etc/yum.repos.d/rhel8_cldr_mirrors.repo
+    - source: https://mirror.infra.cloudera.com/repos/rhel/server/8/8/rhel8_cldr_mirrors.repo
+    - skip_verify: True
+
+azure_security_apply_patches:
+  cmd.run:
+    - name: sudo dnf update-minimal -y --security --nobest
+
+azure_security_remove_repo:
+  file.absent:
+    - name: /etc/yum.repos.d/rhel8_cldr_mirrors.repo
+
+{% endif %}
+{% endif %}
