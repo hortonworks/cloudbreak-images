@@ -56,42 +56,8 @@ packer_in_container() {
     fi
 
     # FIXME when arm64 builds are available
-    export INCLUDE_CDP_TELEMETRY=No
-    export INCLUDE_FLUENT=No
-    export USE_TELEMETRY_ARCHIVE=No
     export DEFAULT_JUMPGATE_AGENT_RPM_URL=""
     export DEFAULT_METERING_AGENT_RPM_URL=""
-  fi
-
-  if [[ "$INCLUDE_CDP_TELEMETRY" == "Yes" && -z "$CDP_TELEMETRY_RPM_URL" ]]; then
-    CDP_TELEMETRY_BASE_URL="https://cloudera-service-delivery-cache.s3.amazonaws.com/telemetry/cdp-telemetry/"
-    if [[ "$CDP_TELEMETRY_VERSION" == "" ]]; then
-      CDP_TELEMETRY_VERSION=$(curl -L -k -s ${CDP_TELEMETRY_BASE_URL}AVAILABLE_VERSIONS | head -1)
-    fi
-    CDP_TELEMETRY_RPM_URL="${CDP_TELEMETRY_BASE_URL}cdp_telemetry-${CDP_TELEMETRY_VERSION}.x86_64.rpm"
-    
-    ## The RPM_URL is overwritten due to FIPS/redhat8 compatibility
-    ## It will be deleted after the proper rpm will be available via the base url
-    if [[ "$OS" == "redhat8" ]]; then
-      CDP_TELEMETRY_RPM_URL="https://archive.cloudera.com/cdp-infra-tools/1.3.2/redhat8/yum/cdp_telemetry-1.3.2_b1.rpm"
-    else
-      CDP_TELEMETRY_RPM_URL="https://archive.cloudera.com/cdp-infra-tools/1.3.2/redhat7/yum/cdp_telemetry-1.3.2_b1.rpm"
-    fi
-  fi
-  if [[ "$INCLUDE_FLUENT" == "Yes" && -z "$CDP_LOGGING_AGENT_RPM_URL" ]]; then
-    CDP_LOGGING_AGENT_BASE_URL="https://cloudera-service-delivery-cache.s3.amazonaws.com/telemetry/cdp-logging-agent/"
-    if [[ "$CDP_LOGGING_AGENT_VERSION" == "" ]]; then
-      CDP_LOGGING_AGENT_VERSION=$(curl -L -k -s ${CDP_LOGGING_AGENT_BASE_URL}AVAILABLE_VERSIONS | head -1)
-    fi
-    CDP_LOGGING_AGENT_RPM_URL="${CDP_LOGGING_AGENT_BASE_URL}${CDP_LOGGING_AGENT_VERSION}/cdp_logging_agent-${CDP_LOGGING_AGENT_VERSION}.x86_64.rpm"
-    
-    ## The RPM_URL is overwritten due to FIPS/redhat8 compatibility
-    ## It will be deleted after the proper rpm will be available via the base url
-    if [[ "$OS" == "redhat8" ]]; then
-      CDP_LOGGING_AGENT_RPM_URL="https://archive.cloudera.com/cdp-infra-tools/1.3.2/redhat8/yum/cdp_logging_agent-1.3.2_b1.rpm"
-    else
-      CDP_LOGGING_AGENT_RPM_URL="https://archive.cloudera.com/cdp-infra-tools/1.3.2/redhat7/yum/cdp_logging_agent-1.3.2_b1.rpm"
-    fi
   fi
 
   if ! [[ $JUMPGATE_AGENT_RPM_URL =~ ^http.*rpm$ ]]; then
@@ -203,8 +169,6 @@ packer_in_container() {
     -e CDP_TELEMETRY_PREWARM_TAG=$CDP_TELEMETRY_PREWARM_TAG \
     -e INCLUDE_METERING=$INCLUDE_METERING \
     -e USE_TELEMETRY_ARCHIVE=$USE_TELEMETRY_ARCHIVE \
-    -e ARCHIVE_BASE_URL=$ARCHIVE_BASE_URL \
-    -e ARCHIVE_CREDENTIALS=$ARCHIVE_CREDENTIALS \
     -e HDPUTIL_VERSION=$HDPUTIL_VERSION \
     -e HDPUTIL_BASEURL=$HDPUTIL_BASEURL \
     -e HDPUTIL_REPOID=$HDPUTIL_REPOID \
@@ -249,9 +213,7 @@ packer_in_container() {
     -e PARCEL_LIST_WITH_VERSIONS="$PARCEL_LIST_WITH_VERSIONS" \
     -e METADATA_FILENAME_POSTFIX="$METADATA_FILENAME_POSTFIX" \
     -e CDP_TELEMETRY_VERSION="$CDP_TELEMETRY_VERSION" \
-    -e CDP_TELEMETRY_RPM_URL="$CDP_TELEMETRY_RPM_URL" \
     -e CDP_LOGGING_AGENT_VERSION="$CDP_LOGGING_AGENT_VERSION" \
-    -e CDP_LOGGING_AGENT_RPM_URL="$CDP_LOGGING_AGENT_RPM_URL" \
     -e JUMPGATE_AGENT_RPM_URL="$JUMPGATE_AGENT_RPM_URL" \
     -e JUMPGATE_AGENT_GBN="$JUMPGATE_AGENT_GBN" \
     -e METERING_AGENT_RPM_URL="$METERING_AGENT_RPM_URL" \
