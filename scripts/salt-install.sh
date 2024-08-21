@@ -113,12 +113,16 @@ function centos7_install_python36() {
   echo "Installing Python 3.6 with dependencies..."
   yum install -y python36 python36-pip python36-devel python36-setuptools
   echo PYTHON36=$(yum list installed | grep ^python3\\.x86_64 | grep -oi " [^\s]* " | xargs) >> /tmp/python_install.properties
+
+  python3 -m pip install virtualenv
 }
 
 function centos7_install_python38() {
   echo "Installing Python 3.8 with dependencies..."
   yum -y install openssl-devel libffi-devel bzip2-devel rh-python38-python-pip rh-python38-python-libs rh-python38-python-devel rh-python38-python-cffi rh-python38-python-lxml rh-python38-python-psycopg2
   echo PYTHON38=$(yum list installed | grep ^rh-python38-python\\.x86_64 | grep -oi " [^\s]* " | xargs) >> /tmp/python_install.properties
+
+  /opt/rh/rh-python38/root/usr/bin/python3.8 -m pip install virtualenv
 }
 
 function redhat8_update_python36() {
