@@ -115,6 +115,15 @@ function centos7_install_python36() {
   echo PYTHON36=$(yum list installed | grep ^python3\\.x86_64 | grep -oi " [^\s]* " | xargs) >> /tmp/python_install.properties
 
   python3 -m pip install virtualenv
+
+  # We need to create this "hack", because Saltstack's pip.installed only accepts a pip/pip3
+  # wrapper, but apparently can't call "python3 -m pip", so without this, we can't install
+  # packages.
+  cat <<EOF >/usr/local/bin/pip3
+#!/bin/bash
+/usr/bin/python3 -m pip "\$@"
+EOF
+  chmod +x /usr/local/bin/pip3
 }
 
 function centos7_install_python38() {
