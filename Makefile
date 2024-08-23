@@ -157,6 +157,11 @@ INCLUDE_FLUENT ?= "Yes"
 INCLUDE_CDP_TELEMETRY ?= "Yes"
 INCLUDE_METERING ?= "Yes"
 USE_TELEMETRY_ARCHIVE ?= "Yes"
+ARCHIVE_BASE_URL ?= "https://archive.cloudera.com"
+ARCHIVE_CREDENTIALS ?= ":"
+
+CDP_TELEMETRY_VERSION ?= ""
+CDP_LOGGING_AGENT_VERSION ?= ""
 
 # This one is OS-independent (right?)
 DEFAULT_JUMPGATE_AGENT_RPM_URL := https://archive.cloudera.com/ccm/3.0.9/jumpgate-agent.rpm
