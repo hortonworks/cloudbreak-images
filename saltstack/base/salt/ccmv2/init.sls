@@ -24,6 +24,7 @@ install_jumpgate_agent:
   pkg.installed:
     - sources:
       - jumpgate-agent: {{ jumpgate_agent_rpm_url }}
+    - refresh: False
 {% endif %}
 
 jumpgate_group:
