@@ -122,23 +122,29 @@ remove_azcopy_extract:
 
 {% endif %}
 
-# Security patches for RHEL 8.8 + 7.2.17 / 7.2.18 / FreeIPA
+# Security patches for RHEL 8.8 + 7.2.17 / 7.2.18 / FreeIPA / Base
 # They are actually being pulled from a 8.10 repository, but we'll need these patches to tackle Azure's security checks.
 
-{% if pillar['OS'] == 'redhat8' %}
+{% if pillar['OS'] == 'redhat8' and salt['environ.get']('RHEL_VERSION') == '8.8' %}
 {% if pillar['CUSTOM_IMAGE_TYPE'] == 'freeipa' or salt['environ.get']('STACK_VERSION').split('.') | map('int') | list <= '7.2.18'.split('.') | map('int') | list %}
 
-azure_security_add_repo:
+rhel88_security_add_repo:
   file.managed:
     - name: /etc/yum.repos.d/rhel8_cldr_mirrors.repo
     - source: https://mirror.infra.cloudera.com/repos/rhel/server/8/8/rhel8_cldr_mirrors.repo
     - skip_verify: True
 
-azure_security_apply_patches:
+{% if salt['environ.get']('ARCHITECTURE') == 'arm64' %} # ubi-8-supplementary-cldr and ubi-8-codeready-builder-cldr are not yet available for arm64
+rhel88_security_remove_unavailable_repos:
+  cmd.run:
+    - name: sed -i '16,$ d' /etc/yum.repos.d/rhel8_cldr_mirrors.repo
+{% endif %}
+
+rhel88_security_apply_patches:
   cmd.run:
     - name: sudo dnf update-minimal -y --security --nobest
 
-azure_security_remove_repo:
+rhel88_security_remove_repo:
   file.absent:
     - name: /etc/yum.repos.d/rhel8_cldr_mirrors.repo
 
