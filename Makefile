@@ -1,5 +1,5 @@
 BASE_NAME ?= cb
-DESCRIPTION ?= "Official Cloudbreak image"
+DESCRIPTION ?= Official Cloudbreak image
 STACK_VERSION ?= ""
 ATLAS_PROJECT ?= "cloudbreak"
 ENABLE_POSTPROCESSORS ?= ""
