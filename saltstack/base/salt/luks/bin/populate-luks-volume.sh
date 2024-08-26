@@ -157,12 +157,25 @@ process_freeipa_locations() {
   fi
 }
 
+process_cm_locations() {
+  if [[ "$IS_FREEIPA" != "true" ]]
+  then
+    log_processing_needed "Cloudera Manager"
+    process_location "/etc/cloudera-scm-server"
+    process_location "/etc/cloudera-scm-agent"
+    process_location "/var/lib/cloudera-scm-agent"
+  else
+    log_processing_skipped "Cloudera Manager"
+  fi
+}
+
 main() {
   process_global_locations
   process_gateway_locations
   process_ccmv2_locations
   process_http_proxy_locations
   process_freeipa_locations
+  process_cm_locations
 }
 
 main
