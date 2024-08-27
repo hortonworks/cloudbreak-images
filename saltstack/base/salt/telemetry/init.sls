@@ -1,4 +1,3 @@
-{% set version = '1.3.3' %}
 {% set platform = salt['environ.get']('OS_TYPE') %}
 {% if salt['environ.get']('ARCHITECTURE') == 'arm64' %}
   {% set platform = platform ~ 'arm64' %}
@@ -9,7 +8,6 @@ add_cdp_infra_tools_repo:
     - name: /etc/yum.repos.d/cdp-infra-tools.repo
     - source: salt://telemetry/yum/cdp-infra-tools.repo.j2
     - template: jinja
-    - version: "{{ version }}"
     - platform: "{{ platform }}"
 
 list_available_packages_from_cdp_infra_tools_repo:
