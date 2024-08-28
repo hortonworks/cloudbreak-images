@@ -22,20 +22,17 @@ log() {
 }
 
 generate_resolv_conf() {
-    JAVA_VERSION=$(java -version 2>&1 | grep -oP 'version [^0-9]?(1\.)?\K\d+' || true)
-    if [ $JAVA_VERSION -eq 11 ]; then
-        log "Java version is 11, add domain to the resolv.conf"
-        if grep -q "^domain .*" /etc/resolv.conf
-        then
-            log "domain already exists in resolv.conf"
+    log "Adding domain to the resolv.conf"
+    if grep -q "^domain .*" /etc/resolv.conf
+    then
+        log "domain already exists in resolv.conf"
+    else
+        DOMAIN=$(hostname -d)
+        if [ -n "$DOMAIN" ]; then
+            log "Set domain to $DOMAIN"
+            echo domain $DOMAIN >> /etc/resolv.conf
         else
-            DOMAIN=$(hostname -d)
-            if [ -n "$DOMAIN" ]; then
-                log "Set domain to $DOMAIN"
-                echo domain $DOMAIN >> /etc/resolv.conf
-            else
-                log "Unable to set domain as it is empty."
-            fi
+            log "Unable to set domain as it is empty."
         fi
     fi
 }
