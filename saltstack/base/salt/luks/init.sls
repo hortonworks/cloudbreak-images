@@ -60,6 +60,7 @@
   file.managed:
     - name: /etc/cdp-luks/bin/reopen-luks-volume.sh
     - source: salt://{{ slspath }}/bin/reopen-luks-volume.sh
+    - template: jinja
     - user: root
     - group: root
     - mode: 700
