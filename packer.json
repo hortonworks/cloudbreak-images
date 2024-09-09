@@ -118,7 +118,8 @@
     "cloud_provider": "{{ env `CLOUD_PROVIDER` }}",
     "ssh_public_key": "{{ env `SSH_PUBLIC_KEY` }}",
     "fips_mode": "{{ env `FIPS_MODE` }}",
-    "stig_enabled": "{{ env `STIG_ENABLED` }}"
+    "stig_enabled": "{{ env `STIG_ENABLED` }}",
+    "default_java_major_version": "{{ env `DEFAULT_JAVA_MAJOR_VERSION` }}"
   },
   "builders": [
     {
@@ -593,7 +594,8 @@
         "SALT_PATH={{user `salt_path`}}",
         "SALT_REPO_FILE={{user `salt_repo_file` }}",
         "CLOUD_PROVIDER={{user `cloud_provider`}}",
-        "STIG_ENABLED={{user `stig_enabled`}}"
+        "STIG_ENABLED={{user `stig_enabled`}}",
+        "DEFAULT_JAVA_MAJOR_VERSION={{user `default_java_major_version`}}"
       ],
       "execute_command": "chmod +x {{ .Path }}; sudo {{ .Vars }} {{ .Path }}",
       "remote_folder": "/opt/provision-scripts"
@@ -666,7 +668,8 @@
         "NO_PROXY={{ user `gov_no_proxy` }}",
         "CLOUD_PROVIDER={{user `cloud_provider`}}",
         "IMAGE_BURNING_TYPE={{ user `image_burning_type` }}",
-        "STIG_ENABLED={{user `stig_enabled`}}"
+        "STIG_ENABLED={{user `stig_enabled`}}",
+        "DEFAULT_JAVA_MAJOR_VERSION={{user `default_java_major_version`}}"
       ],
       "remote_folder": "/opt/provision-scripts"
     },
