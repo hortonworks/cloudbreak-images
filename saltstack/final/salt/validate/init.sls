@@ -15,5 +15,7 @@ check_javac_javahome:
 
 check_default_java_major_version:
   cmd.run:
-    - name: '$(if [[ $(java -version 2>&1 | grep -oP "version [^0-9]?(1\.)?\K\d+" || true) == $DEFAULT_JAVA_MAJOR_VERSION ]]; then exit 0; else exit 1; fi)'
+    - env:
+      - DEFAULT_JAVA_MAJOR_VERSION: {{ salt['environ.get']('DEFAULT_JAVA_MAJOR_VERSION') }}
+    - name: '$(if [[ "$(java -version 2>&1 | grep -oP "version [^0-9]?(1\.)?\K\d+" || true)" == "$DEFAULT_JAVA_MAJOR_VERSION" ]]; then exit 0; else exit 1; fi)'
     - failhard: True
