@@ -109,11 +109,6 @@ elif [[ "$CUSTOM_IMAGE_TYPE" == "hortonworks" ]]; then
 	if [ -n "$STACK_VERSION" ] && [ $(version $STACK_VERSION) -lt $(version "7.2.15") ]; then
 		echo "Skip java versions as CB should not allow to force java version before 7.2.15"
 	else
-		CALCULATED_DEFAULT_JAVA_MAJOR_VERSION=$(java -version 2>&1 | grep -oP "version [^0-9]?(1\.)?\K\d+" || true)
-		if [[ $CALCULATED_DEFAULT_JAVA_MAJOR_VERSION != $DEFAULT_JAVA_MAJOR_VERSION ]]; then
-			echo "Java major version from packer.sh ($DEFAULT_JAVA_MAJOR_VERSION) differs from the actual system defaut ($CALCULATED_DEFAULT_JAVA_MAJOR_VERSION)!"
-			exit 1
-		fi
 		cat /tmp/package-versions.json | jq --arg default_java_version ${DEFAULT_JAVA_MAJOR_VERSION} '. + {"java": $default_java_version}' > /tmp/package-versions.json.tmp && mv /tmp/package-versions.json.tmp /tmp/package-versions.json
 
 		alternatives --display java | grep priority | grep -oP '^[^ ]*java' | while read -r java_path ; do

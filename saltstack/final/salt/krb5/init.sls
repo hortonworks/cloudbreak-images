@@ -9,7 +9,7 @@ disable_sssd_conf_dir:
   file.absent:
     - name: /etc/krb5.conf.d/enable_sssd_conf_dir
 
-{% if salt['environ.get']('DEFAULT_JAVA_MAJOR_VERSION') == '8' %}
+{% if salt['environ.get']('DEFAULT_JAVA_MAJOR_VERSION') == '8' and salt['environ.get']('RHEL_VERSION') == '8.10' %}
 change_krb5_conf_crypto_policies:
   file.managed:
     - name: /etc/krb5.conf.d/crypto-policies
