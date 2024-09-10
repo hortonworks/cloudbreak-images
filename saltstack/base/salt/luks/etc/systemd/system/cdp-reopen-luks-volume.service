@@ -3,12 +3,21 @@ Description=CDP-LUKS volume reopen script service
 ConditionPathIsMountPoint=!/mnt/cdp-luks
 ConditionFileNotEmpty=/etc/cdp-luks/passphrase_encryption_key
 ConditionFileNotEmpty=/etc/cdp-luks/passphrase_ciphertext
-#TODO Add a Before directive here for services, which will have secrets stored in the LUKS volume
-#Note: Adding a Before directive for a service should only be absolutely necessary,
-#      if otherwise it would start before or in parallel with this service
-#      (for example, if it also starts when network-online.target is reached)
 After=network-online.target
 Wants=network-online.target
+Before=salt-bootstrap.service
+Before=salt-api.service
+Before=salt-master.service
+Before=salt-minion.service
+Before=nginx.service
+Before=sssd.service
+Before=jumpgate-agent.service
+Before=ipa.service
+Before=gssproxy.service
+Before=cdp-freeipa-healthagent.service
+Before=cdp-freeipa-ldapagent.service
+Before=cloudera-scm-server.service
+Before=cloudera-scm-agent.service
 StartLimitIntervalSec=600
 StartLimitBurst=5
 
