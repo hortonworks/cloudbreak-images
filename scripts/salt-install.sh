@@ -113,6 +113,8 @@ function centos7_install_python36() {
   echo "Installing Python 3.6 with dependencies..."
   yum install -y python36 python36-pip python36-devel python36-setuptools
   echo PYTHON36=$(yum list installed | grep ^python3\\.x86_64 | grep -oi " [^\s]* " | xargs) >> /tmp/python_install.properties
+  # Update PIP
+  /usr/bin/python3.6 -m pip install -U pip
 
   python3 -m pip install virtualenv
 
