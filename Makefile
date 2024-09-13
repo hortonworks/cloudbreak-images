@@ -68,9 +68,7 @@ ifeq ($(CLOUD_PROVIDER),AWS)
 	endif
 	ifeq ($(OS),redhat8)
 		ifeq ($(ARCHITECTURE),arm64)
-			# CB-26812: Temp rollback!
-			# AWS_SOURCE_AMI ?= ami-05032c39067d77b1b
-			AWS_SOURCE_AMI ?= ami-014a329a8d775a418
+			AWS_SOURCE_AMI ?= ami-05032c39067d77b1b
 			AWS_INSTANCE_TYPE ?= r7gd.2xlarge
 		else
 			ifeq ($(STACK_VERSION),7.3.1)
