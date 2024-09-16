@@ -14,7 +14,7 @@ StartLimitBurst=5
 
 [Service]
 Type=oneshot
-ExecStart=/etc/cdp-luks/bin/reopen-luks-volume.sh
+ExecStart=/bin/bash -c '/etc/cdp-luks/bin/reopen-luks-volume.sh 2>&1 | tee /var/log/cdp-luks/reopen-luks-volume-$(date +"%F-%T").log && exit ${PIPESTATUS[0]}'
 RemainAfterExit=yes
 Restart=on-failure
 TimeoutSec=30
