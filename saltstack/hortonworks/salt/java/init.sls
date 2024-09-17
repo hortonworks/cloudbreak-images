@@ -69,7 +69,7 @@ set_openjdk_version_17:
   file.append:
     - name: /etc/profile.d/java.sh
     - text:
-      - "sudo alternatives --set java java-17-openjdk.{{ grains['osarch'] }}"
+      - "sudo alternatives --set java java-17-openjdk.x86_64"
       - "sudo ln -sfn /etc/alternatives/java_sdk_17 /usr/lib/jvm/java"
       - "sudo mkdir -p /etc/alternatives/java_sdk_17/jre/lib/security"
       - "sudo ln -sfn /etc/alternatives/java_sdk_17/conf/security/java.security /etc/alternatives/java_sdk_17/jre/lib/security/java.security"
