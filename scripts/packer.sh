@@ -1,8 +1,6 @@
 #!/bin/bash
 set -ex -o pipefail -o errexit
 
-function version { echo "$@" | awk -F. '{ printf("%d%03d%03d%03d\n", $1,$2,$3,$4); }'; }
-
 packer_in_container() {
   local dockerOpts=""
   local packerFile="packer.json"
@@ -41,12 +39,6 @@ packer_in_container() {
     LOCAL_URL_HDP=${BASEURL}/${REPOSITORY_NAME}/${OS}/${STACK_TYPE}-${STACK_VERSION}
     LOCAL_URL_HDP_UTILS=${BASEURL}/${REPOSITORY_NAME}/${OS}/HDP-UTILS-${HDPUTIL_VERSION}
   fi
-
-  export DEFAULT_JAVA_MAJOR_VERSION=8
-  # CB-26812: Temp rollback!
-  # if [ -n "$STACK_VERSION" ] && [ $(version $STACK_VERSION) -gt $(version "7.3.0") ]; then
-  #   export DEFAULT_JAVA_MAJOR_VERSION=17
-  # fi
 
   if [[ "$ENABLE_POSTPROCESSORS" ]]; then
     echo "Postprocessors are enabled"
@@ -234,7 +226,6 @@ packer_in_container() {
     -e FIPS_MODE="$FIPS_MODE" \
     -e STIG_ENABLED="$STIG_ENABLED" \
     -e PACKER_VERSION="$PACKER_VERSION" \
-    -e DEFAULT_JAVA_MAJOR_VERSION="$DEFAULT_JAVA_MAJOR_VERSION" \
     -v /var/run/docker.sock:/var/run/docker.sock \
     -v $PWD:$PWD \
     -w $PWD \
