@@ -66,15 +66,14 @@ delete_rhel8_repo:
 {% if salt['environ.get']('OS') == 'redhat8' %}
 {% if salt['environ.get']('DEFAULT_JAVA_MAJOR_VERSION') == '17' %}
 set_openjdk_version_17:
-  file.append:
-    - name: /etc/profile.d/java.sh
-    - text:
-      - "sudo alternatives --set java java-17-openjdk.x86_64"
-      - "sudo ln -sfn /etc/alternatives/java_sdk_17 /usr/lib/jvm/java"
-      - "sudo mkdir -p /etc/alternatives/java_sdk_17/jre/lib/security"
-      - "sudo ln -sfn /etc/alternatives/java_sdk_17/conf/security/java.security /etc/alternatives/java_sdk_17/jre/lib/security/java.security"
-      - "sudo ln -sfn /etc/pki/java/cacerts /etc/alternatives/java_sdk_17/jre/lib/security/cacerts"
-      - "sudo mkdir -p /etc/alternatives/java_sdk_17/jre/lib/ext"
+  cmd.run:
+    - name: | 
+        alternatives --set java java-17-openjdk.{{ grains['osarch'] }}
+        ln -sfn /etc/alternatives/java_sdk_17 /usr/lib/jvm/java
+        mkdir -p /etc/alternatives/java_sdk_17/jre/lib/security
+        ln -sfn /etc/alternatives/java_sdk_17/conf/security/java.security /etc/alternatives/java_sdk_17/jre/lib/security/java.security
+        ln -sfn /etc/pki/java/cacerts /etc/alternatives/java_sdk_17/jre/lib/security/cacerts
+        mkdir -p /etc/alternatives/java_sdk_17/jre/lib/ext
 {% endif %}
 # Else: we're staying with JDK 8 as default for now...
 {% endif %}
