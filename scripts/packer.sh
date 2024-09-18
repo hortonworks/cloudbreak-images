@@ -43,10 +43,9 @@ packer_in_container() {
   fi
 
   export DEFAULT_JAVA_MAJOR_VERSION=8
-  # CB-26812: Temp rollback!
-  # if [ -n "$STACK_VERSION" ] && [ $(version $STACK_VERSION) -gt $(version "7.3.0") ]; then
-  #   export DEFAULT_JAVA_MAJOR_VERSION=17
-  # fi
+  if [ -n "$STACK_VERSION" ] && [ $(version $STACK_VERSION) -gt $(version "7.3.0") ]; then
+    export DEFAULT_JAVA_MAJOR_VERSION=17
+  fi
 
   if [[ "$ENABLE_POSTPROCESSORS" ]]; then
     echo "Postprocessors are enabled"
