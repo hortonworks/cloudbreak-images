@@ -80,6 +80,8 @@ This section provides information about the packages of specified images to be i
 - policycoreutils-python (RedHat)
 - cloud-init
 - fluentd
+- consul-template
+- consul
 - node-exporter
 - jmx-exporter
 - prometheus
