@@ -34,6 +34,16 @@ install_openjdk:
   pkg.installed:
     - pkgs: {{ pillar['openjdk_packages'] }}
 
+{% if salt['environ.get']('ARCHITECTURE') == 'arm64' %}
+remove_unused_openjdk:
+  pkg.removed:
+    - pkgs:
+      - java-1.8.0-openjdk-headless
+      - java-1.8.0-openjdk-devel
+      - java-11-openjdk-headless
+      - java-11-openjdk-devel
+{% endif %}
+
 {% if salt['environ.get']('OS') == 'redhat8' %}
 {% if salt['environ.get']('IMAGE_BURNING_TYPE') == 'base' or salt['environ.get']('STACK_VERSION').split('.') | map('int') | list >= '7.2.18'.split('.') | map('int') | list %}
 download_rhel8_repo:
