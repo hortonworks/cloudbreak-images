@@ -15,6 +15,8 @@ export LUKS_MAPPER_DEVICE="/dev/mapper/$LUKS_VOLUME_NAME"
 export ENCRYPTION_KEY_FILE="$LUKS_DIR/passphrase_encryption_key"
 export LUKS_BACKING_FILE_DEFAULT_SIZE="100MiB"
 
+export AWS_USE_FIPS_ENDPOINT=true
+
 setup_backing_file() {
   if [[ -e "$LUKS_BACKING_FILE" && $(stat -c "%a" "$LUKS_BACKING_FILE" | tr -d '\n') == 600 ]]; then
     # Set the backing file to the specified size if it exists

@@ -34,6 +34,16 @@ install_openjdk:
   pkg.installed:
     - pkgs: {{ pillar['openjdk_packages'] }}
 
+{% if salt['environ.get']('ARCHITECTURE') == 'arm64' %}
+remove_unused_openjdk:
+  pkg.removed:
+    - pkgs:
+      - java-1.8.0-openjdk-headless
+      - java-1.8.0-openjdk-devel
+      - java-11-openjdk-headless
+      - java-11-openjdk-devel
+{% endif %}
+
 {% if salt['environ.get']('OS') == 'redhat8' %}
 {% if salt['environ.get']('IMAGE_BURNING_TYPE') == 'base' or salt['environ.get']('STACK_VERSION').split('.') | map('int') | list >= '7.2.18'.split('.') | map('int') | list %}
 download_rhel8_repo:
@@ -63,22 +73,20 @@ delete_rhel8_repo:
 {% endif %}
 {% endif %}
 
-# CB-26812: Temp rollback!
-# {% if salt['environ.get']('OS') == 'redhat8' %}
-# {% if salt['environ.get']('STACK_VERSION').split('.') | map('int') | list >= '7.3.1'.split('.') | map('int') | list %}
-# set_openjdk_version_17:
-#   file.append:
-#     - name: /etc/profile.d/java.sh
-#     - text:
-#       - "sudo alternatives --set java java-17-openjdk.x86_64"
-#       - "sudo ln -sfn /etc/alternatives/java_sdk_17 /usr/lib/jvm/java"
-#       - "sudo mkdir -p /etc/alternatives/java_sdk_17/jre/lib/security"
-#       - "sudo ln -sfn /etc/alternatives/java_sdk_17/conf/security/java.security /etc/alternatives/java_sdk_17/jre/lib/security/java.security"
-#       - "sudo ln -sfn /etc/pki/java/cacerts /etc/alternatives/java_sdk_17/jre/lib/security/cacerts"
-#       - "sudo mkdir -p /etc/alternatives/java_sdk_17/jre/lib/ext"
-# {% endif %}
-# # Else: we're staying with JDK 8 as default for now...
-# {% endif %}
+{% if salt['environ.get']('OS') == 'redhat8' %}
+{% if salt['environ.get']('DEFAULT_JAVA_MAJOR_VERSION') == '17' %}
+set_openjdk_version_17:
+  cmd.run:
+    - name: | 
+        alternatives --set java java-17-openjdk.{{ grains['osarch'] }}
+        ln -sfn /etc/alternatives/java_sdk_17 /usr/lib/jvm/java
+        mkdir -p /etc/alternatives/java_sdk_17/jre/lib/security
+        ln -sfn /etc/alternatives/java_sdk_17/conf/security/java.security /etc/alternatives/java_sdk_17/jre/lib/security/java.security
+        ln -sfn /etc/pki/java/cacerts /etc/alternatives/java_sdk_17/jre/lib/security/cacerts
+        mkdir -p /etc/alternatives/java_sdk_17/jre/lib/ext
+{% endif %}
+# Else: we're staying with JDK 8 as default for now...
+{% endif %}
 
 add_openjdk_gplv2:
   file.managed:

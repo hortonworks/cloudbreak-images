@@ -12,6 +12,12 @@ export PASSPHRASE_CIPHERTEXT="$LUKS_DIR/passphrase_ciphertext"
 export LUKS_LOG_DIR="/var/log/$LUKS_VOLUME_NAME"
 export LUKS_MAPPER_DEVICE="/dev/mapper/$LUKS_VOLUME_NAME"
 export ENCRYPTION_KEY_FILE="$LUKS_DIR/passphrase_encryption_key"
+{% if pillar['CUSTOM_IMAGE_TYPE'] == 'freeipa' %}
+export IS_FREEIPA=true
+{% else %}
+export IS_FREEIPA=false
+{% endif %}
+export AWS_USE_FIPS_ENDPOINT=true
 
 recreate_loop_device() {
   if [[ $(losetup -j "$LUKS_BACKING_FILE" | wc -l | tr -d '\n') == 0 ]]; then
@@ -36,6 +42,7 @@ setup_tmpfs_for_plaintext_passphrase() {
 
 decrypt_passphrase_ciphertext() {
   if [[ ! -s "$PASSPHRASE_PLAINTEXT" ]]; then
+    add_kms_entry_to_etc_hosts
     INSTANCE_ID="$(TOKEN=$(curl -s -X PUT "http://169.254.169.254/latest/api/token" -H "X-aws-ec2-metadata-token-ttl-seconds: 10") && \
                                 curl -s -H "X-aws-ec2-metadata-token: $TOKEN" http://169.254.169.254/latest/meta-data/instance-id)"
     METADATA_LOG_FILE="$LUKS_LOG_DIR/passphrase_decryption_md-$(date +"%F-%T").json"
@@ -48,10 +55,59 @@ decrypt_passphrase_ciphertext() {
            --metadata-output "$METADATA_LOG_FILE" \
            --encryption-context INSTANCE_ID="$INSTANCE_ID"; then
       echo "Failed to decrypt the plaintext ciphertext... Exiting LUKS volume reopen script with failed exit code!"
+      restore_etc_hosts
       exit 2
     fi
+    restore_etc_hosts
     chmod 600 "$PASSPHRASE_PLAINTEXT"
     chmod 600 "$METADATA_LOG_FILE"
+  fi
+}
+
+add_kms_entry_to_etc_hosts() {
+  if [[ "$IS_FREEIPA" == "true" ]]; then
+    REGION="$(TOKEN=$(curl -s -X PUT "http://169.254.169.254/latest/api/token" -H "X-aws-ec2-metadata-token-ttl-seconds: 10") && \
+        curl -s -H "X-aws-ec2-metadata-token: $TOKEN" http://169.254.169.254/latest/meta-data/placement/availability-zone | sed 's/[a-z]$//')"
+    KMS_FIPS_ENDPOINT="kms-fips.$REGION.amazonaws.com"
+    AMAZON_PROVIDED_DNS_SERVER="169.254.169.253"
+
+    # Get the DNS servers from the network connection
+    IFS=" | " read -ra DNS_SERVERS <<< "$(nmcli -g IP4.DNS connection show "$(nmcli -g GENERAL.CONNECTION device show eth0)")"
+    # Prepend the Amazon provided DNS server to the list of DNS servers
+    DNS_SERVERS=("$AMAZON_PROVIDED_DNS_SERVER" "${DNS_SERVERS[@]}")
+
+    echo "DNS servers available for resolving KMS endpoint: ${DNS_SERVERS[*]}"
+    for dns_server in "${DNS_SERVERS[@]}"; do
+      echo "Trying to resolve $KMS_FIPS_ENDPOINT using DNS server $dns_server"
+      set +e
+      KMS_IP_ADDRESS="$(temp="$(dig @"$dns_server" "$KMS_FIPS_ENDPOINT" +noall +short)" && echo "$temp")"
+      set -e
+      if [[ -n "$KMS_IP_ADDRESS" ]]; then
+        echo "Successfully resolved $KMS_FIPS_ENDPOINT using DNS server $dns_server"
+        break
+      fi
+    done
+
+    if [[ -z "$KMS_IP_ADDRESS" ]]; then
+      echo "Failed to resolve $KMS_FIPS_ENDPOINT with any DNS server... Exiting LUKS volume reopen script with failed exit code!"
+      exit 5
+    fi
+
+    # Add entry to /etc/hosts while creating a backup of the original file
+    echo "Adding temporary entry \"$KMS_IP_ADDRESS $KMS_FIPS_ENDPOINT\" to /etc/hosts ..."
+    sed -i.bak "\$a$KMS_IP_ADDRESS $KMS_FIPS_ENDPOINT" /etc/hosts
+  else
+    echo "No need to add temporary KMS entry to /etc/hosts since this is not a FreeIPA instance."
+  fi
+}
+
+restore_etc_hosts() {
+  if [[ "$IS_FREEIPA" == "true" ]]; then
+    # Restore the original /etc/hosts file from the backup file
+    echo "Restoring /etc/hosts from the backup file..."
+    mv -f /etc/hosts.bak /etc/hosts
+  else
+    echo "No need to restore /etc/hosts since no temporary entry was added to it as this is not a FreeIPA instance."
   fi
 }
 
