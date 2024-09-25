@@ -12,6 +12,13 @@ OPTIONAL_STATES ?= ""
 IMAGE_COPY_PHASE ?= ""
 ARCHITECTURE ?= x86_64
 
+TYPES := prewarm base freeipa
+ifneq ($(filter $(IMAGE_BURNING_TYPE),$(TYPES)),)
+	echo "Burning $(IMAGE_BURNING_TYPE) image."
+else
+$(error Invalid value in IMAGE_BURNING_TYPE: $(IMAGE_BURNING_TYPE).)
+endif
+
 # Azure VM image specifications
 ifeq ($(CLOUD_PROVIDER),Azure)
 	PRIVATE_VIRTUAL_NETWORK_WITH_PUBLIC_IP ?= false
@@ -45,6 +52,8 @@ $(error "AZURE_IMAGE_VHD and Marketplace image properties (AZURE_IMAGE_PUBLISHER
 			AZURE_IMAGE_OFFER ?= rhel-byos
 			ifeq ($(STACK_VERSION),7.3.1)
 				AZURE_IMAGE_SKU ?= rhel-lvm810
+			else ifeq ($(IMAGE_BURNING_TYPE),base)
+				AZURE_IMAGE_SKU ?= rhel-lvm810
 			else
 				ifeq ($(CUSTOM_IMAGE_TYPE),freeipa)
 					AZURE_IMAGE_SKU ?= rhel-lvm810
@@ -74,6 +83,8 @@ ifeq ($(CLOUD_PROVIDER),AWS)
 			AWS_INSTANCE_TYPE ?= r7gd.2xlarge
 		else
 			ifeq ($(STACK_VERSION),7.3.1)
+				AWS_SOURCE_AMI ?= ami-02073841a355a1e92
+			else ifeq ($(IMAGE_BURNING_TYPE),base)
 				AWS_SOURCE_AMI ?= ami-02073841a355a1e92
 			else
 				ifeq ($(CUSTOM_IMAGE_TYPE),freeipa)
@@ -105,6 +116,8 @@ ifeq ($(CLOUD_PROVIDER),GCP)
 	endif
 	ifeq ($(OS),redhat8)
 		ifeq ($(STACK_VERSION),7.3.1)
+			GCP_SOURCE_IMAGE ?= rhel-8-byos-v20240709
+		else ifeq ($(IMAGE_BURNING_TYPE),base)
 			GCP_SOURCE_IMAGE ?= rhel-8-byos-v20240709
 		else
 			ifeq ($(CUSTOM_IMAGE_TYPE),freeipa)
