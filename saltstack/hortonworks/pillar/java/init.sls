@@ -12,8 +12,10 @@ openjdk_packages:
   {% if salt['environ.get']('ARCHITECTURE') != 'arm64' %}
   - java-1.8.0-openjdk-headless
   - java-1.8.0-openjdk-devel
+    {% if salt['environ.get']('STACK_VERSION').split('.') | map('int') | list < '7.3.1'.split('.') | map('int') | list %}
   - java-11-openjdk-headless
   - java-11-openjdk-devel
+    {% endif %}
   {% endif %}
   - java-17-openjdk-headless
   - java-17-openjdk-devel
@@ -27,4 +29,3 @@ openjdk_packages:
   - java-11-openjdk-javadoc
   - java-11-openjdk-src
 {% endif %}
-
