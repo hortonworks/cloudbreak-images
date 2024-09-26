@@ -45,12 +45,12 @@ $(error "AZURE_IMAGE_VHD and Marketplace image properties (AZURE_IMAGE_PUBLISHER
 			AZURE_IMAGE_OFFER ?= rhel-byos
 			ifeq ($(STACK_VERSION),7.3.1)
 				AZURE_IMAGE_SKU ?= rhel-lvm810
+			else ifeq ($(IMAGE_BURNING_TYPE),base)
+				AZURE_IMAGE_SKU ?= rhel-lvm810
+			else ifeq ($(CUSTOM_IMAGE_TYPE),freeipa)
+				AZURE_IMAGE_SKU ?= rhel-lvm810
 			else
-				ifeq ($(CUSTOM_IMAGE_TYPE),freeipa)
-					AZURE_IMAGE_SKU ?= rhel-lvm810
-				else
-					AZURE_IMAGE_SKU ?= rhel-lvm88
-				endif
+				AZURE_IMAGE_SKU ?= rhel-lvm88
 			endif
 		else ifeq ($(OS),centos7)
 			AZURE_IMAGE_PUBLISHER ?= OpenLogic
@@ -75,12 +75,12 @@ ifeq ($(CLOUD_PROVIDER),AWS)
 		else
 			ifeq ($(STACK_VERSION),7.3.1)
 				AWS_SOURCE_AMI ?= ami-02073841a355a1e92
+			else ifeq ($(IMAGE_BURNING_TYPE),base)
+				AWS_SOURCE_AMI ?= ami-02073841a355a1e92
+			else ifeq ($(CUSTOM_IMAGE_TYPE),freeipa)
+				AWS_SOURCE_AMI ?= ami-02073841a355a1e92
 			else
-				ifeq ($(CUSTOM_IMAGE_TYPE),freeipa)
-					AWS_SOURCE_AMI ?= ami-02073841a355a1e92
-				else
-					AWS_SOURCE_AMI ?= ami-039ce2eddc1949546
-				endif
+				AWS_SOURCE_AMI ?= ami-039ce2eddc1949546
 			endif
 			AWS_INSTANCE_TYPE ?= t3.2xlarge
 		endif
@@ -106,12 +106,12 @@ ifeq ($(CLOUD_PROVIDER),GCP)
 	ifeq ($(OS),redhat8)
 		ifeq ($(STACK_VERSION),7.3.1)
 			GCP_SOURCE_IMAGE ?= rhel-8-byos-v20240709
+		else ifeq ($(IMAGE_BURNING_TYPE),base)
+			GCP_SOURCE_IMAGE ?= rhel-8-byos-v20240709
+		else ifeq ($(CUSTOM_IMAGE_TYPE),freeipa)
+			GCP_SOURCE_IMAGE ?= rhel-8-byos-v20240709
 		else
-			ifeq ($(CUSTOM_IMAGE_TYPE),freeipa)
-				GCP_SOURCE_IMAGE ?= rhel-8-byos-v20240709
-			else
-				GCP_SOURCE_IMAGE ?= rhel-8-byos-v20230615
-			endif
+			GCP_SOURCE_IMAGE ?= rhel-8-byos-v20230615
 		endif
 	endif
 endif
