@@ -7,6 +7,7 @@ export MOUNT_POINT="/mnt/$LUKS_VOLUME_NAME"
 export LUKS_DIR="/etc/$LUKS_VOLUME_NAME"
 export LUKS_BACKING_FILE="$LUKS_DIR/$LUKS_VOLUME_NAME"
 export PASSPHRASE_TMPFS="/mnt/cdp-luks_passphrase_tmpfs"
+export PASSPHRASE_TMPFS_SIZE="16k"
 export PASSPHRASE_PLAINTEXT="$PASSPHRASE_TMPFS/passphrase"
 export PASSPHRASE_CIPHERTEXT="$LUKS_DIR/passphrase_ciphertext"
 export LUKS_LOG_DIR="/var/log/$LUKS_VOLUME_NAME"
@@ -31,7 +32,7 @@ setup_backing_file() {
 setup_tmpfs_for_plaintext_passphrase() {
   if ! mountpoint "$PASSPHRASE_TMPFS"; then
     # Create the tmpfs for the plaintext passphrase
-    mount -t tmpfs -o size=1k,mode=700 tmpfs "$PASSPHRASE_TMPFS"
+    mount -t tmpfs -o size="$PASSPHRASE_TMPFS_SIZE",mode=700 tmpfs "$PASSPHRASE_TMPFS"
   fi
 }
 
