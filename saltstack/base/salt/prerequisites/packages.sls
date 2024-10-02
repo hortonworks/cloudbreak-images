@@ -120,8 +120,6 @@ remove_azcopy_extract:
     - clean: True
 {% endif %}
 
-{% endif %}
-
 # Security patches for RHEL 8.8 + 7.2.17 / 7.2.18 / FreeIPA / Base
 # They are actually being pulled from a 8.10 repository, but we'll need these patches to tackle Azure's security checks.
 
@@ -149,4 +147,6 @@ rhel88_security_remove_repo:
     - name: /etc/yum.repos.d/rhel8_cldr_mirrors.repo
 
 {% endif %}
+{% endif %}
+
 {% endif %}
