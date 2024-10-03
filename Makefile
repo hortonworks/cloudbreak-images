@@ -321,17 +321,6 @@ build-aws-centos7:
 	GIT_TAG=$(GIT_TAG) \
 	./scripts/sparseimage/packer.sh build -color=false -force $(PACKER_OPTS)
 
-generate-aws-centos7-changelog:
-ifdef IMAGE_UUID
-ifdef SOURCE_IMAGE
-	$(ENVS) \
-	OS=centos \
-	IMAGE_UUID=$(IMAGE_UUID) \
-	SOURCE_IMAGE=$(SOURCE_IMAGE) \
-	./scripts/changelog/packer.sh build -color=false -only=aws-centos7 -force $(PACKER_OPTS)
-endif
-endif
-
 build-aws-redhat8:
 	$(ENVS) \
 	AWS_AMI_REGIONS="us-west-1" \
@@ -346,17 +335,6 @@ build-aws-redhat8:
 	GIT_BRANCH=$(GIT_BRANCH) \
 	GIT_TAG=$(GIT_TAG) \
 	./scripts/packer.sh build -color=false -only=aws-redhat8 $(PACKER_OPTS)
-
-generate-aws-redhat8-changelog:
-ifdef IMAGE_UUID
-ifdef SOURCE_IMAGE
-	$(ENVS) \
-	OS=redhat8 \
-	IMAGE_UUID=$(IMAGE_UUID) \
-	SOURCE_IMAGE=$(SOURCE_IMAGE) \
-	./scripts/changelog/packer.sh build -color=false -only=aws-redhat8 -force $(PACKER_OPTS)
-endif
-endif
 
 build-azure-redhat8:
 	$(ENVS) \
@@ -458,28 +436,6 @@ build-aws-gov-redhat8:
 	PACKER_VERSION="1.8.3" \
 	./scripts/packer.sh build -color=false -only=aws-gov-redhat8 $(PACKER_OPTS)
 
-generate-aws-gov-centos7-changelog:
-ifdef IMAGE_UUID
-ifdef SOURCE_IMAGE
-	$(ENVS) \
-	OS=centos \
-	IMAGE_UUID=$(IMAGE_UUID) \
-	SOURCE_IMAGE=$(SOURCE_IMAGE) \
-	./scripts/changelog/packer.sh build -color=false -only=aws-gov-centos7 -force $(PACKER_OPTS)
-endif
-endif
-
-generate-aws-gov-redhat8-changelog:
-ifdef IMAGE_UUID
-ifdef SOURCE_IMAGE
-	$(ENVS) \
-	OS=redhat8 \
-	IMAGE_UUID=$(IMAGE_UUID) \
-	SOURCE_IMAGE=$(SOURCE_IMAGE) \
-	./scripts/changelog/packer.sh build -color=false -only=aws-gov-redhat8 -force $(PACKER_OPTS)
-endif
-endif
-
 copy-aws-gov-images:
 	docker run -i --rm \
 		-v "${PWD}/scripts:/scripts" \
@@ -517,28 +473,6 @@ build-gc-centos7:
 	GIT_BRANCH=$(GIT_BRANCH) \
 	GIT_TAG=$(GIT_TAG) \
 	./scripts/packer.sh build -color=false -only=gc-centos7 $(PACKER_OPTS)
-
-generate-gc-centos7-changelog:
-ifdef IMAGE_UUID
-ifdef SOURCE_IMAGE
-	$(ENVS) \
-	OS=centos \
-	IMAGE_UUID=$(IMAGE_UUID) \
-	SOURCE_IMAGE=$(SOURCE_IMAGE) \
-	./scripts/changelog/packer.sh build -color=false -only=gc-centos7 -force $(PACKER_OPTS)
-endif
-endif
-
-generate-gc-redhat8-changelog:
-ifdef IMAGE_UUID
-ifdef SOURCE_IMAGE
-	$(ENVS) \
-	OS=redhat8 \
-	IMAGE_UUID=$(IMAGE_UUID) \
-	SOURCE_IMAGE=$(SOURCE_IMAGE) \
-	./scripts/changelog/packer.sh build -color=false -only=gc-redhat8 -force $(PACKER_OPTS)
-endif
-endif
 
 build-azure-centos7:
 	$(ENVS) \
@@ -582,6 +516,28 @@ ifeq ($(AZURE_INITIAL_COPY),true)
 	TRACE=1 AZURE_STORAGE_ACCOUNTS=$(AZURE_BUILD_STORAGE_ACCOUNT) ./scripts/azure-copy.sh
 endif
 
+generate-aws-centos7-changelog:
+ifdef IMAGE_UUID
+ifdef SOURCE_IMAGE
+	$(ENVS) \
+	OS=centos \
+	IMAGE_UUID=$(IMAGE_UUID) \
+	SOURCE_IMAGE=$(SOURCE_IMAGE) \
+	./scripts/changelog/packer.sh build -color=false -only=aws-centos7 -force $(PACKER_OPTS)
+endif
+endif
+
+generate-aws-redhat8-changelog:
+ifdef IMAGE_UUID
+ifdef SOURCE_IMAGE
+	$(ENVS) \
+	OS=redhat8 \
+	IMAGE_UUID=$(IMAGE_UUID) \
+	SOURCE_IMAGE=$(SOURCE_IMAGE) \
+	./scripts/changelog/packer.sh build -color=false -only=aws-redhat8 -force $(PACKER_OPTS)
+endif
+endif
+
 generate-azure-centos7-changelog:
 ifdef IMAGE_UUID
 ifdef SOURCE_IMAGE
@@ -602,7 +558,35 @@ ifdef SOURCE_IMAGE
 	IMAGE_UUID=$(IMAGE_UUID) \
 	SOURCE_IMAGE=$(SOURCE_IMAGE) \
 	BUILD_RESOURCE_GROUP_NAME=$(BUILD_RESOURCE_GROUP_NAME) \
-	./scripts/changelog/packer.sh build -color=false -only=arm-centos7 -force $(PACKER_OPTS)
+	./scripts/changelog/packer.sh build -color=false -only=arm-redhat8 -force $(PACKER_OPTS)
+endif
+endif
+
+generate-gc-centos7-changelog:
+ifdef IMAGE_UUID
+ifdef SOURCE_IMAGE
+	$(ENVS) \
+	OS=centos \
+	IMAGE_UUID=$(IMAGE_UUID) \
+	SOURCE_IMAGE=$(SOURCE_IMAGE) \
+	GCP_STORAGE_BUNDLE=$(GCP_STORAGE_BUNDLE) \
+	GCP_STORAGE_BUNDLE_LOG=$(GCP_STORAGE_BUNDLE_LOG) \
+	STACK_VERSION=$(STACK_VERSION) \
+	./scripts/changelog/packer.sh build -color=false -only=gc-centos7 -force $(PACKER_OPTS)
+endif
+endif
+
+generate-gc-redhat8-changelog:
+ifdef IMAGE_UUID
+ifdef SOURCE_IMAGE
+	$(ENVS) \
+	OS=redhat8 \
+	IMAGE_UUID=$(IMAGE_UUID) \
+	SOURCE_IMAGE=$(SOURCE_IMAGE) \
+	GCP_STORAGE_BUNDLE=$(GCP_STORAGE_BUNDLE) \
+	GCP_STORAGE_BUNDLE_LOG=$(GCP_STORAGE_BUNDLE_LOG) \
+	STACK_VERSION=$(STACK_VERSION) \
+	./scripts/changelog/packer.sh build -color=false -only=gc-redhat8 -force $(PACKER_OPTS)
 endif
 endif
 
