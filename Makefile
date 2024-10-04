@@ -523,6 +523,7 @@ ifdef SOURCE_IMAGE
 	OS=centos \
 	IMAGE_UUID=$(IMAGE_UUID) \
 	SOURCE_IMAGE=$(SOURCE_IMAGE) \
+	AWS_INSTANCE_TYPE=$(AWS_INSTANCE_TYPE) \
 	./scripts/changelog/packer.sh build -color=false -only=aws-centos7 -force $(PACKER_OPTS)
 endif
 endif
@@ -534,6 +535,7 @@ ifdef SOURCE_IMAGE
 	OS=redhat8 \
 	IMAGE_UUID=$(IMAGE_UUID) \
 	SOURCE_IMAGE=$(SOURCE_IMAGE) \
+	AWS_INSTANCE_TYPE=$(AWS_INSTANCE_TYPE) \
 	./scripts/changelog/packer.sh build -color=false -only=aws-redhat8 -force $(PACKER_OPTS)
 endif
 endif
