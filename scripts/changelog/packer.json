@@ -2,7 +2,7 @@
   "variables": {
     "os": "{{ env `OS` }}",
     "source_image": "{{ env `SOURCE_IMAGE` }}",
-    "aws_instance_type": "t3.2xlarge",
+    "aws_instance_type": "{{ env `AWS_INSTANCE_TYPE` }}",
     "image_uuid": "{{ env `IMAGE_UUID` }}",
     "image_name": "{{ env `IMAGE_NAME` }}",
     "image_size": "{{ env `IMAGE_SIZE` }}",
