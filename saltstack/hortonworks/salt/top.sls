@@ -3,8 +3,6 @@ hortonworks:
     - unbound
 {% if pillar['subtype'] != 'Docker' %}
     - dhcp
-{% else %}
-    - networkmanager
 {% endif %}
     - simple-webserver
     - eula
