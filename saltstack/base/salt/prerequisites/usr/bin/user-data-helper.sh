@@ -1,6 +1,6 @@
 #!/bin/bash
 
-set -x
+set -ex
 set
 
 if [[ "$SECRET_ENCRYPTION_ENABLED" == "true" ]]; then
@@ -82,14 +82,18 @@ create_luks_volume() {
   echo "$SECRET_ENCRYPTION_KEY_SOURCE" > "$ENCRYPTION_KEY_FILE"
 
   echo "LUKS volume creation started."
-  /etc/cdp-luks/bin/create-luks-volume.sh
-  echo "LUKS volume creation finished."
+  /etc/cdp-luks/bin/create-luks-volume.sh 2>&1 | tee /var/log/cdp-luks/create-luks-volume.log
+  result=${PIPESTATUS[0]}
+  echo "LUKS volume creation finished with: $result"
+  return $result
 }
 
 populate_luks_volume() {
   echo "LUKS volume population with secrets started."
-  /etc/cdp-luks/bin/populate-luks-volume.sh
-  echo "LUKS volume population with secrets finished."
+  /etc/cdp-luks/bin/populate-luks-volume.sh 2>&1 | tee /var/log/cdp-luks/populate-luks-volume.log
+  result=${PIPESTATUS[0]}
+  echo "LUKS volume population with secrets finished with: $result"
+  return $result
 }
 
 configure-salt-bootstrap() {
