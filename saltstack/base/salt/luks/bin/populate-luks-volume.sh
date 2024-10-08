@@ -100,6 +100,10 @@ process_nginx_locations() {
   then
     log_processing_needed "nginx"
     process_location_with_create "/etc/certs" root root 750
+    if [[ "$IS_FREEIPA" != "true" ]]
+    then
+      process_location_with_create "/etc/certs-user-facing" root root 755
+    fi
   else
     log_processing_skipped "nginx"
   fi
