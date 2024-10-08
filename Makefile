@@ -547,19 +547,26 @@ ifdef SOURCE_IMAGE
 	OS=centos \
 	IMAGE_UUID=$(IMAGE_UUID) \
 	SOURCE_IMAGE=$(SOURCE_IMAGE) \
-	BUILD_RESOURCE_GROUP_NAME=$(BUILD_RESOURCE_GROUP_NAME) \
 	./scripts/changelog/packer.sh build -color=false -only=arm-centos7 -force $(PACKER_OPTS)
 endif
 endif
 
 generate-azure-redhat8-changelog:
+ifeq ($(OS_VERSION),8.8)
+	PLAN_NAME=rhel-lvm88
+else ifeq ($(OS_VERSION),8.10)
+	PLAN_NAME=rhel-lvm810
+else
+	$(error OS_VERSION parameter is mandatory for azure redhat8 related changelog generation)
+endif
+
 ifdef IMAGE_UUID
 ifdef SOURCE_IMAGE
 	$(ENVS) \
 	OS=redhat8 \
 	IMAGE_UUID=$(IMAGE_UUID) \
 	SOURCE_IMAGE=$(SOURCE_IMAGE) \
-	BUILD_RESOURCE_GROUP_NAME=$(BUILD_RESOURCE_GROUP_NAME) \
+	PLAN_NAME=$(PLAN_NAME) \
 	./scripts/changelog/packer.sh build -color=false -only=arm-redhat8 -force $(PACKER_OPTS)
 endif
 endif

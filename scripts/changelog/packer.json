@@ -16,7 +16,8 @@
     "tenant_id": "{{ env `ARM_TENANT_ID` }}",
     "resource_group_name": "{{ env `ARM_GROUP_NAME` }}",
     "storage_account": "{{ env `ARM_STORAGE_ACCOUNT` }}",
-    "virtual_network_resource_group_name": "{{ env `VIRTUAL_NETWORK_RESOURCE_GROUP_NAME` }}"
+    "virtual_network_resource_group_name": "{{ env `VIRTUAL_NETWORK_RESOURCE_GROUP_NAME` }}",
+    "plan_name": "{{ env `PLAN_NAME` }}"
   },
   "builders": [
     {
@@ -159,7 +160,7 @@
         "owner": "{{ user `image_owner` }}"
       },
       "plan_info": {
-        "plan_name": "rhel-lvm88",
+        "plan_name": "{{user `plan_name`}}",
         "plan_product": "rhel-byos",
         "plan_publisher": "redhat"
       },
