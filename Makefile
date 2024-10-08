@@ -215,7 +215,7 @@ GCP_STORAGE_BUNDLE_LOG ?= cloudera-$(BASE_NAME)-images
 
 # AWS AMI region definitions for the different states
 define AWS_AMI_REGIONS_TEST_PHASE
-us-west-1,us-west-2,eu-central-1
+us-west-1,us-west-2,eu-central-1,eu-west-1
 endef
 
 define AWS_AMI_REGIONS_ALL
