@@ -1,6 +1,5 @@
 #!/bin/bash
 
-set -x
 set
 
 if [[ "$SECRET_ENCRYPTION_ENABLED" == "true" ]]; then
