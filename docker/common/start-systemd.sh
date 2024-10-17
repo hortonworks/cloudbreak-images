@@ -46,6 +46,8 @@ fi
 if [ -f "/etc/cloudbreak-config.props" ]; then
     . /etc/cloudbreak-config.props
 
+    cp /etc/cloudbreak-config.props /var/log/
+
     mkdir -p /home/${sshUser}/.ssh
     chmod 700 /home/${sshUser}/.ssh
     echo "${sshPubKey}" >>/home/${sshUser}/.ssh/authorized_keys
@@ -53,7 +55,7 @@ if [ -f "/etc/cloudbreak-config.props" ]; then
 
     echo "${userData}" | base64 -d >/usr/bin/cb-init.sh
     chmod +x /usr/bin/cb-init.sh
-    /usr/bin/cb-init.sh
+    /usr/bin/cb-init.sh >/var/log/cb-init-sh.log 2>&1
 fi
 
 exec /bin/systemd --system
