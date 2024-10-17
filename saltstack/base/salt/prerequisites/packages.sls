@@ -54,9 +54,6 @@ packages_install:
     {% if grains['osmajorrelease'] | int == 7 %}
       - iptables-services
     {% endif %}
-    {% if pillar['OS'] == 'redhat8' and pillar['subtype'] == 'Docker' %}
-      - NetworkManager
-    {% endif %}
     {% if pillar['OS'] == 'redhat8' %}
       - sos
     {% endif %}
