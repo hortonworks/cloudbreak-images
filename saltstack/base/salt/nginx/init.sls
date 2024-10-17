@@ -26,10 +26,6 @@ install_nginx:
     - makedirs: True
     - source: salt://{{ slspath }}/etc/nginx/ssl.conf
 
-debug-nginx-conf:
-  cmd.run:
-    - name: ls -la /etc/nginx/sites-enabled/*
-
 enable_nginx:
 {% if pillar['subtype'] != 'Docker' %}
   service.enabled:
