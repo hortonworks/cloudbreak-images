@@ -6,9 +6,9 @@ include:
   - {{ slspath }}.repository
   - {{ slspath }}.packages
   - {{ slspath }}.sudo
+  - {{ slspath }}.disable_ipv6
 {% if pillar['subtype'] != 'Docker' %}
   - {{ slspath }}.sysctl
-  - {{ slspath }}.disable_ipv6
   - {{ slspath }}.selinux
   - {{ slspath }}.dnsmasq
 {% endif %}
