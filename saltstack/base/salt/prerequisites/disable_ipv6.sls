@@ -1,3 +1,4 @@
+{% if pillar['subtype'] != 'Docker' %}
 net.ipv6.conf.default.disable_ipv6:
   sysctl.present:
     - value: 1
@@ -13,6 +14,7 @@ net.ipv6.conf.lo.disable_ipv6:
 net.ipv6.conf.{{ pillar['network_interface'] }}.disable_ipv6:
   sysctl.present:
     - value: 1
+{% endif %}
 
 {% if grains['os_family'] == 'RedHat' %}
 /etc/sysconfig/network:
