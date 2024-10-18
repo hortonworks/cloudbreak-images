@@ -1,35 +1,38 @@
 {
-  "created": 1718906597,
-  "published": 1718909208,
-  "date": "2024-06-20",
+  "created": 1729254316,
+  "published": 1729257121,
+  "date": "2024-10-18",
   "description": "Official Cloudbreak image",
   "images": {
     "gcp": {
-      "default": "cloudera-freeipa-images/freeipa-cdh--1718906588.tar.gz"
+      "default": "cloudera-freeipa-images/freeipa-cdh--1729254307.tar.gz"
     }
   },
   "os": "redhat8",
   "os_type": "redhat8",
-  "uuid": "ece48199-7e39-470d-9065-7dfd97371a19",
+  "architecture": "x86_64",
+  "uuid": "7ae28891-51ac-4b53-a774-ea514f0c7ec9",
   "package-versions": {
     "blackbox-exporter": "0.19.0",
-    "cdp-logging-agent": "1.3.2_b1",
-    "cdp-minifi-agent": "1.22.07",
+    "cdp-logging-agent": "1.3.3_b18",
     "cdp-prometheus": "2.36.2",
-    "cdp-request-signer": "0.2.4",
-    "cdp-telemetry": "1.3.2_b1",
-    "cloudbreak_images": "5c4b1bf88347cf8de88ecd39873613853d989f43",
+    "cdp-request-signer": "1.3.3_b18",
+    "cdp-telemetry": "1.3.3_b18",
+    "cloudbreak_images": "a85fb349d699d8617a0af3da3ec330cda0352101",
     "freeipa-health-agent": "0.1-20240306130845git17cc467",
     "freeipa-ldap-agent": "1.0.0-b12478",
-    "freeipa-plugin": "1.0-20240306130845git17cc467.el8",
-    "inverting-proxy-agent": "3.5.0-b82",
-    "inverting-proxy-agent_gbn": "54580234",
+    "freeipa-plugin": "1.1-b847.el8",
+    "inverting-proxy-agent": "3.8.0-b23",
+    "inverting-proxy-agent_gbn": "58686153",
     "node-exporter": "1.3.1",
-    "python36": "3.6.8-38.module+el8.5.0+12207+5c5719bc",
-    "python38": "3.8.16-1.module+el8.8.0+18967+20d359ae.1",
+    "os-version": "8.10",
+    "python311": "3.11.9-7.el8_10",
+    "python36": "3.6.8-39.module+el8.10.0+20784+edafcd43",
+    "python38": "3.8.17-2.module+el8.9.0+19642+a12b4af6",
+    "python39": "3.9.19-7.module+el8.10.0+22237+51382d7a",
     "salt": "3001.8",
-    "salt-bootstrap": "0.13.6-2022-05-20T08:57:17",
-    "source-image": "rhel-8-byos-v20230615"
+    "salt-bootstrap": "0.13.9-2024-07-09T12:24:25",
+    "source-image": "rhel-8-byos-v20240709"
   },
   "tags": {
     "fips-mode": "disabled",
