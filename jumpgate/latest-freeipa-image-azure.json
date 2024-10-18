@@ -1,35 +1,38 @@
 {
-  "created": 1718891085,
-  "published": 1718893211,
-  "date": "2024-06-20",
+  "created": 1729247951,
+  "published": 1729250094,
+  "date": "2024-10-18",
   "description": "Official Cloudbreak image",
   "images": {
     "azure": {
-      "West US": "https://cldrwestus.blob.core.windows.net/images/freeipa-cdh--1718891043.vhd"
+      "West US": "https://cldrwestus.blob.core.windows.net/images/freeipa-cdh--1729247912.vhd"
     }
   },
   "os": "redhat8",
   "os_type": "redhat8",
-  "uuid": "7002f77b-148b-4da8-bde0-a7c49bf9d0a3",
+  "architecture": "x86_64",
+  "uuid": "33039d91-9383-46d7-b72e-a5d8563bdb25",
   "package-versions": {
     "blackbox-exporter": "0.19.0",
-    "cdp-logging-agent": "1.3.2_b1",
-    "cdp-minifi-agent": "1.22.07",
+    "cdp-logging-agent": "1.3.3_b18",
     "cdp-prometheus": "2.36.2",
-    "cdp-request-signer": "0.2.4",
-    "cdp-telemetry": "1.3.2_b1",
-    "cloudbreak_images": "6ee7796fed174f5c9fce39103b5a77b1cb16d3fb",
+    "cdp-request-signer": "1.3.3_b18",
+    "cdp-telemetry": "1.3.3_b18",
+    "cloudbreak_images": "a78ed3a1a2b10a87d6ca601e5620fd551f2580a0",
     "freeipa-health-agent": "0.1-20240306130845git17cc467",
     "freeipa-ldap-agent": "1.0.0-b12478",
-    "freeipa-plugin": "1.0-20240306130845git17cc467.el8",
-    "inverting-proxy-agent": "3.5.0-b82",
-    "inverting-proxy-agent_gbn": "54580234",
+    "freeipa-plugin": "1.1-b847.el8",
+    "inverting-proxy-agent": "3.8.0-b23",
+    "inverting-proxy-agent_gbn": "58686153",
     "node-exporter": "1.3.1",
-    "python36": "3.6.8-38.module+el8.5.0+12207+5c5719bc",
-    "python38": "3.8.16-1.module+el8.8.0+18967+20d359ae.1",
+    "os-version": "8.10",
+    "python311": "3.11.9-7.el8_10",
+    "python36": "3.6.8-39.module+el8.10.0+20784+edafcd43",
+    "python38": "3.8.17-2.module+el8.9.0+19642+a12b4af6",
+    "python39": "3.9.19-7.module+el8.10.0+22237+51382d7a",
     "salt": "3001.8",
-    "salt-bootstrap": "0.13.6-2022-05-20T08:57:17",
-    "source-image": "redhat:rhel-byos:rhel-lvm88:8.8.2023102310"
+    "salt-bootstrap": "0.13.9-2024-07-09T12:24:25",
+    "source-image": "redhat:rhel-byos:rhel-lvm810:8.10.2024060517"
   },
   "tags": {
     "fips-mode": "disabled",
