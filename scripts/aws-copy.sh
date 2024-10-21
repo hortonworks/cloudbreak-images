@@ -53,6 +53,7 @@ function checking_jobs() {
 function wait_for_image_and_check() {
   REGION=$1
   AMI_IN_REGION=$2
+  export AWS_MAX_ATTEMPTS=1200
 
   aws ec2 wait image-available --region $REGION --image-ids $AMI_IN_REGION
 
