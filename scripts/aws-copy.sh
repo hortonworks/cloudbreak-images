@@ -1,6 +1,6 @@
 #!/bin/bash
 
-set -ex
+set -ex -o pipefail
 
 AMI_ID=$IMAGE_NAME
 IMAGE_NAME=$(aws ec2 describe-images --region $SOURCE_LOCATION --filters "Name=image-id,Values=$AMI_ID" --query 'Images[*].[Name]' --output "text")
@@ -53,6 +53,8 @@ function checking_jobs() {
 function wait_for_image_and_check() {
   REGION=$1
   AMI_IN_REGION=$2
+  export AWS_RETRY_MODE=standard
+  export AWS_MAX_ATTEMPTS=10
 
   aws ec2 wait image-available --region $REGION --image-ids $AMI_IN_REGION
 
