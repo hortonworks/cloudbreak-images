@@ -15,7 +15,4 @@ final:
 {% endif %}
 {% endif %}
     - cleanup
-# This could be removed (proably along with the whole Psycopg2 stuff!) once CDPD-71074 gets delivered to 7.2.18 and above
-{% if salt['environ.get']('CLOUD_PROVIDER') == 'AWS_GOV' %}
-    - hue-hack
-{% endif %}
+    - hacks-and-tweaks
