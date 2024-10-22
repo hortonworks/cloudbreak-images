@@ -91,6 +91,7 @@ packer_in_container() {
     -e AWS_ACCESS_KEY_ID=$AWS_ACCESS_KEY_ID \
     -e AWS_SECRET_ACCESS_KEY=$AWS_SECRET_ACCESS_KEY \
     -e AWS_SNAPSHOT_GROUPS=$AWS_SNAPSHOT_GROUPS \
+    -e PLAN_NAME=$PLAN_NAME \
     -v /var/run/docker.sock:/var/run/docker.sock \
     -v $PWD:$PWD \
     -w $PWD \
