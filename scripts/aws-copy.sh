@@ -57,12 +57,12 @@ function wait_for_image_and_check() {
 
   aws ec2 wait image-available --region $REGION --image-ids $AMI_IN_REGION
 
-  if [ $? != 0 ]
+  if [ $? -ne 0 ]
   then
     log "First try of waiting in region $REGION for image $AMI_IN_REGION failed, retrying"
     aws ec2 wait image-available --region $REGION --image-ids $AMI_IN_REGION
 
-    if [ $? != 0 ]
+    if [ $? -ne 0 ]
     then
       log "Second try of waiting in region $REGION for image $AMI_IN_REGION failed too, exiting"
       exit 1
