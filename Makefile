@@ -60,6 +60,14 @@ $(error "AZURE_IMAGE_VHD and Marketplace image properties (AZURE_IMAGE_PUBLISHER
 $(error Unexpected OS type $(OS) for Azure)
 		endif
 	endif
+
+	ifdef OS_VERSION
+		ifeq ($(OS_VERSION),8.8)
+			PLAN_NAME ?= rhel-lvm88
+		else ifeq ($(OS_VERSION),8.10)
+			PLAN_NAME ?= rhel-lvm810
+		endif
+	endif
 endif
 
 # AWS source ami and instance type specification
@@ -547,19 +555,22 @@ ifdef SOURCE_IMAGE
 	OS=centos \
 	IMAGE_UUID=$(IMAGE_UUID) \
 	SOURCE_IMAGE=$(SOURCE_IMAGE) \
-	BUILD_RESOURCE_GROUP_NAME=$(BUILD_RESOURCE_GROUP_NAME) \
 	./scripts/changelog/packer.sh build -color=false -only=arm-centos7 -force $(PACKER_OPTS)
 endif
 endif
 
 generate-azure-redhat8-changelog:
+ifndef PLAN_NAME
+	$(error PLAN_NAME parameter is mandatory for azure redhat8 related changelog generation)
+endif
+
 ifdef IMAGE_UUID
 ifdef SOURCE_IMAGE
 	$(ENVS) \
 	OS=redhat8 \
 	IMAGE_UUID=$(IMAGE_UUID) \
 	SOURCE_IMAGE=$(SOURCE_IMAGE) \
-	BUILD_RESOURCE_GROUP_NAME=$(BUILD_RESOURCE_GROUP_NAME) \
+	PLAN_NAME=$(PLAN_NAME) \
 	./scripts/changelog/packer.sh build -color=false -only=arm-redhat8 -force $(PACKER_OPTS)
 endif
 endif
@@ -599,12 +610,16 @@ copy-azure-images:
 	TRACE=1 AZURE_STORAGE_ACCOUNTS="$(AZURE_STORAGE_ACCOUNTS)" AZURE_IMAGE_NAME="$(AZURE_IMAGE_NAME)" ./scripts/azure-copy.sh
 
 docker-build-centos79:
-	echo "Building image for YCloud"
+	echo "Building CentOS 7.9 image for YCloud"
 	@ OS=centos7 OS_TYPE=redhat7 CLOUD_PROVIDER=YARN TAG=centos-79 DIR=centos7.9 make docker-build
 
+docker-build-redhat88:
+	echo "Building RHEL 8.8 image for YCloud"
+	@ OS=redhat8 OS_TYPE=redhat8 CLOUD_PROVIDER=YARN TAG=redhat-88 DIR=redhat8 make docker-build
+
 docker-build-redhat8:
-	echo "Building RedHat8 image for YCloud"
-	@ OS=redhat8 OS_TYPE=redhat8 CLOUD_PROVIDER=YARN TAG=redhat-8 DIR=redhat8 make docker-build
+	echo "Building RHEL 8.10 image for YCloud"
+	@ OS=redhat8 OS_TYPE=redhat8 CLOUD_PROVIDER=YARN TAG=redhat-8 DIR=redhat8.10 make docker-build
 
 docker-build-yarn-loadbalancer:
 	echo "Building loadbalancer image for YCloud"
