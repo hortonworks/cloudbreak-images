@@ -1,4 +1,4 @@
-{% set version = '2.36.2' %}
+{% set version = '2.54.1' %}
 {% set path = 'https://github.com/prometheus/prometheus/releases/download/v' ~ version %}
 {% set architecture = 'arm64' if salt['environ.get']('ARCHITECTURE') == 'arm64' else 'amd64' %}
 {% set url = path ~ '/prometheus-' ~ version ~ '.linux-' ~ architecture ~ '.tar.gz' %}
