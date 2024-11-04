@@ -162,7 +162,7 @@ ifndef IMAGE_NAME
 @echo IMAGE_NAME was not defined as an environment variable. Generated value: $(IMAGE_NAME)
 endif
 
-IMAGE_SIZE=$(shell ./scripts/get-image-size.sh $(CLOUD_PROVIDER) $(OS) $(STACK_VERSION))
+IMAGE_SIZE=$(shell ./scripts/get-image-size.sh $(CLOUD_PROVIDER) $(OS) $(STACK_VERSION) $(ARCHITECTURE))
 
 ifeq ($(MAKE_PUBLIC_SNAPSHOTS),yes)
 	AWS_SNAPSHOT_GROUPS = "all"
