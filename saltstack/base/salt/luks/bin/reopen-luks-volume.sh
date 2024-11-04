@@ -19,6 +19,8 @@ export IS_FREEIPA=true
 export IS_FREEIPA=false
 {% endif %}
 export AWS_USE_FIPS_ENDPOINT=true
+export AWS_RETRY_MODE=standard
+export AWS_MAX_ATTEMPTS=15
 
 recreate_loop_device() {
   if [[ $(losetup -j "$LUKS_BACKING_FILE" | wc -l | tr -d '\n') == 0 ]]; then
