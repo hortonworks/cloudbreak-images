@@ -8,7 +8,9 @@ base:
     - python3
     - salt-bootstrap
     - salt
+{% if salt['environ.get']('CUSTOM_IMAGE_TYPE') != 'freeipa' %}
     - postgresql
+{% endif %}
     - monitoring
     - performance
     - telemetry
