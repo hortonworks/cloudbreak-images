@@ -43,7 +43,7 @@ if [ "${CLOUD_PROVIDER}" == "Azure" ]; then
 fi
 
 #Install and download what we need for the hardening
-python3 -m virtualenv $ANSIBLE_PATH
+python3 -m virtualenv --python="/usr/bin/python3.11" $ANSIBLE_PATH
 source $ANSIBLE_PATH/bin/activate
 python3 -m pip install ansible
 yum install -y git
