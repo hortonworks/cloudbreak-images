@@ -55,8 +55,11 @@ function wait_for_image_and_check() {
   AMI_IN_REGION=$2
   export AWS_RETRY_MODE=standard
   export AWS_MAX_ATTEMPTS=10000
+  aws configure set retry_mode standard
+  aws configure set max_attempts 10000
+  
 
-  aws ec2 wait image-available --region $REGION --image-ids $AMI_IN_REGION
+  aws ec2 wait image-available --region $REGION --image-ids $AMI_IN_REGION --debug
 
   if [ $? != 0 ]
   then
