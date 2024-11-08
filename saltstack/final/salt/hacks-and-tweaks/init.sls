@@ -13,11 +13,3 @@ psycopg2-rhel8-py38-hue-hack:
     - name: rm -rf /opt/cloudera/parcels/CDH/lib/hue/build/env/lib/python3.8/site-packages/psycopg2*
     - onlyif: ls -la /opt/cloudera/parcels/CDH/lib/hue/build/env/lib/python3.8/site-packages/psycopg2
 {% endif %}
-
-# Not sure when we'll be able to remove this hack, but right now we need a quick solution because the existence of this file causes
-# problems on GCP. Read the comments of CB-27565 for more details.
-{% if salt['environ.get']('OS') == 'redhat8' and salt['environ.get']('RHEL_VERSION') == '8.10' and salt['environ.get']('CLOUD_PROVIDER') == 'GCP' %}
-remove-rhel810-gcp-dns-override:
-  cmd.run:
-    - name: rm -f /etc/NetworkManager/dispatcher.d/google_hostname.sh
-{% endif %}

@@ -4,6 +4,7 @@ base:
 {% if not salt['file.file_exists']('/etc/waagent.conf') %}
     - cloud-init
 {% endif %}
+    - hostname
     - nginx
     - python3
     - salt-bootstrap
