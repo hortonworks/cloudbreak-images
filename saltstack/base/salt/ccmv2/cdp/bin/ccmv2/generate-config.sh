@@ -3,9 +3,9 @@
 # Copyright (C) 2021 Cloudera, Inc.
 #
 
-if [[ "$#" -lt 11 || "$#" -gt 12 ]]; then
-  echo "Wrong number of arguments passed. The script requires 11 arguments to be passed for 'BACKEND_ID', 'BACKEND_HOST', 'BACKEND_PORT', 'AGENT_KEY_PATH', 'AGENT_CERT_PATH', 'ENVIRONMENT_CRN', 'ACCESS_KEY_ID', 'ACCESS_KEY', 'TRUSTED_BACKEND_CERT_PATH', 'TRUSTED_PROXY_CERT_PATH' and 'INVERTING_PROXY_URL'."
-  echo "An optional 12th argument for 'HTTP_PROXY_URL' can be passed. If not passed, no proxy will be used."
+if [[ "$#" -lt 10 || "$#" -gt 11 ]]; then
+  echo "Wrong number of arguments passed. The script requires 10 arguments to be passed for 'BACKEND_ID', 'BACKEND_HOST', 'BACKEND_PORT', 'AGENT_KEY_PATH', 'AGENT_CERT_PATH', 'ENVIRONMENT_CRN', 'ACCESS_KEY_PATH', 'TRUSTED_BACKEND_CERT_PATH', 'TRUSTED_PROXY_CERT_PATH' and 'INVERTING_PROXY_URL'."
+  echo "An optional 11th argument for 'HTTP_PROXY_URL' can be passed. If not passed, no proxy will be used."
 
   exit 1
 fi
@@ -16,13 +16,12 @@ BACKEND_PORT=$3
 AGENT_KEY_PATH=$4
 AGENT_CERT_PATH=$5
 ENVIRONMENT_CRN=$6
-ACCESS_KEY_ID=$7
-ACCESS_KEY=$8
-TRUSTED_BACKEND_CERT_PATH=$9
-TRUSTED_PROXY_CERT_PATH=${10}
-INVERTING_PROXY_URL=${11}
+ACCESS_KEY_PATH=$7
+TRUSTED_BACKEND_CERT_PATH=$8
+TRUSTED_PROXY_CERT_PATH=${9}
+INVERTING_PROXY_URL=${10}
 
-HTTP_PROXY_URL=${12:-""}
+HTTP_PROXY_URL=${11:-""}
 
 CONFIG_FILE=/etc/jumpgate/config.toml
 LOG_FILE=/var/log/jumpgate/out.log
@@ -39,8 +38,8 @@ clientAuthenticationCertificate = """$(cat $AGENT_CERT_PATH)"""
 clientAuthenticationKey = """$(cat $AGENT_KEY_PATH)"""
 
 environmentCrn = "${ENVIRONMENT_CRN}"
-accessKeyId = "${ACCESS_KEY_ID}"
-accessKey = """${ACCESS_KEY}"""
+accessKeyId = "$(grep '^CCM_V2_AGENT_ACCESS_KEY_ID=' $ACCESS_KEY_PATH | cut -d'=' -f2)"
+accessKey = """$(grep '^ACCESS_KEY=' $ACCESS_KEY_PATH | cut -d'=' -f2 | base64 --decode)"""
 
 http_proxy = "${HTTP_PROXY_URL}"
 
