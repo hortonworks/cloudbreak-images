@@ -127,7 +127,7 @@ start_nginx() {
   mv /etc/nginx/sites-enabled/ssl-template /etc/nginx/sites-enabled/ssl.conf
   mkdir -p /usr/share/nginx/json/
   if [[ -d /yarn-private ]]; then
-      pkill -1 -P 1 nginx
+      pkill -1 -P 1 nginx || true
   else
       service nginx restart
   fi
