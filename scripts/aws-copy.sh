@@ -50,6 +50,25 @@ function checking_jobs() {
   return ${status}
 }
 
+function wait_for_image_available() {
+  local  _imageId=$1
+  local  _region=$2
+  while true; do
+    image_status=$(aws ec2 describe-images --image-ids ${_imageId} --region ${_region}  --query 'Images[0].State' --output text)
+    echo "Image [${_imageId}] status is [${image_status}] in region [${_region}]."
+    if [[ "$image_status" == "available" ]]; then
+      echo "Image is available now. Continuing.. "
+      break
+    elif [[ "$image_status" == "pending" ]]; then
+      echo "Waiting 30 seconds.."
+      sleep 30
+    else
+      echo "Error, exiting.."
+      exit 1
+    fi
+  done
+}
+
 function wait_for_image_and_check() {
   REGION=$1
   AMI_IN_REGION=$2
@@ -60,20 +79,8 @@ function wait_for_image_and_check() {
   aws configure set retry_mode standard
   aws configure set max_attempts 60
   aws configure set delay 60
-  
-  aws ec2 wait image-available --region $REGION --image-ids $AMI_IN_REGION --debug
 
-  if [ $? != 0 ]
-  then
-    log "First try of waiting in region $REGION for image $AMI_IN_REGION failed, retrying"
-    aws ec2 wait image-available --region $REGION --image-ids $AMI_IN_REGION
-
-    if [ $? != 0 ]
-    then
-      log "Second try of waiting in region $REGION for image $AMI_IN_REGION failed too, exiting"
-      exit 1
-    fi
-  fi
+  wait_for_image_available $AMI_IN_REGION $REGION
 
   log "Querying snapshot in region $REGION for image $AMI_IN_REGION"
   SNAPSHOT_ID=$(aws ec2 describe-images --image-ids $AMI_IN_REGION --region $REGION --query "Images[0].BlockDeviceMappings[0].Ebs.SnapshotId" --output "text")
