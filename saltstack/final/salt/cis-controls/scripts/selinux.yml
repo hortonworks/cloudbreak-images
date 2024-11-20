@@ -1,0 +1,52 @@
+ - hosts: all
+   pre_tasks:
+     - name: Verify Ansible meets SCAP-Security-Guide version requirements.
+       assert:
+         that: "ansible_version.full is version_compare('2.5', '>=')"
+         msg: >
+           "You must update Ansible to at least version 2.5 to use this role."
+
+   tasks:
+    - name: Allow httpd_t (e.g nginx) to bind to port 9443
+      command: semanage port -a -t http_port_t -p tcp 9443
+      tags:
+        - selinux
+        - CB-27855
+
+    - name: Allow httpd_t (e.g nginx) to connect to port 7070
+      shell: | 
+        semanage port -a -t http_port_t -p tcp 7070
+        setsebool -P httpd_can_network_connect on
+      tags:
+        - selinux
+        - CB-27855
+
+    - name: Set a default SELinux context for /etc/httpd/conf/httpd-log-filter.sh file
+      command: semanage fcontext -a -t httpd_sys_script_exec_t '/etc/httpd/conf/httpd-log-filter.sh'
+      tags:
+        - selinux
+        - CB-27855
+
+    - name: Apply the new SELinux context to /etc/httpd/conf/httpd-log-filter.sh file immediately
+      command: restorecon -v /etc/httpd/conf/httpd-log-filter.sh
+      tags:
+        - selinux
+        - CB-27855
+
+    - name: Set a default SELinux context for the file '/cdp/ipahealthagent/httpd-crt-tracking.sh'
+      command: semanage fcontext -a -t initrc_exec_t '/cdp/ipahealthagent/httpd-crt-tracking.sh'
+      tags:
+        - selinux
+        - CB-27855
+
+    - name: Apply the new SELinux context immediately to restorecon -v /cdp/ipahealthagent/httpd-crt-tracking.sh file.
+      command: restorecon -v /cdp/ipahealthagent/httpd-crt-tracking.sh
+      tags:
+        - selinux
+        - CB-27855
+
+    - name: Rebuild selinux policies
+      command: semodule -B
+      tags:
+        - selinux
+        - CB-27855
