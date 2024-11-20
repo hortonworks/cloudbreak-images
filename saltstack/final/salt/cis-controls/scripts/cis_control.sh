@@ -63,6 +63,10 @@ else
     chmod 777 /tmp/cis/cis_log.txt
 fi
 
+if [ "${RHEL_VERSION}" == "8.10" ]; then
+    ansible-playbook -i localhost, -c local $ANSIBLE_PATH//selinux.yml | tee /tmp/cis/selinux_log.txt
+fi
+
 #Clean up python stuff
 deactivate
 rm -rf $ANSIBLE_PATH

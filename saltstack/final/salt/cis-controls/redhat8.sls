@@ -80,12 +80,13 @@ deny_nobody:
     - name: /etc/ssh/sshd_config
     - text: "DenyUsers nobody"
 
-add_cis_control_sh:
-  file.managed:
-    - name: /tmp/cis_control.sh
-    - makedirs: True
-    - mode: 755
-    - source: salt://cis-controls/scripts/cis_control.sh
+add_hardening_playbooks:
+  file.recurse:
+    - name: /tmp/
+    - source: salt://cis-controls/scripts/
+    - template: jinja
+    - include_empty: True
+    - file_mode: 755
 
 execute_cis_control_sh:
   cmd.run:
