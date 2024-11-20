@@ -234,6 +234,8 @@ packer_in_container() {
     -e STIG_ENABLED="$STIG_ENABLED" \
     -e PACKER_VERSION="$PACKER_VERSION" \
     -e DEFAULT_JAVA_MAJOR_VERSION="$DEFAULT_JAVA_MAJOR_VERSION" \
+    -e SALTBOOT_VERSION="$SALTBOOT_VERSION" \
+    -e SALTBOOT_HTTPS_ENABLED="$SALTBOOT_HTTPS_ENABLED" \
     -v /var/run/docker.sock:/var/run/docker.sock \
     -v $PWD:$PWD \
     -w $PWD \

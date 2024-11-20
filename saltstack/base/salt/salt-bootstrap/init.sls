@@ -1,4 +1,4 @@
-{% set version = '0.13.9' %}
+{% set version = salt['environ.get']('SALTBOOT_VERSION') %}
 {% set url = 'https://github.com/hortonworks/salt-bootstrap/releases/download/v' ~ version ~ '/salt-bootstrap_' ~ version ~ '_Linux_' ~ salt['environ.get']('ARCHITECTURE') ~ '.tgz' %}
 
 install_saltbootstrap:
@@ -12,6 +12,13 @@ install_saltbootstrap:
     - group: root
     - skip_verify: True
     - if_missing: /usr/sbin/salt-bootstrap
+
+ensure_saltbootstrap_executable:
+  file.managed:
+    - name: /usr/sbin/salt-bootstrap
+    - user: root
+    - group: root
+    - mode: 755
 
 saltbootstrap_hardcoded_package:
   file.append:
