@@ -82,7 +82,7 @@ deny_nobody:
 
 add_hardening_playbooks:
   file.recurse:
-    - name: /tmp/
+    - name: /mnt/tmp/
     - source: salt://cis-controls/scripts/
     - template: jinja
     - include_empty: True
