@@ -89,7 +89,7 @@ add_cis_control_sh:
 
 add_hardening_playbooks:
   file.recurse:
-    - name: /mnt/tmp/
+    - name: /mnt/tmp/ansible
     - source: salt://cis-controls/playbooks/
     - template: jinja
     - include_empty: True
