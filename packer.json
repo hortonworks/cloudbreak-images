@@ -119,7 +119,9 @@
     "ssh_public_key": "{{ env `SSH_PUBLIC_KEY` }}",
     "fips_mode": "{{ env `FIPS_MODE` }}",
     "stig_enabled": "{{ env `STIG_ENABLED` }}",
-    "default_java_major_version": "{{ env `DEFAULT_JAVA_MAJOR_VERSION` }}"
+    "default_java_major_version": "{{ env `DEFAULT_JAVA_MAJOR_VERSION` }}",
+    "saltboot_version": "{{ env `SALTBOOT_VERSION` }}",
+    "saltboot_https_enabled": "{{ env `SALTBOOT_HTTPS_ENABLED` }}"
   },
   "builders": [
     {
@@ -669,7 +671,9 @@
         "CLOUD_PROVIDER={{user `cloud_provider`}}",
         "IMAGE_BURNING_TYPE={{ user `image_burning_type` }}",
         "STIG_ENABLED={{user `stig_enabled`}}",
-        "DEFAULT_JAVA_MAJOR_VERSION={{user `default_java_major_version`}}"
+        "DEFAULT_JAVA_MAJOR_VERSION={{user `default_java_major_version`}}",
+        "SALTBOOT_VERSION={{user `saltboot_version`}}",
+        "SALTBOOT_HTTPS_ENABLED={{user `saltboot_https_enabled`}}"
       ],
       "remote_folder": "/opt/provision-scripts"
     },
