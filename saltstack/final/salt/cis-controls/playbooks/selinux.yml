@@ -21,30 +21,6 @@
         - selinux
         - CB-27855
 
-    - name: Set a default SELinux context for /etc/httpd/conf/httpd-log-filter.sh file
-      command: semanage fcontext -a -t httpd_sys_script_exec_t '/etc/httpd/conf/httpd-log-filter.sh'
-      tags:
-        - selinux
-        - CB-27855
-
-    - name: Apply the new SELinux context to /etc/httpd/conf/httpd-log-filter.sh file immediately
-      command: restorecon -v /etc/httpd/conf/httpd-log-filter.sh
-      tags:
-        - selinux
-        - CB-27855
-
-    - name: Set a default SELinux context for the file '/cdp/ipahealthagent/httpd-crt-tracking.sh'
-      command: semanage fcontext -a -t initrc_exec_t '/cdp/ipahealthagent/httpd-crt-tracking.sh'
-      tags:
-        - selinux
-        - CB-27855
-
-    - name: Apply the new SELinux context immediately to restorecon -v /cdp/ipahealthagent/httpd-crt-tracking.sh file.
-      command: restorecon -v /cdp/ipahealthagent/httpd-crt-tracking.sh
-      tags:
-        - selinux
-        - CB-27855
-
     - name: Rebuild selinux policies
       command: semodule -B
       tags:
