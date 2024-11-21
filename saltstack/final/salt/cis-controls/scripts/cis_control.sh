@@ -64,6 +64,7 @@ else
    if [ "${RHEL_VERSION}" == "8.10" ]; then
        #Apply selinux related configuration
        ansible-playbook -i localhost, -c local $ANSIBLE_PATH/selinux.yml | tee /tmp/cis/selinux_log.txt
+       chmod 777 /tmp/cis/selinux_log.txt
    fi
 fi
 
