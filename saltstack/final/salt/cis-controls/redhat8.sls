@@ -87,6 +87,14 @@ add_cis_control_sh:
     - mode: 755
     - source: salt://cis-controls/scripts/cis_control.sh
 
+add_hardening_playbooks:
+  file.recurse:
+    - name: /mnt/tmp/ansible
+    - source: salt://cis-controls/playbooks/
+    - template: jinja
+    - include_empty: True
+    - file_mode: 755
+
 execute_cis_control_sh:
   cmd.run:
     - name: /tmp/cis_control.sh

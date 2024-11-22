@@ -53,14 +53,19 @@ git clone https://github.com/AutomateCompliance/AnsibleCompliancePlaybooks.git $
 ssh-keygen -A
 
 #Apply the SSG Ansible playbook
-mkdir /tmp/cis
+mkdir -p /tmp/cis
 chmod 777 /tmp/cis
 if [ "${STIG_ENABLED}" == "True" ]; then
-    ansible-playbook -i localhost, -c local $ANSIBLE_PATH//ansible-compliance-playbooks/rhel8-playbook-stig.yml --skip-tags $SKIP_TAGS | tee /tmp/cis/stig_log.txt
+    ansible-playbook -i localhost, -c local $ANSIBLE_PATH/ansible-compliance-playbooks/rhel8-playbook-stig.yml --skip-tags $SKIP_TAGS | tee /tmp/cis/stig_log.txt
     chmod 777 /tmp/cis/stig_log.txt
 else
     ansible-playbook -i localhost, -c local $ANSIBLE_PATH/ansible-compliance-playbooks/rhel8-playbook-cis_server_l1.yml --skip-tags $SKIP_TAGS --extra-vars "$EXTRA_VARS" | tee /tmp/cis/cis_log.txt
     chmod 777 /tmp/cis/cis_log.txt
+   if [ "${RHEL_VERSION}" == "8.10" ]; then
+       #Apply selinux related configuration
+       ansible-playbook -i localhost, -c local $ANSIBLE_PATH/selinux.yml | tee /tmp/cis/selinux_log.txt
+       chmod 777 /tmp/cis/selinux_log.txt
+   fi
 fi
 
 #Clean up python stuff
