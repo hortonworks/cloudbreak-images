@@ -161,11 +161,15 @@ else
 	PYZMQ_VERSION ?= 19.0
 endif
 SALTBOOT_VERSION ?= "0.14.0"
-SALTBOOT_MINOR_VERSION = $(shell echo $(SALTBOOT_VERSION) | cut -d. -f2)
-ifeq ($(shell [[ $(SALTBOOT_MINOR_VERSION) -ge 14 ]] && echo true),true)
-	SALTBOOT_HTTPS_ENABLED ?= false
-else
-	SALTBOOT_HTTPS_ENABLED ?= false
+ifneq ($(CLOUD_PROVIDER),YARN)
+	ifneq ($(OS),centos7)
+		SALTBOOT_MINOR_VERSION = $(shell echo $(SALTBOOT_VERSION) | cut -d. -f2)
+		ifeq ($(shell [[ $(SALTBOOT_MINOR_VERSION) -ge 14 ]] && echo true),true)
+			SALTBOOT_HTTPS_ENABLED ?= true
+		else
+			SALTBOOT_HTTPS_ENABLED ?= false
+		endif
+	endif
 endif
 
 # This block remains here for backward compatibility reasons when the IMAGE_NAME is not defined as an env variable
