@@ -199,3 +199,12 @@ remove_unnecessary_whitespaces_from_yum_repo_files:
   cmd.run:
     - name: find /etc/yum.repos.d -type f -exec sed -i 's/ = /=/g' {} \;
     - onlyif: ls -la /etc/yum.repos.d/
+
+{% if cloud_provider == 'GCP' %}
+# default location is /tmp which has noexec mount option
+set_gcp_startup_script_location:
+  file.replace:
+    - name: /etc/default/instance_configs.cfg
+    - pattern: '^run_dir ='
+    - repl: 'run_dir = /root'
+{% endif %}
