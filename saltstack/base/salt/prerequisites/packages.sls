@@ -59,6 +59,7 @@ packages_install:
     {% endif %}
     {% if pillar['OS'] == 'redhat8' %}
       - sos
+      - setools-console
     {% endif %}
   {% endif %}
   {% if salt['environ.get']('CLOUD_PROVIDER') == 'AWS_GOV' %}
