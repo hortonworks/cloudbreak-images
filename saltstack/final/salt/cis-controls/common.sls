@@ -206,3 +206,9 @@ remove_unnecessary_whitespaces_from_yum_repo_files:
   cmd.run:
     - name: find /etc/yum.repos.d -type f -exec sed -i 's/ = /=/g' {} \;
     - onlyif: ls -la /etc/yum.repos.d/
+
+### Ensure root path integrity
+# https://jira.cloudera.com/browse/CB-27662
+remove_unnecessary_path:
+  cmd.run:
+    - name: PATH=`echo $PATH | sed -e 's/:\/root\/bin$//'`
