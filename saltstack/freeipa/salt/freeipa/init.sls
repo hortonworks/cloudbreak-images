@@ -22,6 +22,12 @@ freeipa-install:
 {% else %}
   cmd.run:
     - name: yum module -y reset idm && yum -y install @idm:DL1 && yum -y install freeipa-server && yum -y install ipa-server-dns bind-dyndb-ldap
+
+ipa-healthcheck-install:
+  pkg.installed:
+    - pkgs:
+        - ipa-healthcheck-core: 0.12-4.module+el8.10.0+22138+e77d88cf
+        - ipa-healthcheck: 0.12-4.module+el8.10.0+22138+e77d88cf
 {% endif %}
 
 {% if freeipa_plugin_rpm_url %}
