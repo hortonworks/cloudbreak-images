@@ -145,6 +145,13 @@ sshd_harden_sshIdealTime_ClientAliveInterval:
     - repl: "ClientAliveInterval 180"
     - append_if_not_found: True
 
+sshd_harden_sshIdealTime_ClientAliveCountMax:
+  file.replace:
+    - name: /etc/ssh/sshd_config
+    - pattern: "^ClientAliveCountMax.*"
+    - repl: "ClientAliveCountMax 3"
+    - append_if_not_found: True
+
 #2.2.1.2 Ensure chrony is configured
 Chrony_config:
   file.replace:
