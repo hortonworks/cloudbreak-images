@@ -80,6 +80,38 @@ deny_nobody:
     - name: /etc/ssh/sshd_config
     - text: "DenyUsers nobody"
 
+#
+create_subpolicy_remove_cbc_cipher_for_ssh:
+  file.append:
+    - name: /etc/crypto-policies/policies/modules/DISABLE-CBC.pmod
+    - text: "ssh_cipher = -AES-128-CBC -AES-256-CBC"
+
+#
+update_crypto_policies:
+  cmd.run:
+    - name: sudo update-crypto-policies --set DEFAULT:DISABLE-CBC
+
+sshd_harden_ApprovedCiphers:
+  file.replace:
+    - name: /etc/ssh/sshd_config
+    - pattern: "^Ciphers"
+    - repl: "Ciphers chacha20-poly1305@openssh.com,aes256-gcm@openssh.com,aes128-gcm@openssh.com,aes256-ctr,aes192-ctr,aes128-ctr"
+    - append_if_not_found: True
+
+sshd_harden_ApprovedMACs:
+  file.replace:
+    - name: /etc/ssh/sshd_config
+    - pattern: "^MACs"
+    - repl: "MACs hmac-sha2-512-etm@openssh.com,hmac-sha2-256-etm@openssh.com,hmac-sha2-512,hmac-sha2-256"
+    - append_if_not_found: True
+
+sshd_Exchange_algorithms:
+  file.replace:
+    - name: /etc/ssh/sshd_config
+    - pattern: "^KexAlgorithms .*"
+    - repl: "KexAlgorithms curve25519-sha256,curve25519-sha256@libssh.org,diffie-hellman-group14-sha256,diffie-hellman-group16-sha512,diffie-hellman-group18-sha512,ecdh-sha2-nistp521,ecdh-sha2-nistp384,ecdh-sha2-nistp256,diffie-hellman-group-exchange-sha256"
+    - append_if_not_found: True
+
 add_cis_control_sh:
   file.managed:
     - name: /tmp/cis_control.sh
