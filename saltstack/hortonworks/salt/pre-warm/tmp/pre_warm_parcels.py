@@ -9,14 +9,14 @@ import time
 import functools
 import hashlib
 
-print("PRE_WARM_PARCELS: " + os.environ.get("PRE_WARM_PARCELS", "[]"))
+print("PRE_WARM_PARCELS: " + os.environ.get("PRE_WARM_PARCELS", "[]").strip('\"'))
 print("\n-------------\n")
-print("PRE_WARM_CSD: " + os.environ.get("PRE_WARM_CSD", "[]"))
+print("PRE_WARM_CSD: " + os.environ.get("PRE_WARM_CSD", "[]").strip('\"'))
 print("\n-------------\n")
 
 if os.environ.get("PRE_WARM_PARCELS", "[]"):
-    PRE_WARM_PARCELS = json.loads(os.environ.get("PRE_WARM_PARCELS", "[]"))
-    PRE_WARM_CSD = json.loads(os.environ.get("PRE_WARM_CSD", "[]"))
+    PRE_WARM_PARCELS = json.loads(os.environ.get("PRE_WARM_PARCELS", "[]").strip('\"'))
+    PRE_WARM_CSD = json.loads(os.environ.get("PRE_WARM_CSD", "[]").strip('\"'))
     PARCELS_ROOT = os.environ.get("PARCELS_ROOT", "/opt/cloudera/parcels")
     CSD_ROOT = os.environ.get("CSD_ROOT", "/opt/cloudera/csd")
     ACTIVE_PARCELS_PATH = "/var/lib/cloudera-scm-agent/active_parcels.json"

@@ -326,6 +326,9 @@ function contains() {
 
 echo "Trying to collect installed packages on ${SALT_INSTALL_OS}"
 
+PRE_WARM_PARCELS=$(echo $PRE_WARM_PARCELS | sed -e 's/^"//' -e 's/"$//')
+PRE_WARM_CSD=$(echo $PRE_WARM_CSD | sed -e 's/^"//' -e 's/"$//')
+
 case ${SALT_INSTALL_OS} in
 
   centos)
