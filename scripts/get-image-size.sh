@@ -5,7 +5,6 @@ source scripts/utils.sh
 CLOUD_PROVIDER=$1
 OS=$2
 STACK_VERSION=$3
-ARCHITECTURE=$4
 
 if [ "$OS" == "centos7" ]; then
   if [ "$CLOUD_PROVIDER" == "GCP" ]; then
