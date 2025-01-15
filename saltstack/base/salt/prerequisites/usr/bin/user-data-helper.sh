@@ -252,6 +252,7 @@ resize_partitions() {
       # Extend logical volumes to satisfy CM free space checks and allocate remaining free space
       lvextend -L50G -r /dev/mapper/rootvg-varlv
       lvextend -L12G -r /dev/mapper/rootvg-tmplv
+      lvextend -L5G -r /dev/mapper/rootvg-homelv
       # Extend root logical volume to remaining free space
       lvextend -l +100%free -r /dev/mapper/rootvg-rootlv
     fi
