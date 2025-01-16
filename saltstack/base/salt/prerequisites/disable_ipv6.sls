@@ -36,3 +36,11 @@ create_missing_ifcfg_file:
     - repl: "IPV6INIT=\"no\""
     - append_if_not_found: True
 {% endif %}
+
+/etc/sysconfig/network-scripts/ifcfg-{{ pillar['network_interface'] }}:
+  file.replace:
+    - name: /etc/sysconfig/network-scripts/ifcfg-{{ pillar['network_interface'] }}
+    - pattern: "^DHCPV6C.*"
+    - repl: "DHCPV6C=\"no\""
+    - append_if_not_found: True
+{% endif %}
