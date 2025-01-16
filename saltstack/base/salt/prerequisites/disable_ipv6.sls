@@ -35,7 +35,6 @@ create_missing_ifcfg_file:
     - pattern: "^IPV6INIT.*"
     - repl: "IPV6INIT=\"no\""
     - append_if_not_found: True
-{% endif %}
 
 /etc/sysconfig/network-scripts/ifcfg-{{ pillar['network_interface'] }}:
   file.replace:
