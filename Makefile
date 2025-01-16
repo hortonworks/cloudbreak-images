@@ -50,7 +50,7 @@ $(error "AZURE_IMAGE_VHD and Marketplace image properties (AZURE_IMAGE_PUBLISHER
 			else ifeq ($(IMAGE_BURNING_TYPE),base)
 				AZURE_IMAGE_SKU ?= rhel-lvm810
 			else ifeq ($(CUSTOM_IMAGE_TYPE),freeipa)
-				AZURE_IMAGE_SKU ?= rhel-lvm810
+				AZURE_IMAGE_SKU ?= rhel-lvm88
 			else
 				AZURE_IMAGE_SKU ?= rhel-lvm88
 			endif
