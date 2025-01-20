@@ -42,4 +42,18 @@ disable-dhcp-ipv6-eth0:
     - pattern: "^DHCPV6C.*"
     - repl: "DHCPV6C=\"no\""
     - append_if_not_found: True
+
+/etc/cloud/cloud.cfg.d/99-disable-ipv6.cfg:
+  file.managed:
+    - user: root
+    - group: root
+    - source:
+      - salt://{{ slspath }}/etc/cloud/cloud.cfg.d/99-disable-ipv6.cfg
+    - mode: 755
+
+replace-if-name-in-cloud-init-ipv6-config:
+  file.replace:
+    - name: /etc/cloud/cloud.cfg.d/99-disable-ipv6.cfg
+    - pattern: "eth0"
+    - repl: {{ pillar['network_interface'] }}
 {% endif %}
