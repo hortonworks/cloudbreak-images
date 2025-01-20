@@ -50,4 +50,7 @@ disable-dhcp-ipv6-eth0:
     - source:
       - salt://{{ slspath }}/etc/cloud/cloud.cfg.d/99-disable-ipv6.cfg
     - mode: 755
+    - template: jinja
+    - defaults:
+        network_interface: {{ pillar['network_interface'] }}
 {% endif %}
