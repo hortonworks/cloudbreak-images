@@ -29,10 +29,28 @@ create_missing_ifcfg_file:
   cmd.run:
     - name: touch /etc/sysconfig/network-scripts/ifcfg-{{ pillar['network_interface'] }}
 
-/etc/sysconfig/network-scripts/ifcfg-{{ pillar['network_interface'] }}:
+disable-init-ipv6-eth0:
   file.replace:
     - name: /etc/sysconfig/network-scripts/ifcfg-{{ pillar['network_interface'] }}
     - pattern: "^IPV6INIT.*"
     - repl: "IPV6INIT=\"no\""
     - append_if_not_found: True
+
+disable-dhcp-ipv6-eth0:
+  file.replace:
+    - name: /etc/sysconfig/network-scripts/ifcfg-{{ pillar['network_interface'] }}
+    - pattern: "^DHCPV6C.*"
+    - repl: "DHCPV6C=\"no\""
+    - append_if_not_found: True
+
+/etc/cloud/cloud.cfg.d/99-disable-ipv6.cfg:
+  file.managed:
+    - user: root
+    - group: root
+    - source:
+      - salt://{{ slspath }}/etc/cloud/cloud.cfg.d/99-disable-ipv6.cfg
+    - mode: 755
+    - template: jinja
+    - defaults:
+        network_interface: {{ pillar['network_interface'] }}
 {% endif %}
