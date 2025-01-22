@@ -43,6 +43,7 @@ disable-dhcp-ipv6-eth0:
     - repl: "DHCPV6C=\"no\""
     - append_if_not_found: True
 
+{% if salt['environ.get']('OS') == 'redhat8' %}
 /etc/cloud/cloud.cfg.d/99-disable-ipv6.cfg:
   file.managed:
     - user: root
@@ -53,4 +54,5 @@ disable-dhcp-ipv6-eth0:
     - template: jinja
     - defaults:
         network_interface: {{ pillar['network_interface'] }}
+{% endif %}
 {% endif %}
