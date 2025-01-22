@@ -211,7 +211,7 @@ DEFAULT_METERING_AGENT_RPM_URL := "https://archive.cloudera.com/cp_clients/thund
 DEFAULT_FREEIPA_PLUGIN_RPM_URL := "https://archive.cloudera.com/cdp-freeipa-artifacts/cdp-hashed-pwd-1.1-b847.el7.x86_64.rpm"
 
 # This one is OS-independent
-DEFAULT_FREEIPA_HEALTH_AGENT_RPM_URL := "https://archive.cloudera.com/cdp-freeipa-artifacts/freeipa-health-agent-0.1-20241118074445git3006935.x86_64.rpm"
+DEFAULT_FREEIPA_HEALTH_AGENT_RPM_URL := "https://cloudera-build-us-west-1.vpc.cloudera.com/s3/build/63467831/thunderhead/1.x/redhat8/yum/freeipa-health-agent-2.1.0.2-b2228.x86_64.rpm"
 
 # This one is OS-independent
 DEFAULT_FREEIPA_LDAP_AGENT_RPM_URL := "https://archive.cloudera.com/cdp-freeipa-artifacts/freeipa-ldap-agent-1.0.0-b12478.x86_64.rpm"
@@ -319,7 +319,7 @@ us-gov-west-1,us-gov-east-1
 endef
 endif
 
-AZURE_BUILD_STORAGE_ACCOUNT ?= "West US:cldrwestus"
+AZURE_BUILD_STORAGE_ACCOUNT ?= "West US 2:cldrwestus2"
 
 S3_TARGET ?= "s3://public-repo-1.hortonworks.com/HDP/cloudbreak"
 
@@ -354,7 +354,7 @@ build-aws-centos7:
 
 build-aws-redhat8:
 	$(ENVS) \
-	AWS_AMI_REGIONS="us-west-1" \
+	AWS_AMI_REGIONS="eu-central-1" \
 	AWS_SOURCE_AMI=$(AWS_SOURCE_AMI) \
 	AWS_INSTANCE_TYPE=$(AWS_INSTANCE_TYPE) \
 	OS=redhat8 \
