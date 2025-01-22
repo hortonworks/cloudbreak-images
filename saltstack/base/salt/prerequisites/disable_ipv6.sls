@@ -44,6 +44,16 @@ disable-dhcp-ipv6-eth0:
     - append_if_not_found: True
 
 {% if salt['environ.get']('OS') == 'redhat8' %}
+
+{% if not salt['file.directory_exists' ]('/etc/cloud/cloud.cfg.d') %}
+/etc/cloud/cloud.cfg.d:
+  file.directory:
+    - user:  root
+    - name:  /etc/cloud/cloud.cfg.d
+    - group:  root
+    - mode:  755
+{% endif %}
+
 /etc/cloud/cloud.cfg.d/99-disable-ipv6.cfg:
   file.managed:
     - user: root
@@ -55,4 +65,5 @@ disable-dhcp-ipv6-eth0:
     - defaults:
         network_interface: {{ pillar['network_interface'] }}
 {% endif %}
+
 {% endif %}
