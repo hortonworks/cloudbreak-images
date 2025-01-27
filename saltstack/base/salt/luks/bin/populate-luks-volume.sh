@@ -5,11 +5,15 @@ set -ex -o pipefail
 export LUKS_VOLUME_NAME="cdp-luks"
 export MOUNT_POINT="/mnt/$LUKS_VOLUME_NAME"
 
+log() {
+  echo "$(date +"%F-%T") $*"
+}
+
 validate_absolute_path() {
   local location="$1"
   if [[ ! "$location" =~ ^/.* ]]
   then
-    echo "Location \"$location\" must be an absolute path!"
+    log "Location \"$location\" must be an absolute path!"
     exit 1
   fi
 }
@@ -18,7 +22,7 @@ validate_location_exists() {
   local location="$1"
   if [ ! -d "$location" ]
   then
-    echo "Location \"$location\" must be an existing directory!"
+    log "Location \"$location\" must be an existing directory!"
     exit 2
   fi
 }
@@ -30,7 +34,7 @@ create_location_if_necessary() {
   local mode=$4
   if [ ! -d "$location" ]
   then
-    echo "Location \"$location\" does not exist; creating it with owner \"$owner\", group \"$group\", mode \"$mode\"."
+    log "Location \"$location\" does not exist; creating it with owner \"$owner\", group \"$group\", mode \"$mode\"."
     install -o $owner -g $group -m $mode -d "$location"
   fi
 }
@@ -40,7 +44,7 @@ create_location_parent_tree_if_necessary() {
   source_location_parent=$(dirname "$1")
   if [ "$source_location_parent" != "/" ]
   then
-    echo "Creating source location parent tree \"$source_location_parent\" if necessary."
+    log "Creating source location parent tree \"$source_location_parent\" if necessary."
     source_location_parent="${source_location_parent#/}"
     local source_location=""
     local luks_location="$MOUNT_POINT"
@@ -56,16 +60,16 @@ create_location_parent_tree_if_necessary() {
 
 process_location() {
   local source_location="$1"
-  echo "Processing source location \"$source_location\"."
+  log "Processing source location \"$source_location\"."
   validate_absolute_path "$source_location"
   validate_location_exists "$source_location"
   create_location_parent_tree_if_necessary "$source_location"
   local luks_location="$MOUNT_POINT$source_location"
-  echo "Moving source location \"$source_location\" into LUKS location \"$luks_location\"."
+  log "Moving source location \"$source_location\" into LUKS location \"$luks_location\"."
   local luks_location_parent
   luks_location_parent=$(dirname "$luks_location")
   mv "$source_location" "$luks_location_parent"
-  echo "Creating symlink \"$source_location\" pointing to \"$luks_location\"."
+  log "Creating symlink \"$source_location\" pointing to \"$luks_location\"."
   ln -s "$luks_location" "$source_location"
 }
 
@@ -77,11 +81,11 @@ process_location_with_create() {
 }
 
 log_processing_needed() {
-  echo "Processing $1 locations."
+  log "Processing $1 locations."
 }
 
 log_processing_skipped() {
-  echo "No need to process $1 locations."
+  log "No need to process $1 locations."
 }
 
 process_global_locations() {
@@ -137,8 +141,7 @@ process_http_proxy_locations() {
   if [[ "$IS_PROXY_ENABLED" == "true" ]];
   then
     log_processing_needed "HTTP proxy"
-    # TODO Double-check user:group & mode
-    process_location_with_create "/etc/cdp" root root 750
+    process_location_with_create "/etc/cdp" root root 755
   else
     log_processing_skipped "HTTP proxy"
   fi
@@ -174,12 +177,16 @@ process_cm_locations() {
 }
 
 main() {
+  log "$(basename $0) Start"
+
   process_global_locations
   process_gateway_locations
   process_ccmv2_locations
   process_http_proxy_locations
   process_freeipa_locations
   process_cm_locations
+
+  log "$(basename $0) Finish"
 }
 
 main

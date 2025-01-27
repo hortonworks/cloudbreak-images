@@ -22,23 +22,31 @@ export AWS_USE_FIPS_ENDPOINT=true
 export AWS_RETRY_MODE=standard
 export AWS_MAX_ATTEMPTS=15
 
+log() {
+  echo "$(date +"%F-%T") $*"
+}
+
 recreate_loop_device() {
   if [[ $(losetup -j "$LUKS_BACKING_FILE" | wc -l | tr -d '\n') == 0 ]]; then
     # Recreate the loop device
+    log "Recreating loop device"
     LOOP_DEVICE=$(losetup --find --show "$LUKS_BACKING_FILE")
 
     if [[ $(losetup -j "$LUKS_BACKING_FILE" | cut -d ':' -f1 | tr -d '\n') != "$LOOP_DEVICE" ]]; then
-      echo "Failed to set up loop device correctly... Exiting LUKS volume reopen script with failed exit code!"
+      log "Failed to set up loop device correctly... Exiting LUKS volume reopen script with failed exit code!"
       exit 1
     fi
   else
+    log "Found existing loop device"
     LOOP_DEVICE=$(losetup -j "$LUKS_BACKING_FILE" | cut -d ':' -f1 | tr -d '\n')
   fi
+  log "Allocated loop device: $LOOP_DEVICE"
 }
 
 setup_tmpfs_for_plaintext_passphrase() {
   if ! mountpoint "$PASSPHRASE_TMPFS"; then
     # Create the tmpfs for the plaintext passphrase
+    log "Creating tmpfs for the plaintext passphrase"
     mount -t tmpfs -o size="$PASSPHRASE_TMPFS_SIZE",mode=700 tmpfs "$PASSPHRASE_TMPFS"
   fi
 }
@@ -50,14 +58,16 @@ decrypt_passphrase_ciphertext() {
                                 curl -s -H "X-aws-ec2-metadata-token: $TOKEN" http://169.254.169.254/latest/meta-data/instance-id)"
     METADATA_LOG_FILE="$LUKS_LOG_DIR/passphrase_decryption_md-$(date +"%F-%T").json"
     # Decrypt the ciphertext passphrase
+    log "Decrypting plaintext passphrase"
     if ! /usr/local/bin/aws-encryption-cli \
+           -v -v -v -v \
            --decrypt \
            --input "$PASSPHRASE_CIPHERTEXT" \
            --output "$PASSPHRASE_PLAINTEXT" \
            --wrapping-keys provider=aws-kms key="$(cat "$ENCRYPTION_KEY_FILE")" \
            --metadata-output "$METADATA_LOG_FILE" \
            --encryption-context INSTANCE_ID="$INSTANCE_ID"; then
-      echo "Failed to decrypt the plaintext ciphertext... Exiting LUKS volume reopen script with failed exit code!"
+      log "Failed to decrypt the plaintext ciphertext... Exiting LUKS volume reopen script with failed exit code!"
       restore_etc_hosts
       exit 2
     fi
@@ -79,49 +89,50 @@ add_kms_entry_to_etc_hosts() {
     # Prepend the Amazon provided DNS server to the list of DNS servers
     DNS_SERVERS=("$AMAZON_PROVIDED_DNS_SERVER" "${DNS_SERVERS[@]}")
 
-    echo "DNS servers available for resolving KMS endpoint: ${DNS_SERVERS[*]}"
+    log "DNS servers available for resolving KMS endpoint: ${DNS_SERVERS[*]}"
     for dns_server in "${DNS_SERVERS[@]}"; do
-      echo "Trying to resolve $KMS_FIPS_ENDPOINT using DNS server $dns_server"
+      log "Trying to resolve $KMS_FIPS_ENDPOINT using DNS server $dns_server"
       set +e
       KMS_IP_ADDRESS="$(temp="$(dig @"$dns_server" "$KMS_FIPS_ENDPOINT" +noall +short)" && echo "$temp")"
       set -e
       if [[ -n "$KMS_IP_ADDRESS" ]]; then
-        echo "Successfully resolved $KMS_FIPS_ENDPOINT using DNS server $dns_server"
+        log "Successfully resolved $KMS_FIPS_ENDPOINT using DNS server $dns_server"
         break
       fi
     done
 
     if [[ -z "$KMS_IP_ADDRESS" ]]; then
-      echo "Failed to resolve $KMS_FIPS_ENDPOINT with any DNS server... Exiting LUKS volume reopen script with failed exit code!"
+      log "Failed to resolve $KMS_FIPS_ENDPOINT with any DNS server... Exiting LUKS volume reopen script with failed exit code!"
       exit 5
     fi
 
     # Add entry to /etc/hosts while creating a backup of the original file
-    echo "Adding temporary entry \"$KMS_IP_ADDRESS $KMS_FIPS_ENDPOINT\" to /etc/hosts ..."
+    log "Adding temporary entry \"$KMS_IP_ADDRESS $KMS_FIPS_ENDPOINT\" to /etc/hosts ..."
     sed -i.bak "\$a$KMS_IP_ADDRESS $KMS_FIPS_ENDPOINT" /etc/hosts
   else
-    echo "No need to add temporary KMS entry to /etc/hosts since this is not a FreeIPA instance."
+    log "No need to add temporary KMS entry to /etc/hosts since this is not a FreeIPA instance."
   fi
 }
 
 restore_etc_hosts() {
   if [[ "$IS_FREEIPA" == "true" ]]; then
     # Restore the original /etc/hosts file from the backup file
-    echo "Restoring /etc/hosts from the backup file..."
+    log "Restoring /etc/hosts from the backup file..."
     mv -f /etc/hosts.bak /etc/hosts
   else
-    echo "No need to restore /etc/hosts since no temporary entry was added to it as this is not a FreeIPA instance."
+    log "No need to restore /etc/hosts since no temporary entry was added to it as this is not a FreeIPA instance."
   fi
 }
 
 reopen_luks_volume() {
   if ! cryptsetup status "$LUKS_VOLUME_NAME"; then
     # Reopen the LUKS volume
+    log "Reopening LUKS volume"
     if ! cryptsetup open "$LOOP_DEVICE" "$LUKS_VOLUME_NAME" \
              --key-file "$PASSPHRASE_PLAINTEXT" \
              --type luks2 \
              --debug; then
-      echo "Failed to reopen the LUKS volume... Exiting LUKS volume reopen script with failed exit code!"
+      log "Failed to reopen the LUKS volume... Exiting LUKS volume reopen script with failed exit code!"
       exit 3
     fi
   fi
@@ -130,20 +141,25 @@ reopen_luks_volume() {
 remount_luks_volume() {
   if ! mountpoint "$MOUNT_POINT"; then
     # Remount the LUKS volume
+    log "Remounting LUKS volume"
     mount "$LUKS_MAPPER_DEVICE" "$MOUNT_POINT"
     chmod 755 "$MOUNT_POINT"
   else
-    echo "Did not mount the LUKS volume, as the path is already a mount point... Exiting LUKS volume reopen script with failed exit code!"
+    log "Did not mount the LUKS volume, as the path is already a mount point... Exiting LUKS volume reopen script with failed exit code!"
     exit 4
   fi
 }
 
 main() {
+  log "$(basename $0) Start"
+
   recreate_loop_device
   setup_tmpfs_for_plaintext_passphrase
   decrypt_passphrase_ciphertext
   reopen_luks_volume
   remount_luks_volume
+
+  log "$(basename $0) Finish"
 }
 
 main
