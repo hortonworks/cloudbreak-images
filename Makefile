@@ -171,7 +171,7 @@ ifneq ($(CLOUD_PROVIDER),YARN)
 	ifneq ($(OS),centos7)
 		SALTBOOT_MINOR_VERSION = $(shell echo $(SALTBOOT_VERSION) | cut -d. -f2)
 		ifeq ($(shell [[ $(SALTBOOT_MINOR_VERSION) -ge 14 ]] && echo true),true)
-			SALTBOOT_HTTPS_ENABLED ?= true
+			SALTBOOT_HTTPS_ENABLED ?= false
 		else
 			SALTBOOT_HTTPS_ENABLED ?= false
 		endif
