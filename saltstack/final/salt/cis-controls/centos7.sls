@@ -55,13 +55,6 @@ sshd_harden_addressUserEnvPermit:
     - repl: "PermitUserEnvironment no"
     - append_if_not_found: True
 
-sshd_harden_sshIdealTime_ClientAliveCountMax:
-  file.replace:
-    - name: /etc/ssh/sshd_config
-    - pattern: "^ClientAliveCountMax.*"
-    - repl: "ClientAliveCountMax 3"
-    - append_if_not_found: True
-
 sshd_harden_ssh2:
   file.replace:
     - name: /etc/ssh/sshd_config
