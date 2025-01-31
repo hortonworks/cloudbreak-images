@@ -1,41 +1,38 @@
 {
-  "created": 1729247951,
-  "published": 1729250094,
-  "date": "2024-10-18",
+  "created": 1738325537,
+  "published": 1738327137,
+  "date": "2025-01-31",
   "description": "Official Cloudbreak image",
   "images": {
     "azure": {
-      "West US": "https://cldrwestus.blob.core.windows.net/images/freeipa-cdh--1729247912.vhd"
+      "West US": "https://cldrwestus.blob.core.windows.net/images/freeipa-cdh--1738325520.vhd"
     }
   },
-  "os": "redhat8",
-  "os_type": "redhat8",
+  "os": "centos7",
+  "os_type": "redhat7",
   "architecture": "x86_64",
-  "uuid": "33039d91-9383-46d7-b72e-a5d8563bdb25",
+  "uuid": "6657f6de-e247-485d-80ad-abc2fb72e14d",
   "package-versions": {
-    "blackbox-exporter": "0.19.0",
-    "cdp-logging-agent": "1.3.3_b18",
-    "cdp-prometheus": "2.36.2",
-    "cdp-request-signer": "1.3.3_b18",
-    "cdp-telemetry": "1.3.3_b18",
-    "cloudbreak_images": "a78ed3a1a2b10a87d6ca601e5620fd551f2580a0",
-    "freeipa-health-agent": "0.1-20240306130845git17cc467",
+    "blackbox-exporter": "0.25.0",
+    "cdp-logging-agent": "1.3.5_b1",
+    "cdp-prometheus": "2.54.1",
+    "cdp-request-signer": "1.3.5_b1",
+    "cdp-telemetry": "1.3.5_b1",
+    "cloudbreak_images": "ea7da57d6ae09b770803a7f1a6137ca1dc88d114",
+    "freeipa-health-agent": "0.1-20241118074445git3006935",
     "freeipa-ldap-agent": "1.0.0-b12478",
-    "freeipa-plugin": "1.1-b847.el8",
-    "inverting-proxy-agent": "3.8.0-b23",
-    "inverting-proxy-agent_gbn": "58686153",
+    "freeipa-plugin": "1.1-b847.el7",
+    "inverting-proxy-agent": "3.9.0-b37",
+    "inverting-proxy-agent_gbn": "62478882",
+    "ipa-server": "4.6.8",
     "node-exporter": "1.3.1",
-    "os-version": "8.10",
-    "python311": "3.11.9-7.el8_10",
-    "python36": "3.6.8-39.module+el8.10.0+20784+edafcd43",
-    "python38": "3.8.17-2.module+el8.9.0+19642+a12b4af6",
-    "python39": "3.9.19-7.module+el8.10.0+22237+51382d7a",
+    "python27": "2.7.5-94.el7_9",
+    "python36": "3.6.8-21.el7_9",
     "salt": "3001.8",
-    "salt-bootstrap": "0.13.9-2024-07-09T12:24:25",
-    "source-image": "redhat:rhel-byos:rhel-lvm810:8.10.2024060517"
+    "salt-bootstrap": "0.14.0-2024-11-28T08:25:12",
+    "source-image": "openlogic:centos:7.6:7.6.201909120"
   },
   "tags": {
-    "fips-mode": "disabled",
     "hardening": "cis_server_l1"
   }
 }
