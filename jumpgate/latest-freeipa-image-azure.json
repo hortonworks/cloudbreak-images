@@ -1,38 +1,42 @@
 {
-  "created": 1738325537,
-  "published": 1738327137,
-  "date": "2025-01-31",
+  "created": 1738388387,
+  "published": 1738390184,
+  "date": "2025-02-01",
   "description": "Official Cloudbreak image",
   "images": {
     "azure": {
-      "West US": "https://cldrwestus.blob.core.windows.net/images/freeipa-cdh--1738325520.vhd"
+      "West US": "https://cldrwestus.blob.core.windows.net/images/freeipa-cdh--1738388370.vhd"
     }
   },
-  "os": "centos7",
-  "os_type": "redhat7",
+  "os": "redhat8",
+  "os_type": "redhat8",
   "architecture": "x86_64",
-  "uuid": "6657f6de-e247-485d-80ad-abc2fb72e14d",
+  "uuid": "5a5715e4-312c-4680-a83c-13acaad44809",
   "package-versions": {
     "blackbox-exporter": "0.25.0",
     "cdp-logging-agent": "1.3.5_b1",
     "cdp-prometheus": "2.54.1",
     "cdp-request-signer": "1.3.5_b1",
     "cdp-telemetry": "1.3.5_b1",
-    "cloudbreak_images": "ea7da57d6ae09b770803a7f1a6137ca1dc88d114",
+    "cloudbreak_images": "bf6ebd2c6e7749cb9f57e1cbbd6030defc987d50",
     "freeipa-health-agent": "0.1-20241118074445git3006935",
     "freeipa-ldap-agent": "1.0.0-b12478",
-    "freeipa-plugin": "1.1-b847.el7",
+    "freeipa-plugin": "1.1-b847.el8",
     "inverting-proxy-agent": "3.9.0-b37",
     "inverting-proxy-agent_gbn": "62478882",
-    "ipa-server": "4.6.8",
+    "ipa-server": "4.9.13",
     "node-exporter": "1.3.1",
-    "python27": "2.7.5-94.el7_9",
-    "python36": "3.6.8-21.el7_9",
+    "os-version": "8.10",
+    "python311": "3.11.11-1.el8_10",
+    "python36": "3.6.8-39.module+el8.10.0+20784+edafcd43",
+    "python38": "3.8.17-2.module+el8.9.0+19642+a12b4af6",
+    "python39": "3.9.20-1.module+el8.10.0+22342+478c159e",
     "salt": "3001.8",
     "salt-bootstrap": "0.14.0-2024-11-28T08:25:12",
-    "source-image": "openlogic:centos:7.6:7.6.201909120"
+    "source-image": "redhat:rhel-byos:rhel-lvm810:8.10.2024060517"
   },
   "tags": {
+    "fips-mode": "disabled",
     "hardening": "cis_server_l1"
   }
 }
