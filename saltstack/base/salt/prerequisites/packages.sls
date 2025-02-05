@@ -77,7 +77,6 @@ packages_install:
       - sysstat
       - goaccess
       - httpd-tools
-      - iscsi-initiator-utils
 
 {% if pillar['subtype'] != 'Docker' %}
 
