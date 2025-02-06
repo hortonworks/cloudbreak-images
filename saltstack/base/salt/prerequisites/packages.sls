@@ -77,6 +77,9 @@ packages_install:
       - sysstat
       - goaccess
       - httpd-tools
+    {% if salt['environ.get']('CLOUD_PROVIDER') != 'AWS_GOV' and salt['environ.get']('OS') != 'centos7' and pillar['subtype'] != 'Docker' %}
+      - iscsi-initiator-utils
+    {% endif %}
 
 {% if pillar['subtype'] != 'Docker' %}
 
