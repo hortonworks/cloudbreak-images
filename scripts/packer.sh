@@ -46,6 +46,10 @@ packer_in_container() {
   if [ -n "$STACK_VERSION" ] && [ $(version $STACK_VERSION) -gt $(version "7.3.0") ]; then
     export DEFAULT_JAVA_MAJOR_VERSION=17
   fi
+  # Apparently our ARM64 images always go with JDK 17 as the default, even for FreeIPA and base images
+  if [[ "$ARCHITECTURE" == "arm64" ]]; then
+    export DEFAULT_JAVA_MAJOR_VERSION=17
+  fi
 
   if [[ "$ENABLE_POSTPROCESSORS" ]]; then
     echo "Postprocessors are enabled"
