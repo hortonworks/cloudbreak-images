@@ -117,10 +117,20 @@ create_certificates_certm() {
   mv $CERT_ROOT_PATH/server.pem $CERT_ROOT_PATH/cluster.pem
   cp $CERT_ROOT_PATH/cluster.pem /tmp/cluster.pem
   mv $CERT_ROOT_PATH/server-key.pem $CERT_ROOT_PATH/cluster-key.pem
+{% if salt['environ.get']('SALTBOOT_HTTPS_ENABLED') == 'true' %}
+  certm -d $CERT_ROOT_PATH server generate -o=saltboot --cert $CERT_ROOT_PATH/saltboot.pem --key $CERT_ROOT_PATH/saltboot-key.pem --overwrite
+{% endif %}
   rm $CERT_ROOT_PATH/ca-key.pem
   cp $CERT_ROOT_PATH/cluster.pem /etc/jumpgate/cluster.pem
   chmod 600 /etc/jumpgate/cluster.pem
   chown jumpgate:jumpgate /etc/jumpgate/cluster.pem
+}
+
+create_cert_for_saltboot_tls() {
+  CERT_ROOT_PATH=/etc/certs
+  certm -d $CERT_ROOT_PATH ca generate -o=saltboot
+  certm -d $CERT_ROOT_PATH server generate -o=saltboot --cert $CERT_ROOT_PATH/saltboot.pem --key $CERT_ROOT_PATH/saltboot-key.pem --overwrite
+  rm $CERT_ROOT_PATH/ca-key.pem
 }
 
 start_nginx() {
@@ -252,6 +262,7 @@ resize_partitions() {
       # Extend logical volumes to satisfy CM free space checks and allocate remaining free space
       lvextend -L50G -r /dev/mapper/rootvg-varlv
       lvextend -L12G -r /dev/mapper/rootvg-tmplv
+      lvextend -L5G -r /dev/mapper/rootvg-homelv
       # Extend root logical volume to remaining free space
       lvextend -l +100%free -r /dev/mapper/rootvg-rootlv
     fi
@@ -283,6 +294,10 @@ main() {
         start_nginx
       fi
       create_saltapi_certificates
+{% if salt['environ.get']('SALTBOOT_HTTPS_ENABLED') == 'true' %}
+    else
+      create_cert_for_saltboot_tls
+{% endif %}
     fi
 
     INSTANCE_ID=

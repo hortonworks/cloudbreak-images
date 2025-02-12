@@ -18,3 +18,10 @@ TimeoutSec=15s
 RestartSec=5s
 ExecStart=/usr/sbin/salt-bootstrap
 Environment='SALTBOOT_PORT=7070'
+{% if salt['environ.get']('SALTBOOT_HTTPS_ENABLED') == 'true' %}
+Environment='SALTBOOT_HTTPS_PORT=7071'
+Environment='SALTBOOT_HTTPS_ENABLED=true'
+Environment='SALTBOOT_HTTPS_CERT_FILE=/etc/certs/saltboot.pem'
+Environment='SALTBOOT_HTTPS_KEY_FILE=/etc/certs/saltboot-key.pem'
+Environment='SALTBOOT_HTTPS_CACERT_FILE=/etc/certs/ca.pem'
+{% endif %}

@@ -29,10 +29,18 @@ create_missing_ifcfg_file:
   cmd.run:
     - name: touch /etc/sysconfig/network-scripts/ifcfg-{{ pillar['network_interface'] }}
 
-/etc/sysconfig/network-scripts/ifcfg-{{ pillar['network_interface'] }}:
+disable-init-ipv6-eth0:
   file.replace:
     - name: /etc/sysconfig/network-scripts/ifcfg-{{ pillar['network_interface'] }}
     - pattern: "^IPV6INIT.*"
     - repl: "IPV6INIT=\"no\""
     - append_if_not_found: True
+
+disable-dhcp-ipv6-eth0:
+  file.replace:
+    - name: /etc/sysconfig/network-scripts/ifcfg-{{ pillar['network_interface'] }}
+    - pattern: "^DHCPV6C.*"
+    - repl: "DHCPV6C=\"no\""
+    - append_if_not_found: True
+
 {% endif %}
