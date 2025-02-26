@@ -270,7 +270,8 @@ resize_partitions() {
     # create and mount loopback filesystem for /tmp with same size as Azure logical volume
     dd if=/dev/zero of=/var/tmpfs bs=1M count=12288
     yes | mkfs.ext4 /var/tmpfs
-    echo "/var/tmpfs /tmp ext4 mode=1777,strictatime,nosuid,nodev,noexec 0 0" >> /etc/fstab
+    echo "/var/tmpfs /tmp ext4 rw,strictatime,nosuid,nodev,noexec 0 0" >> /etc/fstab
+    chmod 1777 /tmp/
     mount -a
   fi
 }
