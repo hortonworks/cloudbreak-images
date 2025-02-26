@@ -207,44 +207,12 @@ remove_unnecessary_whitespaces_from_yum_repo_files:
     - name: find /etc/yum.repos.d -type f -exec sed -i 's/ = /=/g' {} \;
     - onlyif: ls -la /etc/yum.repos.d/
 
-{% if not salt['file.contains']('/etc/fstab', '/tmp') %}
-create_tmpfs:
-  cmd.run:
-    - name: dd if=/dev/zero of=/var/tmpfs bs=1M count=12288 # 12GB file, same as Azure LVM
-
 {% if cloud_provider == 'GCP' %}
-build_tmpfs_filesystem:
-  cmd.run:
-    - name: yes | mkfs.ext4 /var/tmpfs
-
-keep_tmp_contents:
-  cmd.run:
-    - name: |
-        mkdir /media/tmpfs
-        mount /var/tmpfs /media/tmpfs
-        mv /tmp/* /media/tmpfs
-        umount /media/tmpfs
-        rm -rf /media/tmpfs
-
 set_startup_script_location:
   file.replace:
     - name: /etc/default/instance_configs.cfg
     - pattern: '^run_dir ='
     - repl: 'run_dir = /root'
-{% else %}
-build_tmpfs_filesystem_from_tmp:
-  cmd.run:
-    - name: mkfs.ext4 /var/tmpfs -d /tmp
-{% endif %}
-
-tmpfs_mount_fstab:
-  file.append:
-    - name: /etc/fstab
-    - text: "/var/tmpfs       /tmp       ext4   defaults,strictatime,nosuid,nodev,noexec        0   0"
-
-tmpfs_mount:
-  cmd.run:
-    - name: mount -a
 {% endif %}
 
 ### Ensure root path integrity

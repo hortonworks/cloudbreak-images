@@ -234,7 +234,7 @@ create_saltapi_certificates() {
 }
 
 resize_partitions() {
-  if [ $CLOUD_PLATFORM == "AZURE" ] && ([ $OS == "redhat7" ] || [ $OS == "redhat8" ]); then
+  if [ $CLOUD_PLATFORM == "AZURE" ]; then
     if [ $OS == "redhat7" ]; then
       # Relocating backup data structures to the end of the disk
       printf "x\ne\nw\nY\n" | gdisk /dev/sda
@@ -263,6 +263,13 @@ resize_partitions() {
       # Extend root logical volume to remaining free space
       lvextend -l +100%free -r /dev/mapper/rootvg-rootlv
     fi
+  else
+    # create and mount loopback filesystem for /tmp with same size as Azure logical volume
+    dd if=/dev/zero of=/var/tmpfs bs=1M count=12288
+    yes | mkfs.ext4 /var/tmpfs
+    echo "/var/tmpfs /tmp ext4 rw,strictatime,nosuid,nodev,noexec 0 0" >> /etc/fstab
+    chmod 1777 /tmp/
+    mount -a
   fi
 }
 
