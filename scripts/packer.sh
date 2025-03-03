@@ -79,6 +79,10 @@ packer_in_container() {
     ## Download the jumpgate-agent rpm, get the version and call REDB to lookup the GBN
     wget $JUMPGATE_AGENT_RPM_URL
     JUMPGATE_AGENT_VERSION=$(rpm -qp --queryformat '%{VERSION}' ${JUMPGATE_AGENT_RPM_URL##*/})
+  
+		ping -c 5 release.infra.cloudera.com
+		curl -Ls "https://release.infra.cloudera.com/hwre-api/latestcompiledbuild?stack=JUMPGATE&release=$JUMPGATE_AGENT_VERSION" -v
+  
     JUMPGATE_AGENT_GBN=$(curl -Ls "https://release.infra.cloudera.com/hwre-api/latestcompiledbuild?stack=JUMPGATE&release=$JUMPGATE_AGENT_VERSION" --fail | jq -r '.gbn')
   fi
 
@@ -112,6 +116,10 @@ packer_in_container() {
     	exit 1
     fi
   fi
+
+	HTTPS_PROXY=http://usgw1-egress.gov-dev.cloudera.com:3128
+	HTTP_PROXY=http://usgw1-egress.gov-dev.cloudera.com:3128
+	NO_PROXY=172.20.0.0/16,127.0.0.1,localhost,169.254.169.254,internal,local,s3.us-gov-west-1.amazonaws.com,us-gov-west-1.eks.amazonaws.com
 
   [[ "$TRACE" ]] && set -x
   ${DRY_RUN:+echo ===} docker run -i $TTY_OPTS --rm \
