@@ -113,6 +113,12 @@ packer_in_container() {
     fi
   fi
 
+  if [ "$CLOUD_PROVIDER" == "AWS_GOV" ]; then
+    HTTPS_PROXY=http://usgw1-egress.gov-dev.cloudera.com:3128
+    HTTP_PROXY=http://usgw1-egress.gov-dev.cloudera.com:3128
+    NO_PROXY=172.20.0.0/16,127.0.0.1,localhost,169.254.169.254,internal,local,s3.us-gov-west-1.amazonaws.com,us-gov-west-1.eks.amazonaws.com
+  fi
+
   [[ "$TRACE" ]] && set -x
   ${DRY_RUN:+echo ===} docker run -i $TTY_OPTS --rm \
     -e MOCK=$MOCK \
