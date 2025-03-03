@@ -24,10 +24,20 @@ install_cdp_infra_tools_packages:
       - redhat-lsb-core # this will install redhat-lsb-core is required for fluent
       - cdp-logging-agent
 {% endif %}
-{% if salt['environ.get']('USE_TELEMETRY_ARCHIVE') == "Yes" and salt['environ.get']('CLOUD_PROVIDER') != "AWS_GOV" %}
-      - cdp-request-signer
-{% endif %}
 
 remove_cdp_infra_tools_repo:
   file.absent:
     - name: /etc/yum.repos.d/cdp-infra-tools.repo
+
+{% if salt['environ.get']('CLOUD_PROVIDER') != "AWS_GOV" %}
+override_cdp_request_signer:
+  cmd.run:
+    - name: |
+{% if pillar['OS'] == 'redhat8' and salt['environ.get']('ARCHITECTURE') == 'arm64' %}
+        dnf -y install https://archive.cloudera.com/cdp-infra-tools/1.3.6/redhat8arm64/yum/cdp_request_signer-1.3.6_b2.rpm
+{% elif pillar['OS'] == 'redhat8' %}
+        dnf -y install https://archive.cloudera.com/cdp-infra-tools/1.3.6/redhat8/yum/cdp_request_signer-1.3.6_b2.rpm
+{% else %}
+        yum -y install https://archive.cloudera.com/cdp-infra-tools/1.3.6/redhat7/yum/cdp_request_signer-1.3.6_b2.rpm
+{% endif %}
+{% endif %}
