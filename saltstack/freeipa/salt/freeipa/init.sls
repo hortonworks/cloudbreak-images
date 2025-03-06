@@ -10,6 +10,9 @@ disable_postgres:
   service.disabled:
     - name: postgresql
 
+freeipa-cipa:
+  cmd.run:
+    - name: pip install --user 'pyasn1==0.5.1' --ignore-installed && python3 -m pip install --user 'pyasn1-modules==0.3.0' --ignore-installed && python3 -m pip install --user 'checkipaconsistency==2.7.10'
 
 freeipa-install:
 {% if pillar['OS'] != 'redhat8' %}  
