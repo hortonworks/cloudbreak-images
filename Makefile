@@ -166,12 +166,13 @@ ifeq ($(SALT_NEWER_PYZMQ),1)
 else
 	PYZMQ_VERSION ?= 19.0
 endif
-SALTBOOT_VERSION ?= "0.14.0"
+SALTBOOT_VERSION ?= "0.14.3"
 ifneq ($(CLOUD_PROVIDER),YARN)
 	ifneq ($(OS),centos7)
 		SALTBOOT_MINOR_VERSION = $(shell echo $(SALTBOOT_VERSION) | cut -d. -f2)
-		ifeq ($(shell [[ $(SALTBOOT_MINOR_VERSION) -ge 14 ]] && echo true),true)
-			SALTBOOT_HTTPS_ENABLED ?= false
+		SALTBOOT_PATCH_VERSION = $(shell echo $(SALTBOOT_VERSION) | cut -d. -f3)
+		ifeq ($(shell [[ ($(SALTBOOT_MINOR_VERSION) -eq 14 && $(SALTBOOT_PATCH_VERSION) -ge 3) || $(SALTBOOT_MINOR_VERSION) -ge 15 ]] && echo true),true)
+			SALTBOOT_HTTPS_ENABLED ?= true
 		else
 			SALTBOOT_HTTPS_ENABLED ?= false
 		endif
