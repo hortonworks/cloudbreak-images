@@ -22,7 +22,7 @@ else
       IMAGE_SIZE=70
     elif [[ $COMP_RESULT -lt 2 ]]; then
       # stack version >= 7.2.18
-      IMAGE_SIZE=56
+      IMAGE_SIZE=64
     else
       IMAGE_SIZE=48
     fi

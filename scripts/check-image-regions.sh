@@ -50,9 +50,6 @@ case "$CLOUD_PROVIDER" in
     case "$OS" in
       centos7)
         ALL_REGIONS=$AZURE_STORAGE_ACCOUNTS
-        if [[ ! $ALL_REGIONS == *"default"* ]]; then
-          ALL_REGIONS+=",default"
-        fi
         ;;
       redhat8)
         ALL_REGIONS="default"

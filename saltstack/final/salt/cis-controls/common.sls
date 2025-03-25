@@ -145,6 +145,13 @@ sshd_harden_sshIdealTime_ClientAliveInterval:
     - repl: "ClientAliveInterval 180"
     - append_if_not_found: True
 
+sshd_harden_sshIdealTime_ClientAliveCountMax:
+  file.replace:
+    - name: /etc/ssh/sshd_config
+    - pattern: "^ClientAliveCountMax.*"
+    - repl: "ClientAliveCountMax 3"
+    - append_if_not_found: True
+
 #2.2.1.2 Ensure chrony is configured
 Chrony_config:
   file.replace:
@@ -207,3 +214,9 @@ set_startup_script_location:
     - pattern: '^run_dir ='
     - repl: 'run_dir = /root'
 {% endif %}
+
+### Ensure root path integrity
+# https://jira.cloudera.com/browse/CB-27662
+remove_unnecessary_path:
+  cmd.run:
+    - name: PATH=`echo $PATH | sed -e 's/:\/root\/bin$//'`

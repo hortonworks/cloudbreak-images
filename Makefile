@@ -43,7 +43,9 @@ $(error "AZURE_IMAGE_VHD and Marketplace image properties (AZURE_IMAGE_PUBLISHER
 		ifeq ($(OS),redhat8)
 			AZURE_IMAGE_PUBLISHER ?= RedHat
 			AZURE_IMAGE_OFFER ?= rhel-byos
-			ifeq ($(STACK_VERSION),7.3.1)
+			ifeq ($(STACK_VERSION),7.3.2)
+				AZURE_IMAGE_SKU ?= rhel-lvm810
+			else ifeq ($(STACK_VERSION),7.3.1)
 				AZURE_IMAGE_SKU ?= rhel-lvm810
 			else ifeq ($(STACK_VERSION),7.2.18)
 				AZURE_IMAGE_SKU ?= rhel-lvm810
@@ -83,7 +85,9 @@ ifeq ($(CLOUD_PROVIDER),AWS)
 			AWS_SOURCE_AMI ?= ami-05032c39067d77b1b
 			AWS_INSTANCE_TYPE ?= r7gd.2xlarge
 		else
-			ifeq ($(STACK_VERSION),7.3.1)
+			ifeq ($(STACK_VERSION),7.3.2)
+				AWS_SOURCE_AMI ?= ami-02073841a355a1e92
+			else ifeq ($(STACK_VERSION),7.3.1)
 				AWS_SOURCE_AMI ?= ami-02073841a355a1e92
 			else ifeq ($(STACK_VERSION),7.2.18)
 				AWS_SOURCE_AMI ?= ami-02073841a355a1e92
@@ -116,7 +120,9 @@ ifeq ($(CLOUD_PROVIDER),GCP)
 		GCP_SOURCE_IMAGE ?= centos-7-v20200811
 	endif
 	ifeq ($(OS),redhat8)
-		ifeq ($(STACK_VERSION),7.3.1)
+		ifeq ($(STACK_VERSION),7.3.2)
+			GCP_SOURCE_IMAGE ?= rhel-8-byos-v20240709
+		else ifeq ($(STACK_VERSION),7.3.1)
 			GCP_SOURCE_IMAGE ?= rhel-8-byos-v20240709
 		else ifeq ($(STACK_VERSION),7.2.18)
 			GCP_SOURCE_IMAGE ?= rhel-8-byos-v20240709
@@ -160,11 +166,12 @@ ifeq ($(SALT_NEWER_PYZMQ),1)
 else
 	PYZMQ_VERSION ?= 19.0
 endif
-SALTBOOT_VERSION ?= "0.14.0"
+SALTBOOT_VERSION ?= "0.14.3"
 ifneq ($(CLOUD_PROVIDER),YARN)
 	ifneq ($(OS),centos7)
 		SALTBOOT_MINOR_VERSION = $(shell echo $(SALTBOOT_VERSION) | cut -d. -f2)
-		ifeq ($(shell [[ $(SALTBOOT_MINOR_VERSION) -ge 14 ]] && echo true),true)
+		SALTBOOT_PATCH_VERSION = $(shell echo $(SALTBOOT_VERSION) | cut -d. -f3)
+		ifeq ($(shell [[ ($(SALTBOOT_MINOR_VERSION) -eq 14 && $(SALTBOOT_PATCH_VERSION) -ge 3) || $(SALTBOOT_MINOR_VERSION) -ge 15 ]] && echo true),true)
 			SALTBOOT_HTTPS_ENABLED ?= true
 		else
 			SALTBOOT_HTTPS_ENABLED ?= false
@@ -196,7 +203,7 @@ INCLUDE_METERING ?= "Yes"
 USE_TELEMETRY_ARCHIVE ?= "Yes"
 
 # This one is OS-independent (right?)
-DEFAULT_JUMPGATE_AGENT_RPM_URL := https://archive.cloudera.com/ccm/3.8.0/jumpgate-agent.rpm
+DEFAULT_JUMPGATE_AGENT_RPM_URL := https://archive.cloudera.com/ccm/3.9.0/jumpgate-agent.rpm
 
 # This one is OS-independent (v2.0 is a rewrite done in GoLang)
 DEFAULT_METERING_AGENT_RPM_URL := "https://archive.cloudera.com/cp_clients/thunderhead-metering-heartbeat-application-2.0.0-b12639.x86_64.rpm"
@@ -205,10 +212,10 @@ DEFAULT_METERING_AGENT_RPM_URL := "https://archive.cloudera.com/cp_clients/thund
 DEFAULT_FREEIPA_PLUGIN_RPM_URL := "https://archive.cloudera.com/cdp-freeipa-artifacts/cdp-hashed-pwd-1.1-b847.el7.x86_64.rpm"
 
 # This one is OS-independent
-DEFAULT_FREEIPA_HEALTH_AGENT_RPM_URL := "https://archive.cloudera.com/cdp-freeipa-artifacts/freeipa-health-agent-0.1-20241118074445git3006935.x86_64.rpm"
+DEFAULT_FREEIPA_HEALTH_AGENT_RPM_URL := "https://archive.cloudera.com/cdp-freeipa-artifacts/freeipa-health-agent-2.1.0.2-b2228.x86_64.rpm"
 
 # This one is OS-independent
-DEFAULT_FREEIPA_LDAP_AGENT_RPM_URL := "https://archive.cloudera.com/cdp-freeipa-artifacts/freeipa-ldap-agent-1.0.0-b12478.x86_64.rpm"
+DEFAULT_FREEIPA_LDAP_AGENT_RPM_URL := "https://archive.cloudera.com/cdp-freeipa-artifacts/freeipa-ldap-agent-1.0.0-b2200.x86_64.rpm"
 
 ENVS=METADATA_FILENAME_POSTFIX=$(METADATA_FILENAME_POSTFIX) DESCRIPTION=$(DESCRIPTION) STACK_TYPE=$(STACK_TYPE) MPACK_URLS=$(MPACK_URLS) HDP_VERSION=$(HDP_VERSION) BASE_NAME=$(BASE_NAME) IMAGE_NAME=$(IMAGE_NAME) IMAGE_SIZE=$(IMAGE_SIZE) INCLUDE_CDP_TELEMETRY=$(INCLUDE_CDP_TELEMETRY) INCLUDE_FLUENT=$(INCLUDE_FLUENT) INCLUDE_METERING=$(INCLUDE_METERING) USE_TELEMETRY_ARCHIVE=$(USE_TELEMETRY_ARCHIVE) ENABLE_POSTPROCESSORS=$(ENABLE_POSTPROCESSORS) CUSTOM_IMAGE_TYPE=$(CUSTOM_IMAGE_TYPE) OPTIONAL_STATES=$(OPTIONAL_STATES) PREINSTALLED_JAVA_HOME=${PREINSTALLED_JAVA_HOME} IMAGE_OWNER=${IMAGE_OWNER} REPOSITORY_TYPE=${REPOSITORY_TYPE} PACKAGE_VERSIONS=$(PACKAGE_VERSIONS) SALT_VERSION=$(SALT_VERSION) SALT_PATH=$(SALT_PATH) PYZMQ_VERSION=$(PYZMQ_VERSION) PYTHON_APT_VERSION=$(PYTHON_APT_VERSION) AWS_MAX_ATTEMPTS=$(AWS_MAX_ATTEMPTS) TRACE=1 AWS_SNAPSHOT_GROUPS=$(AWS_SNAPSHOT_GROUPS) AWS_SNAPSHOT_USER=$(AWS_SNAPSHOT_USER) AWS_AMI_GROUPS=$(AWS_AMI_GROUPS) AWS_AMI_ORG_ARN=$(AWS_AMI_ORG_ARN) TAG_CUSTOMER_DELIVERED=$(TAG_CUSTOMER_DELIVERED) VERSION=$(VERSION) PARCELS_NAME=$(PARCELS_NAME) PARCELS_ROOT=$(PARCELS_ROOT) SUBNET_ID=$(SUBNET_ID) VPC_ID=$(VPC_ID) VIRTUAL_NETWORK_RESOURCE_GROUP_NAME=$(VIRTUAL_NETWORK_RESOURCE_GROUP_NAME) ARM_BUILD_REGION=$(ARM_BUILD_REGION) PRE_WARM_PARCELS=$(PRE_WARM_PARCELS) PRE_WARM_CSD=$(PRE_WARM_CSD) SLES_REGISTRATION_CODE=$(SLES_REGISTRATION_CODE) FLUENT_PREWARM_TAG=$(FLUENT_PREWARM_TAG) METERING_PREWARM_TAG=$(METERING_PREWARM_TAG) CDP_TELEMETRY_PREWARM_TAG=$(CDP_TELEMETRY_PREWARM_TAG) PREWARM_TAG=$(PREWARM_TAG) DEFAULT_JUMPGATE_AGENT_RPM_URL=$(DEFAULT_JUMPGATE_AGENT_RPM_URL) DEFAULT_METERING_AGENT_RPM_URL=$(DEFAULT_METERING_AGENT_RPM_URL) DEFAULT_FREEIPA_PLUGIN_RPM_URL=$(DEFAULT_FREEIPA_PLUGIN_RPM_URL) DEFAULT_FREEIPA_HEALTH_AGENT_RPM_URL=$(DEFAULT_FREEIPA_HEALTH_AGENT_RPM_URL) DEFAULT_FREEIPA_LDAP_AGENT_RPM_URL=$(DEFAULT_FREEIPA_LDAP_AGENT_RPM_URL) CLOUD_PROVIDER=$(CLOUD_PROVIDER) SSH_PUBLIC_KEY="$(SSH_PUBLIC_KEY)" FIPS_MODE=$(FIPS_MODE) STIG_ENABLED=$(STIG_ENABLED) SALTBOOT_VERSION=$(SALTBOOT_VERSION) SALTBOOT_HTTPS_ENABLED=$(SALTBOOT_HTTPS_ENABLED)
 
@@ -413,36 +420,6 @@ copy-aws-images:
 		--entrypoint="/bin/bash" \
 		amazon/aws-cli -c "./aws-copy.sh"
 
-build-aws-gov-centos7-base:
-	$(ENVS) \
-	AWS_AMI_REGIONS="us-gov-west-1" \
-	AWS_GOV_SOURCE_AMI=$(AWS_GOV_SOURCE_AMI) \
-	OS=centos7 \
-	OS_TYPE=redhat7 \
-	ATLAS_ARTIFACT_TYPE=amazon-gov \
-	SALT_INSTALL_OS=centos \
-	GIT_REV=$(GIT_REV) \
-	GIT_BRANCH=$(GIT_BRANCH) \
-	GIT_TAG=$(GIT_TAG) \
-	HTTPS_PROXY=http://usgw1-egress.gov-dev.cloudera.com:3128 \
-	HTTP_PROXY=http://usgw1-egress.gov-dev.cloudera.com:3128 \
-	NO_PROXY=172.20.0.0/16,127.0.0.1,localhost,169.254.169.254,internal,local,s3.us-gov-west-1.amazonaws.com,us-gov-west-1.eks.amazonaws.com \
-	./scripts/packer.sh build -color=false -only=aws-gov-centos7 $(PACKER_OPTS)
-
-build-aws-gov-centos7:
-	@ METADATA_FILENAME_POSTFIX=$(METADATA_FILENAME_POSTFIX) make build-aws-gov-centos7-base
-	$(ENVS) \
-	AWS_AMI_REGIONS="$(AWS_GOV_AMI_REGIONS)" \
-	AWS_GOV_SOURCE_AMI=$(AWS_GOV_SOURCE_AMI) \
-	ATLAS_ARTIFACT_TYPE=amazon-gov \
-	GIT_REV=$(GIT_REV) \
-	GIT_BRANCH=$(GIT_BRANCH) \
-	GIT_TAG=$(GIT_TAG) \
-	HTTPS_PROXY=http://usgw1-egress.gov-dev.cloudera.com:3128 \
-	HTTP_PROXY=http://usgw1-egress.gov-dev.cloudera.com:3128 \
-	NO_PROXY=172.20.0.0/16,127.0.0.1,localhost,169.254.169.254,internal,local,s3.us-gov-west-1.amazonaws.com,us-gov-west-1.eks.amazonaws.com \
-	./scripts/sparseimage/packer.sh build -color=false -force $(PACKER_OPTS)
-
 build-aws-gov-redhat8:
 	$(ENVS) \
 	AWS_AMI_REGIONS="us-gov-west-1" \
@@ -455,9 +432,6 @@ build-aws-gov-redhat8:
 	GIT_REV=$(GIT_REV) \
 	GIT_BRANCH=$(GIT_BRANCH) \
 	GIT_TAG=$(GIT_TAG) \
-	HTTPS_PROXY=http://usgw1-egress.gov-dev.cloudera.com:3128 \
-	HTTP_PROXY=http://usgw1-egress.gov-dev.cloudera.com:3128 \
-	NO_PROXY=172.20.0.0/16,127.0.0.1,localhost,169.254.169.254,internal,local,s3.us-gov-west-1.amazonaws.com,us-gov-west-1.eks.amazonaws.com \
 	PACKER_VERSION="1.8.3" \
 	./scripts/packer.sh build -color=false -only=aws-gov-redhat8 $(PACKER_OPTS)
 

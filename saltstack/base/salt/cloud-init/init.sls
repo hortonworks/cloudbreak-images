@@ -55,3 +55,17 @@ create_cloud-init_service_files:
     - name: /etc/systemd/system/cloud-init.service
     - source: salt://{{ slspath }}/etc/systemd/system/cloud-init.service
 {% endif %}
+
+{% if salt['environ.get']('OS') == 'redhat8' %}
+/etc/cloud/cloud.cfg.d/99-disable-ipv6.cfg:
+  file.managed:
+    - user: root
+    - group: root
+    - source:
+      - salt://{{ slspath }}/etc/cloud/cloud.cfg.d/99-disable-ipv6.cfg
+    - mode: 755
+    - template: jinja
+    - defaults:
+        network_interface: {{ pillar['network_interface'] }}
+{% endif %}
+
