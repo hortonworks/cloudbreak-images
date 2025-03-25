@@ -80,22 +80,16 @@ deny_nobody:
     - name: /etc/ssh/sshd_config
     - text: "DenyUsers nobody"
 
-ignore_system_wide_crypto_policy_for_ssh::
-  cmd.run:
-    - name: echo "CRYPTO_POLICY=" | sudo tee -a /etc/sysconfig/sshd
-
+#
 create_subpolicy_remove_cbc_cipher_for_ssh:
   file.append:
     - name: /etc/crypto-policies/policies/modules/DISABLE-CBC.pmod
     - text: "ssh_cipher = -AES-128-CBC -AES-256-CBC"
 
-subpolicy_for_disable_sha1_for_ssh:
-  cmd.run:
-    - name: sudo cp /usr/share/crypto-policies/policies/modules/NO-SHA1.pmod /etc/crypto-policies/policies/modules/
-
+#
 update_crypto_policies:
   cmd.run:
-    - name: sudo update-crypto-policies --set DEFAULT:DISABLE-CBC:NO-SHA1
+    - name: sudo update-crypto-policies --set DEFAULT:DISABLE-CBC
 
 sshd_harden_ApprovedCiphers:
   file.replace:
