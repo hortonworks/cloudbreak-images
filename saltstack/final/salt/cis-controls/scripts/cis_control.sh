@@ -25,7 +25,7 @@ if [ "${STIG_ENABLED}" == "True" ]; then
     #    SKIP_TAGS+=",service_httpd_disabled"
     #fi
 else
-    SKIP_TAGS="package_firewalld_installed,service_firewalld_enabled,package_openldap-clients_removed,configure_crypto_policy,configure_ssh_crypto_policy"
+    SKIP_TAGS="package_firewalld_installed,service_firewalld_enabled,package_openldap-clients_removed"
     EXTRA_VARS="sshd_idle_timeout_value=180"
 
     if [ "${IMAGE_BASE_NAME}" == "freeipa" ] ; then
