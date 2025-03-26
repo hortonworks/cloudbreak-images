@@ -268,8 +268,8 @@ resize_partitions() {
     dd if=/dev/zero of=/var/tmpfs bs=1M count=12288
     yes | mkfs.ext4 /var/tmpfs
     echo "/var/tmpfs /tmp ext4 rw,strictatime,nosuid,nodev,noexec 0 0" >> /etc/fstab
-    chmod 1777 /tmp/
     mount -a
+    chmod 1666 /tmp/
   fi
 }
 
