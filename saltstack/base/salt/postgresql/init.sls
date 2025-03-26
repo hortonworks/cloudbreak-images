@@ -233,6 +233,53 @@ systemd-link:
     - repl: "[Install]\nAlias=postgresql.service"
     - unless: cat /usr/lib/systemd/system/postgresql-{{ pg_default_version }}.service | grep postgresql.service
 
+postgres_11_tmpdir:
+  file.directory:
+    - name: /var/lib/pgsql/11/tmp
+    - user: postgres
+    - group: postgres
+    - mode: 700
+
+postgres_11_override_dir:
+  file.directory:
+    - name: /etc/systemd/system/postgresql-11.service.d
+    - makedirs: True
+    - mode: 755
+
+postgres_11_override_file:
+  file.managed:
+    - name: /etc/systemd/system/postgresql-11.service.d/override.conf
+    - contents: |
+        [Service]
+        Environment=TMPDIR=/var/lib/pgsql/11/tmp
+    - mode: 644
+    - require:
+      - file: postgres_11_tmpdir
+      - file: postgres_11_override_dir
+
+postgres_14_tmpdir:
+  file.directory:
+    - name: /var/lib/pgsql/14/tmp
+    - user: postgres
+    - group: postgres
+    - mode: 700
+
+postgres_14_override_dir:
+  file.directory:
+    - name: /etc/systemd/system/postgresql-14.service.d
+    - makedirs: True
+    - mode: 755
+
+postgres_14_override_file:
+  file.managed:
+    - name: /etc/systemd/system/postgresql-14.service.d/override.conf
+    - contents: |
+        [Service]
+        Environment=TMPDIR=/var/lib/pgsql/14/tmp
+    - mode: 644
+    - require:
+      - file: postgres_14_tmpdir
+      - file: postgres_14_override_dir
 
 {% if pillar['subtype'] == 'Docker' %}  # systemctl reenable does not work on ycloud so we create the symlink manually
 create-postgres-service-link:
