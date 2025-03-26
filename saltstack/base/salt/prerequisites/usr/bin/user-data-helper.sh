@@ -269,7 +269,7 @@ resize_partitions() {
     yes | mkfs.ext4 /var/tmpfs
     echo "/var/tmpfs /tmp ext4 rw,strictatime,nosuid,nodev,noexec 0 0" >> /etc/fstab
     mount -a
-    chmod 1666 /tmp/
+    chmod 1777 /tmp/
   fi
 }
 
