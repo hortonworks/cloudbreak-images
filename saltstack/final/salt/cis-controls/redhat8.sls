@@ -114,7 +114,7 @@ sshd_Exchange_algorithms:
 
 add_cis_control_sh:
   file.managed:
-    - name: /tmp/cis_control.sh
+    - name: /opt/provision-scripts/cis_control.sh
     - makedirs: True
     - mode: 755
     - source: salt://cis-controls/scripts/cis_control.sh
@@ -129,12 +129,8 @@ add_hardening_playbooks:
 
 execute_cis_control_sh:
   cmd.run:
-    - name: /tmp/cis_control.sh
+    - name: /opt/provision-scripts/cis_control.sh
     - env:
       - IMAGE_BASE_NAME: {{ salt['environ.get']('IMAGE_BASE_NAME') }}
       - CLOUD_PROVIDER: {{ salt['environ.get']('CLOUD_PROVIDER') }}
       - STIG_ENABLED: {{ salt['environ.get']('STIG_ENABLED') }}
-
-remove_cis_control_sh:
-  file.absent:
-    - name: /tmp/cis_control.sh
