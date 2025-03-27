@@ -311,6 +311,9 @@ main() {
     # if CCMV2 but not jumpgate -> setup CCMv2 on FreeIPA and data lake/data hub
     # if CCMV2_JUMPGATE -> agent should be started on FreeIPA only
     if [[ "$IS_CCM_ENABLED" == "true" ]]; then
+      sudo update-crypto-policies --set DEFAULT:DISABLE-CBC
+      sudo sed -i 's|CRYPTO_POLICY=|# CRYPTO_POLICY=|g' /etc/sysconfig/sshd
+      sudo systemctl restart sshd
       setup_ccm
     elif [[ "$IS_CCM_V2_JUMPGATE_ENABLED" == "true" && "$IS_FREEIPA" == "true" ]]; then
       setup_ccmv2
