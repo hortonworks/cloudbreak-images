@@ -1,10 +1,10 @@
-module hostname_policy 1.0;
+policy_module(cdp-hostname, 1.0.0)
 
-require {
+gen_require(`
 	type hostname_etc_t;
 	type hostname_t;
 	class file open;
-}
+')
 
 #============= hostname_t ==============
 allow hostname_t hostname_etc_t:file open;
