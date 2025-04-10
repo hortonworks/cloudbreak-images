@@ -1,30 +1,3 @@
-
-{% if grains['os_family'] == 'RedHat' and grains['osmajorrelease'] | int == 7 %}
-/etc/yum.repos.d/pgdg10.repo:
-  file.managed:
-    - source: salt://postgresql/yum/postgres10-el7.repo
-
-/etc/pki/rpm-gpg/RPM-GPG-KEY-PGDG-10:
-  file.managed:
-    - source: salt://postgresql/yum/pgdg10-gpg
-
-/etc/yum.repos.d/pgdg11.repo:
-  file.managed:
-    - source: salt://postgresql/yum/postgres11-el7.repo
-
-/etc/pki/rpm-gpg/RPM-GPG-KEY-PGDG-11:
-  file.managed:
-    - source: salt://postgresql/yum/pgdg11-gpg
-
-/etc/yum.repos.d/pgdg14.repo:
-  file.managed:
-    - source: salt://postgresql/yum/postgres14-el7.repo
-
-/etc/pki/rpm-gpg/RPM-GPG-KEY-PGDG-14:
-  file.managed:
-    - source: salt://postgresql/yum/pgdg14-gpg
-{% endif %}
-
 {% if pillar['OS'] == 'redhat8' %}
 
 {% set postgres_install_flags = '' %}
@@ -49,15 +22,45 @@ install-postgres:
         dnf -y remove postgresql11-server postgresql11 postgresql11-devel
 {% endif %}
         dnf -y install postgresql14-server postgresql14 postgresql14-devel {{ postgres_install_flags }}
+{% if pillar['OS'] == 'redhat8' and salt['environ.get']('RHEL_VERSION') == '8.10' %}
+        dnf -y install postgresql17-server postgresql17 postgresql17-devel {{ postgres_install_flags }}
+{% endif %}
     - failhard: True
 
-{% if pillar['OS'] == 'redhat8' and pillar['subtype'] == 'Docker' %}
+{% if pillar['subtype'] == 'Docker' %}
 timeoutstop-postgres-ycloud:
   cmd.run:
-    - name: mkdir /etc/systemd/system/postgresql-11.service.d  && echo $'[Service]\nTimeoutStopSec=120s' > /etc/systemd/system/postgresql-11.service.d/timeout.conf && mkdir /etc/systemd/system/postgresql-14.service.d && echo $'[Service]\nTimeoutStopSec=120s' > /etc/systemd/system/postgresql-14.service.d/timeout.conf
+    - name: mkdir /etc/systemd/system/postgresql-14.service.d  && echo $'[Service]\nTimeoutStopSec=120s' > /etc/systemd/system/postgresql-14.service.d/timeout.conf && mkdir /etc/systemd/system/postgresql-17.service.d && echo $'[Service]\nTimeoutStopSec=120s' > /etc/systemd/system/postgresql-17.service.d/timeout.conf
 {% endif %}
 
-{% elif grains['os_family'] == 'RedHat' and grains['osmajorrelease'] | int == 7  %}
+{% set pg_default_version = '14' %}
+
+{% elif pillar['OS'] == 'centos7' %}
+
+/etc/yum.repos.d/pgdg10.repo:
+  file.managed:
+    - source: salt://postgresql/yum/postgres10-el7.repo
+
+/etc/pki/rpm-gpg/RPM-GPG-KEY-PGDG-10:
+  file.managed:
+    - source: salt://postgresql/yum/pgdg10-gpg
+
+/etc/yum.repos.d/pgdg11.repo:
+  file.managed:
+    - source: salt://postgresql/yum/postgres11-el7.repo
+
+/etc/pki/rpm-gpg/RPM-GPG-KEY-PGDG-11:
+  file.managed:
+    - source: salt://postgresql/yum/pgdg11-gpg
+
+/etc/yum.repos.d/pgdg14.repo:
+  file.managed:
+    - source: salt://postgresql/yum/postgres14-el7.repo
+
+/etc/pki/rpm-gpg/RPM-GPG-KEY-PGDG-14:
+  file.managed:
+    - source: salt://postgresql/yum/pgdg14-gpg
+
 install-postgres:
   pkg.installed:
     - pkgs:
@@ -88,48 +91,9 @@ install-postgres14:
         - postgresql14-docs
         - postgresql14-devel
 
-{% else %}
-remove-old-postgres:
-  pkg.removed:
-    - pkgs:
-      - postgresql92-server-compat
-      - postgresql92-server
-      - postgresql92
-      - postgresql92-libs
-      - postgresql-server
-      - postgresql-libs
-      - postgresql
+# the override to 11 for runtimes >= 7.2.7 is handled in CB
+{% set pg_default_version = '10' %}
 
-ensure-postgres-home:
-  user.present:
-    - name: postgres
-    - home: /var/lib/pgsql
-
-remove-postgres-sysconfig:
-  file.absent:
-    - name: /etc/sysconfig/pgsql/postgresql
-
-install-postgres:
-  pkg.installed:
-    - pkgs:
-      - postgresql10-server
-      - postgresql10-contrib
-      - postgresql10-docs
-      - postgresql10-devel
-      - postgresql-jdbc
-      - postgresql10
-
-/etc/init.d/postgresql:
-  file.symlink:
-      - target: /etc/init.d/postgresql-10
-      - force: True
-{% endif %}
-
-{% if pillar['OS'] == 'redhat8' %}
-  {% set pg_default_version = '14' %}
-{% else %}
-  # the override to 11 for runtimes >= 7.2.7 is handled in CB
-  {% set pg_default_version = '10' %}
 {% endif %}
 
 pgsql-ld-conf:
@@ -248,7 +212,7 @@ reenable-postgres:
   cmd.run:
     - name: systemctl enable --now postgresql-{{ pg_default_version }}
 
-{% elif  grains['os_family'] == 'RedHat' and grains['osmajorrelease'] | int == 7 %}
+{% elif pillar['OS'] == 'centos7' %}
 /var/lib/pgsql/data:
   file.symlink:
       - target: /var/lib/pgsql/10/data
@@ -278,15 +242,12 @@ create-postgres-service-link:
         systemctl disable postgresql-{{ pg_default_version }}
         systemctl enable postgresql
 {% else %}
+
 reenable-postgres:
   cmd.run:
     - name: systemctl reenable postgresql-{{ pg_default_version }}.service
 {% endif %}
 
-{% else %}
-init-pg-database:
-  cmd.run:
-    - name: find /var/lib/pgsql/ -name PG_VERSION | grep -q "data/PG_VERSION" || service postgresql initdb
 {% endif %}
 
 {% if pillar['subtype'] != 'Docker' %}
