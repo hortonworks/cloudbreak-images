@@ -78,7 +78,7 @@ done
 if [[ "$CUSTOM_IMAGE_TYPE" == "freeipa" ]]; then
   set_version_for_rpm_pkg "ipa-server"
 
-	FREEIPA_REGEX=".*\/[_a-z\-]*\-(.*)\.x86_64\.rpm"
+	FREEIPA_REGEX=".*\/[_a-z\-]*\-(.*)\.(aarch64|x86_64)\.rpm"
 	if [[ $FREEIPA_PLUGIN_RPM_URL =~ $FREEIPA_REGEX ]]; then
 		cat /tmp/package-versions.json | jq --arg freeipa_plugin_version ${BASH_REMATCH[1]} '. + {"freeipa-plugin": $freeipa_plugin_version}' > /tmp/package-versions.json.tmp && mv /tmp/package-versions.json.tmp /tmp/package-versions.json
 	else
@@ -88,23 +88,20 @@ if [[ "$CUSTOM_IMAGE_TYPE" == "freeipa" ]]; then
 	if [[ $FREEIPA_HEALTH_AGENT_RPM_URL =~ $FREEIPA_REGEX ]]; then
 		cat /tmp/package-versions.json | jq --arg freeipa_health_agent_version ${BASH_REMATCH[1]} '. + {"freeipa-health-agent": $freeipa_health_agent_version}' > /tmp/package-versions.json.tmp && mv /tmp/package-versions.json.tmp /tmp/package-versions.json
 	else
-		echo "It is not possible to retrieve the version of FreeIPA Health Agent from the specified url."
-		exit 1
+		echo "WARNING: It is not possible to retrieve the version of FreeIPA Health Agent from the specified url."
 	fi
 	if [[ $FREEIPA_LDAP_AGENT_RPM_URL =~ $FREEIPA_REGEX ]]; then
 		cat /tmp/package-versions.json | jq --arg freeipa_ldap_agent_version ${BASH_REMATCH[1]} '. + {"freeipa-ldap-agent": $freeipa_ldap_agent_version}' > /tmp/package-versions.json.tmp && mv /tmp/package-versions.json.tmp /tmp/package-versions.json
 	else
-		echo "It is not possible to retrieve the version of FreeIPA LDAP Agent from the specified url."
-		exit 1
+		echo "WARNING: It is not possible to retrieve the version of FreeIPA LDAP Agent from the specified url."
 	fi
 elif [[ "$CUSTOM_IMAGE_TYPE" == "hortonworks" ]]; then
   if [[ -n $METERING_AGENT_RPM_URL ]]; then
-    METERING_REGEX=".*\/[_a-z\-]*\-(.*)\-.*\.x86_64\.rpm"
+    METERING_REGEX=".*\/[_a-z\-]*\-(.*)\-.*\.(aarch64|x86_64)\.rpm"
     if [[ $METERING_AGENT_RPM_URL =~ $METERING_REGEX ]]; then
       cat /tmp/package-versions.json | jq --arg metering_agent_version ${BASH_REMATCH[1]} '. + {"metering_agent": $metering_agent_version}' > /tmp/package-versions.json.tmp && mv /tmp/package-versions.json.tmp /tmp/package-versions.json
     else
-      echo "It is not possible to retrieve the version of Metering Agent from the specified url."
-      exit 1
+      echo "WARNING: It is not possible to retrieve the version of Metering Agent from the specified url."
     fi
   fi
 
