@@ -1,0 +1,17 @@
+interface(`cdp_systemd_stop_all_unit_files',`
+    gen_require(`
+        attribute systemd_unit_file_type;
+    ')
+
+    systemd_exec_systemctl($1)
+    allow $1 systemd_unit_file_type:service stop;
+')
+
+interface(`cdp_entropyd_read_files',`
+   gen_require(`
+       type entropyd_t;
+   ')
+
+   search_dirs_pattern(cdp_salt_systemctl_t, entropyd_t, entropyd_t)
+   read_files_pattern(cdp_salt_systemctl_t, entropyd_t, entropyd_t)
+')

@@ -264,3 +264,7 @@ case ${SALT_INSTALL_OS} in
   exit 1
   ;;
 esac
+
+## Useful for SELinux policy development. Uncomment if needed.
+#echo "max_log_file_action = ignore" | tee -a /etc/audit/auditd.conf
+#service auditd restart
