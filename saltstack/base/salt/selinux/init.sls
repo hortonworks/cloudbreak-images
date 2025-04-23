@@ -1,4 +1,21 @@
-{% if salt['environ.get']('CUSTOM_IMAGE_TYPE') != 'freeipa' %}
+###############################################################################
+##TODO REMOVE THESE
+create_nginx_dir:
+  file.directory:
+    - name: /etc/nginx
+
+add_audit_to_nginx.conf:
+  cmd.run:
+    - name: auditctl -w /etc/nginx/nginx.conf -p war -k nginx_conf_watch
+
+add_audit_to_salt-call:
+  cmd.run:
+    - name: auditctl -w /opt/salt_3001.8/bin/salt-call -p war -k salt-call_watch
+
+##TODO END
+##############################################################################
+
+{%- if salt['environ.get']('CUSTOM_IMAGE_TYPE') != 'freeipa' %}
 /etc/selinux/cdp/postgresql/cdp-postgresql.fc:
   file.managed:
     - name: /etc/selinux/cdp/postgresql/cdp-postgresql.fc
@@ -31,6 +48,35 @@
   file.managed:
     - name: /etc/selinux/cdp/hostname/cdp-hostname.te
     - source: salt://{{ slspath }}/etc/selinux/cdp/hostname/cdp-hostname.te
+    - user: root
+    - group: root
+    - mode: 644
+    - makedirs: True
+
+/etc/selinux/cdp/salt/cdp-salt.fc:
+  file.managed:
+    - name: /etc/selinux/cdp/salt/cdp-salt.fc
+    - source: salt://{{ slspath }}/etc/selinux/cdp/salt/cdp-salt.fc
+    - user: root
+    - group: root
+    - mode: 644
+    - makedirs: True
+    - template: jinja
+
+/etc/selinux/cdp/salt/cdp-salt.restorecon:
+  file.managed:
+    - name: /etc/selinux/cdp/salt/cdp-salt.restorecon
+    - source: salt://{{ slspath }}/etc/selinux/cdp/salt/cdp-salt.restorecon
+    - user: root
+    - group: root
+    - mode: 644
+    - makedirs: True
+    - template: jinja
+
+/etc/selinux/cdp/salt/cdp-salt.te:
+  file.managed:
+    - name: /etc/selinux/cdp/salt/cdp-salt.te
+    - source: salt://{{ slspath }}/etc/selinux/cdp/salt/cdp-salt.te
     - user: root
     - group: root
     - mode: 644

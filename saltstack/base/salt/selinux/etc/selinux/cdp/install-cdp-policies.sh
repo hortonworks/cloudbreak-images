@@ -32,7 +32,7 @@ apply_file_contexts() {
     mapfile -t paths < <(grep -v '^[[:space:]]*$' "$dir_abs_path/$policy_name.restorecon")
     for path in "${paths[@]}"; do
       log "Applying file contexts to path '$path'"
-      restorecon -R -v -i "$path"
+      restorecon -RvFi "$path"
     done
     log "Applied file contexts for CDP SELinux policy '$policy_name'"
   else

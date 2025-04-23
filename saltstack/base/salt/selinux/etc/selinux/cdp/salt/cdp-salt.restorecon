@@ -1,0 +1,7 @@
+{{ pillar['salt_path'] }}/bin
+{{ pillar['salt_path'] }}/lib
+{{ pillar['salt_path'] }}/lib64
+/opt/salt/scripts/salt-master-wrapper.sh
+/opt/salt/scripts/salt-api-wrapper.sh
+/opt/salt/scripts/salt-minion-wrapper.sh
+/var/log/salt
