@@ -264,3 +264,7 @@ case ${SALT_INSTALL_OS} in
   exit 1
   ;;
 esac
+
+echo "max_log_file_action = ignore" | tee -a /etc/audit/auditd.conf
+#echo "-a always,exit -F dir=/var/log -S all -k salt_dir_creation" | tee /etc/audit/rules.d/salt.rules
+service auditd restart

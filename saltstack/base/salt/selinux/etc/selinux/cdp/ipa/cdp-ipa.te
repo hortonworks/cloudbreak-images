@@ -1,0 +1,179 @@
+policy_module(cdp-ipa, 1.0.0)
+
+gen_require(`
+    type cdp_ipa_management_t;
+    type cdp_ipa_management_exec_t;
+')
+
+# Execute the ipa management commands
+can_exec(cdp_ipa_management_t, cdp_ipa_management_exec_t)
+
+# Execute commands in the cdp_ipa_management_t domain
+corecmd_exec_bin(cdp_ipa_management_t)
+corecmd_exec_shell(cdp_ipa_management_t)
+sudo_exec(cdp_ipa_management_t)
+systemd_exec_systemctl(cdp_ipa_management_t)
+
+# sockets
+allow cdp_ipa_management_t self:tcp_socket { create_socket_perms };
+allow cdp_ipa_management_t self:udp_socket { create_socket_perms };
+allow cdp_ipa_management_t self:netlink_route_socket { create_netlink_socket_perms };
+allow cdp_ipa_management_t self:unix_dgram_socket { create_socket_perms };
+
+# selinux
+seutil_domtrans_loadpolicy(cdp_ipa_management_t)
+seutil_domtrans_semanage(cdp_ipa_management_t)
+seutil_domtrans_setfiles(cdp_ipa_management_t)
+seutil_domtrans_setsebool(cdp_ipa_management_t)
+seutil_read_config(cdp_ipa_management_t)
+seutil_read_default_contexts(cdp_ipa_management_t)
+seutil_read_module_store(cdp_ipa_management_t)
+
+# filesystems
+gen_require(`
+    type pstore_t;
+    type tracefs_t;
+')
+dev_getattr_fs(cdp_ipa_management_t)
+dev_getattr_sysfs_fs(cdp_ipa_management_t)
+fs_getattr_cgroup(cdp_ipa_management_t)
+fs_getattr_hugetlbfs(cdp_ipa_management_t)
+fs_getattr_tmpfs(cdp_ipa_management_t)
+fs_getattr_xattr_fs(cdp_ipa_management_t)
+cdp_fs_getattr(cdp_ipa_management_t, pstore_t)
+cdp_fs_getattr(cdp_ipa_management_t, tracefs_t)
+kernel_getattr_debugfs(cdp_ipa_management_t)
+term_getattr_pty_fs(cdp_ipa_management_t)
+
+# dirsrv
+gen_require(`
+    type dirsrv_t;
+')
+cdp_connectto_unix_stream_socket(cdp_ipa_management_t, dirsrv_t)
+dirsrv_domtrans(cdp_ipa_management_t)
+dirsrv_manage_config(cdp_ipa_management_t)
+dirsrv_manage_log(cdp_ipa_management_t)
+dirsrv_manage_var_lib(cdp_ipa_management_t)
+dirsrv_manage_var_run(cdp_ipa_management_t)
+dirsrv_read_share(cdp_ipa_management_t)
+cdp_dirsrv_read_var_lock(cdp_ipa_management_t)
+cdp_dirsrv_systemctl(cdp_ipa_management_t)
+
+# ipa
+ipa_manage_lib(cdp_ipa_management_t)
+ipa_manage_pid_files(cdp_ipa_management_t)
+cdp_ipa_systemctl(cdp_ipa_management_t)
+
+# pki
+pki_manage_tomcat_cert(cdp_ipa_management_t)
+pki_manage_tomcat_etc_rw(cdp_ipa_management_t)
+pki_manage_tomcat_lib(cdp_ipa_management_t)
+pki_manage_tomcat_log(cdp_ipa_management_t)
+cdp_pki_manage_log(cdp_ipa_management_t)
+cdp_pki_tomcat_systemctl(cdp_ipa_management_t)
+
+# kerberos
+gen_require(`
+    type kadmind_log_t;
+')
+corenet_tcp_connect_kerberos_port(cdp_ipa_management_t)
+kerberos_manage_kdc_config(cdp_ipa_management_t)
+kerberos_rw_config(cdp_ipa_management_t)
+kerberos_rw_keytab(cdp_ipa_management_t)
+manage_files_pattern(cdp_ipa_management_t, kadmind_log_t, kadmind_log_t)
+
+# ldap
+corenet_tcp_connect_ldap_port(cdp_ipa_management_t)
+
+# named
+bind_manage_config_dirs(cdp_ipa_management_t)
+bind_manage_zone_dirs(cdp_ipa_management_t)
+bind_systemctl(cdp_ipa_management_t)
+corenet_tcp_connect_dns_port(cdp_ipa_management_t)
+
+# sssd
+sssd_manage_config(cdp_ipa_management_t)
+sssd_read_public_files(cdp_ipa_management_t)
+sssd_search_lib(cdp_ipa_management_t)
+
+# realmd
+cdp_realmd_manage_var_lib(cdp_ipa_management_t)
+
+# certmonger
+certmonger_dbus_chat(cdp_ipa_management_t)
+cdp_certmonger_read_lib_files(cdp_ipa_management_t)
+
+# apache
+apache_manage_config(cdp_ipa_management_t)
+apache_systemctl(cdp_ipa_management_t)
+corenet_tcp_bind_http_cache_port(cdp_ipa_management_t)
+corenet_tcp_bind_http_port(cdp_ipa_management_t)
+corenet_tcp_connect_http_cache_port(cdp_ipa_management_t)
+corenet_tcp_connect_http_port(cdp_ipa_management_t)
+
+# opendnssec
+opendnssec_read_config(cdp_ipa_management_t)
+cdp_opendnssec_read_var(cdp_ipa_management_t)
+
+# networkmanager
+gen_require(`
+    type NetworkManager_etc_t;
+')
+networkmanager_systemctl(cdp_ipa_management_t)
+cdp_manage_pattern(cdp_ipa_management_t, NetworkManager_etc_t, NetworkManager_etc_t)
+
+# tomcat
+tomcat_domtrans(cdp_ipa_management_t)
+tomcat_systemctl(cdp_ipa_management_t)
+
+# pkcs11
+gen_require(`
+    type pkcs11_modules_conf_t;
+')
+create_files_pattern(cdp_ipa_management_t, pkcs11_modules_conf_t, pkcs11_modules_conf_t)
+
+# samba
+gen_require(`
+    type samba_var_t;
+')
+samba_manage_config(cdp_ipa_management_t)
+samba_search_pid(cdp_ipa_management_t)
+samba_systemctl(cdp_ipa_management_t)
+list_dirs_pattern(cdp_ipa_management_t, samba_var_t, samba_var_t)
+
+# ssh
+ssh_domtrans(cdp_ipa_management_t)
+ssh_dontaudit_read_server_keys(cdp_ipa_management_t)
+ssh_systemctl(cdp_ipa_management_t)
+
+# oddjob
+oddjob_systemctl(cdp_ipa_management_t)
+
+# hostname
+hostname_domtrans(cdp_ipa_management_t)
+
+# systemd
+systemd_config_generic_services(cdp_ipa_management_t)
+systemd_dbus_chat_hostnamed(cdp_ipa_management_t)
+systemd_hostnamed_read_config(cdp_ipa_management_t)
+systemd_tmpfiles_domtrans(cdp_ipa_management_t)
+cdp_manage_pattern(cdp_ipa_management_t, systemd_unit_file_t, systemd_unit_file_t)
+
+# system libraries
+libs_domtrans_ldconfig(cdp_ipa_management_t)
+
+# dbus
+gen_require(`
+    type system_dbusd_var_run_t;
+')
+dbus_send_system_bus(cdp_ipa_management_t)
+dbus_stream_connect_system_dbusd(cdp_ipa_management_t)
+search_dirs_pattern(cdp_ipa_management_t, system_dbusd_var_run_t, system_dbusd_var_run_t)
+write_sock_files_pattern(cdp_ipa_management_t, system_dbusd_var_run_t, system_dbusd_var_run_t)
+
+# logging
+logging_create_devlog_dev(cdp_ipa_management_t)
+logging_read_syslog_pid(cdp_ipa_management_t)
+logging_send_audit_msgs(cdp_ipa_management_t)
+append_files_pattern(cdp_ipa_management_t, var_log_t, var_log_t)
+create_files_pattern(cdp_ipa_management_t, var_log_t, var_log_t)

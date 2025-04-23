@@ -1,0 +1,8 @@
+interface(`cdp_systemd_stop_all_unit_files',`
+    gen_require(`
+        attribute systemd_unit_file_type;
+    ')
+
+    systemd_exec_systemctl($1)
+    allow $1 systemd_unit_file_type:service stop;
+')
