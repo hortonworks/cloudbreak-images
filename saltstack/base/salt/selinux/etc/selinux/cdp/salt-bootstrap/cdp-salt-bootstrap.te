@@ -5,29 +5,32 @@ policy_module(cdp-salt-bootstrap, 1.0.0)
 # Declarations, domain setup
 #
 
-require {
-    type cdp_salt_bootstrap_t, cdp_salt_bootstrap_exec_t;
-}
+gen_require(`
+    type cdp_salt_bootstrap_t;
+    type cdp_salt_bootstrap_exec_t;
+')
 init_daemon_domain(cdp_salt_bootstrap_t, cdp_salt_bootstrap_exec_t)
 
 ########################################
 #
 # cdp-salt-bootstrap local policy
 #
-allow cdp_salt_bootstrap_t self:fifo_file rw_fifo_file_perms;
-allow cdp_salt_bootstrap_t self:unix_stream_socket create_stream_socket_perms;
+allow cdp_salt_bootstrap_t self:fifo_file { rw_fifo_file_perms };
+allow cdp_salt_bootstrap_t self:unix_stream_socket { create_stream_socket_perms };
 
-require {
-    type cdp_salt_bootstrap_etc_t, cdp_salt_bootstrap_cert_t;
-}
+gen_require(`
+    type cdp_salt_bootstrap_etc_t;
+    type cdp_salt_bootstrap_cert_t;
+')
 search_dirs_pattern(cdp_salt_bootstrap_t, cdp_salt_bootstrap_etc_t, cdp_salt_bootstrap_etc_t)
 search_dirs_pattern(cdp_salt_bootstrap_t, cdp_salt_bootstrap_cert_t, cdp_salt_bootstrap_cert_t)
 read_files_pattern(cdp_salt_bootstrap_t, cdp_salt_bootstrap_etc_t, cdp_salt_bootstrap_etc_t)
 read_files_pattern(cdp_salt_bootstrap_t, cdp_salt_bootstrap_cert_t, cdp_salt_bootstrap_cert_t)
 
-require {
-    type cdp_salt_bootstrap_log_t, var_log_t;
-}
+gen_require(`
+    type cdp_salt_bootstrap_log_t;
+    type var_log_t;
+')
 manage_dirs_pattern(cdp_salt_bootstrap_t, var_log_t, cdp_salt_bootstrap_log_t)
 manage_files_pattern(cdp_salt_bootstrap_t, var_log_t, cdp_salt_bootstrap_log_t)
 logging_log_filetrans(cdp_salt_bootstrap_t, cdp_salt_bootstrap_log_t, file)
@@ -42,10 +45,9 @@ miscfiles_read_localization(cdp_salt_bootstrap_t)
 #
 # cdp_salt_bootstrap_port_t, networking
 #
-require {
+gen_require(`
     type cdp_salt_bootstrap_port_t;
-	class tcp_socket { accept bind connect create getattr getopt listen name_bind name_connect read setopt write };
-}
+')
 allow cdp_salt_bootstrap_t cdp_salt_bootstrap_port_t:tcp_socket { name_bind name_connect };
 allow cdp_salt_bootstrap_t self:tcp_socket { accept bind connect create getattr getopt listen read setopt write };
 corenet_tcp_bind_generic_node(cdp_salt_bootstrap_t)
@@ -83,9 +85,9 @@ init_reload_services(cdp_salt_bootstrap_systemctl_t)
 #
 # Child processes: cp, grep, mv, ps (all executed in the domain cdp_salt_bootstrap_unconfined_t)
 #
-require {
+gen_require(`
     type cdp_salt_bootstrap_unconfined_t;
-}
+')
 role system_r types cdp_salt_bootstrap_unconfined_t;
 domain_type(cdp_salt_bootstrap_unconfined_t)
 unconfined_domain(cdp_salt_bootstrap_unconfined_t)
@@ -103,10 +105,10 @@ hostname_domtrans(cdp_salt_bootstrap_t)
 #
 # Child processes: sss_cache
 #
-require {
+gen_require(`
     type sssd_t;
-}
-allow sssd_t cdp_salt_bootstrap_t:fifo_file write;
+')
+allow sssd_t cdp_salt_bootstrap_t:fifo_file { write };
 
 ########################################
 #
@@ -125,10 +127,9 @@ auth_manage_shadow(cdp_salt_bootstrap_t)
 #
 # Salt related files
 #
-require {
+gen_require(`
     type cdp_salt_etc_t, cdp_salt_cert_t, cdp_salt_srv_t;
-    class capability { dac_override dac_read_search };
-}
+')
 manage_dirs_pattern(cdp_salt_bootstrap_t, cdp_salt_etc_t, cdp_salt_etc_t)
 manage_dirs_pattern(cdp_salt_bootstrap_t, cdp_salt_cert_t, cdp_salt_cert_t)
 manage_dirs_pattern(cdp_salt_bootstrap_t, cdp_salt_srv_t, cdp_salt_srv_t)
@@ -143,6 +144,18 @@ files_var_filetrans(cdp_salt_bootstrap_t, cdp_salt_srv_t, dir, "salt")
 files_var_filetrans(cdp_salt_bootstrap_t, cdp_salt_srv_t, file, "salt-state-updater.sh")
 files_var_filetrans(cdp_salt_bootstrap_t, cdp_salt_srv_t, file, "stderrcommands.yaml")
 allow cdp_salt_bootstrap_t self:capability { dac_override dac_read_search };
+
+########################################
+#
+# cdp_salt_bootstrap_systemctl_t manage salt services
+#
+gen_require(`
+    type cdp_salt_bootstrap_systemctl_t;
+    type cdp_salt_systemd_unit_file_t;
+')
+getattr_files_pattern(cdp_salt_bootstrap_systemctl_t, cdp_salt_systemd_unit_file_t, cdp_salt_systemd_unit_file_t)
+init_reload_services(cdp_salt_bootstrap_systemctl_t)
+allow cdp_salt_bootstrap_systemctl_t cdp_salt_systemd_unit_file_t:service { start status };
 
 ########################################
 #

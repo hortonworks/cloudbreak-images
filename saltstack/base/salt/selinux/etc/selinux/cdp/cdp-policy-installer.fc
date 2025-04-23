@@ -1,0 +1,4 @@
+/etc/selinux/cdp/install-cdp-policies\.sh            --  gen_context(system_u:object_r:cdp_policy_installer_exec_t,s0)
+
+/var/log/selinux/install-cdp-policies-allout\.log    --  gen_context(system_u:object_r:cdp_policy_installer_var_log_t,s0)
+/var/log/selinux/install-cdp-policies\.log           --  gen_context(system_u:object_r:cdp_policy_installer_var_log_t,s0)

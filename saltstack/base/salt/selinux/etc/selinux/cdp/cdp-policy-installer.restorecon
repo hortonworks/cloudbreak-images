@@ -1,0 +1,3 @@
+/etc/selinux/cdp/install-cdp-policies.sh
+/var/log/selinux/install-cdp-policies-allout.log
+/var/log/selinux/install-cdp-policies.log

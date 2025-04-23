@@ -1,4 +1,4 @@
 /usr/pgsql-11/bin
 /usr/pgsql-14/bin
 /usr/pgsql-17/bin
-/dbfs/pgsql
+/dbfs
