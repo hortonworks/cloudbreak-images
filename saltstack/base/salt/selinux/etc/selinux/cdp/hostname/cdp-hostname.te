@@ -7,4 +7,4 @@ gen_require(`
 ')
 
 #============= hostname_t ==============
-allow hostname_t hostname_etc_t:file open;
+allow hostname_t hostname_etc_t:file { open };

@@ -6,4 +6,4 @@
 /usr/sbin/salt-bootstrap    --      gen_context(system_u:object_r:cdp_salt_bootstrap_exec_t,s0)
 
 # Log
-/var/log/saltboot.log       --      gen_context(system_u:object_r:cdp_salt_bootstrap_log_t,s0)
+/var/log/saltboot\.log      --      gen_context(system_u:object_r:cdp_salt_bootstrap_log_t,s0)
