@@ -1,10 +1,555 @@
 policy_module(cdp-salt, 1.0.0)
 
 gen_require(`
-    type cdp_salt_etc_t, cdp_salt_cert_t, cdp_salt_srv_t;
+    type cdp_salt_t;
+    type cdp_salt_bin_t;
+    type cdp_salt_cert_t;
+    type cdp_salt_etc_t;
+    type cdp_salt_lib_t;
+    type cdp_salt_srv_t;
+    type cdp_salt_systemctl_t;
+    type cdp_salt_systemd_unit_file_t;
+    type cdp_salt_var_cache_t;
+    type cdp_salt_var_log_t;
+    type cdp_salt_var_run_t;
 ')
 
-########################################
+################################################################
 #
-# cdp-salt customized policy
+# cdp_salt_systemctl_t
+#
+
+# Modify resource limits
+allow cdp_salt_systemctl_t self:capability { sys_resource };
+allow cdp_salt_systemctl_t self:process { setrlimit };
+
+# Read files even if DAC is does not allow it
+allow cdp_salt_systemctl_t self:capability dac_read_search;
+
+# Execute core commands and shells (e.g. ls, cp, bash)
+corecmd_exec_bin(cdp_salt_systemctl_t)
+corecmd_exec_shell(cdp_salt_systemctl_t)
+
+# Manage systemd unit file symlinks under /etc
+files_manage_etc_symlinks(cdp_salt_systemctl_t)
+
+# Get the attributes of cgroup and tmpfs filesystems and get extended attributes of filesystems
+fs_getattr_cgroup(cdp_salt_systemctl_t)
+fs_getattr_tmpfs(cdp_salt_systemctl_t)
+fs_getattr_xattr_fs(cdp_salt_systemctl_t)
+
+# Access to the systemd executable and init scripts
+init_access_check(cdp_salt_systemctl_t)
+init_read_script_files(cdp_salt_systemctl_t)
+
+# Manage systemd
+init_reload_services(cdp_salt_systemctl_t)
+init_start(cdp_salt_systemctl_t)
+init_status(cdp_salt_systemctl_t)
+init_stop(cdp_salt_systemctl_t)
+
+# Configure generic unit files domain
+systemd_config_generic_services(cdp_salt_systemctl_t)
+
+# Execute systemctl commands
+systemd_exec_systemctl(cdp_salt_systemctl_t)
+
+# Manage all unit files and directories
+systemd_manage_all_unit_files(cdp_salt_systemctl_t)
+systemd_manage_unit_dirs(cdp_salt_systemctl_t)
+
+# Start, stop and check the status of all services
+systemd_start_all_unit_files(cdp_salt_systemctl_t)
+systemd_status_all_unit_files(cdp_salt_systemctl_t)
+cdp_systemd_stop_all_unit_files(cdp_salt_systemctl_t)
+
+# Access to service specific unit files and manage the services in their domains
+apache_systemctl(cdp_salt_systemctl_t)
+bind_systemctl(cdp_salt_systemctl_t)
+chronyd_systemctl(cdp_salt_systemctl_t)
+dirsrv_systemctl(cdp_salt_systemctl_t)
+gssproxy_systemctl(cdp_salt_systemctl_t)
+networkmanager_systemctl(cdp_salt_systemctl_t)
+oddjob_systemctl(cdp_salt_systemctl_t)
+pki_tomcat_systemctl(cdp_salt_systemctl_t)
+samba_systemctl(cdp_salt_systemctl_t)
+ssh_systemctl(cdp_salt_systemctl_t)
+sssd_systemctl(cdp_salt_systemctl_t)
+tomcat_systemctl(cdp_salt_systemctl_t)
+
+# Read the /proc/pid files of all domains (use ps)
+domain_read_all_domains_state(cdp_salt_systemctl_t)
+
+# Read bind state files in /proc
+bind_read_state(cdp_salt_systemctl_t)
+
+# Read generic files in /proc
+kernel_read_proc_files(cdp_salt_systemctl_t)
+
+# Read the syslog pid files
+logging_read_syslog_pid(cdp_salt_systemctl_t)
+
+# Read Kerberos KDC files
+gen_require(`
+    type krb5kdc_t;
+')
+list_dirs_pattern(cdp_salt_systemctl_t, krb5kdc_t, krb5kdc_t)
+read_files_pattern(cdp_salt_systemctl_t, krb5kdc_t, krb5kdc_t)
+
+# Read unconfined service files
+gen_require(`
+    type unconfined_service_t;
+')
+list_dirs_pattern(cdp_salt_systemctl_t, unconfined_service_t, unconfined_service_t)
+read_files_pattern(cdp_salt_systemctl_t, unconfined_service_t, unconfined_service_t)
+
+# Read entropyd_t files
+cdp_entropyd_read_files(cdp_salt_systemctl_t)
+
+# Check the postgresql service
+gen_require(`
+    type postgresql_t;
+')
+list_dirs_pattern(cdp_salt_systemctl_t, postgresql_t, postgresql_t)
+read_files_pattern(cdp_salt_systemctl_t, postgresql_t, postgresql_t)
+
+
+################################################################
+#
+# cdp_salt_t
+#
+
+# Manage salt related directories, files, symlinks and sockets
+cdp_manage_pattern(cdp_salt_t, cdp_salt_bin_t, cdp_salt_bin_t)
+cdp_manage_pattern(cdp_salt_t, cdp_salt_cert_t, cdp_salt_cert_t)
+cdp_manage_pattern(cdp_salt_t, cdp_salt_etc_t, cdp_salt_etc_t)
+cdp_manage_pattern(cdp_salt_t, cdp_salt_lib_t, cdp_salt_lib_t)
+cdp_manage_pattern(cdp_salt_t, cdp_salt_srv_t, cdp_salt_srv_t)
+cdp_manage_pattern(cdp_salt_t, cdp_salt_var_cache_t, cdp_salt_var_cache_t)
+cdp_manage_pattern(cdp_salt_t, cdp_salt_var_run_t, cdp_salt_var_run_t)
+cdp_manage_pattern(cdp_salt_t, cdp_salt_var_log_t, cdp_salt_var_log_t)
+
+# Execute services/commands/scripts in the cdp_salt_t domain
+can_exec(cdp_salt_t, cdp_salt_bin_t)
+can_exec(cdp_salt_t, cdp_salt_lib_t)
+corecmd_exec_bin(cdp_salt_t)
+corecmd_exec_shell(cdp_salt_t)
+fs_exec_tmpfs_files(cdp_salt_t)
+init_exec_script_files(cdp_salt_t)
+rsync_exec(cdp_salt_t)
+ssh_exec(cdp_salt_t)
+su_exec(cdp_salt_t)
+sudo_exec(cdp_salt_t)
+
+# file transitions
+gen_require(`
+    type cdp_httpd_cert_t;
+    type etc_t;
+    type httpd_config_t;
+    type httpd_sys_script_exec_t;
+    type lost_found_t;
+    type postgresql_db_t;
+    type root_t;
+    type unconfined_t;
+')
+logging_log_filetrans(cdp_salt_t, cdp_salt_var_log_t, dir, "salt")
+logging_log_filetrans(cdp_salt_t, cdp_salt_var_log_t, file, "api")
+logging_log_filetrans(cdp_salt_t, cdp_salt_var_log_t, file, "master")
+logging_log_filetrans(cdp_salt_t, cdp_salt_var_log_t, file, "minion")
+logging_log_filetrans(unconfined_t, cdp_salt_var_log_t, dir, "salt")
+logging_log_filetrans(unconfined_t, cdp_salt_var_log_t, file, "api")
+logging_log_filetrans(unconfined_t, cdp_salt_var_log_t, file, "master")
+logging_log_filetrans(unconfined_t, cdp_salt_var_log_t, file, "minion")
+files_pid_filetrans(cdp_salt_t, cdp_salt_var_run_t, dir, "salt")
+files_pid_filetrans(cdp_salt_t, cdp_salt_var_run_t, file, "salt-api.pid")
+files_pid_filetrans(cdp_salt_t, cdp_salt_var_run_t, file, "salt-master.pid")
+files_pid_filetrans(cdp_salt_t, cdp_salt_var_run_t, file, "salt-minion.pid")
+files_pid_filetrans(unconfined_t, cdp_salt_var_run_t, dir, "salt")
+files_pid_filetrans(unconfined_t, cdp_salt_var_run_t, file, "salt-api.pid")
+files_pid_filetrans(unconfined_t, cdp_salt_var_run_t, file, "salt-master.pid")
+files_pid_filetrans(unconfined_t, cdp_salt_var_run_t, file, "salt-minion.pid")
+systemd_unit_file_filetrans(cdp_salt_t, cdp_salt_systemd_unit_file_t, file, "salt-api.service")
+systemd_unit_file_filetrans(cdp_salt_t, cdp_salt_systemd_unit_file_t, file, "salt-master.service")
+systemd_unit_file_filetrans(cdp_salt_t, cdp_salt_systemd_unit_file_t, file, "salt-minion.service")
+filetrans_pattern(cdp_salt_t, etc_t, cdp_httpd_cert_t, dir, "certs-user-facing")
+filetrans_pattern(cdp_salt_t, httpd_config_t, httpd_sys_script_exec_t, file, "httpd-log-filter.sh")
+filetrans_pattern(cdp_salt_t, root_t, postgresql_db_t, dir, "dbfs")
+filetrans_pattern(cdp_salt_t, postgresql_db_t, postgresql_db_t, dir, "pgsql")
+
+# apache
+gen_require(`
+    type cdp_httpd_cert_t;
+    type httpd_config_t;
+    type httpd_sys_script_exec_t;
+')
+apache_domtrans(cdp_salt_t)
+apache_manage_config(cdp_salt_t)
+corenet_tcp_bind_http_cache_port(cdp_salt_t)
+corenet_tcp_bind_http_port(cdp_salt_t)
+corenet_tcp_connect_http_cache_port(cdp_salt_t)
+corenet_tcp_connect_http_port(cdp_salt_t)
+getattr_files_pattern(cdp_salt_t, httpd_config_t, httpd_sys_script_exec_t)
+relabel_files_pattern(cdp_salt_t, httpd_config_t, httpd_config_t)
+relabelto_files_pattern(cdp_salt_t, httpd_config_t, httpd_sys_script_exec_t)
+cdp_manage_pattern(cdp_salt_t, cdp_httpd_cert_t, cdp_httpd_cert_t)
+
+# auth
+gen_require(`
+    type shadow_t;
+')
+auth_domtrans_chkpwd(cdp_salt_t)
+auth_getattr_shadow(cdp_salt_t)
+auth_manage_faillog(cdp_salt_t)
+auth_rw_lastlog(cdp_salt_t)
+setattr_files_pattern(cdp_salt_t, shadow_t, shadow_t)
+
+# cdp-salt-bootstrap
+gen_require(`
+    type cdp_salt_bootstrap_etc_t;
+    type cdp_salt_bootstrap_t;
+')
+getattr_dirs_pattern(cdp_salt_t, cdp_salt_bootstrap_etc_t, cdp_salt_bootstrap_etc_t)
+read_files_pattern(cdp_salt_t, cdp_salt_bootstrap_t, cdp_salt_bootstrap_t)
+
+# certmonger
+gen_require(`
+    type certmonger_unit_file_t;
+')
+certmonger_dbus_chat(cdp_salt_t)
+relabelto_files_pattern(cdp_salt_t, certmonger_unit_file_t, certmonger_unit_file_t)
+
+# chronyd
+gen_require(`
+    type chronyd_keys_t;
+')
+getattr_files_pattern(cdp_salt_t, chronyd_keys_t, chronyd_keys_t)
+
+# clock
+clock_read_adjtime(cdp_salt_t)
+
+# crontab
+gen_require(`
+    type system_cron_spool_t;
+')
+crontab_domtrans(cdp_salt_t)
+cdp_manage_pattern(cdp_salt_t, system_cron_spool_t, system_cron_spool_t)
+
+# cups
+gen_require(`
+    type cupsd_rw_etc_t;
+')
+getattr_files_pattern(cdp_salt_t, cupsd_rw_etc_t, cupsd_rw_etc_t)
+
+# dirsrv
+gen_require(`
+    type dirsrv_config_t;
+')
+dirsrv_read_share(cdp_salt_t)
+list_dirs_pattern(cdp_salt_t, dirsrv_config_t, dirsrv_config_t)
+read_files_pattern(cdp_salt_t, dirsrv_config_t, dirsrv_config_t)
+rw_dirs_pattern(cdp_salt_t, dirsrv_config_t, dirsrv_config_t)
+
+# dmesg
+dmesg_domtrans(cdp_salt_t)
+
+# dmidecode
+dmidecode_domtrans(cdp_salt_t)
+
+# email
+mta_read_aliases(cdp_salt_t)
+postfix_domtrans_master(cdp_salt_t)
+postfix_read_config(cdp_salt_t)
+
+# entropyd
+cdp_entropyd_read_files(cdp_salt_t)
+
+# filesystems
+gen_require(`
+    type efivarfs_t;
+    type tmpfs_t;
+')
+fs_associate_proc(cdp_salt_t)
+fs_read_cgroup_files(cdp_salt_t)
+fs_read_dos_files(cdp_salt_t)
+fs_read_efivarfs_files(cdp_salt_t)
+storage_getattr_fixed_disk_dev(cdp_salt_t)
+list_dirs_pattern(cdp_salt_t, efivarfs_t, efivarfs_t)
+cdp_manage_pattern(cdp_salt_t, tmpfs_t, tmpfs_t)
+
+# fstools
+fstools_domtrans(cdp_salt_t)
+
+# gnome
+gnome_manage_cache_home_dir(cdp_salt_t)
+gnome_manage_generic_cache_files(cdp_salt_t)
+gnome_manage_home_config(cdp_salt_t)
+gnome_manage_home_config_dirs(cdp_salt_t)
+gnome_search_gconf(cdp_salt_t)
+
+# gpg
+gpg_domtrans(cdp_salt_t)
+
+# hostname
+hostname_domtrans(cdp_salt_t)
+
+# insights_client
+insights_client_read_config(cdp_salt_t)
+
+# ipa
+gen_require(`
+    type cdp_ipa_management_exec_t;
+    type cdp_ipa_management_t;
+    type ipa_dnskey_unit_file_t;
+')
+ipa_manage_lib(cdp_salt_t)
+relabelto_files_pattern(cdp_salt_t, ipa_dnskey_unit_file_t, ipa_dnskey_unit_file_t)
+domtrans_pattern(cdp_salt_t, cdp_ipa_management_exec_t, cdp_ipa_management_t)
+allow cdp_salt_t cdp_ipa_management_t:key { read write };
+
+# iptables
+iptables_domtrans(cdp_salt_t)
+
+# kerberos
+gen_require(`
+    type krb5_conf_t;
+')
+kerberos_read_keytab(cdp_salt_t)
+delete_files_pattern(cdp_salt_t, krb5_conf_t, krb5_conf_t)
+
+# kernel
+files_list_kernel_modules(cdp_salt_t)
+kdump_read_config(cdp_salt_t)
+kernel_dgram_send(cdp_salt_t)
+kernel_read_network_state(cdp_salt_t)
+kernel_read_net_sysctls(cdp_salt_t)
+kernel_read_software_raid_state(cdp_salt_t)
+kernel_signal(cdp_salt_t)
+modutils_list_module_config(cdp_salt_t)
+
+# logging
+gen_require(`
+    type auditd_etc_t;
+    type syslog_conf_t;
+    type var_log_t;
+')
+logging_create_devlog_dev(cdp_salt_t)
+logging_manage_generic_logs(cdp_salt_t)
+logging_read_syslog_config(cdp_salt_t)
+create_dirs_pattern(cdp_salt_t, var_log_t, var_log_t)
+getattr_dirs_pattern(cdp_salt_t, auditd_etc_t, auditd_etc_t)
+list_dirs_pattern(cdp_salt_t, syslog_conf_t, syslog_conf_t)
+
+# mount
+mount_domtrans(cdp_salt_t)
+mount_domtrans_showmount(cdp_salt_t)
+
+# named
+gen_require(`
+    type named_conf_t;
+')
+bind_manage_config_dirs(cdp_salt_t)
+bind_manage_config(cdp_salt_t)
+bind_read_dnssec_keys(cdp_salt_t)
+bind_signal(cdp_salt_t)
+relabel_files_pattern(cdp_salt_t, named_conf_t, named_conf_t)
+
+# networkmanager
+gen_require(`
+    type NetworkManager_initrc_exec_t;
+')
+networkmanager_read_conf(cdp_salt_t)
+list_dirs_pattern(cdp_salt_t, NetworkManager_initrc_exec_t, NetworkManager_initrc_exec_t)
+
+# opendnssec
+opendnssec_read_config(cdp_salt_t)
+
+# pki
+pki_manage_tomcat_cert(cdp_salt_t)
+pki_manage_tomcat_etc_rw(cdp_salt_t)
+pki_read_tomcat_lib_files(cdp_salt_t)
+
+# postgresql
+gen_require(`
+    type postgresql_exec_t;
+    type postgresql_log_t;
+    type postgresql_unit_file_t;
+')
+corenet_tcp_connect_postgresql_port(cdp_salt_t)
+postgresql_domtrans(cdp_salt_t)
+postgresql_manage_db(cdp_salt_t)
+append_files_pattern(cdp_salt_t, postgresql_exec_t, postgresql_exec_t)
+create_files_pattern(cdp_salt_t, postgresql_exec_t, postgresql_exec_t)
+relabel_files_pattern(cdp_salt_t, postgresql_unit_file_t, postgresql_unit_file_t)
+read_files_pattern(cdp_salt_t, postgresql_log_t, postgresql_log_t)
+search_dirs_pattern(cdp_salt_t, postgresql_log_t, postgresql_log_t)
+
+# raid
+raid_domtrans_mdadm(cdp_salt_t)
+
+# realmd
+realmd_read_var_lib(cdp_salt_t)
+
+# rhsmcertd
+rhsmcertd_read_config_files(cdp_salt_t)
+
+# rpc
+rpc_read_exports(cdp_salt_t)
+
+# rpm
+rpm_domtrans(cdp_salt_t)
+rpm_manage_db(cdp_salt_t)
+
+# salt
+corenet_tcp_bind_salt_port(cdp_salt_t)
+corenet_tcp_connect_salt_port(cdp_salt_t)
+
+# selinux
+gen_require(`
+    type security_t;
+')
+selinux_compute_access_vector(cdp_salt_t)
+selinux_set_enforce_mode(cdp_salt_t)
+seutil_domtrans_semanage(cdp_salt_t)
+seutil_domtrans_setfiles(cdp_salt_t)
+seutil_domtrans_setsebool(cdp_salt_t)
+seutil_rw_config(cdp_salt_t)
+read_files_pattern(cdp_salt_t, security_t, security_t)
+
+# sockets
+cdp_connectto_unix_stream_socket(cdp_salt_t, init_t)
+cdp_connectto_unix_stream_socket(cdp_salt_t, self)
+allow cdp_salt_t self:netlink_audit_socket { create nlmsg_relay read write };
+allow cdp_salt_t self:netlink_route_socket { nlmsg_write };
+allow cdp_salt_t self:tcp_socket { accept listen };
+
+# ssh
+ssh_domtrans_keygen(cdp_salt_t)
+
+# sssd
+sssd_domtrans(cdp_salt_t)
+sssd_manage_config(cdp_salt_t)
+
+# sysnetwork
+sysnet_domtrans_ifconfig(cdp_salt_t)
+sysnet_manage_config(cdp_salt_t)
+sysnet_read_dhcp_config(cdp_salt_t)
+sysnet_relabelto_net_conf(cdp_salt_t)
+
+# systemd
+gen_require(`
+    type init_var_run_t;
+    type systemd_unit_file_t;
+')
+init_start(cdp_salt_t)
+systemd_dbus_chat_logind(cdp_salt_t)
+systemd_manage_all_unit_files(cdp_salt_t)
+systemd_manage_unit_dirs(cdp_salt_t)
+systemd_manage_unit_symlinks(cdp_salt_t)
+systemd_notify_domtrans(cdp_salt_t)
+relabel_files_pattern(cdp_salt_t, systemd_unit_file_t, systemd_unit_file_t)
+allow cdp_salt_t init_var_run_t:service { start };
+
+# tuned
+tuned_read_etc_files(cdp_salt_t)
+
+# udev
+udev_domtrans(cdp_salt_t)
+
+# miscellaneous
+gen_require(`
+    type bin_t;
+    type etc_t;
+    type games_exec_t;
+    type lib_t;
+    type root_t;
+    type tmp_t;
+    type user_home_dir_t;
+    type var_lib_t;
+    type var_lock_t;
+')
+corecmd_manage_bin_files(cdp_salt_t)
+dev_read_nvme(cdp_salt_t)
+dev_read_sysfs(cdp_salt_t)
+domain_read_all_domains_state(cdp_salt_t)
+domain_obj_id_change_exemption(cdp_salt_t)
+files_list_var(cdp_salt_t)
+files_manage_default_dirs(cdp_salt_t)
+files_manage_default_files(cdp_salt_t)
+files_manage_etc_dirs(cdp_salt_t)
+files_manage_etc_files(cdp_salt_t)
+files_manage_etc_symlinks(cdp_salt_t)
+files_manage_generic_locks(cdp_salt_t)
+files_manage_generic_tmp_dirs(cdp_salt_t)
+files_manage_generic_tmp_files(cdp_salt_t)
+files_manage_isid_type_dirs(cdp_salt_t)
+files_manage_isid_type_files(cdp_salt_t)
+files_manage_system_conf_files(cdp_salt_t)
+files_manage_usr_dirs(cdp_salt_t)
+files_manage_usr_files(cdp_salt_t)
+files_manage_var_files(cdp_salt_t)
+libs_domtrans_ldconfig(cdp_salt_t)
+miscfiles_manage_generic_cert_dirs(cdp_salt_t)
+miscfiles_manage_generic_cert_files(cdp_salt_t)
+miscfiles_read_hwdata(cdp_salt_t)
+userdom_manage_admin_dirs(cdp_salt_t)
+userdom_manage_tmp_dirs(cdp_salt_t)
+userdom_manage_admin_files(cdp_salt_t)
+userdom_manage_tmp_files(cdp_salt_t)
+usermanage_domtrans_groupadd(cdp_salt_t)
+usermanage_domtrans_passwd(cdp_salt_t)
+usermanage_domtrans_useradd(cdp_salt_t)
+
+create_dirs_pattern(cdp_salt_t, root_t, root_t)
+create_files_pattern(cdp_salt_t, root_t, root_t)
+list_dirs_pattern(cdp_salt_t, games_exec_t, games_exec_t)
+read_lnk_files_pattern(cdp_salt_t, var_lock_t, var_lock_t)
+relabel_files_pattern(cdp_salt_t, bin_t, bin_t)
+relabel_files_pattern(cdp_salt_t, etc_t, etc_t)
+relabel_files_pattern(cdp_salt_t, tmp_t, tmp_t)
+relabelfrom_files_pattern(cdp_salt_t, cdp_salt_var_cache_t, cdp_salt_var_cache_t)
+setattr_dirs_pattern(cdp_salt_t, user_home_dir_t, user_home_dir_t)
+cdp_manage_pattern(cdp_salt_t, bin_t, bin_t)
+cdp_manage_pattern(cdp_salt_t, lib_t, lib_t)
+cdp_manage_pattern(cdp_salt_t, self, self)
+cdp_manage_pattern(cdp_salt_t, var_lib_t, var_lib_t)
+
+allow cdp_salt_t self:capability { audit_write chown dac_override dac_read_search fowner fsetid kill setgid setuid sys_resource };
+allow cdp_salt_t self:netlink_selinux_socket { bind create };
+allow cdp_salt_t self:process { execmem setrlimit setsched };
+
+# useradd_t (called by salt)
+gen_require(`
+    type lib_t;
+    type var_lib_t;
+')
+manage_dirs_pattern(useradd_t, lib_t, lib_t)
+manage_files_pattern(useradd_t, lib_t, lib_t)
+manage_files_pattern(useradd_t, var_lib_t, var_lib_t)
+
+###
+# TODO Remove this block when CB-29600 is done
+gen_require(`
+    type default_t;
+    type init_t;
+')
+allow cdp_salt_t default_t:file { execute execute_no_trans };
+allow init_t default_t:file { execute execute_no_trans open read };
+###
+
+###
+# TODO Remove this block when CB-30029 is done
+gen_require(`
+    type postgresql_t;
+')
+files_manage_isid_type_dirs(postgresql_t)
+files_manage_isid_type_files(postgresql_t)
+###
+
+###
+# TODO Remove this block when CB-30035 is done
+gen_require(`
+    type httpd_t;
+    type httpd_config_t;
+')
+allow httpd_t httpd_config_t:file { execute execute_no_trans };
 #

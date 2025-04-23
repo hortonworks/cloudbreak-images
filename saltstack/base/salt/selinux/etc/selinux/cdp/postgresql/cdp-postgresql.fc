@@ -1,19 +1,19 @@
-# PostgreSQL binary files (the directory is not labeled, only the files)
-/usr/pgsql-11/bin(/.*)?                --      gen_context(system_u:object_r:postgresql_exec_t,s0)
-/usr/pgsql-14/bin(/.*)?                --      gen_context(system_u:object_r:postgresql_exec_t,s0)
-/usr/pgsql-17/bin(/.*)?                --      gen_context(system_u:object_r:postgresql_exec_t,s0)
+/dbfs                                   -d      gen_context(system_u:object_r:postgresql_db_t,s0)
+/dbfs/pgsql                             -d      gen_context(system_u:object_r:postgresql_db_t,s0)
+/dbfs/lost\+found                       -d      gen_context(system_u:object_r:lost_found_t,s0)
 
-# PostgreSQL data directories
-/dbfs/pgsql/data(/.*)?                 --      gen_context(system_u:object_r:postgresql_db_t,s0)
-/dbfs/pgsql/data(/.*)?                 -d      gen_context(system_u:object_r:postgresql_db_t,s0)
-/dbfs/pgsql/certs(/.*)?                --      gen_context(system_u:object_r:postgresql_db_t,s0)
-/dbfs/pgsql/certs(/.*)?                -d      gen_context(system_u:object_r:postgresql_db_t,s0)
+/usr/pgsql-11/bin(/.*)?                 --      gen_context(system_u:object_r:postgresql_exec_t,s0)
+/usr/pgsql-14/bin(/.*)?                 --      gen_context(system_u:object_r:postgresql_exec_t,s0)
+/usr/pgsql-17/bin(/.*)?                 --      gen_context(system_u:object_r:postgresql_exec_t,s0)
 
-# PostgreSQL log directories
-/dbfs/pgsql/log(/.*)?                  --      gen_context(system_u:object_r:postgresql_log_t,s0)
-/dbfs/pgsql/log(/.*)?                  -d      gen_context(system_u:object_r:postgresql_log_t,s0)
-/dbfs/pgsql/[^/]*\.log                 --      gen_context(system_u:object_r:postgresql_log_t,s0)
+/dbfs/pgsql/data(/.*)?                  --      gen_context(system_u:object_r:postgresql_db_t,s0)
+/dbfs/pgsql/data(/.*)?                  -d      gen_context(system_u:object_r:postgresql_db_t,s0)
+/dbfs/pgsql/certs(/.*)?                 --      gen_context(system_u:object_r:postgresql_db_t,s0)
+/dbfs/pgsql/certs(/.*)?                 -d      gen_context(system_u:object_r:postgresql_db_t,s0)
 
-# PostgreSQL script directories
-/dbfs/pgsql/scripts(/.*)?              --      gen_context(system_u:object_r:postgresql_exec_t,s0)
-/dbfs/pgsql/scripts(/.*)?              -d      gen_context(system_u:object_r:postgresql_exec_t,s0)
+/dbfs/pgsql/log(/.*)?                   --      gen_context(system_u:object_r:postgresql_log_t,s0)
+/dbfs/pgsql/log(/.*)?                   -d      gen_context(system_u:object_r:postgresql_log_t,s0)
+/dbfs/pgsql/[^/]*\.log                  --      gen_context(system_u:object_r:postgresql_log_t,s0)
+
+/dbfs/pgsql/scripts(/.*)?               --      gen_context(system_u:object_r:postgresql_exec_t,s0)
+/dbfs/pgsql/scripts(/.*)?               -d      gen_context(system_u:object_r:postgresql_exec_t,s0)
