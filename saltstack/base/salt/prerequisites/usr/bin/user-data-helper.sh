@@ -3,6 +3,8 @@
 set -ex
 set
 
+echo "The security context of this script's process is '$(id -Z)'"
+
 if [[ "$SECRET_ENCRYPTION_ENABLED" == "true" ]]; then
   source /usr/bin/cdp-retrieve-userdata-secrets.sh &> /var/log/cdp-retrieve-userdata-secrets.log
 fi

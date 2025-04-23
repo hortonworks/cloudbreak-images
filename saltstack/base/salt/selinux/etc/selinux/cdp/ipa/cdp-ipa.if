@@ -1,0 +1,96 @@
+interface(`cdp_dirsrv_systemctl',`
+    gen_require(`
+        type dirsrv_unit_file_t;
+    ')
+
+    dirsrv_systemctl($1)
+    manage_dirs_pattern($1, dirsrv_unit_file_t, dirsrv_unit_file_t)
+    manage_lnk_files_pattern($1, dirsrv_unit_file_t, dirsrv_unit_file_t)
+')
+
+interface(`cdp_dirsrv_read_var_lock',`
+    gen_require(`
+        type dirsrv_var_lock_t;
+    ')
+
+    list_dirs_pattern($1, dirsrv_var_lock_t, dirsrv_var_lock_t)
+    read_files_pattern($1, dirsrv_var_lock_t, dirsrv_var_lock_t)
+')
+
+interface(`cdp_ipa_systemctl',`
+    gen_require(`
+        type ipa_dnskey_unit_file_t;
+        type ipa_otpd_unit_file_t;
+    ')
+
+    read_files_pattern($1, ipa_dnskey_unit_file_t, ipa_dnskey_unit_file_t)
+    read_files_pattern($1, ipa_otpd_unit_file_t, ipa_otpd_unit_file_t)
+    allow $1 ipa_dnskey_unit_file_t:service manage_service_perms;
+    allow $1 ipa_otpd_unit_file_t:service manage_service_perms;
+')
+
+interface(`cdp_pki_tomcat_systemctl',`
+    gen_require(`
+        type pki_tomcat_unit_file_t;
+    ')
+
+    pki_tomcat_systemctl($1)
+    add_entry_dirs_pattern($1, pki_tomcat_unit_file_t, pki_tomcat_unit_file_t)
+    manage_lnk_files_pattern($1, pki_tomcat_unit_file_t, pki_tomcat_unit_file_t)
+')
+
+interface(`cdp_pki_manage_log',`
+    gen_require(`
+        type pki_log_t;
+    ')
+
+    manage_dirs_pattern($1, pki_log_t, pki_log_t)
+    manage_files_pattern($1, pki_log_t, pki_log_t)
+')
+
+interface(`cdp_realmd_manage_var_lib',`
+	gen_require(`
+		type realmd_var_lib_t;
+	')
+
+	manage_dirs_pattern($1, realmd_var_lib_t, realmd_var_lib_t)
+	manage_files_pattern($1, realmd_var_lib_t, realmd_var_lib_t)
+')
+
+interface(`cdp_certmonger_read_lib_files',`
+    gen_require(`
+        type certmonger_var_lib_t;
+    ')
+
+    certmonger_read_lib_files($1)
+    list_dirs_pattern($1, certmonger_var_lib_t, certmonger_var_lib_t)
+')
+
+interface(`cdp_certmonger_systemctl',`
+    gen_require(`
+        type certmonger_unit_file_t;
+    ')
+
+    systemd_exec_systemctl($1)
+    init_reload_services($1)
+    allow $1 certmonger_unit_file_t:file read_file_perms;
+    allow $1 certmonger_unit_file_t:service manage_service_perms;
+')
+
+interface(`cdp_opendnssec_read_var',`
+    gen_require(`
+        type opendnssec_var_t;
+    ')
+
+    files_search_etc($1)
+    list_dirs_pattern($1, opendnssec_var_t, opendnssec_var_t)
+    read_files_pattern($1, opendnssec_var_t, opendnssec_var_t)
+')
+
+interface(`cdp_init_write_key',`
+	gen_require(`
+		type init_t;
+	')
+
+	allow $1 init_t:key write;
+')
