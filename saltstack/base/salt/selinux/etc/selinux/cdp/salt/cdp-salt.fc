@@ -1,0 +1,16 @@
+# Salt binaries
+{{ pillar['salt_path'] }}/bin(/.*)?             --      gen_context(system_u:object_r:initrc_exec_t,s0)
+{{ pillar['salt_path'] }}/bin(/.*)?             -d      gen_context(system_u:object_r:initrc_exec_t,s0)
+{{ pillar['salt_path'] }}/lib(/.*)?             --      gen_context(system_u:object_r:initrc_exec_t,s0)
+{{ pillar['salt_path'] }}/lib(/.*)?             -d      gen_context(system_u:object_r:initrc_exec_t,s0)
+{{ pillar['salt_path'] }}/lib64(/.*)?           --      gen_context(system_u:object_r:initrc_exec_t,s0)
+{{ pillar['salt_path'] }}/lib64(/.*)?           -d      gen_context(system_u:object_r:initrc_exec_t,s0)
+
+# Wrappers for salt binaries
+/opt/salt/scripts/salt-master-wrapper.sh        --      gen_context(system_u:object_r:initrc_exec_t,s0)
+/opt/salt/scripts/salt-api-wrapper.sh           --      gen_context(system_u:object_r:initrc_exec_t,s0)
+/opt/salt/scripts/salt-minion-wrapper.sh        --      gen_context(system_u:object_r:initrc_exec_t,s0)
+
+# Salt logs
+/var/log/salt(/.*)?                             --      gen_context(system_u:object_r:initrc_var_log_t,s0)
+/var/log/salt(/.*)?                             -d      gen_context(system_u:object_r:initrc_var_log_t,s0)

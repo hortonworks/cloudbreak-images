@@ -1,0 +1,12 @@
+policy_module(cdp-salt, 1.0.0)
+
+gen_require(`
+    type initrc_t;
+    type initrc_exec_t;
+    type initrc_var_log_t;
+')
+
+########################################
+#
+# cdp-salt customized policy
+#
