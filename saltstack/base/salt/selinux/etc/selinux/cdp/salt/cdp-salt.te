@@ -1,10 +1,150 @@
 policy_module(cdp-salt, 1.0.0)
 
 gen_require(`
-    type cdp_salt_etc_t, cdp_salt_cert_t, cdp_salt_srv_t;
+    type cdp_salt_t;
+    type cdp_salt_bin_t;
+    type cdp_salt_cert_t;
+    type cdp_salt_etc_t;
+    type cdp_salt_lib_t;
+    type cdp_salt_srv_t;
+    type cdp_salt_systemctl_t;
+    type cdp_salt_systemd_unit_file_t;
+    type cdp_salt_var_log_t;
+    type cdp_salt_var_run_t;
 ')
 
-########################################
+################################################################
 #
-# cdp-salt customized policy
+# Set up custom file types
 #
+
+# Allow the cdp_salt_t domain to execute the listed file types
+can_exec(cdp_salt_t, cdp_salt_bin_t)
+can_exec(cdp_salt_t, cdp_salt_lib_t)
+
+# Manage cdp_salt_bin_t dirs, files and symlinks
+manage_dirs_pattern(cdp_salt_t, cdp_salt_bin_t, cdp_salt_bin_t)
+manage_files_pattern(cdp_salt_t, cdp_salt_bin_t, cdp_salt_bin_t)
+manage_lnk_files_pattern(cdp_salt_t, cdp_salt_bin_t, cdp_salt_bin_t)
+
+# Manage cdp_salt_etc_t dirs, files and symlinks
+manage_dirs_pattern(cdp_salt_t, cdp_salt_etc_t, cdp_salt_etc_t)
+manage_files_pattern(cdp_salt_t, cdp_salt_etc_t, cdp_salt_etc_t)
+manage_lnk_files_pattern(cdp_salt_t, cdp_salt_etc_t, cdp_salt_etc_t)
+
+# Manage cdp_salt_lib_t dirs, files and symlinks
+manage_dirs_pattern(cdp_salt_t, cdp_salt_lib_t, cdp_salt_lib_t)
+manage_files_pattern(cdp_salt_t, cdp_salt_lib_t, cdp_salt_lib_t)
+manage_lnk_files_pattern(cdp_salt_t, cdp_salt_lib_t, cdp_salt_lib_t)
+
+# Manage cdp_salt_var_log_t dirs and files
+manage_dirs_pattern(cdp_salt_t, cdp_salt_var_log_t, cdp_salt_var_log_t)
+manage_files_pattern(cdp_salt_t, cdp_salt_var_log_t, cdp_salt_var_log_t)
+
+# Allow the cdp_salt_t domain the following file transitions
+logging_log_filetrans(cdp_salt_t, cdp_salt_var_log_t, dir, "salt")
+logging_log_filetrans(cdp_salt_t, cdp_salt_var_log_t, file, "api")
+logging_log_filetrans(cdp_salt_t, cdp_salt_var_log_t, file, "master")
+logging_log_filetrans(cdp_salt_t, cdp_salt_var_log_t, file, "minion")
+files_pid_filetrans(cdp_salt_t, cdp_salt_var_run_t, dir, "salt")
+files_pid_filetrans(cdp_salt_t, cdp_salt_var_run_t, file, "salt-api.pid")
+files_pid_filetrans(cdp_salt_t, cdp_salt_var_run_t, file, "salt-master.pid")
+files_pid_filetrans(cdp_salt_t, cdp_salt_var_run_t, file, "salt-minion.pid")
+systemd_unit_file_filetrans(cdp_salt_t, cdp_salt_systemd_unit_file_t, file, "salt-api.service")
+systemd_unit_file_filetrans(cdp_salt_t, cdp_salt_systemd_unit_file_t, file, "salt-master.service")
+systemd_unit_file_filetrans(cdp_salt_t, cdp_salt_systemd_unit_file_t, file, "salt-minion.service")
+
+# Allow the unconfined domain to transition various salt directories and files to the correct domain
+gen_require(`
+    type unconfined_t;
+')
+logging_log_filetrans(unconfined_t, cdp_salt_var_log_t, dir, "salt")
+logging_log_filetrans(unconfined_t, cdp_salt_var_log_t, file, "api")
+logging_log_filetrans(unconfined_t, cdp_salt_var_log_t, file, "master")
+logging_log_filetrans(unconfined_t, cdp_salt_var_log_t, file, "minion")
+files_pid_filetrans(unconfined_t, cdp_salt_var_run_t, dir, "salt")
+files_pid_filetrans(unconfined_t, cdp_salt_var_run_t, file, "salt-api.pid")
+files_pid_filetrans(unconfined_t, cdp_salt_var_run_t, file, "salt-master.pid")
+files_pid_filetrans(unconfined_t, cdp_salt_var_run_t, file, "salt-minion.pid")
+
+
+################################################################
+#
+# cdp_salt_systemctl_t domain
+#
+
+# Modify resource limits
+gen_require(`
+    class capability { sys_resource };
+    class process { setrlimit };
+')
+allow cdp_salt_systemctl_t self:capability { sys_resource };
+allow cdp_salt_systemctl_t self:process { setrlimit };
+
+# Execute core commands and shells (e.g. ls, cp, bash)
+corecmd_exec_bin(cdp_salt_systemctl_t)
+corecmd_exec_shell(cdp_salt_systemctl_t)
+
+# Manage systemd unit file symlinks under /etc
+files_manage_etc_symlinks(cdp_salt_systemctl_t)
+
+# Get the attributes of tmpfs filesystems and get extended attributes of filesystems
+fs_getattr_tmpfs(cdp_salt_systemctl_t)
+fs_getattr_xattr_fs(cdp_salt_systemctl_t)
+
+# Access to the systemd executable and init scripts
+init_access_check(cdp_salt_systemctl_t)
+init_read_script_files(cdp_salt_systemctl_t)
+
+# Manage systemd
+init_reload_services(cdp_salt_systemctl_t)
+init_start(cdp_salt_systemctl_t)
+init_status(cdp_salt_systemctl_t)
+init_stop(cdp_salt_systemctl_t)
+
+# Configure generic unit files domain
+systemd_config_generic_services(cdp_salt_systemctl_t)
+
+# Execute systemctl commands
+systemd_exec_systemctl(cdp_salt_systemctl_t)
+
+# Manage all unit files and directories
+systemd_manage_all_unit_files(cdp_salt_systemctl_t)
+systemd_manage_unit_dirs(cdp_salt_systemctl_t)
+
+# Access to service specific unit files and manage the services in their domains
+apache_systemctl(cdp_salt_systemctl_t)
+bind_systemctl(cdp_salt_systemctl_t)
+chronyd_systemctl(cdp_salt_systemctl_t)
+dirsrv_systemctl(cdp_salt_systemctl_t)
+gssproxy_systemctl(cdp_salt_systemctl_t)
+networkmanager_systemctl(cdp_salt_systemctl_t)
+oddjob_systemctl(cdp_salt_systemctl_t)
+pki_tomcat_systemctl(cdp_salt_systemctl_t)
+samba_systemctl(cdp_salt_systemctl_t)
+ssh_systemctl(cdp_salt_systemctl_t)
+sssd_systemctl(cdp_salt_systemctl_t)
+tomcat_systemctl(cdp_salt_systemctl_t)
+
+# Read bind state files in /proc
+bind_read_state(cdp_salt_systemctl_t)
+
+# Read generic files in /proc
+kernel_read_proc_files(cdp_salt_systemctl_t)
+
+# Read the syslog pid files
+logging_read_syslog_pid(cdp_salt_systemctl_t)
+
+# Read Kerberos KDC files
+gen_require(`
+    type krb5kdc_t;
+')
+list_dirs_pattern(cdp_salt_systemctl_t, krb5kdc_t, krb5kdc_t)
+read_files_pattern(cdp_salt_systemctl_t, krb5kdc_t, krb5kdc_t)
+
+# Read unconfined service files
+gen_require(`
+    type unconfined_service_t;
+')
+list_dirs_pattern(cdp_salt_systemctl_t, unconfined_service_t, unconfined_service_t)
+read_files_pattern(cdp_salt_systemctl_t, unconfined_service_t, unconfined_service_t)
