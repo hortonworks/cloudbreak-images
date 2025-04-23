@@ -5,7 +5,8 @@ After=syslog.target network.target
 [Service]
 Type=simple
 Restart=always
-ExecStart={{ pillar['salt_path'] }}/bin/python {{ pillar['salt_path'] }}/bin/salt-api
+ExecStartPre=restorecon -vFi /opt/salt/scripts/salt-api-wrapper.sh
+ExecStart=/opt/salt/scripts/salt-api-wrapper.sh
 
 [Install]
 WantedBy=multi-user.target
