@@ -4,14 +4,66 @@ policy_module(cdp-common, 1.0.0)
 #
 # Salt
 #
+type cdp_salt_t;
+type cdp_salt_bin_t;
 type cdp_salt_etc_t;
-files_type(cdp_salt_etc_t)
-
 type cdp_salt_cert_t;
+type cdp_salt_exec_t;
+type cdp_salt_lib_t;
+type cdp_salt_srv_t;
+type cdp_salt_systemd_unit_file_t;
+type cdp_salt_var_log_t;
+type cdp_salt_var_run_t;
+type cdp_salt_var_cache_t;
+
+# Let the cdp_salt_t domain manage all salt-related files
+admin_pattern(cdp_salt_t, cdp_salt_bin_t)
+admin_pattern(cdp_salt_t, cdp_salt_etc_t)
+admin_pattern(cdp_salt_t, cdp_salt_cert_t)
+admin_pattern(cdp_salt_t, cdp_salt_exec_t)
+admin_pattern(cdp_salt_t, cdp_salt_lib_t)
+admin_pattern(cdp_salt_t, cdp_salt_srv_t)
+admin_pattern(cdp_salt_t, cdp_salt_systemd_unit_file_t)
+admin_pattern(cdp_salt_t, cdp_salt_var_log_t)
+admin_pattern(cdp_salt_t, cdp_salt_var_run_t)
+admin_pattern(cdp_salt_t, cdp_salt_var_cache_t)
+
+# Allow the cdp_salt_t domain to execute the listed file types
+can_exec(cdp_salt_t, cdp_salt_bin_t)
+can_exec(cdp_salt_t, cdp_salt_lib_t)
+
+# Give the salt related file types the correct typeattributes
+files_type(cdp_salt_bin_t)
+files_type(cdp_salt_etc_t)
+files_type(cdp_salt_cert_t)
+files_type(cdp_salt_exec_t)
+files_type(cdp_salt_lib_t)
+files_type(cdp_salt_srv_t)
+files_type(cdp_salt_var_log_t)
+files_type(cdp_salt_var_run_t)
+files_type(cdp_salt_var_cache_t)
+
+# Allow the cdp_salt_t domain the following file transitions: usr_t -> cdp_salt_bin_t, var_t -> cdp_salt_srv_t
+files_usr_filetrans(cdp_salt_t, cdp_salt_bin_t, dir_file_class_set)
+files_var_filetrans(cdp_salt_t, cdp_salt_srv_t, dir_file_class_set)
+
+# Configure the cdp_salt_t domain as a daemon domain with the cdp_salt_exec_t entrypoint
+init_daemon_domain(cdp_salt_t, cdp_salt_exec_t)
+
+# Configure the cdp_salt_var_log_t type a logging type and allow the cdp_salt_t domain the following file transitions: var_log_t -> cdp_salt_var_log_t
+logging_log_file(cdp_salt_var_log_t)
+logging_log_filetrans(cdp_salt_t, cdp_salt_var_log_t, dir_file_class_set)
+
+# Give the cdp_salt_cert_t type the cert_t typeattribute
 miscfiles_cert_type(cdp_salt_cert_t)
 
-type cdp_salt_srv_t;
-files_type(cdp_salt_srv_t)
+# Create the cdp_salt_systemctl_t to be used for processes started by systemctl
+systemd_systemctl_domain(cdp_salt)
+
+# Give the cdp_salt_systemd_unit_file_t the systemd_unit_file_type typeattribute and allow the cdp_salt_t domain to create objects of this type
+systemd_unit_file(cdp_salt_systemd_unit_file_t)
+systemd_unit_file_filetrans(cdp_salt_t, cdp_salt_systemd_unit_file_t, dir_file_class_set)
+
 
 ########################################
 #
@@ -36,3 +88,11 @@ type cdp_salt_bootstrap_unconfined_t;
 
 type cdp_salt_bootstrap_cert_t;
 miscfiles_cert_type(cdp_salt_bootstrap_cert_t)
+
+########################################
+#
+# httpd
+#
+type cdp_httpd_cert_t;
+
+files_type(cdp_httpd_cert_t);
