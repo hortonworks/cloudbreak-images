@@ -1,6 +1,9 @@
 base:
   '*':
     - prerequisites
+{% if pillar['subtype'] != 'Docker' and pillar['OS'] == 'redhat8' %}
+    - selinux
+{% endif %}
 {% if not salt['file.file_exists']('/etc/waagent.conf') %}
     - cloud-init
 {% endif %}
@@ -9,9 +12,6 @@ base:
     - python3
     - salt-bootstrap
     - salt
-{% if pillar['subtype'] != 'Docker' and pillar['OS'] == 'redhat8' %}
-    - selinux
-{% endif %}
 {% if salt['environ.get']('CUSTOM_IMAGE_TYPE') != 'freeipa' %}
     - postgresql
 {% endif %}

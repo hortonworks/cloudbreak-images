@@ -1,0 +1,2 @@
+/etc/certs(/.*)?        --      gen_context(system_u:object_r:cdp_httpd_cert_t,s0)
+/etc/certs(/.*)?        -d      gen_context(system_u:object_r:cdp_httpd_cert_t,s0)

@@ -1,0 +1,11 @@
+/opt/salt/scripts
+/opt/salt
+{{ pillar['salt_path'] }}
+/etc/salt
+/srv
+/var/log/salt
+/var/run/salt
+/var/cache/salt
+/etc/systemd/system/salt-api.service
+/etc/systemd/system/salt-master.service
+/etc/systemd/system/salt-minion.service
