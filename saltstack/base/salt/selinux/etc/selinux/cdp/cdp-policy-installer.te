@@ -1,0 +1,129 @@
+policy_module(cdp-policy-installer, 1.0.0)
+
+# Define the domain and its entry point
+type cdp_policy_installer_t;
+type cdp_policy_installer_exec_t;
+domain_type(cdp_policy_installer_t)
+domain_entry_file(cdp_policy_installer_t, cdp_policy_installer_exec_t)
+
+# Allow system_r to use the cdp_policy_installer_t domain and transition to it when executing a cdp_policy_installer_exec_t file
+gen_require(`
+    role system_r;
+    role unconfined_r;
+')
+role system_r types cdp_policy_installer_t;
+role_transition unconfined_r cdp_policy_installer_exec_t system_r;
+
+# Allow the unconfined_t domain to automatically transition to the cdp_policy_installer_t domain
+gen_require(`
+    type unconfined_t;
+')
+domtrans_pattern(unconfined_t, cdp_policy_installer_exec_t, cdp_policy_installer_t)
+
+# Type for the log files
+type cdp_policy_installer_var_log_t;
+logging_log_file(cdp_policy_installer_var_log_t)
+
+# Manage the policy installation logs
+manage_dirs_pattern(cdp_policy_installer_t, var_log_t, cdp_policy_installer_var_log_t)
+manage_files_pattern(cdp_policy_installer_t, var_log_t, cdp_policy_installer_var_log_t)
+logging_log_filetrans(cdp_policy_installer_t, cdp_policy_installer_var_log_t, dir)
+logging_log_filetrans(cdp_policy_installer_t, cdp_policy_installer_var_log_t, file)
+
+# Manage SELinux mode, policies and booleans
+selinux_get_enforce_mode(cdp_policy_installer_t)
+selinux_set_enforce_mode(cdp_policy_installer_t)
+seutil_domtrans_checkpolicy(cdp_policy_installer_t)
+seutil_domtrans_loadpolicy(cdp_policy_installer_t)
+seutil_domtrans_semanage(cdp_policy_installer_t)
+
+# Relabel all files
+seutil_domtrans_setfiles(cdp_policy_installer_t)
+
+# Manage SELinux configuration files
+seutil_manage_config_dirs(cdp_policy_installer_t)
+seutil_manage_config(cdp_policy_installer_t)
+seutil_manage_default_contexts(cdp_policy_installer_t)
+seutil_manage_file_contexts(cdp_policy_installer_t)
+seutil_manage_module_store(cdp_policy_installer_t)
+
+# Search all directories (getattr, search, open) and read all files (getattr, read, ioctl, lock, open)
+files_search_all(cdp_policy_installer_t)
+files_read_all_files(cdp_policy_installer_t)
+
+# Create and write usr_t directories and files
+gen_require(`
+    type usr_t;
+')
+allow cdp_policy_installer_t usr_t:dir { add_name create write };
+allow cdp_policy_installer_t usr_t:file { create write };
+
+# Execute core commands and shells
+corecmd_exec_bin(cdp_policy_installer_t)
+corecmd_exec_shell(cdp_policy_installer_t)
+
+# Get the attributes of filesystems filesystems which have extended attributes
+fs_getattr_xattr_fs(cdp_policy_installer_t)
+
+# Read and write user domain ptys
+userdom_use_user_ptys(cdp_policy_installer_t)
+
+# Get the attributes of unconfied processes
+gen_require(`
+    type unconfined_t;
+    class process { getattr };
+')
+allow cdp_policy_installer_t unconfined_t:process getattr;
+
+# Search directories and read files of various types which are missing the file_type attribute
+gen_require(`
+    type auditd_t;
+    type chronyd_t;
+    type crond_t;
+    type getty_t;
+    type gssproxy_t;
+    type httpd_t;
+    type init_t;
+    type irqbalance_t;
+    type kernel_t;
+    type NetworkManager_t;
+    type policykit_t;
+    type rhsmcertd_t;
+    type sshd_t;
+    type syslogd_t;
+    type system_dbusd_t;
+    type systemd_logind_t;
+    type tuned_t;
+    type udev_t;
+    type unconfined_service_t;
+    type unconfined_t;
+')
+read_files_pattern(cdp_policy_installer_t, auditd_t, auditd_t)
+read_files_pattern(cdp_policy_installer_t, chronyd_t, chronyd_t)
+read_files_pattern(cdp_policy_installer_t, crond_t, crond_t)
+read_files_pattern(cdp_policy_installer_t, getty_t, getty_t)
+read_files_pattern(cdp_policy_installer_t, gssproxy_t, gssproxy_t)
+read_files_pattern(cdp_policy_installer_t, httpd_t, httpd_t)
+read_files_pattern(cdp_policy_installer_t, init_t, init_t)
+read_files_pattern(cdp_policy_installer_t, irqbalance_t, irqbalance_t)
+read_files_pattern(cdp_policy_installer_t, kernel_t, kernel_t)
+read_files_pattern(cdp_policy_installer_t, NetworkManager_t, NetworkManager_t)
+read_files_pattern(cdp_policy_installer_t, policykit_t, policykit_t)
+read_files_pattern(cdp_policy_installer_t, rhsmcertd_t, rhsmcertd_t)
+read_files_pattern(cdp_policy_installer_t, sshd_t, sshd_t)
+read_files_pattern(cdp_policy_installer_t, syslogd_t, syslogd_t)
+read_files_pattern(cdp_policy_installer_t, system_dbusd_t, system_dbusd_t)
+read_files_pattern(cdp_policy_installer_t, systemd_logind_t, systemd_logind_t)
+read_files_pattern(cdp_policy_installer_t, tuned_t, tuned_t)
+read_files_pattern(cdp_policy_installer_t, udev_t, udev_t)
+read_files_pattern(cdp_policy_installer_t, unconfined_service_t, unconfined_service_t)
+read_files_pattern(cdp_policy_installer_t, unconfined_t, unconfined_t)
+
+
+########################################
+#
+# TEMPORARILY PERMISSIVE DOMAIN
+#
+# TODO - Remove this block once the domain is thoroughly tested.
+#
+permissive cdp_policy_installer_t;

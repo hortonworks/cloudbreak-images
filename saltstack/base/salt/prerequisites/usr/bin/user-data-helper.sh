@@ -3,6 +3,8 @@
 set -ex
 set
 
+echo "The security context of this script's process is '$(id -Z)'"
+
 if [[ "$SECRET_ENCRYPTION_ENABLED" == "true" ]]; then
   source /usr/bin/cdp-retrieve-userdata-secrets.sh &> /var/log/cdp-retrieve-userdata-secrets.log
 fi
@@ -270,7 +272,7 @@ resize_partitions() {
     # create and mount loopback filesystem for /tmp with same size as Azure logical volume
     dd if=/dev/zero of=/var/tmpfs bs=1M count=12288
     yes | mkfs.ext4 /var/tmpfs
-    echo "/var/tmpfs /tmp ext4 rw,strictatime,nosuid,nodev,noexec 0 0" >> /etc/fstab
+    echo "/var/tmpfs /tmp ext4 rw,strictatime,nosuid,nodev,noexec,rootcontext=system_u:object_r:tmp_t:s0,defcontext=system_u:object_r:tmp_t:s0 0 0" >> /etc/fstab
     mount -a
     chmod 1777 /tmp/
   fi

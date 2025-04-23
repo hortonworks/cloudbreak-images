@@ -1,108 +1,117 @@
-{% if salt['environ.get']('CUSTOM_IMAGE_TYPE') != 'freeipa' %}
-/etc/selinux/cdp/postgresql/cdp-postgresql.fc:
+/etc/selinux/cdp/common/:
+  file.recurse:
+    - name: /etc/selinux/cdp/common/
+    - source: salt://{{ slspath }}/etc/selinux/cdp/common/
+    - user: root
+    - group: root
+    - dir_mode: 755
+    - file_mode: 644
+    - template: jinja
+
+/etc/selinux/cdp/hostname/:
+  file.recurse:
+    - name: /etc/selinux/cdp/hostname/
+    - source: salt://{{ slspath }}/etc/selinux/cdp/hostname/
+    - user: root
+    - group: root
+    - dir_mode: 755
+    - file_mode: 644
+    - template: jinja
+
+/etc/selinux/cdp/httpd/:
+  file.recurse:
+    - name: /etc/selinux/cdp/httpd/
+    - source: salt://{{ slspath }}/etc/selinux/cdp/httpd/
+    - user: root
+    - group: root
+    - dir_mode: 755
+    - file_mode: 644
+    - template: jinja
+
+/etc/selinux/cdp/init/:
+  file.recurse:
+    - name: /etc/selinux/cdp/init/
+    - source: salt://{{ slspath }}/etc/selinux/cdp/init/
+    - user: root
+    - group: root
+    - dir_mode: 755
+    - file_mode: 644
+    - template: jinja
+
+/etc/selinux/cdp/ipa/:
+  file.recurse:
+    - name: /etc/selinux/cdp/ipa/
+    - source: salt://{{ slspath }}/etc/selinux/cdp/ipa/
+    - user: root
+    - group: root
+    - dir_mode: 755
+    - file_mode: 644
+    - template: jinja
+
+/etc/selinux/cdp/kerberos/:
+  file.recurse:
+    - name: /etc/selinux/cdp/kerberos/
+    - source: salt://{{ slspath }}/etc/selinux/cdp/kerberos/
+    - user: root
+    - group: root
+    - dir_mode: 755
+    - file_mode: 644
+    - template: jinja
+
+{%- if salt['environ.get']('CUSTOM_IMAGE_TYPE') != 'freeipa' %}
+/etc/selinux/cdp/postgresql/:
+  file.recurse:
+    - name: /etc/selinux/cdp/postgresql/
+    - source: salt://{{ slspath }}/etc/selinux/cdp/postgresql/
+    - user: root
+    - group: root
+    - dir_mode: 755
+    - file_mode: 644
+    - template: jinja
+{%- endif %}
+
+/etc/selinux/cdp/salt/:
+  file.recurse:
+    - name: /etc/selinux/cdp/salt/
+    - source: salt://{{ slspath }}/etc/selinux/cdp/salt/
+    - user: root
+    - group: root
+    - dir_mode: 755
+    - file_mode: 644
+    - template: jinja
+
+/etc/selinux/cdp/salt-bootstrap/:
+  file.recurse:
+    - name: /etc/selinux/cdp/salt-bootstrap/
+    - source: salt://{{ slspath }}/etc/selinux/cdp/salt-bootstrap/
+    - user: root
+    - group: root
+    - dir_mode: 755
+    - file_mode: 644
+    - template: jinja
+
+/etc/selinux/cdp/cdp-policy-installer.fc:
   file.managed:
-    - name: /etc/selinux/cdp/postgresql/cdp-postgresql.fc
-    - source: salt://{{ slspath }}/etc/selinux/cdp/postgresql/cdp-postgresql.fc
+    - name: /etc/selinux/cdp/cdp-policy-installer.fc
+    - source: salt://{{ slspath }}/etc/selinux/cdp/cdp-policy-installer.fc
     - user: root
     - group: root
     - mode: 644
     - makedirs: True
 
-/etc/selinux/cdp/postgresql/cdp-postgresql.restorecon:
+/etc/selinux/cdp/cdp-policy-installer.restorecon:
   file.managed:
-    - name: /etc/selinux/cdp/postgresql/cdp-postgresql.restorecon
-    - source: salt://{{ slspath }}/etc/selinux/cdp/postgresql/cdp-postgresql.restorecon
+    - name: /etc/selinux/cdp/cdp-policy-installer.restorecon
+    - source: salt://{{ slspath }}/etc/selinux/cdp/cdp-policy-installer.restorecon
     - user: root
     - group: root
     - mode: 644
     - makedirs: True
 
-/etc/selinux/cdp/postgresql/cdp-postgresql.te:
+/etc/selinux/cdp/cdp-policy-installer.te:
   file.managed:
-    - name: /etc/selinux/cdp/postgresql/cdp-postgresql.te
-    - source: salt://{{ slspath }}/etc/selinux/cdp/postgresql/cdp-postgresql.te
-    - user: root
-    - group: root
-    - mode: 644
-    - makedirs: True
-{% endif %}
-
-/etc/selinux/cdp/common/cdp-common.te:
-  file.managed:
-    - name: /etc/selinux/cdp/common/cdp-common.te
-    - source: salt://{{ slspath }}/etc/selinux/cdp/common/cdp-common.te
-    - user: root
-    - group: root
-    - mode: 644
-    - makedirs: True
-
-/etc/selinux/cdp/hostname/cdp-hostname.te:
-  file.managed:
-    - name: /etc/selinux/cdp/hostname/cdp-hostname.te
-    - source: salt://{{ slspath }}/etc/selinux/cdp/hostname/cdp-hostname.te
-    - user: root
-    - group: root
-    - mode: 644
-    - makedirs: True
-
-/etc/selinux/cdp/salt/cdp-salt.fc:
-  file.managed:
-    - name: /etc/selinux/cdp/salt/cdp-salt.fc
-    - source: salt://{{ slspath }}/etc/selinux/cdp/salt/cdp-salt.fc
-    - user: root
-    - group: root
-    - mode: 644
-    - makedirs: True
-
-/etc/selinux/cdp/salt/cdp-salt.restorecon:
-  file.managed:
-    - name: /etc/selinux/cdp/salt/cdp-salt.restorecon
-    - source: salt://{{ slspath }}/etc/selinux/cdp/salt/cdp-salt.restorecon
-    - user: root
-    - group: root
-    - mode: 644
-    - makedirs: True
-
-/etc/selinux/cdp/salt/cdp-salt.te:
-  file.managed:
-    - name: /etc/selinux/cdp/salt/cdp-salt.te
-    - source: salt://{{ slspath }}/etc/selinux/cdp/salt/cdp-salt.te
-    - user: root
-    - group: root
-    - mode: 644
-    - makedirs: True
-
-/etc/selinux/cdp/salt-bootstrap/cdp-salt-bootstrap.fc:
-  file.managed:
-    - name: /etc/selinux/cdp/salt-bootstrap/cdp-salt-bootstrap.fc
-    - source: salt://{{ slspath }}/etc/selinux/cdp/salt-bootstrap/cdp-salt-bootstrap.fc
-    - user: root
-    - group: root
-    - mode: 644
-    - makedirs: True
-
-/etc/selinux/cdp/salt-bootstrap/cdp-salt-bootstrap.portcon:
-  file.managed:
-    - name: /etc/selinux/cdp/salt-bootstrap/cdp-salt-bootstrap.portcon
-    - source: salt://{{ slspath }}/etc/selinux/cdp/salt-bootstrap/cdp-salt-bootstrap.portcon
-    - user: root
-    - group: root
-    - mode: 644
-    - makedirs: True
-
-/etc/selinux/cdp/salt-bootstrap/cdp-salt-bootstrap.restorecon:
-  file.managed:
-    - name: /etc/selinux/cdp/salt-bootstrap/cdp-salt-bootstrap.restorecon
-    - source: salt://{{ slspath }}/etc/selinux/cdp/salt-bootstrap/cdp-salt-bootstrap.restorecon
-    - user: root
-    - group: root
-    - mode: 644
-    - makedirs: True
-
-/etc/selinux/cdp/salt-bootstrap/cdp-salt-bootstrap.te:
-  file.managed:
-    - name: /etc/selinux/cdp/salt-bootstrap/cdp-salt-bootstrap.te
-    - source: salt://{{ slspath }}/etc/selinux/cdp/salt-bootstrap/cdp-salt-bootstrap.te
+    - name: /etc/selinux/cdp/cdp-policy-installer.te
+    - source: salt://{{ slspath }}/etc/selinux/cdp/cdp-policy-installer.te
     - user: root
     - group: root
     - mode: 644
@@ -144,33 +153,68 @@
     - mode: 755
     - makedirs: True
 
-run_install-cdp-policies.sh:
-  cmd.run:
-    - name: /etc/selinux/cdp/install-cdp-policies.sh 2>&1 | tee /var/log/install-cdp-policies.log && exit ${PIPESTATUS[0]}
-    - require:
-      - file: /etc/selinux/cdp/install-cdp-policies.sh
-
-/etc/selinux/cdp/httpd_cert_policy.te:
+/etc/selinux/cdp/install-policy-installer-policy.sh:
   file.managed:
-    - name: /etc/selinux/cdp/httpd_cert_policy.te
-    - source: salt://{{ slspath }}/etc/selinux/cdp/httpd_cert_policy.te
-    - user: root
-    - group: root
-    - mode: 644
-    - makedirs: True
-
-/etc/selinux/cdp/install-httpd-cert-policy.sh:
-  file.managed:
-    - name: /etc/selinux/cdp/install-httpd-cert-policy.sh
-    - source: salt://{{ slspath }}/etc/selinux/cdp/install-httpd-cert-policy.sh
+    - name: /etc/selinux/cdp/install-policy-installer-policy.sh
+    - source: salt://{{ slspath }}/etc/selinux/cdp/install-policy-installer-policy.sh
     - user: root
     - group: root
     - mode: 755
     - makedirs: True
 
-run_install_httpd_cert_policy.sh:
+/etc/selinux/cdp/policy-install-utils.sh:
+  file.managed:
+    - name: /etc/selinux/cdp/policy-install-utils.sh
+    - source: salt://{{ slspath }}/etc/selinux/cdp/policy-install-utils.sh
+    - user: root
+    - group: root
+    - mode: 755
+    - makedirs: True
+
+/var/log/selinux/:
+  file.directory:
+    - name: /var/log/selinux/
+    - user: root
+    - group: root
+    - mode: 755
+    - makedirs: True
+
+run_install-policy-installer-policy.sh:
   cmd.run:
-    - name: /etc/selinux/cdp/install-httpd-cert-policy.sh
+    - name: /etc/selinux/cdp/install-policy-installer-policy.sh 2>&1 | tee /var/log/selinux/cdp-policy-installer-allout.log && exit ${PIPESTATUS[0]}
     - require:
-      - file: /etc/selinux/cdp/httpd_cert_policy.te
-      - file: /etc/selinux/cdp/install-httpd-cert-policy.sh
+      - file: /etc/selinux/cdp/cdp-policy-installer.te
+      - file: /etc/selinux/cdp/cdp-policy-installer.fc
+      - file: /etc/selinux/cdp/cdp-policy-installer.restorecon
+      - file: /etc/selinux/cdp/install-policy-installer-policy.sh
+      - file: /etc/selinux/cdp/policy-install-utils.sh
+
+{%- set selinux_booleans = {
+  'authlogin_nsswitch_use_ldap': True,
+  'daemons_dump_core': True,
+  'domain_can_mmap_files': True,
+  'domain_can_write_kmsg': True,
+  'httpd_can_network_connect': True,
+  'polyinstantiation_enabled': True
+} -%}
+
+{%- for boolean, value in selinux_booleans.items() %}
+{{ boolean }}:
+  selinux.boolean:
+    - name: {{ boolean }}
+    - value: {{ value }}
+    - persist: True
+{%- endfor %}
+
+run_install-cdp-policies.sh:
+  cmd.run:
+    - name: /etc/selinux/cdp/install-cdp-policies.sh 2>&1 | tee /var/log/selinux/install-cdp-policies-allout.log && exit ${PIPESTATUS[0]}
+    - require:
+      - file: /etc/selinux/cdp/install-cdp-policies.sh
+      - file: /etc/selinux/cdp/policy-install-utils.sh
+
+## Useful SELinux policy development. Uncomment if needed.
+#disable_dontaudit_rules:
+#  cmd.run:
+#    - name: semodule -DB
+#    - runas: root

@@ -1,0 +1,22 @@
+interface(`cdp_manage_pattern',`
+    manage_dirs_pattern($1, $2, $2)
+    manage_files_pattern($1, $2, $2)
+    manage_lnk_files_pattern($1, $2, $2)
+    manage_sock_files_pattern($1, $2, $2)
+')
+
+interface(`cdp_fs_getattr',`
+    gen_require(`
+        class filesystem { getattr };
+    ')
+
+    allow $1 $2:filesystem { getattr };
+')
+
+interface(`cdp_connectto_unix_stream_socket',`
+    gen_require(`
+        class unix_stream_socket { connectto };
+    ')
+
+    allow $1 $2:unix_stream_socket connectto;
+')
