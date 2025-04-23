@@ -3,9 +3,10 @@
 set -ex -o pipefail
 
 SELINUX_CDP_DIR=/etc/selinux/cdp
+LOG_FILE=/var/log/selinux/install-cdp-policies.log
 
 log() {
-  echo "$(date +"%F-%T") $*"
+  echo "$(date +"%F-%T") $*" >> "$LOG_FILE"
 }
 
 install_policy() {
@@ -20,6 +21,7 @@ install_policy() {
     log "Installed CDP SELinux policy '$policy_name'"
   else
     log "CDP SELinux policy '$policy_name' already installed. Skipping installation."
+    log "To reinstall, please remove the existing policy first: 'semodule -r $policy_name'"
   fi
 }
 
@@ -32,7 +34,7 @@ apply_file_contexts() {
     mapfile -t paths < <(grep -v '^[[:space:]]*$' "$dir_abs_path/$policy_name.restorecon")
     for path in "${paths[@]}"; do
       log "Applying file contexts to path '$path'"
-      restorecon -R -v -i "$path"
+      restorecon -RvFi "$path"
     done
     log "Applied file contexts for CDP SELinux policy '$policy_name'"
   else

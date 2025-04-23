@@ -1,0 +1,580 @@
+policy_module(cdp-salt, 1.0.0)
+
+gen_require(`
+    type certmonger_unit_file_t;
+    type crontab_exec_t;
+    type dirsrv_exec_t;
+    type dirsrv_unit_file_t;
+    type dirsrv_var_lock_t;
+    type semanage_exec_t;
+    type setsebool_exec_t;
+    type showmount_exec_t;
+    type sshd_exec_t;
+    type systemd_unit_file_t;
+    type tomcat_exec_t;
+    type var_lib_t;
+    type var_lock_t;
+    type var_run_t;
+    class dir { read getattr search open };
+    class tcp_socket create_stream_socket_perms;
+')
+
+type cdp_salt_t;
+type cdp_salt_bin_t;
+type cdp_salt_etc_t;
+type cdp_salt_exec_t;
+type cdp_salt_lib_t;
+type cdp_salt_srv_t;
+type cdp_salt_systemd_unit_file_t;
+type cdp_salt_var_log_t;
+type cdp_salt_var_run_t;
+type cdp_salt_var_cache_t;
+
+## TODO Move this
+allow cdp_salt_t self:tcp_socket create_stream_socket_perms;
+can_exec(cdp_salt_t, cdp_salt_lib_t)
+can_exec(cdp_salt_t, crontab_exec_t)
+can_exec(cdp_salt_t, default_t)
+can_exec(cdp_salt_t, dirsrv_exec_t)
+can_exec(cdp_salt_t, semanage_exec_t)
+can_exec(cdp_salt_t, setsebool_exec_t)
+can_exec(cdp_salt_t, showmount_exec_t)
+can_exec(cdp_salt_t, sshd_exec_t)
+can_exec(cdp_salt_t, tomcat_exec_t)
+## TODO End
+
+
+################################################################################
+#
+# Permissions grouped by the module or file which contains the used macros or interfaces
+#
+
+#
+# apache
+#
+apache_exec(cdp_salt_t)
+apache_exec_sys_script(cdp_salt_t)
+apache_manage_config(cdp_salt_t)
+apache_systemctl(cdp_salt_t)
+
+
+#
+# auth
+#
+auth_log_filetrans_login_records(cdp_salt_t)
+auth_login_pgm_domain(cdp_salt_t)
+## TODO Fix this
+#auth_manage_faillog(cdp_salt_t)
+## TODO End
+auth_manage_login_records(cdp_salt_t)
+auth_read_passwd_file(cdp_salt_t)
+auth_read_shadow(cdp_salt_t)
+
+
+#
+# bind
+#
+bind_manage_config_dirs(cdp_salt_t)
+bind_manage_zone_dirs(cdp_salt_t)
+bind_read_dnssec_keys(cdp_salt_t)
+bind_read_state(cdp_salt_t)
+
+
+#
+# certmonger
+#
+certmonger_manage_lib_files(cdp_salt_t)
+certmonger_read_lib_files(cdp_salt_t)
+
+
+#
+# chronyd
+#
+chronyd_read_keys(cdp_salt_t)
+chronyd_systemctl(cdp_salt_t)
+
+
+#
+# clock
+#
+clock_read_adjtime(cdp_salt_t)
+
+
+#
+# corecommands
+#
+corecmd_exec_bin(cdp_salt_t)
+corecmd_exec_shell(cdp_salt_t)
+corecmd_manage_bin_files(cdp_salt_t)
+corecmd_mmap_bin_files(cdp_salt_t)
+corecmd_shell_entry_type(cdp_salt_t)
+
+
+#
+# corenetwork
+#
+corenet_tcp_bind_generic_node(cdp_salt_t)
+corenet_tcp_connect_dns_port(cdp_salt_t)
+corenet_tcp_connect_http_cache_port(cdp_salt_t)
+corenet_tcp_connect_kerberos_port(cdp_salt_t)
+corenet_tcp_connect_ldap_port(cdp_salt_t)
+corenet_tcp_connect_salt_port(cdp_salt_t)
+corenet_udp_bind_generic_node(cdp_salt_t)
+
+
+# cups
+#
+cups_filetrans_named_content(cdp_salt_t)
+cups_read_rw_config(cdp_salt_t)
+
+
+#
+# dbus
+#
+dbus_read_config(cdp_salt_t)
+dbus_read_lib_files(cdp_salt_t)
+dbus_read_pid_sock_files(cdp_salt_t)
+dbus_stream_connect_system_dbusd(cdp_salt_t)
+dbus_system_bus_client(cdp_salt_t)
+
+
+# devices
+#
+dev_getattr_fs(cdp_salt_t)
+dev_getattr_sysfs_fs(cdp_salt_t)
+dev_list_sysfs(cdp_salt_t)
+dev_read_kmsg(cdp_salt_t)
+dev_read_rand(cdp_salt_t)
+dev_read_sysfs(cdp_salt_t)
+
+
+#
+# dirsrv
+#
+dirsrv_manage_config(cdp_salt_t)
+dirsrv_manage_log(cdp_salt_t)
+dirsrv_manage_var_lib(cdp_salt_t)
+dirsrv_manage_var_run(cdp_salt_t)
+dirsrv_read_share(cdp_salt_t)
+dirsrv_stream_connect(cdp_salt_t)
+
+
+#
+# dmesg
+#
+dmesg_exec(cdp_salt_t)
+
+
+#
+# dmidecode
+#
+dmidecode_exec(cdp_salt_t)
+
+
+#
+# files
+#
+files_list_kernel_modules(cdp_salt_t)
+files_list_var(cdp_salt_t)
+
+files_manage_all_pid_dirs(cdp_salt_t)
+files_manage_default_dirs(cdp_salt_t)
+files_manage_default_files(cdp_salt_t)
+files_manage_etc_dirs(cdp_salt_t)
+files_manage_etc_files(cdp_salt_t)
+files_manage_etc_symlinks(cdp_salt_t)
+files_manage_generic_locks(cdp_salt_t)
+files_manage_generic_tmp_dirs(cdp_salt_t)
+files_manage_generic_tmp_files(cdp_salt_t)
+files_manage_system_conf_files(cdp_salt_t)
+files_manage_usr_dirs(cdp_salt_t)
+files_manage_usr_files(cdp_salt_t)
+
+files_map_generic_tmp_files(cdp_salt_t)
+files_map_read_etc_files(cdp_salt_t)
+
+files_read_var_files(cdp_salt_t)
+files_relabel_etc_files(cdp_salt_t)
+files_relabel_var_lib_dirs(cdp_salt_t)
+files_relabelto_usr_files(cdp_salt_t)
+files_search_locks(cdp_salt_t)
+
+files_type(cdp_salt_bin_t)
+files_type(cdp_salt_etc_t)
+files_type(cdp_salt_lib_t)
+files_type(cdp_salt_srv_t)
+files_type(cdp_salt_var_log_t)
+files_type(cdp_salt_var_run_t)
+files_type(cdp_salt_var_cache_t)
+
+
+#
+# filesystem
+#
+fs_exec_tmpfs_files(cdp_salt_t)
+fs_getattr_cgroup(cdp_salt_t)
+fs_getattr_hugetlbfs(cdp_salt_t)
+fs_getattr_tmpfs(cdp_salt_t)
+fs_getattr_xattr_fs(cdp_salt_t)
+fs_list_cgroup_dirs(cdp_salt_t)
+fs_manage_tmpfs_dirs(cdp_salt_t)
+fs_manage_tmpfs_files(cdp_salt_t)
+fs_read_cgroup_files(cdp_salt_t)
+files_read_default_files(cdp_salt_t)
+fs_read_dos_files(cdp_salt_t)
+fs_relabel_tmpfs_dirs(cdp_salt_t)
+fs_search_dos(cdp_salt_t)
+
+
+#
+# file_patterns
+#
+admin_pattern(cdp_salt_t, cdp_salt_bin_t)
+admin_pattern(cdp_salt_t, cdp_salt_etc_t)
+admin_pattern(cdp_salt_t, cdp_salt_lib_t)
+admin_pattern(cdp_salt_t, cdp_salt_srv_t)
+admin_pattern(cdp_salt_t, cdp_salt_systemd_unit_file_t)
+admin_pattern(cdp_salt_t, cdp_salt_var_log_t)
+admin_pattern(cdp_salt_t, cdp_salt_var_run_t)
+admin_pattern(cdp_salt_t, cdp_salt_var_cache_t)
+
+manage_dirs_pattern(cdp_salt_t, dirsrv_unit_file_t, dirsrv_unit_file_t)
+manage_dirs_pattern(cdp_salt_t, dirsrv_var_lock_t, dirsrv_var_lock_t)
+manage_dirs_pattern(cdp_salt_t, var_lib_t, var_lib_t)
+manage_dirs_pattern(cdp_salt_t, var_lock_t, var_lock_t)
+manage_dirs_pattern(cdp_salt_t, var_run_t, var_run_t)
+
+manage_files_pattern(cdp_salt_t, certmonger_unit_file_t, certmonger_unit_file_t)
+manage_files_pattern(cdp_salt_t, dirsrv_unit_file_t, dirsrv_unit_file_t)
+manage_files_pattern(cdp_salt_t, dirsrv_var_lock_t, dirsrv_var_lock_t)
+manage_files_pattern(cdp_salt_t, var_lib_t, var_lib_t)
+manage_files_pattern(cdp_salt_t, var_run_t, var_run_t)
+
+manage_lnk_files_pattern(cdp_salt_t, dirsrv_unit_file_t, dirsrv_unit_file_t)
+manage_lnk_files_pattern(cdp_salt_t, var_lib_t, var_lib_t)
+
+manage_sock_files_pattern(cdp_salt_t, var_run_t, var_run_t)
+
+relabel_dirs_pattern(cdp_salt_t, var_lib_t, var_lib_t)
+
+relabel_files_pattern(cdp_salt_t, certmonger_unit_file_t, certmonger_unit_file_t)
+relabel_files_pattern(cdp_salt_t, var_lib_t, var_lib_t)
+relabel_files_pattern(cdp_salt_t, var_lock_t, var_lock_t)
+relabel_files_pattern(cdp_salt_t, var_run_t, var_run_t)
+
+relabel_lnk_files_pattern(cdp_salt_t, var_lib_t, var_lib_t)
+
+
+#
+# fstools
+#
+fstools_exec(cdp_salt_t)
+
+
+#
+# gnome
+#
+gnome_manage_cache_home_dir(cdp_salt_t)
+gnome_manage_generic_cache_files(cdp_salt_t)
+gnome_manage_home_config(cdp_salt_t)
+gnome_manage_home_config_dirs(cdp_salt_t)
+gnome_read_generic_data_home_dirs(cdp_salt_t)
+
+
+#
+# gpg
+#
+gpg_exec(cdp_salt_t)
+
+
+#
+# hostname
+#
+hostname_exec(cdp_salt_t)
+
+
+#
+# init
+#
+init_access_check(cdp_salt_t)
+init_daemon_domain(cdp_salt_t, cdp_salt_exec_t)
+init_exec_script_files(cdp_salt_t)
+init_read_state(cdp_salt_t)
+init_script_file_entry_type(cdp_salt_t)
+init_stream_connectto(cdp_salt_t)
+
+
+#
+# insights_client
+#
+insights_client_read_config(cdp_salt_t)
+
+
+#
+# ipa
+#
+ipa_manage_lib(cdp_salt_t)
+ipa_manage_pid_files(cdp_salt_t)
+
+
+#
+# iptables
+#
+iptables_exec(cdp_salt_t)
+
+
+#
+# kdump
+#
+kdump_read_config(cdp_salt_t)
+
+
+#
+# kerberos
+#
+kerberos_filetrans_named_content(cdp_salt_t)
+kerberos_manage_kdc_config(cdp_salt_t)
+kerberos_read_keytab(cdp_salt_t)
+
+
+#
+# kernel
+#
+kernel_dgram_send(cdp_salt_t)
+kernel_getattr_debugfs(cdp_salt_t)
+kernel_read_net_sysctls(cdp_salt_t)
+kernel_read_network_state(cdp_salt_t)
+kernel_read_proc_files(cdp_salt_t)
+kernel_read_ring_buffer(cdp_salt_t)
+kernel_read_software_raid_state(cdp_salt_t)
+kernel_search_network_sysctl(cdp_salt_t)
+
+
+#
+# libraries
+#
+libs_exec_ldconfig(cdp_salt_t)
+libs_ldconfig_exec_entry_type(cdp_salt_t)
+libs_manage_lib_dirs(cdp_salt_t)
+libs_manage_lib_files(cdp_salt_t)
+
+
+#
+# logging
+#
+logging_create_devlog_dev(cdp_salt_t)
+logging_log_file(cdp_salt_var_log_t)
+logging_manage_generic_logs(cdp_salt_t)
+logging_manage_syslog_config(cdp_salt_t)
+logging_mmap_journal(cdp_salt_t)
+logging_read_audit_config(cdp_salt_t)
+logging_read_syslog_config(cdp_salt_t)
+logging_read_syslog_pid(cdp_salt_t)
+
+
+#
+# mandb
+#
+mandb_map_cache_files(cdp_salt_t)
+
+
+#
+# miscfiles
+#
+miscfiles_manage_generic_cert_dirs(cdp_salt_t)
+miscfiles_manage_generic_cert_files(cdp_salt_t)
+miscfiles_map_generic_certs(cdp_salt_t)
+miscfiles_read_generic_certs(cdp_salt_t)
+miscfiles_read_hwdata(cdp_salt_t)
+miscfiles_relabel_generic_cert(cdp_salt_t)
+
+
+#
+# modutils
+#
+modutils_list_module_config(cdp_salt_t)
+
+
+#
+# mta
+#
+mta_read_aliases(cdp_salt_t)
+
+
+#
+# networkmanager
+#
+networkmanager_read_conf(cdp_salt_t)
+networkmanager_systemctl(cdp_salt_t)
+
+
+#
+# nis
+#
+nis_use_ypbind_uncond(cdp_salt_t)
+
+
+#
+# oddjob
+#
+oddjob_systemctl(cdp_salt_t)
+
+
+#
+# opendnssec
+#
+opendnssec_manage_var_files(cdp_salt_t)
+opendnssec_read_config(cdp_salt_t)
+
+
+#
+# pki
+#
+pki_manage_tomcat_cert(cdp_salt_t)
+
+
+#
+# postfix
+#
+postfix_exec_master(cdp_salt_t)
+postfix_read_config(cdp_salt_t)
+
+
+#
+# raid
+#
+raid_access_check_mdadm(cdp_salt_t)
+
+
+#
+# rhsmcertd
+#
+rhsmcertd_read_config_files(cdp_salt_t)
+
+
+#
+# rpc
+#
+rpc_read_exports(cdp_salt_t)
+
+
+#
+# rpm
+#
+rpm_entry_type(cdp_salt_t)
+rpm_exec(cdp_salt_t)
+rpm_manage_db(cdp_salt_t)
+
+
+#
+# rsync
+#
+rsync_exec(cdp_salt_t)
+
+
+#
+# samba
+#
+samba_manage_config(cdp_salt_t)
+samba_manage_var_dirs(cdp_salt_t)
+samba_search_pid(cdp_salt_t)
+samba_systemctl(cdp_salt_t)
+
+
+#
+# selinux
+#
+selinux_get_enforce_mode(cdp_salt_t)
+selinux_load_policy(cdp_salt_t)
+selinux_set_enforce_mode(cdp_salt_t)
+selinux_set_generic_booleans(cdp_salt_t)
+
+
+#
+# selinuxutil
+#
+seutil_exec_loadpolicy(cdp_salt_t)
+seutil_exec_setfiles(cdp_salt_t)
+seutil_get_semanage_read_lock(cdp_salt_t)
+seutil_get_semanage_trans_lock(cdp_salt_t)
+seutil_manage_config(cdp_salt_t)
+seutil_manage_config_dirs(cdp_salt_t)
+seutil_manage_file_contexts(cdp_salt_t)
+seutil_manage_module_store(cdp_salt_t)
+seutil_read_default_contexts(cdp_salt_t)
+seutil_read_file_contexts(cdp_salt_t)
+seutil_search_default_contexts(cdp_salt_t)
+
+
+#
+# ssh
+#
+ssh_exec(cdp_salt_t)
+ssh_systemctl(cdp_salt_t)
+
+
+#
+# sssd
+#
+sssd_manage_config(cdp_salt_t)
+sssd_read_public_files(cdp_salt_t)
+sssd_run_stream_connect(cdp_salt_t)
+sssd_search_lib(cdp_salt_t)
+sssd_stream_connect(cdp_salt_t)
+sssd_systemctl(cdp_salt_t)
+
+
+#
+# sudo
+#
+sudo_exec(cdp_salt_t)
+
+
+#
+# sysnetwork
+#
+sysnet_exec_ifconfig(cdp_salt_t)
+sysnet_read_dhcp_config(cdp_salt_t)
+sysnet_relabelto_net_conf(cdp_salt_t)
+
+
+#
+# systemd
+#
+systemd_config_generic_services(cdp_salt_t)
+systemd_tmpfiles_exec(cdp_salt_t)
+systemd_unit_file(cdp_salt_systemd_unit_file_t)
+
+
+#
+# terminal
+#
+term_getattr_pty_fs(cdp_salt_t)
+
+
+#
+# tomcat
+#
+tomcat_systemctl(cdp_salt_t)
+
+
+#
+# tuned
+#
+tuned_read_etc_files(cdp_salt_t)
+
+
+#
+# udev
+#
+udev_exec(cdp_salt_t)
+
+
+#
+# userdomain
+#
+userdom_manage_admin_dirs(cdp_salt_t)
+userdom_manage_admin_files(cdp_salt_t)
+userdom_manage_tmp_dirs(cdp_salt_t)
+userdom_manage_tmp_files(cdp_salt_t)
+userdom_map_tmp_files(cdp_salt_t)
