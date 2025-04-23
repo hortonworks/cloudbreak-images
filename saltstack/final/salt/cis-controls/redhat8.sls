@@ -132,14 +132,6 @@ add_cis_control_sh:
         additional_tags: ""
 {% endif %}
 
-add_hardening_playbooks:
-  file.recurse:
-    - name: /mnt/tmp/ansible
-    - source: salt://cis-controls/playbooks/
-    - template: jinja
-    - include_empty: True
-    - file_mode: 755
-
 execute_cis_control_sh:
   cmd.run:
     - name: /opt/provision-scripts/cis_control.sh
