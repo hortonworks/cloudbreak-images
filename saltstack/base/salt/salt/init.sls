@@ -28,6 +28,16 @@ create_saltminion_service_file:
     - name: /etc/systemd/system/salt-minion.service
     - source: salt://{{ slspath }}/etc/systemd/system/salt-minion.service
 
+/opt/salt/scripts/salt-python-wrapper.sh:
+  file.managed:
+    - user: root
+    - group: root
+    - mode: 755
+    - makedirs: True
+    - template: jinja
+    - name: /opt/salt/scripts/salt-python-wrapper.sh
+    - source: salt://{{ slspath }}/opt/salt/scripts/salt-python-wrapper.sh
+
 create_bin_for_activate_virtualenv:
   file.managed:
   - user: root
