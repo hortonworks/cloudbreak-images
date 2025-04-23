@@ -61,11 +61,6 @@ if [ "${STIG_ENABLED}" == "True" ]; then
 else
     ansible-playbook -i localhost, -c local $ANSIBLE_PATH/ansible-compliance-playbooks/rhel8-playbook-cis_server_l1.yml --skip-tags $SKIP_TAGS --extra-vars "$EXTRA_VARS" | tee /tmp/cis/cis_log.txt
     chmod 777 /tmp/cis/cis_log.txt
-   if [ "${RHEL_VERSION}" == "8.10" ]; then
-       #Apply selinux related configuration
-       ansible-playbook -i localhost, -c local $ANSIBLE_PATH/selinux.yml | tee /tmp/cis/selinux_log.txt
-       chmod 777 /tmp/cis/selinux_log.txt
-   fi
 fi
 
 #Clean up python stuff
