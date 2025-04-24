@@ -264,10 +264,7 @@ endif
 # Azure storage account definitions for the different states
 define AZURE_STORAGE_ACCOUNTS_TEST_PHASE
 West US:cldrwestus,\
-West US 2:cldrwestus2,\
-East US:cldreastus,\
-East US 2:cldreastus2,\
-Central US:cldrcentralus
+West US 2:cldrwestus2
 endef
 
 define AZURE_STORAGE_ACCOUNTS_ALL
