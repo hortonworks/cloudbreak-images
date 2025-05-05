@@ -77,6 +77,7 @@ done
 
 if [[ "$CUSTOM_IMAGE_TYPE" == "freeipa" ]]; then
   set_version_for_rpm_pkg "ipa-server"
+  set_version_for_rpm_pkg "ipa-server-trust-ad"
 
 	FREEIPA_REGEX=".*\/[_a-z\-]*\-(.*)\.(aarch64|x86_64)\.rpm"
 	if [[ $FREEIPA_PLUGIN_RPM_URL =~ $FREEIPA_REGEX ]]; then
