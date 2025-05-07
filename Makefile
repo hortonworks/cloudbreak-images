@@ -258,11 +258,21 @@ ifndef AWS_AMI_REGIONS
 AWS_AMI_REGIONS=$(AWS_AMI_REGIONS_ALL)
 ifeq ($(IMAGE_COPY_PHASE),test)
 	AWS_AMI_REGIONS=$(AWS_AMI_REGIONS_TEST_PHASE)
+else ifeq ($(IMAGE_COPY_PHASE),internal-test)
+	AWS_AMI_REGIONS=$(AWS_AMI_REGIONS_TEST_PHASE)
 endif
 endif
 
 # Azure storage account definitions for the different states
 define AZURE_STORAGE_ACCOUNTS_TEST_PHASE
+West US:cldrwestus,\
+West US 2:cldrwestus2,\
+East US:cldreastus,\
+East US 2:cldreastus2,\
+Central US:cldrcentralus
+endef
+
+define AZURE_STORAGE_ACCOUNTS_INTERNAL_TEST_PHASE
 West US:cldrwestus,\
 West US 2:cldrwestus2
 endef
@@ -308,6 +318,8 @@ ifndef AZURE_STORAGE_ACCOUNTS
 AZURE_STORAGE_ACCOUNTS=$(AZURE_STORAGE_ACCOUNTS_ALL)
 ifeq ($(IMAGE_COPY_PHASE),test)
 	AZURE_STORAGE_ACCOUNTS=$(AZURE_STORAGE_ACCOUNTS_TEST_PHASE)
+else ifeq ($(IMAGE_COPY_PHASE),internal-test)
+	AZURE_STORAGE_ACCOUNTS=$(AZURE_STORAGE_ACCOUNTS_INTERNAL_TEST_PHASE)
 endif
 endif
 
