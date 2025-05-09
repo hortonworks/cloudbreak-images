@@ -27,7 +27,7 @@ add_cleanup_hosts_sh:
     - name: /usr/local/bin/cleanup-hosts.sh
     - source:
       - salt://{{ slspath }}/usr/local/bin/cleanup-hosts.sh
-    - mode: 0644
+    - mode: 0755
     - require:
       - file: create_google_guest_agent_override_dir
 
