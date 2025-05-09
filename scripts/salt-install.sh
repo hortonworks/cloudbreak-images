@@ -9,15 +9,6 @@ function install_salt_with_pip3() {
 
   echo "Installing salt with version: $SALT_VERSION"
 
-  # Why do we need to install CIPA globally? and why here?! Why not in a venv?
-  # So many questions... duh!
-  python3 -m pip install 'pyasn1==0.5.1' --ignore-installed
-  python3 -m pip install 'pyasn1-modules==0.3.0' --ignore-installed
-  python3 -m pip install 'checkipaconsistency==2.7.10'
-  
-  # What is this needed for?!
-  python3 -m pip install 'PyYAML>=5.1' --ignore-installed
-
   # OS specific packages required for Salt go here
   if [ "${OS}" == "redhat8" ] ; then
     python3 -m pip install distro

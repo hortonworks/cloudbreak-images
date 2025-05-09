@@ -10,6 +10,24 @@ disable_postgres:
   service.disabled:
     - name: postgresql
 
+### Freeipa related packages. PyYAML (CB-18497)
+freeipa-prerequisites:
+  cmd.run:
+    - name: python3 -m pip install 'PyYAML>=5.1' --ignore-installed
+
+freeipa-cipa:
+  cmd.run:
+    - name: python3 -m virtualenv /opt/cipa_venv && source /opt/cipa_venv/bin/activate && python3 -m pip install 'pyasn1==0.5.1' && python3 -m pip install 'pyasn1-modules==0.3.0' && python3 -m pip install 'checkipaconsistency==2.7.10' && deactivate
+
+freeipa-cipa-venv-wrapper:
+  file.managed:
+    - name: /usr/bin/cipa
+    - mode: 755
+    - contents: |
+        #!/bin/bash
+        source /opt/cipa_venv/bin/activate
+        cipa "$@"
+        deactivate
 
 freeipa-install:
 {% if pillar['OS'] != 'redhat8' %}  
