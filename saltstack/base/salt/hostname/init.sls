@@ -1,3 +1,4 @@
+{% if salt['environ.get']('CLOUD_PROVIDER') == 'GCP' %}
 # GCP overrides the hostname each time the network goes up (e.g. startup) and this messes up our hostname confifuration so it should be removed
 remove-gcp-NetworkManager-hostname-override:
   file.absent:
@@ -36,3 +37,4 @@ reload_systemd:
     - name: systemctl daemon-reload
     - require:
       - file: add_google_guest_agent_override
+{% endif %}
