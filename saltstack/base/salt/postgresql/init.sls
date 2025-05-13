@@ -22,7 +22,7 @@ install-postgres:
         dnf -y remove postgresql11-server postgresql11 postgresql11-devel
 {% endif %}
         dnf -y install postgresql14-server postgresql14 postgresql14-devel {{ postgres_install_flags }}
-{% if pillar['OS'] == 'redhat8' and salt['environ.get']('RHEL_VERSION') == '8.10' %}
+{% if (pillar['OS'] == 'redhat8' and salt['environ.get']('RHEL_VERSION') == '8.10') or pillar['OS'] == 'redhat9' %}
         dnf -y install postgresql17-server postgresql17 postgresql17-devel {{ postgres_install_flags }}
 {% endif %}
     - failhard: True
@@ -202,7 +202,7 @@ pgsql-vacuumdbman:
     - target: /usr/pgsql-{{ pg_default_version }}/bin/initdb
     - force: True
 
-{% if pillar['OS'] == 'redhat8' %}
+{% if pillar['OS'] == 'redhat8' or pillar['OS'] == 'redhat9' %}
 
 init-pg-database:
   cmd.run:
@@ -253,14 +253,14 @@ reenable-postgres:
 {% if pillar['subtype'] != 'Docker' %}
 start-postgresql:
   service.running:
-{% if  pillar['OS'] == 'redhat8' %}
+{% if  pillar['OS'] == 'redhat8' or pillar['OS'] == 'redhat9' %}
     - name: postgresql-{{ pg_default_version }}
 {% else %}
     - name: postgresql
 {% endif %}
 log-postgres-service-status:
   cmd.run:
-{% if  pillar['OS'] == 'redhat8' %}
+{% if  pillar['OS'] == 'redhat8' or pillar['OS'] == 'redhat9' %}
     - name: systemctl status postgresql-{{ pg_default_version }}.service
 {% else %}
     - name: systemctl status postgresql.service
@@ -287,7 +287,7 @@ configure-listen-address:
 {% if pillar['subtype'] != 'Docker' %}
 stop-postgresql:
   service.dead:
-{% if  pillar['OS'] == 'redhat8' %}
+{% if  pillar['OS'] == 'redhat8' or pillar['OS'] == 'redhat9' %}
     - name: postgresql-{{ pg_default_version }}
     - enable: False
 {% else %}

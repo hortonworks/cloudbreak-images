@@ -12,7 +12,7 @@ disable_postgres:
 
 
 freeipa-install:
-{% if pillar['OS'] != 'redhat8' %}  
+{% if pillar['OS'] != 'redhat8' and pillar['OS'] != 'redhat9' %}  
   pkg.installed:
     - pkgs:
         - ntp

@@ -73,7 +73,7 @@ delete_rhel8_repo:
 {% endif %}
 {% endif %}
 
-{% if salt['environ.get']('OS') == 'redhat8' %}
+{% if salt['environ.get']('OS') == 'redhat8' or salt['environ.get']('OS') == 'redhat9' %}
 {% if salt['environ.get']('DEFAULT_JAVA_MAJOR_VERSION') == '17' %}
 set_openjdk_version_17:
   cmd.run:

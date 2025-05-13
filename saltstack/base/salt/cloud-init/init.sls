@@ -56,7 +56,7 @@ create_cloud-init_service_files:
     - source: salt://{{ slspath }}/etc/systemd/system/cloud-init.service
 {% endif %}
 
-{% if salt['environ.get']('OS') == 'redhat8' %}
+{% if salt['environ.get']('OS') == 'redhat8' or salt['environ.get']('OS') == 'redhat9' %}
 /etc/cloud/cloud.cfg.d/99-disable-ipv6.cfg:
   file.managed:
     - user: root

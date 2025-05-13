@@ -18,7 +18,7 @@ if [ "${CLOUD_PROVIDER}" == "Azure" ] ; then
     echo w # Write changes
     ) | fdisk /dev/sda
     reboot
-  elif [ "${OS}" == "redhat8" ] ; then
+  elif [ "${OS}" == "redhat8" || "${OS}" == "redhat9" ] ; then
     PV_NAME=$(pvs --noheadings --rows | head -1 | tr -d '[:space:]')
     DISK=${PV_NAME//[0-9]/}
     PARTITION=${PV_NAME//[^0-9]/}

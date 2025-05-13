@@ -234,7 +234,7 @@ create_saltapi_certificates() {
 }
 
 resize_partitions() {
-  if [ $CLOUD_PLATFORM == "AZURE" ] && ([ $OS == "redhat7" ] || [ $OS == "redhat8" ]); then
+  if [ $CLOUD_PLATFORM == "AZURE" ] && ([ $OS == "redhat7" ] || [ $OS == "redhat8" ] || [ $OS == "redhat9" ]); then
     if [ $OS == "redhat7" ]; then
       # Relocating backup data structures to the end of the disk
       printf "x\ne\nw\nY\n" | gdisk /dev/sda
@@ -246,7 +246,7 @@ resize_partitions() {
       lvextend -L35G -r /dev/mapper/rootvg-optlv
       lvextend -L12G -r /dev/mapper/rootvg-varlv
       lvextend -L12G -r /dev/mapper/rootvg-tmplv
-    elif [ $OS == "redhat8" ]; then
+    elif [ $OS == "redhat8" ] || [ $OS == "redhat9" ]; then
       PV_NAME=$(pvs --noheadings --rows | head -1 | tr -d '[:space:]')
       DISK=${PV_NAME//[0-9]/}
       PARTITION=${PV_NAME//[^0-9]/}

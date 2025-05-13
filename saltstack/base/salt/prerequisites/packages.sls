@@ -15,8 +15,8 @@ remove_dead_repos_again:
     - name: sudo rm -rf /etc/yum.repos.d/CentOS*.repo
 {% endif %}
 
-{% if pillar['OS'] == 'redhat8' %}
-remove_unused_rhel8_packages:
+{% if pillar['OS'] == 'redhat8' or pillar['OS'] == 'redhat9' %}
+remove_unused_rhel_packages:
   pkg.removed:
     - pkgs:
       # Apparently we have this on Azure RHEL8 images by default and it causes problems...
@@ -38,7 +38,7 @@ packages_install:
       - curl
       - net-tools
       - git
-  {% if pillar['OS'] != 'redhat8' %}  
+  {% if pillar['OS'] != 'redhat8' and pillar['OS'] != 'redhat9' %}  
       - ntp
       - deltarpm
   {% endif %}
@@ -47,7 +47,7 @@ packages_install:
   {% if grains['os_family'] == 'RedHat' %}
       - snappy
       - cloud-utils-growpart
-    {% if pillar['OS'] != 'redhat7' and pillar['OS'] != 'redhat8' %}
+    {% if pillar['OS'] != 'redhat8' and pillar['OS'] != 'redhat9' %}
       - snappy-devel
     {% endif %}
       - bind-utils
@@ -57,7 +57,7 @@ packages_install:
     {% if pillar['OS'] == 'redhat8' and pillar['subtype'] == 'Docker' and salt['environ.get']('RHEL_VERSION') == '8.8' %}
       - NetworkManager
     {% endif %}
-    {% if pillar['OS'] == 'redhat8' %}
+    {% if pillar['OS'] == 'redhat8' or pillar['OS'] == 'redhat9' %}
       - sos
       {% if pillar['subtype'] != 'Docker' %}
       - setools-console
