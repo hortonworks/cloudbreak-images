@@ -258,16 +258,6 @@ function redhat9_update_python39() {
 
   # General required dependency
   /usr/bin/python3.9 -m pip install virtualenv
-
-  ## <Do we really need this?!>
-  echo "RedHat9 update python39. OS: $OS CLOUD_PROVIDER: $CLOUD_PROVIDER"
-  if [ "${CLOUD_PROVIDER}" == "YARN" ]; then
-    python -m pip install --upgrade pip
-  else
-    # CM agent needs this to work
-    alternatives --set python /usr/bin/python3
-  fi
-  ## </Do we really need this?!>
 }
 
 function redhat9_install_python311() {
