@@ -41,7 +41,7 @@ function install_salt_with_pip3() {
 function install_with_yum() {
   update_yum_repos
 
-  if [ "${OS_TYPE}" == "redhat8" ] ; then
+  if [ "${OS_TYPE}" == "redhat8" || "${OS_TYPE}" == "redhat9" ] ; then
     yum install -y redhat-lsb-core
     yum update -y python3
   else
@@ -69,7 +69,17 @@ function install_with_yum() {
 }
 
 function update_yum_repos() {
-  if [[ "${OS}" == "redhat8" ]]; then
+  if [[ "${OS}" == "redhat9" ]]; then
+    # Remove RHEL official repos and use the internal mirror in case of RHEL8
+    if [[ "${CLOUD_PROVIDER}" != "AWS_GOV" ]]; then
+      # Internal repo is not yet available for AWS_GOV images
+      RHEL_VERSION=$(cat /etc/redhat-release | grep -oP "[0-9\.]*")
+      RHEL_VERSION=${RHEL_VERSION/.0/}
+      REPO_FILE=rhel${RHEL_VERSION}_cldr_mirrors.repo
+      rm /etc/yum.repos.d/*.repo -f
+      curl https://mirror.infra.cloudera.com/repos/rhel/server/9/${RHEL_VERSION}/${REPO_FILE} --fail > /etc/yum.repos.d/${REPO_FILE}
+    fi
+  elif [[ "${OS}" == "redhat8" ]]; then
     # Remove RHEL official repos and use the internal mirror in case of RHEL8
     if [[ "${CLOUD_PROVIDER}" != "AWS_GOV" ]]; then
       # Internal repo is not yet available for AWS_GOV images
@@ -93,7 +103,9 @@ function update_yum_repos() {
 }
 
 function enable_epel_repository() {
-  if [ "${OS}" == "redhat8" ] ; then
+  if [ "${OS}" == "redhat9" ] ; then
+    dnf install -y https://dl.fedoraproject.org/pub/epel/epel-release-latest-9.noarch.rpm
+  elif [ "${OS}" == "redhat8" ] ; then
     dnf install -y https://dl.fedoraproject.org/pub/epel/epel-release-latest-8.noarch.rpm
   elif [ "${OS}" == "centos7" ] ; then
     cp /tmp/repos/RPM-GPG-KEY-CentOS-EPEL /etc/pki/rpm-gpg/
