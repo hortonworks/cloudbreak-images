@@ -50,3 +50,28 @@ run_install-cdp-policies.sh:
     - name: /etc/selinux/cdp/install-cdp-policies.sh 2>&1 | tee /var/log/install-cdp-policies.log && exit ${PIPESTATUS[0]}
     - require:
       - file: /etc/selinux/cdp/install-cdp-policies.sh
+
+/etc/selinux/cdp/httpd_cert_policy.te:
+  file.managed:
+    - name: /etc/selinux/cdp/httpd_cert_policy.te
+    - source: salt://{{ slspath }}/etc/selinux/cdp/httpd_cert_policy.te
+    - user: root
+    - group: root
+    - mode: 644
+    - makedirs: True
+
+/etc/selinux/cdp/install-httpd-cert-policy.sh:
+  file.managed:
+    - name: /etc/selinux/cdp/install-httpd-cert-policy.sh
+    - source: salt://{{ slspath }}/etc/selinux/cdp/install-httpd-cert-policy.sh
+    - user: root
+    - group: root
+    - mode: 755
+    - makedirs: True
+
+run_install_httpd_cert_policy.sh:
+  cmd.run:
+    - name: /etc/selinux/cdp/install-httpd-cert-policy.sh
+    - require:
+      - file: /etc/selinux/cdp/httpd_cert_policy.te
+      - file: /etc/selinux/cdp/install-httpd-cert-policy.sh
