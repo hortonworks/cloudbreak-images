@@ -88,7 +88,7 @@ packer_in_container() {
   if ! [[ $FREEIPA_PLUGIN_RPM_URL =~ ^http.*rpm$ ]]; then
     if [[ "$OS" == "redhat8" ]]; then
       if [[ "$ARCHITECTURE" == "arm64" ]]; then
-        export FREEIPA_PLUGIN_RPM_URL="https://cloudera-build-us-west-1.vpc.cloudera.com/s3/build/65542775/thunderhead/1.x/redhat8/yum/cdp-hashed-pwd-1.1.0.3-b31.aarch64.rpm"
+        export FREEIPA_PLUGIN_RPM_URL="https://cloudera-build-us-west-1.vpc.cloudera.com/s3/build/66603067/thunderhead/1.x/redhat8/yum/cdp-hashed-pwd-1.1.0.3-b321.aarch64.rpm"
       else
         export FREEIPA_PLUGIN_RPM_URL="https://archive.cloudera.com/cdp-freeipa-artifacts/cdp-hashed-pwd-1.1-b847.el8.x86_64.rpm"
       fi
@@ -99,7 +99,7 @@ packer_in_container() {
   if ! [[ $FREEIPA_HEALTH_AGENT_RPM_URL =~ ^http.*rpm$ ]]; then
     if [[ "$OS" == "redhat8" ]]; then
       if [[ "$ARCHITECTURE" == "arm64" ]]; then
-        export FREEIPA_HEALTH_AGENT_RPM_URL="https://cloudera-build-us-west-1.vpc.cloudera.com/s3/build/66300108/thunderhead/1.x/redhat8/yum/freeipa-health-agent-3-SNAPSHOT.aarch64.rpm"
+        export FREEIPA_HEALTH_AGENT_RPM_URL="https://cloudera-build-us-west-1.vpc.cloudera.com/s3/build/66603067/thunderhead/1.x/redhat8/yum/freeipa-health-agent-3.1.0.3-b321.aarch64.rpm"
       else
         export FREEIPA_HEALTH_AGENT_RPM_URL="https://archive.cloudera.com/cdp-freeipa-artifacts/freeipa-health-agent-2.1.0.2-b2228.x86_64.rpm"
       fi
@@ -110,7 +110,7 @@ packer_in_container() {
   if ! [[  $FREEIPA_LDAP_AGENT_RPM_URL =~ ^http.*rpm$ ]]; then
     if [[ "$OS" == "redhat8" ]]; then
       if [[ "$ARCHITECTURE" == "arm64" ]]; then
-        export FREEIPA_LDAP_AGENT_RPM_URL=""
+        export FREEIPA_LDAP_AGENT_RPM_URL="https://cloudera-build-us-west-1.vpc.cloudera.com/s3/build/66603067/thunderhead/1.x/redhat8/yum/freeipa-ldap-agent-1.1.0.3-b321.aarch64.rpm"
       else
         export FREEIPA_LDAP_AGENT_RPM_URL="https://archive.cloudera.com/cdp-freeipa-artifacts/freeipa-ldap-agent-1.0.0-b2200.x86_64.rpm"
       fi
