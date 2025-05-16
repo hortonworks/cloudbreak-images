@@ -31,7 +31,7 @@ EOF
 }
 
 function apply_rhel8_salt_patch {
-  if [ "${OS}" == "redhat8" ] || [ "${OS}" == "redhat9" ] ; then
+  if [[ "${OS}" == "redhat8" || "${OS}" == "redhat9" ]] ; then
     if [ "${SALT_VERSION}" == "3001.8" ] ; then
       # https://github.com/saltstack/salt/issues/60232
       if [ -f "/opt/salt_3001.8/lib/python3.6/site-packages/salt/modules/network.py" ]; then
@@ -103,7 +103,7 @@ function add_prewarmed_roles {
   fi
 }
 
-if [ "${OS}" == "redhat8" || "${OS}" == "redhat8" ] ; then
+if [[ "${OS}" == "redhat8" || "${OS}" == "redhat9" ]] ; then
   RHEL_VERSION=$(cat /etc/redhat-release | grep -oP "[0-9\.]*")
   export RHEL_VERSION=${RHEL_VERSION/.0/}
 fi

@@ -8,3 +8,5 @@ salt==${SALT_VERSION}
 tornado===4.2.1
 msgpack-python
 PyOpenSSL
+PyYAML>=5.1
+distro

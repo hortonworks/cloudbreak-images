@@ -28,10 +28,24 @@ function install_salt_with_pip3() {
   fi
 
   # Anything installed after this point will end up Salt's venv
-  mkdir ${SALT_PATH}
-  python3 -m virtualenv ${SALT_PATH}
+  if [[ "${OS}" == "redhat9" ]]; then
+    pyenv virtualenv 3.6.15 salt_3001.8
+    ln -s ~/.pyenv/versions/salt_3001.8 ${SALT_PATH}
+    find ~/.pyenv/versions/salt_3001.8
+    find ${SALT_PATH}
+    #/usr/local/bin/python3.6 -m virtualenv ${SALT_PATH}
+  else
+    mkdir ${SALT_PATH}
+    python3 -m virtualenv ${SALT_PATH}
+  fi
+  
+  # After this point on RHEL9 "python3" is actually Python 3.6, not the default 3.9!
   source ${SALT_PATH}/bin/activate
+  
   python3 -m pip install --upgrade pip
+  if [[ "${OS}" == "redhat9" ]]; then
+    python3 -m pip config set global.log /var/log/pip36.log
+  fi
 
   # Some packages can't be installed via salt_requirements.txt (don't ask why)
   python3 -m pip install pbr
@@ -41,11 +55,9 @@ function install_salt_with_pip3() {
 function install_with_yum() {
   update_yum_repos
 
-  if [ "${OS_TYPE}" == "redhat8" || "${OS_TYPE}" == "redhat9" ] ; then
+  # This is no longer needed for RHEL 9 - https://access.redhat.com/solutions/6973382
+  if [[ "${OS_TYPE}" == "redhat8" ]] ; then
     yum install -y redhat-lsb-core
-    yum update -y python3
-  else
-    yum update -y python
   fi
 
   yum install -y yum-utils yum-plugin-versionlock
@@ -245,6 +257,34 @@ EOF
   chmod +x /usr/local/bin/pip3.11
 }
 
+function redhat9_install_python36() {
+
+#  echo "Installing Python 3.6 from source - this is only needed for SaltStack 3001.x"
+#  dnf -y install gcc make zlib-devel bzip2 bzip2-devel readline-devel sqlite sqlite-devel openssl-devel
+#  wget https://www.python.org/ftp/python/3.6.15/Python-3.6.15.tgz
+#  tar -zxvf Python-3.6.15.tgz
+#  cd Python-3.6.15
+#  ./configure --enable-optimizations && make && make altinstall
+#  cd -
+#  rm -rf Python-3.6.15
+
+  dnf -y install gcc make zlib-devel bzip2 bzip2-devel readline-devel sqlite sqlite-devel openssl-devel tk-devel libffi-devel xz-devel
+  git clone https://github.com/pyenv/pyenv.git ~/.pyenv
+  echo 'export PYENV_ROOT="$HOME/.pyenv"' >> ~/.pyenvrc
+  echo 'export PATH="$PYENV_ROOT/bin:$PATH"' >> ~/.pyenvrc
+  echo 'eval "$(pyenv init --path)"' >> ~/.pyenvrc
+  source ~/.pyenvrc  
+
+  pyenv install --list
+  pyenv install 3.6.15
+
+  git clone https://github.com/pyenv/pyenv-virtualenv.git ~/.pyenv/plugins/pyenv-virtualenv
+  echo 'eval "$(pyenv virtualenv-init -)"' >> ~/.pyenvrc
+  source ~/.pyenvrc
+
+  echo "PYTHON36=3.6.15" >> /tmp/python_install.properties
+}
+
 function redhat9_update_python39() {
   echo "Installing python3-devel (the rest should be already installed in case of RHEL9)..."
   yum update -y python3 || yum update -y python39
@@ -289,6 +329,7 @@ function install_python_pip() {
   
   if [ "${OS}" == "redhat9" ] ; then
     redhat9_update_python39
+    redhat9_install_python36
     redhat9_install_python311
   elif [ "${OS}" == "redhat8" ] ; then
     redhat8_update_python36
