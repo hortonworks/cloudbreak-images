@@ -80,11 +80,15 @@ endif
 
 # AWS source ami and instance type specification
 ifeq ($(CLOUD_PROVIDER),AWS)
-	ifeq ($(OS),centos7)
-		AWS_SOURCE_AMI ?= ami-098f55b4287a885ba
-		AWS_INSTANCE_TYPE ?= t3.2xlarge
-	endif
-	ifeq ($(OS),redhat8)
+	ifeq ($(OS),redhat9)
+		ifeq ($(ARCHITECTURE),arm64)
+			AWS_SOURCE_AMI ?= ami-02b88e379f3080bba
+			AWS_INSTANCE_TYPE ?= r7gd.2xlarge
+		else
+			AWS_SOURCE_AMI ?= ami-0e2dd07dc70f88b3a
+			AWS_INSTANCE_TYPE ?= t3.2xlarge
+		endif
+	else ifeq ($(OS),redhat8)
 		ifeq ($(ARCHITECTURE),arm64)
 			AWS_SOURCE_AMI ?= ami-05032c39067d77b1b
 			AWS_INSTANCE_TYPE ?= r7gd.2xlarge
@@ -104,7 +108,11 @@ ifeq ($(CLOUD_PROVIDER),AWS)
 			endif
 			AWS_INSTANCE_TYPE ?= t3.2xlarge
 		endif
+	else ifeq ($(OS),centos7)
+		AWS_SOURCE_AMI ?= ami-098f55b4287a885ba
+		AWS_INSTANCE_TYPE ?= t3.2xlarge
 	endif
+
 endif
 
 # AWS_GOV source ami specification
