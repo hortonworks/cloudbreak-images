@@ -377,6 +377,21 @@ build-aws-redhat8:
 	GIT_TAG=$(GIT_TAG) \
 	./scripts/packer.sh build -color=false -only=aws-redhat8 $(PACKER_OPTS)
 
+build-aws-redhat9:
+	$(ENVS) \
+	AWS_AMI_REGIONS="us-west-1" \
+	AWS_SOURCE_AMI=$(AWS_SOURCE_AMI) \
+	AWS_INSTANCE_TYPE=$(AWS_INSTANCE_TYPE) \
+	OS=redhat9 \
+	OS_TYPE=redhat9 \
+	ARCHITECTURE=$(ARCHITECTURE) \
+	ATLAS_ARTIFACT_TYPE=amazon \
+	SALT_INSTALL_OS=redhat \
+	GIT_REV=$(GIT_REV) \
+	GIT_BRANCH=$(GIT_BRANCH) \
+	GIT_TAG=$(GIT_TAG) \
+	./scripts/packer.sh build -color=false -only=aws-redhat9 $(PACKER_OPTS)
+
 build-azure-redhat8:
 	$(ENVS) \
 	AZURE_STORAGE_ACCOUNTS=$(AZURE_BUILD_STORAGE_ACCOUNT) \
