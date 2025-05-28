@@ -1,0 +1,7 @@
+# Configuration, certificates
+/etc/salt(/.*)?             gen_context(system_u:object_r:cdp_salt_etc_t,s0)
+/etc/salt/pki(/.*)?         gen_context(system_u:object_r:cdp_salt_cert_t,s0)
+
+# Pillars and states
+/srv/pillar(/.*)?           gen_context(system_u:object_r:cdp_salt_srv_t,s0)
+/srv/salt(/.*)?             gen_context(system_u:object_r:cdp_salt_srv_t,s0)
