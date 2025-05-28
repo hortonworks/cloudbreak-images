@@ -29,27 +29,57 @@ apply_file_contexts() {
 
   if [[ -f "$dir_abs_path/$policy_name.restorecon" ]]; then
     log "Applying file contexts for CDP SELinux policy '$policy_name'"
+    local paths
     mapfile -t paths < <(grep -v '^[[:space:]]*$' "$dir_abs_path/$policy_name.restorecon")
+    local path
     for path in "${paths[@]}"; do
       log "Applying file contexts to path '$path'"
       restorecon -R -v -i "$path"
     done
     log "Applied file contexts for CDP SELinux policy '$policy_name'"
   else
-    log "No restorecon file found for CDP SELinux policy '$policy_name'. Skipping file context application."
+    log "No .restorecon file found for CDP SELinux policy '$policy_name'. Skipping file context application."
+  fi
+}
+
+apply_port_contexts() {
+  local dir_abs_path="$1"
+  local policy_name="$2"
+
+  if [[ -f "$dir_abs_path/$policy_name.portcon" ]]; then
+    log "Applying port contexts for CDP SELinux policy '$policy_name'"
+    local ports
+    mapfile -t ports < <(grep -v '^[[:space:]]*$' "$dir_abs_path/$policy_name.portcon")
+    local port
+    for port in "${ports[@]}"; do
+      local port_type
+      local port_protocol
+      local port_number
+      port_type=$(echo "$port" | awk '{print $1}')
+      port_protocol=$(echo "$port" | awk '{print $2}')
+      port_number=$(echo "$port" | awk '{print $3}')
+      log "Applying port context using entry '$port'. Type='$port_type', protocol='$port_protocol', number='$port_number'."
+      semanage port -a -t "$port_type" -p $port_protocol $port_number
+    done
+    log "Applied port contexts for CDP SELinux policy '$policy_name'"
+  else
+    log "No .portcon file found for CDP SELinux policy '$policy_name'. Skipping port context application."
   fi
 }
 
 main() {
+  CDP_POLICY_COMMON=common
   # Collect the directories containing CDP SELinux policy files
-  mapfile -t CDP_POLICY_DIRS < <(find "$SELINUX_CDP_DIR" -mindepth 1 -maxdepth 1 -type d -exec basename {} \;)
-  log "Found CDP SELinux policy directories: ${CDP_POLICY_DIRS[*]}"
+  mapfile -t CDP_POLICY_DIRS < <(find "$SELINUX_CDP_DIR" -mindepth 1 -maxdepth 1 -type d \! -name "$CDP_POLICY_COMMON" -exec basename {} \;)
+  log "Found CDP SELinux policy directories: $CDP_POLICY_COMMON ${CDP_POLICY_DIRS[*]}"
 
-  for dir in "${CDP_POLICY_DIRS[@]}"; do
+  local dir
+  for dir in "$CDP_POLICY_COMMON" "${CDP_POLICY_DIRS[@]}"; do
     local POLICY_NAME="cdp-$dir"
 
     install_policy "$SELINUX_CDP_DIR/$dir" "$POLICY_NAME"
     apply_file_contexts "$SELINUX_CDP_DIR/$dir" "$POLICY_NAME"
+    apply_port_contexts "$SELINUX_CDP_DIR/$dir" "$POLICY_NAME"
   done
 }
 

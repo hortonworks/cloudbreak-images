@@ -1,0 +1,6 @@
+/etc/salt
+/srv/errormessages.yaml
+/srv/pillar
+/srv/salt
+/srv/salt-state-updater.sh
+/srv/stderrcommands.yaml
