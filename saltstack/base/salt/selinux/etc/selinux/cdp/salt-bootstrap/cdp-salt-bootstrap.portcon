@@ -1,0 +1,2 @@
+cdp_salt_bootstrap_port_t tcp 7070
+cdp_salt_bootstrap_port_t tcp 7071

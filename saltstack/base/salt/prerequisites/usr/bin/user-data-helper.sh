@@ -108,6 +108,8 @@ signKey: |-
  -----END PUBLIC KEY-----
 EOF
   chmod 600 /etc/salt-bootstrap/security-config.yml
+  # TODO Remove once CB-29572 is done
+  restorecon -R -v -i /etc/salt-bootstrap
 }
 
 create_certificates_certm() {
@@ -128,6 +130,8 @@ create_cert_for_saltboot_tls() {
   certm -d $CERT_ROOT_PATH ca generate -o=saltboot --overwrite
   certm -d $CERT_ROOT_PATH server generate -o=saltboot --cert $CERT_ROOT_PATH/saltboot.pem --key $CERT_ROOT_PATH/saltboot-key.pem --overwrite
   rm $CERT_ROOT_PATH/ca-key.pem
+  # TODO Remove once CB-29572 is done
+  restorecon -R -v -i $CERT_ROOT_PATH
 }
 
 start_nginx() {
