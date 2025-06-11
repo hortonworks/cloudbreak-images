@@ -36,6 +36,15 @@
     - mode: 644
     - makedirs: True
 
+/etc/selinux/cdp/nginx/cdp-nginx.te:
+  file.managed:
+    - name: /etc/selinux/cdp/nginx/cdp-nginx.te
+    - source: salt://{{ slspath }}/etc/selinux/cdp/nginx/cdp-nginx.te
+    - user: root
+    - group: root
+    - mode: 644
+    - makedirs: True
+
 /etc/selinux/cdp/install-cdp-policies.sh:
   file.managed:
     - name: /etc/selinux/cdp/install-cdp-policies.sh

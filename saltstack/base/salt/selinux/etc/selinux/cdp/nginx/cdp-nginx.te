@@ -1,0 +1,10 @@
+policy_module(cdp-nginx, 1.0.0)
+
+gen_require(`
+	type httpd_cert_t;
+	type httpd_t;
+	class file getattr;
+')
+
+allow httpd_t httpd_cert_t:file getattr;
+allow httpd_sys_script_t init_t:unix_stream_socket ioctl;
