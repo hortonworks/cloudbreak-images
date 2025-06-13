@@ -110,9 +110,9 @@ packer_in_container() {
   if ! [[  $FREEIPA_LDAP_AGENT_RPM_URL =~ ^http.*rpm$ ]]; then
     if [[ "$OS" == "redhat8" ]]; then
       if [[ "$ARCHITECTURE" == "arm64" ]]; then
-        export FREEIPA_LDAP_AGENT_RPM_URL="https://cloudera-build-us-west-1.vpc.cloudera.com/s3/build/66603067/thunderhead/1.x/redhat8/yum/freeipa-ldap-agent-1.1.0.3-b321.aarch64.rpm"
+        export FREEIPA_LDAP_AGENT_RPM_URL="https://archive.cloudera.com/cdp-freeipa-artifacts/freeipa-ldap-agent-1.1.0.3-b525.aarch64.rpm"
       else
-        export FREEIPA_LDAP_AGENT_RPM_URL="https://archive.cloudera.com/cdp-freeipa-artifacts/freeipa-ldap-agent-1.0.0-b2200.x86_64.rpm"
+        export FREEIPA_LDAP_AGENT_RPM_URL="https://archive.cloudera.com/cdp-freeipa-artifacts/freeipa-ldap-agent-1.1.0.3-b525.x86_64.rpm"
       fi
     else
       export FREEIPA_LDAP_AGENT_RPM_URL=$DEFAULT_FREEIPA_LDAP_AGENT_RPM_URL
