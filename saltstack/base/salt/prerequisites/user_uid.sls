@@ -10,7 +10,7 @@
   'cloudera_scm_group': '987',
 } %}
 
-{% if pillar['OS'] == 'redhat8' %}
+{% if pillar['OS'] == 'redhat8' or pillar['OS'] == 'redhat9' %}
 # sssd has the needed uid/gid for cloudera-scm so it has to be modified
 
 change_sssd_ids:

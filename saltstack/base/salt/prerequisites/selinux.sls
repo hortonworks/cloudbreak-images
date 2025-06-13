@@ -5,7 +5,7 @@ install_selinux_module_dependecies:
     - pkgs:
       - policycoreutils
       - selinux-policy-devel
-{% if pillar['OS'] == 'redhat8' %}
+{% if pillar['OS'] == 'redhat8' or pillar['OS'] == 'redhat9' %}
       - policycoreutils-python-utils
 {% else %}
       - policycoreutils-python
