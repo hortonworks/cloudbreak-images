@@ -1,0 +1,7 @@
+interface(`cdp_salt_can_exec',`
+    gen_require(`
+        type cdp_salt_t;
+    ')
+
+    can_exec(cdp_salt_t, $1)
+')
