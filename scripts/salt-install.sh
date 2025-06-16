@@ -27,8 +27,6 @@ function install_salt_with_pip3() {
   # Some packages can't be installed via salt_requirements.txt (don't ask why)
   python3 -m pip install pbr
   python3 -m pip install -r /tmp/salt_requirements.txt
-
-  salt --versions-report
 }
 
 function install_with_yum() {
@@ -146,7 +144,7 @@ function redhat8_update_python36() {
   if [ "${OS}" == "redhat8" ] &&  [ "${CLOUD_PROVIDER}" == "YARN" ]; then
     update-alternatives --install /usr/bin/python python /usr/bin/python2.7 1
     update-alternatives --install /usr/bin/python python /usr/bin/python3.6 2
-    #alternatives --set python /usr/bin/python3.6
+    alternatives --set python /usr/bin/python3.6
     python -m pip install --upgrade pip
   else
     # CM agent needs this to work
@@ -215,9 +213,6 @@ function redhat8_install_python311() {
 
   # General required dependency
   /usr/bin/python3.11 -m pip install virtualenv
-
-  alternatives --set python /usr/bin/python3.11
-  alternatives --set python3 /usr/bin/python3.11
 
   # We need to create this "hack", because Saltstack's pip.installed only accepts a pip/pip3
   # wrapper, but apparently can't call "python3 -m pip", so without this, we can't install

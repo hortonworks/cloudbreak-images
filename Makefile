@@ -160,6 +160,12 @@ AWS_MAX_ATTEMPTS ?= 300
 PACKAGE_VERSIONS ?= ""
 SALT_VERSION ?= $(shell ./scripts/get-salt-version.sh $(BASE_NAME) $(STACK_VERSION))
 SALT_PATH ?= /opt/salt_$(SALT_VERSION)
+SALT_NEWER_PYZMQ = $(shell echo "$(SALT_VERSION)>=3006.4" | bc)
+ifeq ($(SALT_NEWER_PYZMQ),1)
+	PYZMQ_VERSION ?= 25.0.2
+else
+	PYZMQ_VERSION ?= 19.0
+endif
 SALTBOOT_VERSION ?= "0.14.3"
 ifneq ($(CLOUD_PROVIDER),YARN)
 	ifneq ($(OS),centos7)
