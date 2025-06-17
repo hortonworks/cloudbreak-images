@@ -13,8 +13,9 @@
         - selinux
         - CB-27855
 
-    - name: Allow httpd_t (e.g nginx) to connect to downstream service ports
+    - name: Allow httpd_t (e.g nginx) to connect to port 7070
       shell: | 
+        semanage port -a -t http_port_t -p tcp 7070
         setsebool -P httpd_can_network_connect on
       tags:
         - selinux

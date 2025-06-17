@@ -1,9 +1,0 @@
-# Configuration, certificates
-/etc/salt-bootstrap(/.*)?           gen_context(system_u:object_r:cdp_salt_bootstrap_etc_t,s0)
-/etc/salt-bootstrap/certs(/.*)?     gen_context(system_u:object_r:cdp_salt_bootstrap_cert_t,s0)
-
-# Executable
-/usr/sbin/salt-bootstrap    --      gen_context(system_u:object_r:cdp_salt_bootstrap_exec_t,s0)
-
-# Log
-/var/log/saltboot.log       --      gen_context(system_u:object_r:cdp_salt_bootstrap_log_t,s0)
