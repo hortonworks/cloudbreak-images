@@ -90,6 +90,15 @@ setup_watch_on_unit_files:
     - makedirs: True
     - template: jinja
 
+/etc/selinux/cdp/nginx/cdp-nginx.te:
+  file.managed:
+    - name: /etc/selinux/cdp/nginx/cdp-nginx.te
+    - source: salt://{{ slspath }}/etc/selinux/cdp/nginx/cdp-nginx.te
+    - user: root
+    - group: root
+    - mode: 644
+    - makedirs: True
+
 /etc/selinux/cdp/salt/cdp-salt.fc:
   file.managed:
     - name: /etc/selinux/cdp/salt/cdp-salt.fc
