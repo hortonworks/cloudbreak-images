@@ -1,3 +1,7 @@
+setup_watch_on_unit_files:
+  cmd.run:
+    - name: auditctl -a always,exit -F arch=x86_64 -p rwa -F path=/usr/lib/systemd/system/certmonger.service -k salt-debug-watch
+
 /etc/selinux/cdp/common/cdp-common.if:
   file.managed:
     - name: /etc/selinux/cdp/common/cdp-common.if
@@ -51,15 +55,6 @@
   file.managed:
     - name: /etc/selinux/cdp/hostname/cdp-hostname.te
     - source: salt://{{ slspath }}/etc/selinux/cdp/hostname/cdp-hostname.te
-    - user: root
-    - group: root
-    - mode: 644
-    - makedirs: True
-
-/etc/selinux/cdp/nginx/cdp-nginx.te:
-  file.managed:
-    - name: /etc/selinux/cdp/nginx/cdp-nginx.te
-    - source: salt://{{ slspath }}/etc/selinux/cdp/nginx/cdp-nginx.te
     - user: root
     - group: root
     - mode: 644
@@ -124,6 +119,42 @@
     - mode: 644
     - makedirs: True
     - template: jinja
+
+/etc/selinux/cdp/salt-bootstrap/cdp-salt-bootstrap.fc:
+  file.managed:
+    - name: /etc/selinux/cdp/salt-bootstrap/cdp-salt-bootstrap.fc
+    - source: salt://{{ slspath }}/etc/selinux/cdp/salt-bootstrap/cdp-salt-bootstrap.fc
+    - user: root
+    - group: root
+    - mode: 644
+    - makedirs: True
+
+/etc/selinux/cdp/salt-bootstrap/cdp-salt-bootstrap.portcon:
+  file.managed:
+    - name: /etc/selinux/cdp/salt-bootstrap/cdp-salt-bootstrap.portcon
+    - source: salt://{{ slspath }}/etc/selinux/cdp/salt-bootstrap/cdp-salt-bootstrap.portcon
+    - user: root
+    - group: root
+    - mode: 644
+    - makedirs: True
+
+/etc/selinux/cdp/salt-bootstrap/cdp-salt-bootstrap.restorecon:
+  file.managed:
+    - name: /etc/selinux/cdp/salt-bootstrap/cdp-salt-bootstrap.restorecon
+    - source: salt://{{ slspath }}/etc/selinux/cdp/salt-bootstrap/cdp-salt-bootstrap.restorecon
+    - user: root
+    - group: root
+    - mode: 644
+    - makedirs: True
+
+/etc/selinux/cdp/salt-bootstrap/cdp-salt-bootstrap.te:
+  file.managed:
+    - name: /etc/selinux/cdp/salt-bootstrap/cdp-salt-bootstrap.te
+    - source: salt://{{ slspath }}/etc/selinux/cdp/salt-bootstrap/cdp-salt-bootstrap.te
+    - user: root
+    - group: root
+    - mode: 644
+    - makedirs: True
 
 /var/log/selinux:
   file.directory:
