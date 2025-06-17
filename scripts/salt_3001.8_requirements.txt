@@ -1,0 +1,10 @@
+requests
+virtualenvwrapper
+CherryPy
+pyzmq==19.0
+markupsafe==2.0.1
+jinja2==3.0.3
+salt==${SALT_VERSION}
+tornado===4.2.1
+msgpack-python
+PyOpenSSL

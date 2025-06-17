@@ -556,8 +556,13 @@
     },
     {
       "type": "file",
-      "source": "scripts/salt_requirements.txt",
-      "destination": "/tmp/salt_requirements.txt"
+      "source": "scripts/salt_3001.8_requirements.txt",
+      "destination": "/tmp/salt_3001.8_requirements.txt"
+    },
+    {
+      "type": "file",
+      "source": "scripts/salt_3006.10_requirements.txt",
+      "destination": "/tmp/salt_3006.10_requirements.txt"
     },
     {
       "type": "file",
