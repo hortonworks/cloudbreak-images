@@ -1,0 +1,43 @@
+/opt/salt/scripts/salt-api-wrapper.sh           --      gen_context(system_u:object_r:cdp_salt_exec_t,s0)
+/opt/salt/scripts/salt-master-wrapper.sh        --      gen_context(system_u:object_r:cdp_salt_exec_t,s0)
+/opt/salt/scripts/salt-minion-wrapper.sh        --      gen_context(system_u:object_r:cdp_salt_exec_t,s0)
+
+{{ pillar['salt_path'] }}/bin(/.*)?             --      gen_context(system_u:object_r:cdp_salt_bin_t,s0)
+{{ pillar['salt_path'] }}/bin(/.*)?             -d      gen_context(system_u:object_r:cdp_salt_bin_t,s0)
+/opt/salt/scripts(/.*)?                         --      gen_context(system_u:object_r:cdp_salt_bin_t,s0)
+/opt/salt/scripts(/.*)?                         -d      gen_context(system_u:object_r:cdp_salt_bin_t,s0)
+
+{{ pillar['salt_path'] }}/lib(/.*)?             --      gen_context(system_u:object_r:cdp_salt_lib_t,s0)
+{{ pillar['salt_path'] }}/lib(/.*)?             -d      gen_context(system_u:object_r:cdp_salt_lib_t,s0)
+{{ pillar['salt_path'] }}/lib64(/.*)?           --      gen_context(system_u:object_r:cdp_salt_lib_t,s0)
+{{ pillar['salt_path'] }}/lib64(/.*)?           -d      gen_context(system_u:object_r:cdp_salt_lib_t,s0)
+
+/etc/salt(/.*)?                                 --      gen_context(system_u:object_r:cdp_salt_etc_t,s0)
+/etc/salt(/.*)?                                 -d      gen_context(system_u:object_r:cdp_salt_etc_t,s0)
+
+/etc/salt/pki(/.*)?                             --      gen_context(system_u:object_r:cdp_salt_cert_t,s0)
+/etc/salt/pki(/.*)?                             -d      gen_context(system_u:object_r:cdp_salt_cert_t,s0)
+
+/srv/pillar(/.*)?                               --      gen_context(system_u:object_r:cdp_salt_srv_t,s0)
+/srv/pillar(/.*)?                               -d      gen_context(system_u:object_r:cdp_salt_srv_t,s0)
+/srv/salt(/.*)?                                 --      gen_context(system_u:object_r:cdp_salt_srv_t,s0)
+/srv/salt(/.*)?                                 -d      gen_context(system_u:object_r:cdp_salt_srv_t,s0)
+/srv/errormessages.yaml                         --      gen_context(system_u:object_r:cdp_salt_srv_t,s0)
+/srv/salt-state-updater.sh                      --      gen_context(system_u:object_r:cdp_salt_srv_t,s0)
+/srv/stderrcommands.yaml                        --      gen_context(system_u:object_r:cdp_salt_srv_t,s0)
+
+/var/log/salt(/.*)?                             --      gen_context(system_u:object_r:cdp_salt_var_log_t,s0)
+/var/log/salt(/.*)?                             -d      gen_context(system_u:object_r:cdp_salt_var_log_t,s0)
+
+/var/run/salt(/.*)?                             --      gen_context(system_u:object_r:cdp_salt_var_run_t,s0)
+/var/run/salt(/.*)?                             -d      gen_context(system_u:object_r:cdp_salt_var_run_t,s0)
+/var/run/salt-api.pid                           --      gen_context(system_u:object_r:cdp_salt_var_run_t,s0)
+/var/run/salt-master.pid                        --      gen_context(system_u:object_r:cdp_salt_var_run_t,s0)
+/var/run/salt-minion.pid                        --      gen_context(system_u:object_r:cdp_salt_var_run_t,s0)
+
+/var/cache/salt(/.*)?                           --      gen_context(system_u:object_r:cdp_salt_var_cache_t,s0)
+/var/cache/salt(/.*)?                           -d      gen_context(system_u:object_r:cdp_salt_var_cache_t,s0)
+
+/etc/systemd/system/salt-api.service            --      gen_context(system_u:object_r:cdp_salt_systemd_unit_file_t,s0)
+/etc/systemd/system/salt-master.service         --      gen_context(system_u:object_r:cdp_salt_systemd_unit_file_t,s0)
+/etc/systemd/system/salt-minion.service         --      gen_context(system_u:object_r:cdp_salt_systemd_unit_file_t,s0)
