@@ -139,6 +139,8 @@ files_var_filetrans(cdp_salt_bootstrap_t, cdp_salt_srv_t, dir, "pillar")
 files_var_filetrans(cdp_salt_bootstrap_t, cdp_salt_srv_t, dir, "salt")
 files_var_filetrans(cdp_salt_bootstrap_t, cdp_salt_srv_t, file, "salt-state-updater.sh")
 files_var_filetrans(cdp_salt_bootstrap_t, cdp_salt_srv_t, file, "stderrcommands.yaml")
+userdom_user_tmp_filetrans(cdp_salt_bootstrap_t, cdp_salt_srv_t, dir, "pillar")
+userdom_user_tmp_filetrans(cdp_salt_bootstrap_t, cdp_salt_srv_t, dir, "salt")
 allow cdp_salt_bootstrap_t self:capability { dac_override dac_read_search };
 
 ########################################
