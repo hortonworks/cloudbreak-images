@@ -1,55 +1,72 @@
 policy_module(cdp-common, 1.0.0)
 
+#TODO Separate domain for install-cdp-policies.sh which has the necessary selinux permissions and relabel permissions to everything
+
 ########################################
 #
 # Salt
 #
-type cdp_salt_t;
+
+# Define the cdp_salt_t and cdp_salt_exec_t domains, and set them up as a systemd domain
+systemd_domain_template(cdp_salt)
+
+# Define the cdp_salt_systemctl_t domain, which is used for processes started executing systemctl
+systemd_systemctl_domain(cdp_salt)
+
+# Define the cdp_salt_unconfined_t domain, which is used for child processes expected to be run unconfined
+type cdp_salt_unconfined_t;
+role system_r types cdp_salt_unconfined_t;
+domain_type(cdp_salt_unconfined_t)
+unconfined_domain(cdp_salt_unconfined_t)
+
+# Define salt related file types
 type cdp_salt_bin_t;
-type cdp_salt_etc_t;
 type cdp_salt_cert_t;
-type cdp_salt_exec_t;
+type cdp_salt_etc_t;
 type cdp_salt_lib_t;
 type cdp_salt_srv_t;
 type cdp_salt_systemd_unit_file_t;
+type cdp_salt_var_cache_t;
+type cdp_salt_var_lock_t;
 type cdp_salt_var_log_t;
 type cdp_salt_var_run_t;
-type cdp_salt_var_cache_t;
 
-admin_pattern(cdp_salt_t, cdp_salt_bin_t)
-admin_pattern(cdp_salt_t, cdp_salt_etc_t)
-admin_pattern(cdp_salt_t, cdp_salt_cert_t)
-admin_pattern(cdp_salt_t, cdp_salt_exec_t)
-admin_pattern(cdp_salt_t, cdp_salt_lib_t)
-admin_pattern(cdp_salt_t, cdp_salt_srv_t)
-admin_pattern(cdp_salt_t, cdp_salt_systemd_unit_file_t)
-admin_pattern(cdp_salt_t, cdp_salt_var_log_t)
-admin_pattern(cdp_salt_t, cdp_salt_var_run_t)
-admin_pattern(cdp_salt_t, cdp_salt_var_cache_t)
-
-can_exec(cdp_salt_t, cdp_salt_bin_t)
-can_exec(cdp_salt_t, cdp_salt_lib_t)
-
+# Give the salt related file types the needed type attributes
 files_type(cdp_salt_bin_t)
-files_type(cdp_salt_etc_t)
-files_type(cdp_salt_cert_t)
-files_type(cdp_salt_exec_t)
+miscfiles_cert_type(cdp_salt_cert_t)
+files_config_file(cdp_salt_etc_t)
 files_type(cdp_salt_lib_t)
 files_type(cdp_salt_srv_t)
-files_type(cdp_salt_var_log_t)
-files_type(cdp_salt_var_run_t)
-files_type(cdp_salt_var_cache_t)
-
-init_daemon_domain(cdp_salt_t, cdp_salt_exec_t)
-
-logging_log_file(cdp_salt_var_log_t)
-logging_log_filetrans(cdp_salt_t, cdp_salt_var_log_t, file)
-
-miscfiles_cert_type(cdp_salt_cert_t)
-
-systemd_systemctl_domain(cdp_salt)
 systemd_unit_file(cdp_salt_systemd_unit_file_t)
+files_type(cdp_salt_var_cache_t)
+files_lock_file(cdp_salt_var_lock_t)
+logging_log_file(cdp_salt_var_log_t)
+files_pid_file(cdp_salt_var_run_t)
 
+
+########################################
+#
+# salt-bootstrap
+#
+type cdp_salt_bootstrap_t;
+type cdp_salt_bootstrap_exec_t;
+
+type cdp_salt_bootstrap_etc_t;
+files_type(cdp_salt_bootstrap_etc_t)
+
+type cdp_salt_bootstrap_log_t;
+logging_log_file(cdp_salt_bootstrap_log_t)
+
+require {
+    attribute port_type, defined_port_type, unreserved_port_type;
+}
+type cdp_salt_bootstrap_port_t, port_type, defined_port_type;
+typeattribute cdp_salt_bootstrap_port_t unreserved_port_type;
+
+type cdp_salt_bootstrap_unconfined_t;
+
+type cdp_salt_bootstrap_cert_t;
+miscfiles_cert_type(cdp_salt_bootstrap_cert_t)
 
 ########################################
 #
