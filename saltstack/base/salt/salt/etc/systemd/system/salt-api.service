@@ -1,12 +1,12 @@
 [Unit]
-Description=Salt API
+Description=Salt Master
 After=syslog.target network.target
 
 [Service]
 Type=simple
 Restart=always
-ExecStartPre=-/sbin/restorecon -vFi /opt/salt/scripts/salt-api-wrapper.sh
-ExecStart=/opt/salt/scripts/salt-api-wrapper.sh
+ExecStartPre=-/sbin/restorecon -vFi /opt/salt/scripts/salt-master-wrapper.sh
+ExecStart=/opt/salt/scripts/salt-master-wrapper.sh
 
 [Install]
 WantedBy=multi-user.target

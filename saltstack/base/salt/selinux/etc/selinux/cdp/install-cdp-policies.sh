@@ -31,14 +31,41 @@ apply_file_contexts() {
 
   if [[ -f "$dir_abs_path/$policy_name.restorecon" ]]; then
     log "Applying file contexts for CDP SELinux policy '$policy_name'"
+    local paths
     mapfile -t paths < <(grep -v '^[[:space:]]*$' "$dir_abs_path/$policy_name.restorecon")
+    local path
     for path in "${paths[@]}"; do
       log "Applying file contexts to path '$path'"
       restorecon -RvFi "$path"
     done
     log "Applied file contexts for CDP SELinux policy '$policy_name'"
   else
-    log "No restorecon file found for CDP SELinux policy '$policy_name'. Skipping file context application."
+    log "No .restorecon file found for CDP SELinux policy '$policy_name'. Skipping file context application."
+  fi
+}
+
+apply_port_contexts() {
+  local dir_abs_path="$1"
+  local policy_name="$2"
+
+  if [[ -f "$dir_abs_path/$policy_name.portcon" ]]; then
+    log "Applying port contexts for CDP SELinux policy '$policy_name'"
+    local ports
+    mapfile -t ports < <(grep -v '^[[:space:]]*$' "$dir_abs_path/$policy_name.portcon")
+    local port
+    for port in "${ports[@]}"; do
+      local port_type
+      local port_protocol
+      local port_number
+      port_type=$(echo "$port" | awk '{print $1}')
+      port_protocol=$(echo "$port" | awk '{print $2}')
+      port_number=$(echo "$port" | awk '{print $3}')
+      log "Applying port context using entry '$port'. Type='$port_type', protocol='$port_protocol', number='$port_number'."
+      semanage port -a -t "$port_type" -p $port_protocol $port_number
+    done
+    log "Applied port contexts for CDP SELinux policy '$policy_name'"
+  else
+    log "No .portcon file found for CDP SELinux policy '$policy_name'. Skipping port context application."
   fi
 }
 
@@ -54,6 +81,7 @@ main() {
 
     install_policy "$SELINUX_CDP_DIR/$dir" "$POLICY_NAME"
     apply_file_contexts "$SELINUX_CDP_DIR/$dir" "$POLICY_NAME"
+    apply_port_contexts "$SELINUX_CDP_DIR/$dir" "$POLICY_NAME"
   done
 }
 

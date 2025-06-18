@@ -7,3 +7,9 @@
 
 # Log
 /var/log/saltboot.log       --      gen_context(system_u:object_r:cdp_salt_bootstrap_log_t,s0)
+
+# Salt states uploaded by salt bootstrap
+/srv/pillar(/.*)?           --      gen_context(system_u:object_r:cdp_salt_srv_t,s0)
+/srv/pillar(/.*)?           -d      gen_context(system_u:object_r:cdp_salt_srv_t,s0)
+/srv/salt(/.*)?             --      gen_context(system_u:object_r:cdp_salt_srv_t,s0)
+/srv/salt(/.*)?             -d      gen_context(system_u:object_r:cdp_salt_srv_t,s0)

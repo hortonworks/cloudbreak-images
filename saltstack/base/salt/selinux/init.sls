@@ -1,7 +1,3 @@
-setup_watch_on_unit_files:
-  cmd.run:
-    - name: auditctl -a always,exit -F arch=x86_64 -p rwa -F path=/usr/lib/systemd/system/certmonger.service -k salt-debug-watch
-
 /etc/selinux/cdp/common/cdp-common.if:
   file.managed:
     - name: /etc/selinux/cdp/common/cdp-common.if
@@ -60,6 +56,15 @@ setup_watch_on_unit_files:
     - mode: 644
     - makedirs: True
 
+/etc/selinux/cdp/nginx/cdp-nginx.te:
+  file.managed:
+    - name: /etc/selinux/cdp/nginx/cdp-nginx.te
+    - source: salt://{{ slspath }}/etc/selinux/cdp/nginx/cdp-nginx.te
+    - user: root
+    - group: root
+    - mode: 644
+    - makedirs: True
+
 /etc/selinux/cdp/httpd/cdp-httpd.fc:
   file.managed:
     - name: /etc/selinux/cdp/httpd/cdp-httpd.fc
@@ -89,15 +94,6 @@ setup_watch_on_unit_files:
     - mode: 644
     - makedirs: True
     - template: jinja
-
-/etc/selinux/cdp/nginx/cdp-nginx.te:
-  file.managed:
-    - name: /etc/selinux/cdp/nginx/cdp-nginx.te
-    - source: salt://{{ slspath }}/etc/selinux/cdp/nginx/cdp-nginx.te
-    - user: root
-    - group: root
-    - mode: 644
-    - makedirs: True
 
 /etc/selinux/cdp/salt/cdp-salt.fc:
   file.managed:
