@@ -1,20 +1,17 @@
 base:
   '*':
     - prerequisites
-{% if pillar['subtype'] != 'Docker' and pillar['OS'] == 'redhat8' %}
-    - selinux
-{% endif %}
-{% if not salt['file.file_exists']('/etc/waagent.conf') %}
+{%- if not salt['file.file_exists']('/etc/waagent.conf') %}
     - cloud-init
-{% endif %}
+{%- endif %}
     - hostname
     - nginx
     - python3
     - salt-bootstrap
     - salt
-{% if salt['environ.get']('CUSTOM_IMAGE_TYPE') != 'freeipa' %}
+{%- if salt['environ.get']('CUSTOM_IMAGE_TYPE') != 'freeipa' %}
     - postgresql
-{% endif %}
+{%- endif %}
     - monitoring
     - performance
     - telemetry
@@ -22,10 +19,13 @@ base:
     - ccmv2
     - custom
     - mount
-{% if salt['environ.get']('CLOUD_PROVIDER') == 'AWS_GOV' %}
+{%- if salt['environ.get']('CLOUD_PROVIDER') == 'AWS_GOV' %}
     - luks
     - userdata-secrets
-{% endif %}
-{% if pillar['subtype'] != 'Docker' or pillar['OS'] == 'redhat8' %}
+{%- endif %}
+{%- if pillar['subtype'] != 'Docker' or pillar['OS'] == 'redhat8' %}
     - chrony
-{% endif %}
+{%- endif %}
+{%- if pillar['subtype'] != 'Docker' and pillar['OS'] == 'redhat8' %}
+    - selinux
+{%- endif %}
