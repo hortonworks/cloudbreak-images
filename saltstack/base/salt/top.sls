@@ -25,7 +25,5 @@ base:
 {%- endif %}
 {%- if pillar['subtype'] != 'Docker' or pillar['OS'] == 'redhat8' %}
     - chrony
-{%- endif %}
-{%- if pillar['subtype'] != 'Docker' and pillar['OS'] == 'redhat8' %}
     - selinux
 {%- endif %}
