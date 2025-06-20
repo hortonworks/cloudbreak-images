@@ -9,5 +9,6 @@ gen_require(`
 	class unix_stream_socket ioctl;
 ')
 
-allow httpd_t cdp_httpd_cert_t:file getattr;
-allow httpd_sys_script_t init_t:unix_stream_socket ioctl;
+init_ioctl_stream_sockets(httpd_sys_script_t)
+search_dirs_pattern(httpd_t, cdp_httpd_cert_t, cdp_httpd_cert_t)
+read_files_pattern(httpd_t, cdp_httpd_cert_t, cdp_httpd_cert_t)
