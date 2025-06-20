@@ -1,4 +1,4 @@
-{% if pillar['OS'] == 'redhat7' or pillar['OS'] == 'redhat8' %}
+{% if pillar['OS'] == 'redhat8' or pillar['OS'] == 'redhat9' %}
 
 remove_duplicates_from_yum_conf:
   cmd.run:
