@@ -56,15 +56,6 @@
     - mode: 644
     - makedirs: True
 
-/etc/selinux/cdp/nginx/cdp-nginx.te:
-  file.managed:
-    - name: /etc/selinux/cdp/nginx/cdp-nginx.te
-    - source: salt://{{ slspath }}/etc/selinux/cdp/nginx/cdp-nginx.te
-    - user: root
-    - group: root
-    - mode: 644
-    - makedirs: True
-
 /etc/selinux/cdp/httpd/cdp-httpd.fc:
   file.managed:
     - name: /etc/selinux/cdp/httpd/cdp-httpd.fc
@@ -79,6 +70,16 @@
   file.managed:
     - name: /etc/selinux/cdp/httpd/cdp-httpd.restorecon
     - source: salt://{{ slspath }}/etc/selinux/cdp/httpd/cdp-httpd.restorecon
+    - user: root
+    - group: root
+    - mode: 644
+    - makedirs: True
+    - template: jinja
+
+/etc/selinux/cdp/httpd/cdp-httpd.te:
+  file.managed:
+    - name: /etc/selinux/cdp/httpd/cdp-httpd.te
+    - source: salt://{{ slspath }}/etc/selinux/cdp/httpd/cdp-httpd.te
     - user: root
     - group: root
     - mode: 644
