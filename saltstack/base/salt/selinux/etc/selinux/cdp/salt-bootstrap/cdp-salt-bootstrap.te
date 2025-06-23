@@ -49,6 +49,8 @@ require {
 allow cdp_salt_bootstrap_t cdp_salt_bootstrap_port_t:tcp_socket { name_bind name_connect };
 allow cdp_salt_bootstrap_t self:tcp_socket { accept bind connect create getattr getopt listen setopt };
 corenet_tcp_bind_generic_node(cdp_salt_bootstrap_t)
+corenet_tcp_bind_all_ephemeral_ports(cdp_salt_bootstrap_t)
+corenet_tcp_connect_all_ephemeral_ports(cdp_salt_bootstrap_t)
 dev_read_sysfs(cdp_salt_bootstrap_t)
 kernel_read_net_sysctls(cdp_salt_bootstrap_t)
 kernel_search_network_sysctl(cdp_salt_bootstrap_t)
