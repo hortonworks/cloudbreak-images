@@ -10,5 +10,3 @@ gen_require(`
 ')
 
 init_ioctl_stream_sockets(httpd_sys_script_t)
-search_dirs_pattern(httpd_t, cdp_httpd_cert_t, cdp_httpd_cert_t)
-read_files_pattern(httpd_t, cdp_httpd_cert_t, cdp_httpd_cert_t)
