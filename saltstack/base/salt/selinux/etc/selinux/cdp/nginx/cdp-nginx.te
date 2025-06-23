@@ -8,5 +8,3 @@ gen_require(`
 	class file getattr;
 	class unix_stream_socket ioctl;
 ')
-
-init_ioctl_stream_sockets(httpd_sys_script_t)
