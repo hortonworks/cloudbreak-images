@@ -1,0 +1,16 @@
+pbr
+msgpack
+pyyaml
+looseversion
+packaging
+distro
+jinja2
+cryptography
+zmq
+cherrypy
+virtualenvwrapper
+markupsafe
+jinja2
+tornado
+PyOpenSSL
+salt==${SALT_VERSION}
