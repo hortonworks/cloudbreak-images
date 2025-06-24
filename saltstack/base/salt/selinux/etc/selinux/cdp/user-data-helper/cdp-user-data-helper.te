@@ -1,0 +1,14 @@
+policy_module(cdp-user-data-helper, 1.0.0)
+
+gen_require(`
+    type cdp_user_data_helper_log_t, cloud_init_t, var_log_t;
+    type cdp_salt_bootstrap_etc_t, cdp_salt_bootstrap_cert_t, etc_t;
+')
+
+filetrans_pattern(cloud_init_t, var_log_t, cdp_user_data_helper_log_t, file, "user-data.log")
+filetrans_pattern(cloud_init_t, etc_t, cdp_salt_bootstrap_etc_t, dir, "salt-bootstrap")
+filetrans_pattern(cloud_init_t, cdp_salt_bootstrap_etc_t, cdp_salt_bootstrap_etc_t, file, "security-config.yml")
+filetrans_pattern(cloud_init_t, cdp_salt_bootstrap_etc_t, cdp_salt_bootstrap_cert_t, dir, "certs")
+filetrans_pattern(cloud_init_t, cdp_salt_bootstrap_cert_t, cdp_salt_bootstrap_cert_t, file, "ca.pem")
+filetrans_pattern(cloud_init_t, cdp_salt_bootstrap_cert_t, cdp_salt_bootstrap_cert_t, file, "saltboot-key.pem")
+filetrans_pattern(cloud_init_t, cdp_salt_bootstrap_cert_t, cdp_salt_bootstrap_cert_t, file, "saltboot.pem")

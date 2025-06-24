@@ -108,6 +108,15 @@
     - mode: 644
     - makedirs: True
 
+/etc/selinux/cdp/user-data-helper/cdp-user-data-helper.te:
+  file.managed:
+    - name: /etc/selinux/cdp/user-data-helper/cdp-user-data-helper.te
+    - source: salt://{{ slspath }}/etc/selinux/cdp/user-data-helper/cdp-user-data-helper.te
+    - user: root
+    - group: root
+    - mode: 644
+    - makedirs: True
+
 /etc/selinux/cdp/install-cdp-policies.sh:
   file.managed:
     - name: /etc/selinux/cdp/install-cdp-policies.sh
