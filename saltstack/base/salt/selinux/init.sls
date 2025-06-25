@@ -110,7 +110,7 @@
 
 /etc/selinux/cdp/user-data-helper/cdp-user-data-helper.fc:
   file.managed:
-    - name: /etc/selinux/cdp/user-data-helper/cdp-user-data-helper.fc:
+    - name: /etc/selinux/cdp/user-data-helper/cdp-user-data-helper.fc
     - source: salt://{{ slspath }}/etc/selinux/cdp/user-data-helper/cdp-user-data-helper.fc
     - user: root
     - group: root
@@ -119,7 +119,7 @@
 
 /etc/selinux/cdp/user-data-helper/cdp-user-data-helper.te:
   file.managed:
-    - name: /etc/selinux/cdp/user-data-helper/cdp-user-data-helper.te:
+    - name: /etc/selinux/cdp/user-data-helper/cdp-user-data-helper.te
     - source: salt://{{ slspath }}/etc/selinux/cdp/user-data-helper/cdp-user-data-helper.te
     - user: root
     - group: root
