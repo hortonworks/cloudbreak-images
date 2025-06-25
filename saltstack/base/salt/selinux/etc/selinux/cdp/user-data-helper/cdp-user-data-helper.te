@@ -1,0 +1,8 @@
+policy_module(cdp-user-data-helper, 1.0.0)
+
+require {
+    type cdp_user_data_helper_log_t;
+}
+manage_dirs_pattern(cdp_salt_bootstrap_t, var_log_t, cdp_salt_bootstrap_log_t)
+manage_files_pattern(cdp_salt_bootstrap_t, var_log_t, cdp_salt_bootstrap_log_t)
+logging_log_filetrans(cdp_salt_bootstrap_t, cdp_salt_bootstrap_log_t, file)

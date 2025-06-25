@@ -36,3 +36,11 @@ type cdp_salt_bootstrap_unconfined_t;
 
 type cdp_salt_bootstrap_cert_t;
 miscfiles_cert_type(cdp_salt_bootstrap_cert_t)
+
+########################################
+#
+# user-data-helper
+#
+
+type cdp_user_data_helper_log_t;
+logging_log_file(cdp_user_data_helper_log_t)
