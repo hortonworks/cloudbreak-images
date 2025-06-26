@@ -1,9 +1,9 @@
 policy_module(cdp-user-data-helper, 1.0.0)
 
 require {
-    type cdp_user_data_helper_t;
+    type cdp_user_data_helper_t, cdp_user_data_helper_exec_t;
 }
-init_daemon_domain(cdp_user_data_helper_t)
+init_daemon_domain(cdp_user_data_helper_t, cdp_user_data_helper_exec_t)
 
 require {
     type cdp_user_data_helper_log_t, cloud_log_t;
