@@ -34,6 +34,11 @@ apply_file_contexts() {
     local path
     for path in "${paths[@]}"; do
       log "Applying file contexts to path '$path'"
+      if [ -f /var/log/user-data.log ]; then
+        log "File exists: /var/log/user-data.log"
+      else
+        log "File does not exist: /var/log/user-data.log"
+      fi
       restorecon -R -v -i "$path"
     done
     log "Applied file contexts for CDP SELinux policy '$policy_name'"
