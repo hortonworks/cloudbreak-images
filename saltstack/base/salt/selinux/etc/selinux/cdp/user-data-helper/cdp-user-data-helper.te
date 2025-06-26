@@ -1,5 +1,14 @@
 policy_module(cdp-user-data-helper, 1.0.0)
 
 require {
-    type cdp_user_data_helper_log_t;
+    type cdp_user_data_helper_t;
 }
+init_daemon_domain(cdp_user_data_helper_t)
+
+require {
+    type cdp_user_data_helper_log_t, cloud_log_t;
+}
+
+manage_dirs_pattern(cdp_salt_bootstrap_t, cloud_log_t, cdp_user_data_helper_log_t)
+manage_files_pattern(cdp_salt_bootstrap_t, cloud_log_t, cdp_user_data_helper_log_t)
+logging_log_filetrans(cdp_salt_bootstrap_t, cdp_user_data_helper_log_t, file)
