@@ -10,10 +10,10 @@ require {
 }
 
 gen_require(`
-    type unconfined_t;
+    type cloud_init_t;
 ')
 
 manage_dirs_pattern(cdp_user_data_helper_t, cloud_log_t, cdp_user_data_helper_log_t)
 manage_files_pattern(cdp_user_data_helper_t, cloud_log_t, cdp_user_data_helper_log_t)
 filetrans_pattern(cdp_user_data_helper_t, cloud_log_t, cdp_user_data_helper_log_t, file, "user-data.log")
-filetrans_pattern(unconfined_t, cloud_log_t, cdp_user_data_helper_log_t, file, "user-data.log")
+filetrans_pattern(cloud_init_t, cloud_log_t, cdp_user_data_helper_log_t, file, "user-data.log")
