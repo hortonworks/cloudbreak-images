@@ -45,8 +45,3 @@ type cdp_user_data_helper_t;
 type cdp_user_data_helper_exec_t;
 type cdp_user_data_helper_log_t;
 logging_log_file(cdp_user_data_helper_log_t)
-
-type cdp_user_data_helper_unconfined_t;
-role system_r types cdp_user_data_helper_unconfined_t;
-domain_type(cdp_user_data_helper_unconfined_t)
-unconfined_domain(cdp_user_data_helper_unconfined_t)

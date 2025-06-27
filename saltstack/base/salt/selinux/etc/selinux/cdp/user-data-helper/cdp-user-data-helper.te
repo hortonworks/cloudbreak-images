@@ -11,9 +11,4 @@ require {
 
 manage_dirs_pattern(cdp_user_data_helper_t, cloud_log_t, cdp_user_data_helper_log_t)
 manage_files_pattern(cdp_user_data_helper_t, cloud_log_t, cdp_user_data_helper_log_t)
-logging_log_filetrans(cdp_user_data_helper_t, cdp_user_data_helper_log_t, file)
-
-gen_require(`
-    type unconfined_t;
-')
-logging_log_filetrans(unconfined_t, cdp_user_data_helper_log_t, file, "user-data.log")
+filetrans_pattern(cdp_user_data_helper_t, cloud_log_t, cdp_user_data_helper_log_t, file, "user-data.log")
