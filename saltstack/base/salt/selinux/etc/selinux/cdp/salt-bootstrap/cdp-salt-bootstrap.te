@@ -44,10 +44,10 @@ miscfiles_read_localization(cdp_salt_bootstrap_t)
 #
 require {
     type cdp_salt_bootstrap_port_t;
-	class tcp_socket { accept bind connect create getattr getopt listen name_bind name_connect setopt };
+	class tcp_socket { accept bind connect create getattr getopt listen name_bind name_connect read setopt write };
 }
 allow cdp_salt_bootstrap_t cdp_salt_bootstrap_port_t:tcp_socket { name_bind name_connect };
-allow cdp_salt_bootstrap_t self:tcp_socket { accept bind connect create getattr getopt listen setopt };
+allow cdp_salt_bootstrap_t self:tcp_socket { accept bind connect create getattr getopt listen read setopt write };
 corenet_tcp_bind_generic_node(cdp_salt_bootstrap_t)
 corenet_tcp_bind_all_ephemeral_ports(cdp_salt_bootstrap_t)
 corenet_tcp_connect_all_ephemeral_ports(cdp_salt_bootstrap_t)
@@ -77,6 +77,7 @@ systemd_systemctl_domain(cdp_salt_bootstrap)
 fs_getattr_xattr_fs(cdp_salt_bootstrap_systemctl_t)
 kernel_read_proc_files(cdp_salt_bootstrap_systemctl_t)
 systemd_config_generic_services(cdp_salt_bootstrap_systemctl_t)
+init_reload_services(cdp_salt_bootstrap_systemctl_t)
 
 ########################################
 #
