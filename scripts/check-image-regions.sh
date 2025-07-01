@@ -54,6 +54,9 @@ case "$CLOUD_PROVIDER" in
       redhat8)
         ALL_REGIONS="default"
         ;;
+      redhat9)
+        ALL_REGIONS="default"
+        ;;
       *)
         echo "Unexpected OS: $OS"
         exit 1

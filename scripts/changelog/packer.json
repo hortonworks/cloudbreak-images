@@ -168,6 +168,43 @@
       "communicator": "ssh"
     },
     {
+      "name": "arm-redhat9",
+      "type": "azure-arm",
+      "client_id": "{{user `client_id`}}",
+      "client_secret": "{{user `client_secret`}}",
+      "subscription_id": "{{user `subscription_id`}}",
+      "tenant_id": "{{user `tenant_id`}}",
+      "resource_group_name": "{{user `resource_group_name`}}",
+      "storage_account": "{{user `storage_account`}}",
+      "capture_container_name": "packer",
+      "capture_name_prefix": "{{user `image_name`}}",
+      "image_url": "{{ user `source_image` }}",
+      "ssh_pty": "true",
+      "username": "cloudbreak",
+      "os_type": "Linux",
+      "ssh_username": "cloudbreak",
+      "ssh_password": "S3cr3t",
+      "location": "westus",
+      "vm_size": "Standard_D4",
+      "os_disk_size_gb": "{{user `image_size`}}",
+      "virtual_network_resource_group_name":"{{user `virtual_network_resource_group_name`}}",
+      "virtual_network_name": "{{user `vpc_id`}}",
+      "virtual_network_subnet_name": "{{user `subnet_id`}}",
+      "private_virtual_network_with_public_ip": "false",
+      "azure_tags": {
+        "builder": "packer",
+        "cb-creation-timestamp": "{{timestamp}}",
+        "owner": "{{ user `image_owner` }}"
+      },
+      "plan_info": {
+        "plan_name": "{{user `plan_name`}}",
+        "plan_product": "rhel-byos",
+        "plan_publisher": "redhat"
+      },
+      "skip_create_image": true,
+      "communicator": "ssh"
+    },
+    {
       "name": "gc-centos7",
       "type": "googlecompute",
       "disable_default_service_account" : true,
