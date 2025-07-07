@@ -1,4 +1,4 @@
-{% if pillar['OS'] == 'redhat8' %}
+{% if pillar['OS'] == 'redhat8' or pillar['OS'] == 'redhat9' %}
 chronyReinstall:
   cmd.run:
     - name: dnf reinstall chrony -y
