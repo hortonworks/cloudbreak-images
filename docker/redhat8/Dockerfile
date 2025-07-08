@@ -38,7 +38,7 @@ COPY /repos /tmp/repos
 COPY /scripts/salt-install.sh /tmp/saltstack/
 COPY /scripts/salt-setup.sh /tmp/saltstack/
 COPY /scripts/salt-final.sh /tmp/saltstack/
-COPY /scripts/salt_requirements.txt /tmp/salt_requirements.txt
+COPY /scripts/salt_${SALT_VERSION}_requirements.txt /tmp/salt_${SALT_VERSION}_requirements.txt
 COPY /scripts/rhel8_salt_fix.patch /tmp/rhel8_salt_fix.patch
 
 # Workaround problem caused by sytemd not being pid-1:

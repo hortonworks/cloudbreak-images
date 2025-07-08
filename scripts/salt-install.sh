@@ -20,13 +20,19 @@ function install_salt_with_pip3() {
 
   # Anything installed after this point will end up Salt's venv
   mkdir ${SALT_PATH}
-  python3 -m virtualenv ${SALT_PATH}
+  if [ "${SALT_VERSION}" == "3006.10" ] ; then
+    python3.11 -m virtualenv ${SALT_PATH}
+  else
+    python3 -m virtualenv ${SALT_PATH}
+  fi
   source ${SALT_PATH}/bin/activate
   python3 -m pip install --upgrade pip
 
   # Some packages can't be installed via salt_requirements.txt (don't ask why)
   python3 -m pip install pbr
-  python3 -m pip install -r /tmp/salt_requirements.txt
+  python3 -m pip install -r /tmp/salt_${SALT_VERSION}_requirements.txt
+
+  salt --versions-report
 }
 
 function install_with_yum() {
