@@ -66,8 +66,11 @@ packer_in_container() {
       exit 1
     fi
 
-    # FIXME when arm64 builds are available
-    export DEFAULT_JUMPGATE_AGENT_RPM_URL=""
+    # FIXME when arm64 builds on archive are available
+    export DEFAULT_JUMPGATE_AGENT_RPM_URL="http://cloudera-build-2-us-west-2.vpc.cloudera.com/s3/build/68456815/jumpgate/3.x/redhat8/yum/jumpgate-agent-3.13.0-b38.aarch64.rpm"
+    # FIXME: This is needed because right now we're adding an unofficial release of jumpgate agent to arm64 images
+    JUMPGATE_AGENT_GBN="1234567890"
+
     export DEFAULT_METERING_AGENT_RPM_URL=""
   fi
 
@@ -79,7 +82,6 @@ packer_in_container() {
     ## Download the jumpgate-agent rpm, get the version and call REDB to lookup the GBN
     wget $JUMPGATE_AGENT_RPM_URL
     JUMPGATE_AGENT_VERSION=$(rpm -qp --queryformat '%{VERSION}' ${JUMPGATE_AGENT_RPM_URL##*/})
-    JUMPGATE_AGENT_GBN=$(curl -Ls "https://release.infra.cloudera.com/hwre-api/latestcompiledbuild?stack=JUMPGATE&release=$JUMPGATE_AGENT_VERSION" --fail | jq -r '.gbn')
   fi
 
   if ! [[ $METERING_AGENT_RPM_URL =~ ^http.*rpm$ ]]; then
@@ -88,7 +90,7 @@ packer_in_container() {
   if ! [[ $FREEIPA_PLUGIN_RPM_URL =~ ^http.*rpm$ ]]; then
     if [[ "$OS" == "redhat8" ]]; then
       if [[ "$ARCHITECTURE" == "arm64" ]]; then
-        export FREEIPA_PLUGIN_RPM_URL="https://cloudera-build-us-west-1.vpc.cloudera.com/s3/build/66603067/thunderhead/1.x/redhat8/yum/cdp-hashed-pwd-1.1.0.3-b321.aarch64.rpm"
+        export FREEIPA_PLUGIN_RPM_URL="https://cloudera-build-2-us-west-2.vpc.cloudera.com/s3/build/68651539/thunderhead/1.x/redhat8/yum/cdp-hashed-pwd-1.1.0.3-b801.aarch64.rpm"
       else
         export FREEIPA_PLUGIN_RPM_URL="https://archive.cloudera.com/cdp-freeipa-artifacts/cdp-hashed-pwd-1.1-b847.el8.x86_64.rpm"
       fi
@@ -99,7 +101,7 @@ packer_in_container() {
   if ! [[ $FREEIPA_HEALTH_AGENT_RPM_URL =~ ^http.*rpm$ ]]; then
     if [[ "$OS" == "redhat8" ]]; then
       if [[ "$ARCHITECTURE" == "arm64" ]]; then
-        export FREEIPA_HEALTH_AGENT_RPM_URL="https://cloudera-build-us-west-1.vpc.cloudera.com/s3/build/66603067/thunderhead/1.x/redhat8/yum/freeipa-health-agent-3.1.0.3-b321.aarch64.rpm"
+        export FREEIPA_HEALTH_AGENT_RPM_URL="https://cloudera-build-2-us-west-2.vpc.cloudera.com/s3/build/68651539/thunderhead/1.x/redhat8/yum/freeipa-health-agent-3.1.0.3-b801.aarch64.rpm"
       else
         export FREEIPA_HEALTH_AGENT_RPM_URL="https://archive.cloudera.com/cdp-freeipa-artifacts/freeipa-health-agent-2.1.0.2-b2228.x86_64.rpm"
       fi
