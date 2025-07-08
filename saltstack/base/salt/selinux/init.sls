@@ -108,6 +108,33 @@
     - mode: 644
     - makedirs: True
 
+/etc/selinux/cdp/user-data-helper/cdp-user-data-helper.fc:
+  file.managed:
+    - name: /etc/selinux/cdp/user-data-helper/cdp-user-data-helper.fc
+    - source: salt://{{ slspath }}/etc/selinux/cdp/user-data-helper/cdp-user-data-helper.fc
+    - user: root
+    - group: root
+    - mode: 644
+    - makedirs: True
+
+/etc/selinux/cdp/user-data-helper/cdp-user-data-helper.restorecon:
+  file.managed:
+    - name: /etc/selinux/cdp/user-data-helper/cdp-user-data-helper.restorecon
+    - source: salt://{{ slspath }}/etc/selinux/cdp/user-data-helper/cdp-user-data-helper.restorecon
+    - user: root
+    - group: root
+    - mode: 644
+    - makedirs: True
+
+/etc/selinux/cdp/user-data-helper/cdp-user-data-helper.te:
+  file.managed:
+    - name: /etc/selinux/cdp/user-data-helper/cdp-user-data-helper.te
+    - source: salt://{{ slspath }}/etc/selinux/cdp/user-data-helper/cdp-user-data-helper.te
+    - user: root
+    - group: root
+    - mode: 644
+    - makedirs: True
+
 /etc/selinux/cdp/install-cdp-policies.sh:
   file.managed:
     - name: /etc/selinux/cdp/install-cdp-policies.sh
