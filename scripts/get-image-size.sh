@@ -31,7 +31,7 @@ else
     if [[ "$CLOUD_PROVIDER" == "Azure" ]]; then
       IMAGE_SIZE=64
     else
-      IMAGE_SIZE=48
+      IMAGE_SIZE=52
     fi
   fi
 fi
