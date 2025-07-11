@@ -1,1 +1,5 @@
 policy_module(cdp-ipaldapagent, 1.0.0)
+
+gen_require(`
+    type httpd_sys_script_exec_t;
+')

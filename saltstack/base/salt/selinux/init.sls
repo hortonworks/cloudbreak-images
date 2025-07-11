@@ -45,10 +45,55 @@
     - mode: 644
     - makedirs: True
 
+/etc/selinux/cdp/ipahealthagent/cdp-ipahealthagent.fc:
+  file.managed:
+    - name: /etc/selinux/cdp/ipahealthagent/cdp-ipahealthagent.fc
+    - source: salt://{{ slspath }}/etc/selinux/cdp/ipahealthagent/cdp-ipahealthagent.fc
+    - user: root
+    - group: root
+    - mode: 644
+    - makedirs: True
+
+/etc/selinux/cdp/ipahealthagent/cdp-ipahealthagent.restorecon:
+  file.managed:
+    - name: /etc/selinux/cdp/ipahealthagent/cdp-ipahealthagent.restorecon
+    - source: salt://{{ slspath }}/etc/selinux/cdp/ipahealthagent/cdp-ipahealthagent.restorecon
+    - user: root
+    - group: root
+    - mode: 644
+    - makedirs: True
+
 /etc/selinux/cdp/ipahealthagent/cdp-ipahealthagent.te:
   file.managed:
     - name: /etc/selinux/cdp/ipahealthagent/cdp-ipahealthagent.te
     - source: salt://{{ slspath }}/etc/selinux/cdp/ipahealthagent/cdp-ipahealthagent.te
+    - user: root
+    - group: root
+    - mode: 644
+    - makedirs: True
+
+/etc/selinux/cdp/ipaldapagent/cdp-ipaldapagent.fc:
+  file.managed:
+    - name: /etc/selinux/cdp/ipaldapagent/cdp-ipaldapagent.fc
+    - source: salt://{{ slspath }}/etc/selinux/cdp/ipaldapagent/cdp-ipaldapagent.fc
+    - user: root
+    - group: root
+    - mode: 644
+    - makedirs: True
+
+/etc/selinux/cdp/ipaldapagent/cdp-ipaldapagent.restorecon:
+  file.managed:
+    - name: /etc/selinux/cdp/ipaldapagent/cdp-ipaldapagent.restorecon
+    - source: salt://{{ slspath }}/etc/selinux/cdp/ipaldapagent/cdp-ipaldapagent.restorecon
+    - user: root
+    - group: root
+    - mode: 644
+    - makedirs: True
+
+/etc/selinux/cdp/ipaldapagent/cdp-ipaldapagent.te:
+  file.managed:
+    - name: /etc/selinux/cdp/ipaldapagent/cdp-ipaldapagent.te
+    - source: salt://{{ slspath }}/etc/selinux/cdp/ipaldapagent/cdp-ipaldapagent.te
     - user: root
     - group: root
     - mode: 644

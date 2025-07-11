@@ -1,4 +1,8 @@
 policy_module(cdp-ipahealthagent, 1.0.0)
 
+gen_require(`
+    type initrc_exec_t;
+')
+
 type cdp_ipahealthagent_t;
 type cdp_ipahealthagent_exec_t;
