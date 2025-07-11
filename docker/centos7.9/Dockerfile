@@ -36,7 +36,7 @@ COPY /repos /tmp/repos
 COPY /scripts/salt-install.sh /tmp/saltstack/
 COPY /scripts/salt-setup.sh /tmp/saltstack/
 COPY /scripts/salt-final.sh /tmp/saltstack/
-COPY /scripts/salt_requirements.txt /tmp/salt_requirements.txt
+COPY /scripts/salt_${SALT_VERSION}_requirements.txt /tmp/salt_${SALT_VERSION}_requirements.txt
 COPY docker/common/hwx-internal.repo /etc/yum.repos.d/hwx-internal.repo
 
 # Workaround problem caused by sytemd not being pid-1:
