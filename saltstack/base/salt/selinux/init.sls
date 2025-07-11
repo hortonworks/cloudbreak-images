@@ -45,6 +45,15 @@
     - mode: 644
     - makedirs: True
 
+/etc/selinux/cdp/ipahealthagent/cdp-ipahealthagent.te:
+  file.managed:
+    - name: /etc/selinux/cdp/ipahealthagent/cdp-ipahealthagent.te
+    - source: salt://{{ slspath }}/etc/selinux/cdp/ipahealthagent/cdp-ipahealthagent.te
+    - user: root
+    - group: root
+    - mode: 644
+    - makedirs: True
+
 /etc/selinux/cdp/salt/cdp-salt.fc:
   file.managed:
     - name: /etc/selinux/cdp/salt/cdp-salt.fc
