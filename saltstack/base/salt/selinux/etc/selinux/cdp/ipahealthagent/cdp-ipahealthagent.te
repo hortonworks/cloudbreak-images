@@ -1,8 +1,10 @@
 policy_module(cdp-ipahealthagent, 1.0.0)
 
 gen_require(`
-    type initrc_exec_t;
+    type initrc_exec_t, default_t;
 ')
 
 type cdp_ipahealthagent_t;
 type cdp_ipahealthagent_exec_t;
+
+filetrans_pattern(default_t, default_t, initrc_exec_t, file, "httpd-crt-tracking.sh")
