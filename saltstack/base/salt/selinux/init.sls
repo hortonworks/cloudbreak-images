@@ -182,7 +182,7 @@
     - user: root
     - group: root
     - mode: 700
-    - source: salt://selinux/httpd-log-filter.sh
+    - source: salt://{{ slspath }}/etc/selinux/cdp/httpd-log-filter.sh
 
 {% endif %}
 
@@ -193,7 +193,7 @@
     - user: root
     - group: root
     - mode: 700
-    - source: salt://selinux/httpd-crt-tracking.sh
+    - source: salt://{{ slspath }}/etc/selinux/cdp/httpd-crt-tracking.sh
 
 run_install-cdp-policies.sh:
   cmd.run:
