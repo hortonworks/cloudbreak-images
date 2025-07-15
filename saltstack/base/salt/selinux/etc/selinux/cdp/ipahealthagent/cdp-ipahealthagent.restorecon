@@ -1,1 +1,5 @@
 /cdp/ipahealthagent/libs/bin/gunicorn
+/cdp/ipahealthagent/freeipa_healthagent_getcerts.sh
+/cdp/ipahealthagent/httpd-crt-tracking.sh
+/cdp/ipahealthagent/publicCert.pem
+/cdp/ipahealthagent/privateKey.pem
