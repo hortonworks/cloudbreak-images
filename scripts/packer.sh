@@ -67,7 +67,7 @@ packer_in_container() {
     fi
 
     # FIXME when arm64 builds on archive are available
-    export DEFAULT_JUMPGATE_AGENT_RPM_URL="http://cloudera-build-2-us-west-2.vpc.cloudera.com/s3/build/68456815/jumpgate/3.x/redhat8/yum/jumpgate-agent-3.13.0-b38.aarch64.rpm"
+    export DEFAULT_JUMPGATE_AGENT_RPM_URL="https://archive.cloudera.com/ccm/3.13.0/jumpgate-agent.aarch64.rpm"
     # FIXME: This is needed because right now we're adding an unofficial release of jumpgate agent to arm64 images
     JUMPGATE_AGENT_GBN="1234567890"
 
