@@ -56,6 +56,10 @@ $(error "AZURE_IMAGE_VHD and Marketplace image properties (AZURE_IMAGE_PUBLISHER
 			else
 				AZURE_IMAGE_SKU ?= rhel-lvm88
 			endif
+		else ifeq ($(OS),redhat9)
+			AZURE_IMAGE_PUBLISHER ?= RedHat
+			AZURE_IMAGE_OFFER ?= rhel-byos
+			AZURE_IMAGE_SKU ?= rhel-lvm95
 		else ifeq ($(OS),centos7)
 			AZURE_IMAGE_PUBLISHER ?= OpenLogic
 			AZURE_IMAGE_OFFER ?= CentOS
@@ -76,11 +80,15 @@ endif
 
 # AWS source ami and instance type specification
 ifeq ($(CLOUD_PROVIDER),AWS)
-	ifeq ($(OS),centos7)
-		AWS_SOURCE_AMI ?= ami-098f55b4287a885ba
-		AWS_INSTANCE_TYPE ?= t3.2xlarge
-	endif
-	ifeq ($(OS),redhat8)
+	ifeq ($(OS),redhat9)
+		ifeq ($(ARCHITECTURE),arm64)
+			AWS_SOURCE_AMI ?= ami-02b88e379f3080bba
+			AWS_INSTANCE_TYPE ?= r7gd.2xlarge
+		else
+			AWS_SOURCE_AMI ?= ami-0e2dd07dc70f88b3a
+			AWS_INSTANCE_TYPE ?= t3.2xlarge
+		endif
+	else ifeq ($(OS),redhat8)
 		ifeq ($(ARCHITECTURE),arm64)
 			AWS_SOURCE_AMI ?= ami-05032c39067d77b1b
 			AWS_INSTANCE_TYPE ?= r7gd.2xlarge
@@ -100,7 +108,11 @@ ifeq ($(CLOUD_PROVIDER),AWS)
 			endif
 			AWS_INSTANCE_TYPE ?= t3.2xlarge
 		endif
+	else ifeq ($(OS),centos7)
+		AWS_SOURCE_AMI ?= ami-098f55b4287a885ba
+		AWS_INSTANCE_TYPE ?= t3.2xlarge
 	endif
+
 endif
 
 # AWS_GOV source ami specification
@@ -377,6 +389,21 @@ build-aws-redhat8:
 	GIT_TAG=$(GIT_TAG) \
 	./scripts/packer.sh build -color=false -only=aws-redhat8 $(PACKER_OPTS)
 
+build-aws-redhat9:
+	$(ENVS) \
+	AWS_AMI_REGIONS="us-west-1" \
+	AWS_SOURCE_AMI=$(AWS_SOURCE_AMI) \
+	AWS_INSTANCE_TYPE=$(AWS_INSTANCE_TYPE) \
+	OS=redhat9 \
+	OS_TYPE=redhat9 \
+	ARCHITECTURE=$(ARCHITECTURE) \
+	ATLAS_ARTIFACT_TYPE=amazon \
+	SALT_INSTALL_OS=redhat \
+	GIT_REV=$(GIT_REV) \
+	GIT_BRANCH=$(GIT_BRANCH) \
+	GIT_TAG=$(GIT_TAG) \
+	./scripts/packer.sh build -color=false -only=aws-redhat9 $(PACKER_OPTS)
+
 build-azure-redhat8:
 	$(ENVS) \
 	AZURE_STORAGE_ACCOUNTS=$(AZURE_BUILD_STORAGE_ACCOUNT) \
@@ -394,6 +421,27 @@ build-azure-redhat8:
 	GIT_BRANCH=$(GIT_BRANCH) \
 	GIT_TAG=$(GIT_TAG) \
 	./scripts/packer.sh build -color=false -only=arm-redhat8 $(PACKER_OPTS)
+ifeq ($(AZURE_INITIAL_COPY),true)
+	TRACE=1 AZURE_STORAGE_ACCOUNTS=$(AZURE_BUILD_STORAGE_ACCOUNT) ./scripts/azure-copy.sh
+endif
+
+build-azure-redhat9:
+	$(ENVS) \
+	AZURE_STORAGE_ACCOUNTS=$(AZURE_BUILD_STORAGE_ACCOUNT) \
+	OS=redhat9 \
+	OS_TYPE=redhat9 \
+	ATLAS_ARTIFACT_TYPE=azure-arm \
+	SALT_INSTALL_OS=redhat \
+	AZURE_IMAGE_VHD=$(AZURE_IMAGE_VHD) \
+	AZURE_IMAGE_PUBLISHER=$(AZURE_IMAGE_PUBLISHER) \
+	AZURE_IMAGE_OFFER=$(AZURE_IMAGE_OFFER) \
+	AZURE_IMAGE_SKU=$(AZURE_IMAGE_SKU) \
+	BUILD_RESOURCE_GROUP_NAME=$(BUILD_RESOURCE_GROUP_NAME) \
+	PRIVATE_VIRTUAL_NETWORK_WITH_PUBLIC_IP=$(PRIVATE_VIRTUAL_NETWORK_WITH_PUBLIC_IP) \
+	GIT_REV=$(GIT_REV) \
+	GIT_BRANCH=$(GIT_BRANCH) \
+	GIT_TAG=$(GIT_TAG) \
+	./scripts/packer.sh build -color=false -only=arm-redhat9 $(PACKER_OPTS)
 ifeq ($(AZURE_INITIAL_COPY),true)
 	TRACE=1 AZURE_STORAGE_ACCOUNTS=$(AZURE_BUILD_STORAGE_ACCOUNT) ./scripts/azure-copy.sh
 endif

@@ -19,7 +19,7 @@ create_corkscrew_softlink:
   cmd.run:
     - name: ln -s /usr/local/bin/corkscrew /usr/bin/corkscrew
 
-{% elif pillar['OS'] == 'redhat8' %}
+{% elif pillar['OS'] == 'redhat8' or pillar['OS'] == 'redhat9' %}
 
 download_corkscrew_from_s3:
   cmd.run:
