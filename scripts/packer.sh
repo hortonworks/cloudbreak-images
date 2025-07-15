@@ -79,13 +79,8 @@ packer_in_container() {
   if [ -n "$JUMPGATE_AGENT_RPM_URL" ]; then
     ## Download the jumpgate-agent rpm, get the version and call REDB to lookup the GBN
     wget $JUMPGATE_AGENT_RPM_URL
-    JUMPGATE_AGENT_VERSION=$(rpm -qp --queryformat '%{VERSION}' ${JUMPGATE_AGENT_RPM_URL##*/})
+    JUMPGATE_AGENT_VERSION=$(rpm -qp --queryformat '%{VERSION}' ${JUMPGATE_AGENT_RPM_URL##*/} | sed s/~/-/)
     JUMPGATE_AGENT_GBN=$(curl -Ls "https://release.infra.cloudera.com/hwre-api/latestcompiledbuild?stack=JUMPGATE&release=$JUMPGATE_AGENT_VERSION" --fail | jq -r '.gbn')
-  fi
-
-  # Fallback needed because apparently the fact something's on archive doesn't mean it has a proper GBN in the builddb...
-  if [ -z "$JUMPGATE_AGENT_GBN" ]; then
-    JUMPGATE_AGENT_GBN="1234567890"
   fi
 
   if ! [[ $METERING_AGENT_RPM_URL =~ ^http.*rpm$ ]]; then
