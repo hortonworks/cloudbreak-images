@@ -1,2 +1,1 @@
-/etc/httpd/conf/httpd-log-filter.sh
 /cdp/ipaldapagent/libs/bin/gunicorn

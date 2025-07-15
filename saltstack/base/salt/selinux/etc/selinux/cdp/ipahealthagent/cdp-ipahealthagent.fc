@@ -1,6 +1,1 @@
-/cdp/ipahealthagent/httpd-crt-tracking.sh      --      gen_context(system_u:object_r:cdp_ipahealthagent_exec_t,s0)
-
-/cdp/ipahealthagent/publicCert.pem             --      gen_context(system_u:object_r:cdp_ipahealthagent_cert_t,s0)
-/cdp/ipahealthagent/privateKey.pem             --      gen_context(system_u:object_r:cdp_ipahealthagent_cert_t,s0)
-
 /cdp/ipahealthagent/libs/bin/gunicorn          --      gen_context(system_u:object_r:cdp_ipahealthagent_exec_t,s0)

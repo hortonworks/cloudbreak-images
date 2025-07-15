@@ -1,3 +1,1 @@
-/etc/httpd/conf/httpd-log-filter.sh            --      gen_context(system_u:object_r:httpd_sys_script_exec_t,s0)
-
 /cdp/ipaldapagent/libs/bin/gunicorn          --      gen_context(system_u:object_r:cdp_ipaldapagent_exec_t,s0)
