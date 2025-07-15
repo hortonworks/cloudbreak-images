@@ -1,1 +1,4 @@
 /cdp/ipahealthagent/httpd-crt-tracking.sh
+
+/cdp/ipahealthagent/publicCert.pem
+/cdp/ipahealthagent/privateKey.pem

@@ -6,5 +6,8 @@ gen_require(`
 
 type cdp_ipahealthagent_t;
 type cdp_ipahealthagent_exec_t;
+type cdp_ipahealthagent_cert_t;
 
-filetrans_pattern(default_t, default_t, initrc_exec_t, file, "httpd-crt-tracking.sh")
+filetrans_pattern(default_t, default_t, cdp_ipahealthagent_exec_t, file, "httpd-crt-tracking.sh")
+filetrans_pattern(default_t, default_t, cdp_ipahealthagent_cert_t, file, "publicCert.pem")
+filetrans_pattern(default_t, default_t, cdp_ipahealthagent_cert_t, file, "privateKey.pem")
