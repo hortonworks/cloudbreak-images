@@ -83,6 +83,11 @@ packer_in_container() {
     JUMPGATE_AGENT_GBN=$(curl -Ls "https://release.infra.cloudera.com/hwre-api/latestcompiledbuild?stack=JUMPGATE&release=$JUMPGATE_AGENT_VERSION" --fail | jq -r '.gbn')
   fi
 
+  # Fallback needed because apparently the fact something's on archive doesn't mean it has a proper GBN in the builddb...
+  if [ -z "$JUMPGATE_AGENT_GBN" ]; then
+    JUMPGATE_AGENT_GBN="1234567890"
+  fi
+
   if ! [[ $METERING_AGENT_RPM_URL =~ ^http.*rpm$ ]]; then
     export METERING_AGENT_RPM_URL=$DEFAULT_METERING_AGENT_RPM_URL
   fi
