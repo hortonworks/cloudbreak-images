@@ -4,4 +4,9 @@ gen_require(`
     type httpd_sys_script_exec_t, httpd_config_t;
 ')
 
+type cdp_ipaldapagent_t;
+type cdp_ipaldapagent_exec_t;
+type cdp_ipaldapagent_cert_t;
+
+init_daemon_domain(cdp_ipaldapagent_t, cdp_ipaldapagent_exec_t)
 filetrans_pattern(httpd_config_t, httpd_config_t, httpd_sys_script_exec_t, file, "httpd-crt-tracking.sh")
