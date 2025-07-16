@@ -1,7 +1,7 @@
 policy_module(cdp-ipahealthagent, 1.0.0)
 
 gen_require(`
-    type initrc_exec_t, default_t, cdp_salt_srv_t, unconfined_t;
+    type initrc_exec_t, default_t, cdp_salt_srv_t, unconfined_service_t;
 ')
 
 type cdp_ipahealthagent_t;
