@@ -26,3 +26,8 @@ domtrans_pattern(unconfined_t, cdp_ipahealthagent_exec_t, cdp_ipahealthagent_t)
 
 type cdp_ipahealthagent_log_t;
 logging_log_file(cdp_ipahealthagent_log_t)
+
+filetrans_pattern(unconfined_service_t, default_t, cdp_ipahealthagent_log_t, file, "ipahealthagent.log")
+
+filetrans_pattern(unconfined_service_t, default_t, cdp_ipahealthagent_cert_t, file, "publicCert.pem")
+filetrans_pattern(unconfined_service_t, default_t, cdp_ipahealthagent_cert_t, file, "privateKey.pem")
