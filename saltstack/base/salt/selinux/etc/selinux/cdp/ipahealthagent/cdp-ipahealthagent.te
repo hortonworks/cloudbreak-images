@@ -10,8 +10,19 @@ type cdp_ipahealthagent_cert_t;
 
 init_daemon_domain(cdp_ipahealthagent_t, cdp_ipahealthagent_exec_t)
 
-allow cdp_ipahealthagent_t cdp_ipahealthagent_cert_t:file { read open getattr write create unlink };
+# Allow system_r to use the cdp_ipahealthagent_t domain and transition to it when executing a cdp_ipahealthagent_exec_t file
+gen_require(`
+    role system_r;
+    role unconfined_r;
+')
+role system_r types cdp_ipahealthagent_t;
+role_transition unconfined_r cdp_ipahealthagent_exec_t system_r;
 
-filetrans_pattern(unconfined_t, default_t, cdp_ipahealthagent_exec_t, file, "freeipa_healthagent_getcerts.sh")
-filetrans_pattern(cdp_ipahealthagent_exec_t, default_t, cdp_ipahealthagent_cert_t, file, "publicCert.pem")
-filetrans_pattern(cdp_ipahealthagent_exec_t, default_t, cdp_ipahealthagent_cert_t, file, "privateKey.pem")
+# Allow the unconfined_t domain to automatically transition to the cdp_ipahealthagent_t domain
+gen_require(`
+    type unconfined_t;
+')
+domtrans_pattern(unconfined_t, cdp_ipahealthagent_exec_t, cdp_ipahealthagent_t)
+
+type cdp_ipahealthagent_log_t;
+logging_log_file(cdp_ipahealthagent_log_t)
