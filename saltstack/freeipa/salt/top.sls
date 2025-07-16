@@ -2,3 +2,4 @@ freeipa:
   '*':
     - freeipa
     - ipaconsistency
+    - selinux
