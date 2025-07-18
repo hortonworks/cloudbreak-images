@@ -31,3 +31,5 @@ filetrans_pattern(unconfined_service_t, default_t, cdp_ipahealthagent_log_t, fil
 
 filetrans_pattern(unconfined_service_t, default_t, cdp_ipahealthagent_cert_t, file, "publicCert.pem")
 filetrans_pattern(unconfined_service_t, default_t, cdp_ipahealthagent_cert_t, file, "privateKey.pem")
+
+filetrans_pattern(unconfined_service_t, default_t, cdp_ipahealthagent_exec_t, file, "freeipa_healthagent_getcerts.sh")
