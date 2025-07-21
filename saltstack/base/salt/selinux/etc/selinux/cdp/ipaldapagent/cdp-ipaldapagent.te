@@ -9,3 +9,5 @@ type cdp_ipaldapagent_exec_t;
 type cdp_ipaldapagent_cert_t;
 
 init_daemon_domain(cdp_ipaldapagent_t, cdp_ipaldapagent_exec_t)
+
+type_transition init_t cdp_ipaldapagent_exec_t:process cdp_ipaldapagent_t;
