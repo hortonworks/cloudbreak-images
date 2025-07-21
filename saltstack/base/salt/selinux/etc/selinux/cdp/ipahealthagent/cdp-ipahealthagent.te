@@ -15,7 +15,7 @@ init_daemon_domain(cdp_ipahealthagent_t, cdp_ipahealthagent_exec_t)
 type_transition init_t cdp_ipahealthagent_exec_t:process cdp_ipahealthagent_t;
 
 # Allow execution
-allow cdp_ipahealthagent_t bin_t:file { execute map };
+allow cdp_ipahealthagent_t bin_t:file { execute execute_no_trans map };
 allow cdp_ipahealthagent_t shell_exec_t:file { execute execute_no_trans map };
 
 # Allow script execution
