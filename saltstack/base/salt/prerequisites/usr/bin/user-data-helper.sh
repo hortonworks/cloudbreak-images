@@ -29,7 +29,7 @@ export IS_FREEIPA=true
 export IS_FREEIPA=false
 {% endif %}
 OS={{ pillar['OS'] }}
-STACK_VERSION={{ pillar['STACK_VERSION'] }}
+STACK_VERSION={{ stack_version }}
 
 source /usr/bin/ccmv2-helper.sh
 

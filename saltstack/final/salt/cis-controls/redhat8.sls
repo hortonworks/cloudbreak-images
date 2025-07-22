@@ -124,6 +124,13 @@ add_cis_control_sh:
     - makedirs: True
     - mode: 755
     - source: salt://cis-controls/scripts/cis_control.sh
+    - template: jinja
+    - defaults:
+{% if salt['environ.get']('IMAGE_BURNING_TYPE') == 'prewarm' or salt['environ.get']('STACK_VERSION').split('.') | map('int') | list >= '7.3.1'.split('.') | map('int') | list %}
+        additional_tags: ",mount_option_tmp_noexec"
+{% else %}
+        additional_tags: ""
+{% endif %}
 
 add_hardening_playbooks:
   file.recurse:

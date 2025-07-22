@@ -31,6 +31,8 @@ include:
     - template: jinja
     - include_empty: True
     - file_mode: 755
+    - defaults:
+        stack_version: {{ salt['environ.get']('STACK_VERSION') }}
 
 install_cdp_jenkins_build_us_west1_gpg_key:
   cmd.run:
