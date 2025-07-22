@@ -124,7 +124,7 @@ reload-systemd:
   cmd.run:
     - name: systemctl daemon-reexec && systemctl daemon-reload
 
-cdp-ipahealthagent.service:
+cdp-freeipa-healthagent.service:
   service.running:
     - enable: True
     - watch:
