@@ -38,7 +38,6 @@ if [ "${CLOUD_PROVIDER}" == "Azure" ]; then
     if [ "${STIG_ENABLED}" != "True" ]; then
         SKIP_TAGS+=",kernel_module_udf_disabled"
     fi
-    if [ -n "$STACK_VERSION" ] && [ $(version $STACK_VERSION) -lt $(version "7.3.2") ]; then
     # disable tmp noexec as CM fails to start REGIONSERVER. Can be removed when CM side fix is done by OPSAPS-68448
     SKIP_TAGS+="{{ additional_tags }}"
 fi
