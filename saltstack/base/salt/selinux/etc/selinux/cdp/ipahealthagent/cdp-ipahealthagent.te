@@ -1,7 +1,7 @@
 policy_module(cdp-ipahealthagent, 1.0.0)
 
 gen_require(`
-    type bin_t, shell_exec_t, usr_t, var_log_t, ipa_var_lib_t, systemd_t;
+    type bin_t, shell_exec_t, usr_t, var_log_t, ipa_var_lib_t;
     class file { execute map read write open create getattr };
     class dir { search add_name write };
 ')
@@ -11,9 +11,6 @@ type cdp_ipahealthagent_exec_t;
 type cdp_ipahealthagent_cert_t;
 
 init_daemon_domain(cdp_ipahealthagent_t, cdp_ipahealthagent_exec_t)
-
-type_transition systemd_t cdp_ipahealthagent_exec_t:process cdp_ipahealthagent_t;
-allow systemd_t cdp_ipahealthagent_exec_t:file { read open execute map };
 
 type_transition init_t cdp_ipahealthagent_exec_t:process cdp_ipahealthagent_t;
 allow init_t cdp_ipahealthagent_exec_t:file { read open execute map };

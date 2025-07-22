@@ -80,3 +80,13 @@ install_freeipa_ldapagent_rpm:
 net.ipv6.conf.lo.disable_ipv6:
   sysctl.present:
     - value: 0
+
+/freeipa/scripts/ipa-python-wrapper.sh:
+  file.managed:
+    - user: root
+    - group: root
+    - mode: 755
+    - makedirs: True
+    - template: jinja
+    - name: /freeipa/scripts/ipa-python-wrapper.sh
+    - source: salt://{{ slspath }}/freeipa/scripts/ipa-python-wrapper.sh

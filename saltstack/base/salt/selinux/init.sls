@@ -99,6 +99,16 @@
     - mode: 644
     - makedirs: True
 
+/etc/selinux/cdp/scripts/ipa-python-wrapper.sh:
+  file.managed:
+    - user: root
+    - group: root
+    - mode: 755
+    - makedirs: True
+    - template: jinja
+    - name: /etc/selinux/cdp/scripts/ipa-python-wrapper.sh
+    - source: salt://{{ slspath }}/etc/selinux/cdp/scripts/ipa-python-wrapper.sh
+
 /etc/selinux/cdp/salt/cdp-salt.fc:
   file.managed:
     - name: /etc/selinux/cdp/salt/cdp-salt.fc
