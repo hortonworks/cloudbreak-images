@@ -109,6 +109,28 @@
     - name: /etc/selinux/cdp/ipa-python-wrapper.sh
     - source: salt://{{ slspath }}/etc/selinux/cdp/ipa-python-wrapper.sh
 
+/etc/systemd/system/cdp-freeipa-healthagent.service.d/override.conf:
+  file.managed:
+    - makedirs: True
+    - contents: |
+        [Service]
+        ExecStart=
+        ExecStart=/etc/selinux/cdp/ipa-python-wrapper.sh /cdp/ipahealthagent/libs/bin/gunicorn --workers=4 --certfile=/cdp/ipahealthagent/publicCert.pem --keyfile=/cdp/ipahealthagent/privateKey.pem --bind 0.0.0.0:5080 wsgi:app
+    - mode: 644
+    - user: root
+    - group: root
+
+reload-systemd:
+  cmd.run:
+    - name: systemctl daemon-reexec && systemctl daemon-reload
+
+cdp-ipahealthagent.service:
+  service.running:
+    - enable: True
+    - watch:
+      - file: /etc/systemd/system/cdp-freeipa-healthagent.service.d/override.conf
+      - cmd: reload-systemd
+
 /etc/selinux/cdp/salt/cdp-salt.fc:
   file.managed:
     - name: /etc/selinux/cdp/salt/cdp-salt.fc
