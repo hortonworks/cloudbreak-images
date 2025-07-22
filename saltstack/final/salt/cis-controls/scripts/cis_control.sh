@@ -1,6 +1,9 @@
 #!/bin/bash
 set -ex -o pipefail -o errexit
 
+function version { echo "$@" | awk -F. '{ printf("%d%03d%03d%03d\n", $1,$2,$3,$4); }'; }
+STACK_VERSION={{ pillar['STACK_VERSION'] }}
+
 # Remediating the system to align with the CIS L1 baseline using an SSG Ansible playbook
 # The ansible playbook is available at
 # https://github.com/AutomateCompliance/AnsibleCompliancePlaybooks/blob/main/rhel8-playbook-cis_server_l1.yml
@@ -38,6 +41,9 @@ if [ "${CLOUD_PROVIDER}" == "Azure" ]; then
     if [ "${STIG_ENABLED}" != "True" ]; then
         SKIP_TAGS+=",kernel_module_udf_disabled"
     fi
+    if [ -n "$STACK_VERSION" ] && [ $(version $STACK_VERSION) -lt $(version "7.3.2") ]; then
+    # disable tmp noexec as CM fails to start REGIONSERVER. Can be removed when CM side fix is done by OPSAPS-68448
+    SKIP_TAGS+=",mount_option_tmp_noexec"
 fi
 
 #Install and download what we need for the hardening
