@@ -124,13 +124,6 @@ reload-systemd:
   cmd.run:
     - name: systemctl daemon-reexec && systemctl daemon-reload
 
-cdp-freeipa-healthagent.service:
-  service.running:
-    - enable: True
-    - watch:
-      - file: /etc/systemd/system/cdp-freeipa-healthagent.service.d/override.conf
-      - cmd: reload-systemd
-
 /etc/selinux/cdp/salt/cdp-salt.fc:
   file.managed:
     - name: /etc/selinux/cdp/salt/cdp-salt.fc
