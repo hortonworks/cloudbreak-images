@@ -1,7 +1,7 @@
 policy_module(cdp-ipahealthagent, 1.0.0)
 
 gen_require(`
-    type bin_t, shell_exec_t, usr_t, var_log_t, ipa_var_lib_t, tmp_t;
+    type bin_t, shell_exec_t, usr_t, var_log_t, ipa_var_lib_t, tmp_t, passwd_file_t, default_t, tmp_t;
     class file { execute map read write open create getattr unlink };
     class dir { read search open add_name remove_name write };
 ')
