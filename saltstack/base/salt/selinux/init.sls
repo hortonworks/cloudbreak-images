@@ -120,6 +120,17 @@
     - user: root
     - group: root
 
+/etc/systemd/system/cdp-freeipa-ldapagent.service.d/override.conf:
+  file.managed:
+    - makedirs: True
+    - contents: |
+        [Service]
+        ExecStart=
+        ExecStart=/etc/selinux/cdp/ipa-python-wrapper.sh /cdp/ipaldapagent/libs/bin/gunicorn -c gunicorn.conf.py
+    - mode: 644
+    - user: root
+    - group: root
+
 reload-systemd:
   cmd.run:
     - name: systemctl daemon-reexec && systemctl daemon-reload
