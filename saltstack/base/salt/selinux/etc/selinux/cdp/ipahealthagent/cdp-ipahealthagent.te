@@ -58,3 +58,10 @@ allow cdp_ipahealthagent_t unreserved_port_t:tcp_socket name_bind;
 # Allow ioctl on files labeled default_t (for the .py and .egg-info files)
 allow cdp_ipahealthagent_t default_t:file ioctl;
 
+# Declare the port type
+type cdp_ipahealthagent_port_t;
+corenet_port(cdp_ipahealthagent_port_t)
+
+# Allow binding to that port
+allow cdp_ipahealthagent_t cdp_ipahealthagent_port_t:tcp_socket name_bind;
+allow cdp_ipahealthagent_t self:tcp_socket create_stream_socket_perms;
