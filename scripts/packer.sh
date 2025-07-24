@@ -67,7 +67,7 @@ packer_in_container() {
     fi
 
     # FIXME when arm64 builds are available
-    export DEFAULT_JUMPGATE_AGENT_RPM_URL=""
+    export DEFAULT_JUMPGATE_AGENT_RPM_URL="https://archive.cloudera.com/ccm/3.13.0/jumpgate-agent.aarch64.rpm"
     export DEFAULT_METERING_AGENT_RPM_URL=""
   fi
 
@@ -78,7 +78,7 @@ packer_in_container() {
   if [ -n "$JUMPGATE_AGENT_RPM_URL" ]; then
     ## Download the jumpgate-agent rpm, get the version and call REDB to lookup the GBN
     wget $JUMPGATE_AGENT_RPM_URL
-    JUMPGATE_AGENT_VERSION=$(rpm -qp --queryformat '%{VERSION}' ${JUMPGATE_AGENT_RPM_URL##*/})
+    JUMPGATE_AGENT_VERSION=$(rpm -qp --queryformat '%{VERSION}' ${JUMPGATE_AGENT_RPM_URL##*/} | sed s/~/-/)
     JUMPGATE_AGENT_GBN=$(curl -Ls "https://release.infra.cloudera.com/hwre-api/latestcompiledbuild?stack=JUMPGATE&release=$JUMPGATE_AGENT_VERSION" --fail | jq -r '.gbn')
   fi
 
