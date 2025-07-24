@@ -120,10 +120,17 @@ sshd_Exchange_algorithms:
 
 add_cis_control_sh:
   file.managed:
-    - name: /tmp/cis_control.sh
+    - name: /opt/provision-scripts/cis_control.sh
     - makedirs: True
     - mode: 755
     - source: salt://cis-controls/scripts/cis_control.sh
+    - template: jinja
+    - defaults:
+{% if salt['environ.get']('IMAGE_BURNING_TYPE') == 'prewarm' or salt['environ.get']('STACK_VERSION').split('.') | map('int') | list >= '7.3.1'.split('.') | map('int') | list %}
+        additional_tags: ",mount_option_tmp_noexec"
+{% else %}
+        additional_tags: ""
+{% endif %}
 
 add_hardening_playbooks:
   file.recurse:
@@ -135,12 +142,8 @@ add_hardening_playbooks:
 
 execute_cis_control_sh:
   cmd.run:
-    - name: /tmp/cis_control.sh
+    - name: /opt/provision-scripts/cis_control.sh
     - env:
       - IMAGE_BASE_NAME: {{ salt['environ.get']('IMAGE_BASE_NAME') }}
       - CLOUD_PROVIDER: {{ salt['environ.get']('CLOUD_PROVIDER') }}
       - STIG_ENABLED: {{ salt['environ.get']('STIG_ENABLED') }}
-
-remove_cis_control_sh:
-  file.absent:
-    - name: /tmp/cis_control.sh

@@ -7,6 +7,8 @@ if [[ "$SECRET_ENCRYPTION_ENABLED" == "true" ]]; then
   source /usr/bin/cdp-retrieve-userdata-secrets.sh &> /var/log/cdp-retrieve-userdata-secrets.log
 fi
 
+function version { echo "$@" | awk -F. '{ printf("%d%03d%03d%03d\n", $1,$2,$3,$4); }'; }
+
 : ${CLOUD_PLATFORM:? required}
 : ${START_LABEL:? required}
 : ${PLATFORM_DISK_PREFIX:? required}
@@ -27,6 +29,7 @@ export IS_FREEIPA=true
 export IS_FREEIPA=false
 {% endif %}
 OS={{ pillar['OS'] }}
+STACK_VERSION={{ stack_version }}
 
 source /usr/bin/ccmv2-helper.sh
 
@@ -238,7 +241,7 @@ create_saltapi_certificates() {
 }
 
 resize_partitions() {
-  if [ $CLOUD_PLATFORM == "AZURE" ] && ([ $OS == "redhat7" ] || [ $OS == "redhat8" ]); then
+  if [ $CLOUD_PLATFORM == "AZURE" ]; then
     if [ $OS == "redhat7" ]; then
       # Relocating backup data structures to the end of the disk
       printf "x\ne\nw\nY\n" | gdisk /dev/sda
@@ -267,6 +270,13 @@ resize_partitions() {
       # Extend root logical volume to remaining free space
       lvextend -l +100%free -r /dev/mapper/rootvg-rootlv
     fi
+  elif [ -n "$STACK_VERSION" ] && [ $(version $STACK_VERSION) -gt $(version "7.3.1") ]; then
+    # create and mount loopback filesystem for /tmp with same size as Azure logical volume
+    dd if=/dev/zero of=/var/tmpfs bs=1M count=12288
+    yes | mkfs.ext4 /var/tmpfs
+    echo "/var/tmpfs /tmp ext4 rw,strictatime,nosuid,nodev,noexec 0 0" >> /etc/fstab
+    mount -a
+    chmod 1777 /tmp/
   fi
 }
 

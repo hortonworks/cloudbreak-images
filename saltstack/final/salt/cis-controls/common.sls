@@ -207,6 +207,14 @@ remove_unnecessary_whitespaces_from_yum_repo_files:
     - name: find /etc/yum.repos.d -type f -exec sed -i 's/ = /=/g' {} \;
     - onlyif: ls -la /etc/yum.repos.d/
 
+{% if cloud_provider == 'GCP' %}
+set_startup_script_location:
+  file.replace:
+    - name: /etc/default/instance_configs.cfg
+    - pattern: '^run_dir ='
+    - repl: 'run_dir = /root'
+{% endif %}
+
 ### Ensure root path integrity
 # https://jira.cloudera.com/browse/CB-27662
 remove_unnecessary_path:
