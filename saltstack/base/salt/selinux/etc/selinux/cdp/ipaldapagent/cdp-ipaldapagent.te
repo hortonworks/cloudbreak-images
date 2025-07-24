@@ -1,7 +1,7 @@
 policy_module(cdp-ipaldapagent, 1.0.0)
 
 gen_require(`
-    type httpd_sys_script_exec_t, httpd_config_t;
+    type httpd_sys_script_exec_t, httpd_config_t, bin_t, default_t, passwd_file_t, shell_exec_t;
 ')
 
 type cdp_ipaldapagent_t;
@@ -12,3 +12,14 @@ init_daemon_domain(cdp_ipaldapagent_t, cdp_ipaldapagent_exec_t)
 
 type_transition init_t cdp_ipaldapagent_exec_t:process cdp_ipaldapagent_t;
 allow init_t cdp_ipaldapagent_exec_t:file { read open execute map };
+
+#!!!! This avc can be allowed using the boolean 'domain_can_mmap_files'
+allow cdp_ipaldapagent_t bin_t:file map;
+allow cdp_ipaldapagent_t bin_t:file { execute execute_no_trans };
+allow cdp_ipaldapagent_t default_t:dir read;
+allow cdp_ipaldapagent_t default_t:file { getattr ioctl open read };
+allow cdp_ipaldapagent_t passwd_file_t:file { getattr open read };
+allow cdp_ipaldapagent_t shell_exec_t:file execute;
+
+#!!!! This avc can be allowed using the boolean 'domain_can_mmap_files'
+allow cdp_ipaldapagent_t shell_exec_t:file map;
