@@ -1,1 +1,2 @@
 /cdp/ipaldapagent/libs/bin/gunicorn
+/etc/selinux/cdp/ipaldapagent-python-wrapper.sh
