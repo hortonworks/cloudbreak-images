@@ -1,3 +1,5 @@
 /cdp/ipahealthagent/libs/bin/gunicorn                        --      gen_context(system_u:object_r:cdp_ipahealthagent_exec_t,s0)
 /cdp/ipahealthagent/httpd-crt-tracking\.sh                   --      gen_context(system_u:object_r:cdp_ipahealthagent_exec_t,s0)
+/cdp/ipahealthagent/freeipa_healthagent_getcerts\.sh         --      gen_context(system_u:object_r:cdp_ipahealthagent_exec_t,s0)
 /etc/selinux/cdp/ipahealthagent-python-wrapper\.sh           --      gen_context(system_u:object_r:cdp_ipahealthagent_exec_t,s0)
+/cdp/ipahealthagent/publicCert\.pem                          --      gen_context(system_u:object_r:cdp_ipahealthagent_cert_t,s0)
