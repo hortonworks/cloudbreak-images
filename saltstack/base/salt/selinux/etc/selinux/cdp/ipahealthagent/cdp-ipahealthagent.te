@@ -75,8 +75,7 @@ allow cdp_ipahealthagent_t cert_t:lnk_file read;
 allow cdp_ipahealthagent_t default_t:dir { add_name create remove_name write };
 
 #!!!! This avc can be allowed using the boolean 'domain_can_mmap_files'
-allow cdp_ipahealthagent_t default_t:file map;
-allow cdp_ipahealthagent_t default_t:file { append create rename unlink write };
+allow cdp_ipahealthagent_t default_t:file { append create rename unlink write map };
 allow cdp_ipahealthagent_t devlog_t:lnk_file read;
 allow cdp_ipahealthagent_t devlog_t:sock_file write;
 allow cdp_ipahealthagent_t http_port_t:tcp_socket name_connect;
@@ -88,8 +87,7 @@ allow cdp_ipahealthagent_t krb5_keytab_t:file { lock open read };
 allow cdp_ipahealthagent_t ldap_port_t:tcp_socket name_connect;
 
 #!!!! This avc can be allowed using the boolean 'domain_can_mmap_files'
-allow cdp_ipahealthagent_t ldconfig_exec_t:file map;
-allow cdp_ipahealthagent_t ldconfig_exec_t:file { execute execute_no_trans open read };
+allow cdp_ipahealthagent_t ldconfig_exec_t:file { execute execute_no_trans open read map };
 allow cdp_ipahealthagent_t net_conf_t:file { getattr open read };
 allow cdp_ipahealthagent_t node_t:tcp_socket node_bind;
 allow cdp_ipahealthagent_t node_t:udp_socket node_bind;
