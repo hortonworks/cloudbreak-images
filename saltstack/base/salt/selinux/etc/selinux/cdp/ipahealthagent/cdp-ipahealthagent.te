@@ -101,6 +101,6 @@ allow cdp_ipahealthagent_t syslogd_var_run_t:dir search;
 allow cdp_ipahealthagent_t tmp_t:file setattr;
 
 allow cdp_ipahealthagent_t proc_net_t:file { open read getattr };
-allow cdp_ipahealthagent_t self:netlink_tcpdiag_socket { create setopt bind };
+allow cdp_ipahealthagent_t self:netlink_tcpdiag_socket { create setopt bind getattr };
 
 allow cdp_ipahealthagent_t cron_log_t:file read;
