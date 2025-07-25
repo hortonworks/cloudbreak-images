@@ -18,7 +18,9 @@ else
     # runtime image
     compare_version $STACK_VERSION 7.2.18
     COMP_RESULT=$?
-    if [[ "$CLOUD_PROVIDER" == "Azure" ]]; then
+    if [[ "$CLOUD_PROVIDER" == "AWS_GOV" ]]; then
+      IMAGE_SIZE=72
+    elif [[ "$CLOUD_PROVIDER" == "Azure" ]]; then
       IMAGE_SIZE=75
     elif [[ $COMP_RESULT -lt 2 ]]; then
       # stack version >= 7.2.18
