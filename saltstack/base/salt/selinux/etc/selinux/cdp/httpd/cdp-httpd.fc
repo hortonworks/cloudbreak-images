@@ -1,0 +1,7 @@
+/etc/certs(/.*)?                        --      gen_context(system_u:object_r:cdp_httpd_cert_t,s0)
+/etc/certs(/.*)?                        -d      gen_context(system_u:object_r:cdp_httpd_cert_t,s0)
+
+/etc/certs-user-facing(/.*)?            --      gen_context(system_u:object_r:cdp_httpd_cert_t,s0)
+/etc/certs-user-facing(/.*)?            -d      gen_context(system_u:object_r:cdp_httpd_cert_t,s0)
+
+/etc/httpd/conf/httpd-log-filter\.sh    --      gen_context(system_u:object_r:httpd_sys_script_exec_t,s0)

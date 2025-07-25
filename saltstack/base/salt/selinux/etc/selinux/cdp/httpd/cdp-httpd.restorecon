@@ -1,0 +1,4 @@
+/etc/certs
+/etc/certs-user-facing/
+/etc/nginx
+/etc/httpd/conf/httpd-log-filter.sh

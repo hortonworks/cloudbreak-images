@@ -1,0 +1,8 @@
+policy_module(cdp-kerberos, 1.0.0)
+
+gen_require(`
+    type kadmind_t;
+    type krb5_conf_t;
+')
+
+list_dirs_pattern(kadmind_t, krb5_conf_t, krb5_conf_t)
