@@ -21,4 +21,4 @@ allow cdp_ipaldapagent_t passwd_file_t:file { getattr open read };
 allow cdp_ipaldapagent_t shell_exec_t:file { execute map };
 
 allow cdp_ipaldapagent_t fs_t:filesystem associate;
-allow cdp_ipaldapagent_t self:dir write;
+allow cdp_ipaldapagent_t self:dir { write add_name };
