@@ -1,5 +1,29 @@
 policy_module(cdp-common, 1.0.0)
 
+gen_require(`
+    attribute defined_port_type;
+    attribute port_type;
+    attribute unreserved_port_type;
+    role system_r;
+    role unconfined_r;
+')
+
+########################################
+#
+# user-data-helper
+#
+type cdp_user_data_helper_t;
+type cdp_user_data_helper_exec_t;
+type cdp_user_data_helper_log_t;
+
+domain_type(cdp_user_data_helper_t)
+domain_entry_file(cdp_user_data_helper_t, cdp_user_data_helper_exec_t)
+logging_log_file(cdp_user_data_helper_log_t)
+
+role system_r types cdp_user_data_helper_t;
+role_transition unconfined_r cdp_user_data_helper_exec_t system_r;
+
+
 ########################################
 #
 # salt
@@ -49,11 +73,6 @@ files_type(cdp_salt_bootstrap_etc_t)
 type cdp_salt_bootstrap_log_t;
 logging_log_file(cdp_salt_bootstrap_log_t)
 
-gen_require(`
-    attribute defined_port_type;
-    attribute port_type;
-    attribute unreserved_port_type;
-')
 type cdp_salt_bootstrap_port_t, port_type, defined_port_type;
 typeattribute cdp_salt_bootstrap_port_t unreserved_port_type;
 
@@ -86,6 +105,140 @@ role system_r types cdp_ipa_management_t;
 
 ########################################
 #
+# jumpgate
+#
+systemd_domain_template(cdp_jumpgate_agent)
+
+type cdp_jumpgate_agent_etc_t;
+type cdp_jumpgate_agent_cert_t;
+type cdp_jumpgate_agent_systemd_unit_file_t;
+type cdp_jumpgate_agent_var_log_t;
+type cdp_jumpgate_agent_var_run_t;
+
+files_config_file(cdp_jumpgate_agent_etc_t)
+miscfiles_cert_type(cdp_jumpgate_agent_cert_t)
+systemd_unit_file(cdp_jumpgate_agent_systemd_unit_file_t)
+logging_log_file(cdp_jumpgate_agent_var_log_t)
+files_pid_file(cdp_jumpgate_agent_var_run_t)
+
+
+########################################
+#
+# cdp-logging-agent
+#
+systemd_domain_template(cdp_logging_agent)
+
+type cdp_logging_agent_conf_t;
+type cdp_logging_agent_etc_t;
+type cdp_logging_agent_lib_t;
+type cdp_logging_agent_cert_t;
+type cdp_logging_agent_var_log_t;
+type cdp_logging_agent_var_run_t;
+type cdp_logging_agent_tmp_t;
+type cdp_logging_agent_systemd_unit_file_t;
+
+files_config_file(cdp_logging_agent_conf_t)
+files_config_file(cdp_logging_agent_etc_t)
+files_type(cdp_logging_agent_lib_t)
+miscfiles_cert_type(cdp_logging_agent_cert_t)
+logging_log_file(cdp_logging_agent_var_log_t)
+files_pid_file(cdp_logging_agent_var_run_t)
+files_tmp_file(cdp_logging_agent_tmp_t)
+systemd_unit_file(cdp_logging_agent_systemd_unit_file_t)
+
+
+########################################
+#
+# cdp-blackbox-exporter
+#
+systemd_domain_template(cdp_blackbox_exporter)
+
+type cdp_blackbox_exporter_conf_t;
+type cdp_blackbox_exporter_cert_t;
+type cdp_blackbox_exporter_systemd_unit_file_t;
+
+files_config_file(cdp_blackbox_exporter_conf_t)
+miscfiles_cert_type(cdp_blackbox_exporter_cert_t)
+systemd_unit_file(cdp_blackbox_exporter_systemd_unit_file_t)
+
+# port
+type cdp_blackbox_exporter_port_t;
+typeattribute cdp_blackbox_exporter_port_t port_type;
+typeattribute cdp_blackbox_exporter_port_t defined_port_type;
+typeattribute cdp_blackbox_exporter_port_t unreserved_port_type;
+
+
+########################################
+#
+# cdp-node-exporter
+#
+systemd_domain_template(cdp_node_exporter)
+
+type cdp_node_exporter_conf_t;
+type cdp_node_exporter_cert_t;
+type cdp_node_exporter_var_lib_t;
+type cdp_node_exporter_systemd_unit_file_t;
+
+files_config_file(cdp_node_exporter_conf_t)
+miscfiles_cert_type(cdp_node_exporter_cert_t)
+files_type(cdp_node_exporter_var_lib_t)
+systemd_unit_file(cdp_node_exporter_systemd_unit_file_t)
+
+# port
+type cdp_node_exporter_port_t;
+typeattribute cdp_node_exporter_port_t port_type;
+typeattribute cdp_node_exporter_port_t defined_port_type;
+typeattribute cdp_node_exporter_port_t unreserved_port_type;
+
+
+########################################
+#
+# cdp-prometheus
+#
+systemd_domain_template(cdp_prometheus)
+
+type cdp_prometheus_conf_t;
+type cdp_prometheus_cert_t;
+type cdp_prometheus_var_log_t;
+type cdp_prometheus_systemd_unit_file_t;
+
+files_config_file(cdp_prometheus_conf_t)
+miscfiles_cert_type(cdp_prometheus_cert_t)
+logging_log_file(cdp_prometheus_var_log_t)
+systemd_unit_file(cdp_prometheus_systemd_unit_file_t)
+
+# port
+type cdp_prometheus_port_t;
+typeattribute cdp_prometheus_port_t port_type;
+typeattribute cdp_prometheus_port_t defined_port_type;
+typeattribute cdp_prometheus_port_t unreserved_port_type;
+
+
+########################################
+#
+# cdp-request-signer
+#
+systemd_domain_template(cdp_request_signer)
+
+type cdp_request_signer_conf_t;
+type cdp_request_signer_cert_t;
+type cdp_request_signer_var_log_t;
+type cdp_request_signer_systemd_unit_file_t;
+
+files_config_file(cdp_request_signer_conf_t)
+miscfiles_cert_type(cdp_request_signer_cert_t)
+logging_log_file(cdp_request_signer_var_log_t)
+systemd_unit_file(cdp_request_signer_systemd_unit_file_t)
+
+# port
+type cdp_request_signer_port_t;
+typeattribute cdp_request_signer_port_t port_type;
+typeattribute cdp_request_signer_port_t defined_port_type;
+typeattribute cdp_request_signer_port_t unreserved_port_type;
+
+
+########################################
+#
 # TEMPORARILY PERMISSIVE DOMAINS
 #
 # These domains are made permissive until sufficient testing has been done and most possible denies have been resolved.
@@ -93,6 +246,13 @@ role system_r types cdp_ipa_management_t;
 #
 # TODO - Remove these lines once their domain is thoroughly tested.
 #
-permissive cdp_salt_t;
-permissive cdp_salt_systemctl_t;
+permissive cdp_blackbox_exporter_t;
 permissive cdp_ipa_management_t;
+permissive cdp_jumpgate_agent_t;
+permissive cdp_logging_agent_t;
+permissive cdp_node_exporter_t;
+permissive cdp_prometheus_t;
+permissive cdp_request_signer_t;
+permissive cdp_salt_bootstrap_t;
+permissive cdp_salt_systemctl_t;
+permissive cdp_salt_t;

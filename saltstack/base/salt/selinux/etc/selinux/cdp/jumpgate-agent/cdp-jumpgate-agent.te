@@ -1,0 +1,31 @@
+policy_module(cdp-jumpgate-agent, 1.0.0)
+
+gen_require(`
+    type cdp_jumpgate_agent_t;
+    type cdp_jumpgate_agent_exec_t;
+    type cdp_jumpgate_agent_etc_t;
+    type cdp_jumpgate_agent_cert_t;
+    type cdp_jumpgate_agent_systemd_unit_file_t;
+    type cdp_jumpgate_agent_var_log_t;
+    type cdp_jumpgate_agent_var_run_t;
+')
+
+cdp_manage_pattern(cdp_jumpgate_agent_t, cdp_jumpgate_agent_etc_t)
+cdp_manage_pattern(cdp_jumpgate_agent_t, cdp_jumpgate_agent_var_log_t)
+
+# file transitions
+gen_require(`
+    type cdp_user_data_helper_t;
+    type etc_t;
+    type unconfined_t;
+    type var_log_t;
+')
+filetrans_pattern(unconfined_t, etc_t, cdp_jumpgate_agent_etc_t, dir, "jumpgate")
+filetrans_pattern(unconfined_t, var_log_t, cdp_jumpgate_agent_var_log_t, dir, "jumpgate")
+filetrans_pattern(cdp_user_data_helper_t, cdp_jumpgate_agent_etc_t, cdp_jumpgate_agent_cert_t, file, "cluster.pem")
+
+# network
+corenet_tcp_connect_http_port(cdp_jumpgate_agent_t)
+
+# Read necessary system settings
+cdp_read_sysfs(cdp_jumpgate_agent_t)

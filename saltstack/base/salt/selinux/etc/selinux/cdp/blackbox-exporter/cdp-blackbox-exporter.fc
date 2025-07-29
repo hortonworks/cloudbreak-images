@@ -1,0 +1,9 @@
+/opt/blackbox_exporter/blackbox_exporter                --      gen_context(system_u:object_r:cdp_blackbox_exporter_exec_t,s0)
+
+/opt/blackbox_exporter(/.*)?                            --      gen_context(system_u:object_r:cdp_blackbox_exporter_conf_t,s0)
+/opt/blackbox_exporter(/.*)?                            -d      gen_context(system_u:object_r:cdp_blackbox_exporter_conf_t,s0)
+
+/opt/blackbox_exporter/blackbox_exporter\.crt           --      gen_context(system_u:object_r:cdp_blackbox_exporter_cert_t,s0)
+/opt/blackbox_exporter/blackbox_exporter\.key           --      gen_context(system_u:object_r:cdp_blackbox_exporter_cert_t,s0)
+
+/etc/systemd/system/cdp-blackbox-exporter\.service      --      gen_context(system_u:object_r:cdp_blackbox_exporter_systemd_unit_file_t,s0)
