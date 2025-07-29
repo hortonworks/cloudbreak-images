@@ -1,0 +1,74 @@
+policy_module(cdp-logging-agent, 1.0.0)
+
+gen_require(`
+    type cdp_logging_agent_t;
+    type cdp_logging_agent_exec_t;
+    type cdp_logging_agent_conf_t;
+    type cdp_logging_agent_etc_t;
+    type cdp_logging_agent_lib_t;
+    type cdp_logging_agent_cert_t;
+    type cdp_logging_agent_var_log_t;
+    type cdp_logging_agent_var_run_t;
+    type cdp_logging_agent_tmp_t;
+    type cdp_logging_agent_systemd_unit_file_t;
+')
+
+can_exec(cdp_logging_agent_t, cdp_logging_agent_exec_t)
+can_exec(cdp_logging_agent_t, cdp_logging_agent_lib_t)
+cdp_manage_pattern(cdp_logging_agent_t, cdp_logging_agent_cert_t)
+cdp_manage_pattern(cdp_logging_agent_t, cdp_logging_agent_conf_t)
+cdp_manage_pattern(cdp_logging_agent_t, cdp_logging_agent_etc_t)
+cdp_manage_pattern(cdp_logging_agent_t, cdp_logging_agent_exec_t)
+cdp_manage_pattern(cdp_logging_agent_t, cdp_logging_agent_lib_t)
+cdp_manage_pattern(cdp_logging_agent_t, cdp_logging_agent_var_run_t)
+cdp_manage_pattern(cdp_logging_agent_t, cdp_logging_agent_tmp_t)
+
+# file transitions
+gen_require(`
+    type tmp_t;
+')
+filetrans_pattern(cdp_logging_agent_t, tmp_t, cdp_logging_agent_tmp_t, { dir file sock_file })
+
+# network
+corenet_tcp_connect_http_port(cdp_logging_agent_t)
+
+# Read all log files and manage the /var/log directory
+gen_require(`
+    type auditd_log_t;
+    type var_log_t;
+')
+logging_read_all_logs(cdp_logging_agent_t)
+manage_dirs_pattern(cdp_logging_agent_t, var_log_t, var_log_t)
+manage_files_pattern(cdp_logging_agent_t, var_log_t, var_log_t)
+
+# Read audit logs
+list_dirs_pattern(cdp_logging_agent_t, auditd_log_t, auditd_log_t)
+read_files_pattern(cdp_logging_agent_t, auditd_log_t, auditd_log_t)
+
+# Read logs in tmpfs filesystems
+gen_require(`
+    type tmpfs_t;
+')
+list_dirs_pattern(cdp_logging_agent_t, tmpfs_t, tmpfs_t)
+read_files_pattern(cdp_logging_agent_t, tmpfs_t, tmpfs_t)
+
+# Read logs in unlabled filesystems under `/hadoopfs/`
+gen_require(`
+    type unlabeled_t;
+')
+list_dirs_pattern(cdp_logging_agent_t, unlabeled_t, unlabeled_t)
+read_files_pattern(cdp_logging_agent_t, unlabeled_t, unlabeled_t)
+
+# Read necessary system settings
+cdp_read_sysfs(cdp_logging_agent_t)
+
+# Read and search even if DAC does not allow it
+allow cdp_logging_agent_t self:capability { dac_read_search };
+
+###
+# TODO Remove this block when CB-29599 is done
+gen_require(`
+    type default_t;
+')
+allow cdp_logging_agent_t default_t:file { getattr ioctl open read };
+#

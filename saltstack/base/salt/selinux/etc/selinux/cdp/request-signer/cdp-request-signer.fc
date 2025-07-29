@@ -1,0 +1,13 @@
+/opt/cdp-request-signer/bin(/.*)?                   --      gen_context(system_u:object_r:cdp_request_signer_exec_t,s0)
+/opt/cdp-request-signer/bin(/.*)?                   -d      gen_context(system_u:object_r:cdp_request_signer_exec_t,s0)
+
+/opt/cdp-request-signer(/.*)?                       --      gen_context(system_u:object_r:cdp_request_signer_conf_t,s0)
+/opt/cdp-request-signer(/.*)?                       -d      gen_context(system_u:object_r:cdp_request_signer_conf_t,s0)
+
+/opt/cdp-request-signer/conf/request-signer\.crt    --      gen_context(system_u:object_r:cdp_request_signer_cert_t,s0)
+/opt/cdp-request-signer/conf/request-signer\.key    --      gen_context(system_u:object_r:cdp_request_signer_cert_t,s0)
+
+/var/log/cdp-request-signer(/.*)?                   --      gen_context(system_u:object_r:cdp_request_signer_var_log_t,s0)
+/var/log/cdp-request-signer(/.*)?                   -d      gen_context(system_u:object_r:cdp_request_signer_var_log_t,s0)
+
+/etc/systemd/system/cdp-request-signer\.service     --      gen_context(system_u:object_r:cdp_request_signer_systemd_unit_file_t,s0)

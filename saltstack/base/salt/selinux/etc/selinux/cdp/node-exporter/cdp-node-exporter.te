@@ -1,0 +1,34 @@
+policy_module(cdp-node-exporter, 1.0.0)
+
+gen_require(`
+    type cdp_node_exporter_t;
+    type cdp_node_exporter_exec_t;
+    type cdp_node_exporter_conf_t;
+    type cdp_node_exporter_cert_t;
+    type cdp_node_exporter_var_lib_t;
+    type cdp_node_exporter_systemd_unit_file_t;
+')
+
+cdp_manage_pattern(cdp_node_exporter_t, cdp_node_exporter_conf_t)
+cdp_manage_pattern(cdp_node_exporter_t, cdp_node_exporter_var_lib_t)
+
+# file transitions
+gen_require(`
+    type cdp_salt_t;
+    type var_lib_t;
+')
+filetrans_pattern(cdp_salt_t, var_lib_t, cdp_node_exporter_var_lib_t, dir, "node_exporter")
+
+# network
+gen_require(`
+    type cdp_node_exporter_port_t;
+')
+allow cdp_node_exporter_t cdp_node_exporter_port_t:tcp_socket { name_bind };
+allow cdp_node_exporter_t self:tcp_socket { accept listen };
+
+# Read necessary system settings
+cdp_read_network_sysctl(cdp_node_exporter_t)
+cdp_read_sysfs(cdp_node_exporter_t)
+
+# Read network state
+kernel_read_network_state(cdp_node_exporter_t)
