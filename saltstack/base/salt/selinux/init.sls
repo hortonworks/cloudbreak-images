@@ -1,3 +1,13 @@
+/etc/selinux/cdp/blackbox-exporter/:
+  file.recurse:
+    - name: /etc/selinux/cdp/blackbox-exporter/
+    - source: salt://{{ slspath }}/etc/selinux/cdp/blackbox-exporter/
+    - user: root
+    - group: root
+    - dir_mode: 755
+    - file_mode: 644
+    - template: jinja
+
 /etc/selinux/cdp/common/:
   file.recurse:
     - name: /etc/selinux/cdp/common/
@@ -48,6 +58,16 @@
     - file_mode: 644
     - template: jinja
 
+/etc/selinux/cdp/jumpgate-agent/:
+  file.recurse:
+    - name: /etc/selinux/cdp/jumpgate-agent/
+    - source: salt://{{ slspath }}/etc/selinux/cdp/jumpgate-agent/
+    - user: root
+    - group: root
+    - dir_mode: 755
+    - file_mode: 644
+    - template: jinja
+
 /etc/selinux/cdp/kerberos/:
   file.recurse:
     - name: /etc/selinux/cdp/kerberos/
@@ -66,6 +86,26 @@ remove_krb5_conf_file_context_rule:
     - mode: delete
 {%- endif %}
 
+/etc/selinux/cdp/logging-agent/:
+  file.recurse:
+    - name: /etc/selinux/cdp/logging-agent/
+    - source: salt://{{ slspath }}/etc/selinux/cdp/logging-agent/
+    - user: root
+    - group: root
+    - dir_mode: 755
+    - file_mode: 644
+    - template: jinja
+
+/etc/selinux/cdp/node-exporter/:
+  file.recurse:
+    - name: /etc/selinux/cdp/node-exporter/
+    - source: salt://{{ slspath }}/etc/selinux/cdp/node-exporter/
+    - user: root
+    - group: root
+    - dir_mode: 755
+    - file_mode: 644
+    - template: jinja
+
 {%- if salt['environ.get']('CUSTOM_IMAGE_TYPE') != 'freeipa' %}
 /etc/selinux/cdp/postgresql/:
   file.recurse:
@@ -77,6 +117,26 @@ remove_krb5_conf_file_context_rule:
     - file_mode: 644
     - template: jinja
 {%- endif %}
+
+/etc/selinux/cdp/prometheus/:
+  file.recurse:
+    - name: /etc/selinux/cdp/prometheus/
+    - source: salt://{{ slspath }}/etc/selinux/cdp/prometheus/
+    - user: root
+    - group: root
+    - dir_mode: 755
+    - file_mode: 644
+    - template: jinja
+
+/etc/selinux/cdp/request-signer/:
+  file.recurse:
+    - name: /etc/selinux/cdp/request-signer/
+    - source: salt://{{ slspath }}/etc/selinux/cdp/request-signer/
+    - user: root
+    - group: root
+    - dir_mode: 755
+    - file_mode: 644
+    - template: jinja
 
 /etc/selinux/cdp/salt/:
   file.recurse:
@@ -92,6 +152,16 @@ remove_krb5_conf_file_context_rule:
   file.recurse:
     - name: /etc/selinux/cdp/salt-bootstrap/
     - source: salt://{{ slspath }}/etc/selinux/cdp/salt-bootstrap/
+    - user: root
+    - group: root
+    - dir_mode: 755
+    - file_mode: 644
+    - template: jinja
+
+/etc/selinux/cdp/user-data-helper/:
+  file.recurse:
+    - name: /etc/selinux/cdp/user-data-helper/
+    - source: salt://{{ slspath }}/etc/selinux/cdp/user-data-helper/
     - user: root
     - group: root
     - dir_mode: 755
@@ -120,33 +190,6 @@ remove_krb5_conf_file_context_rule:
   file.managed:
     - name: /etc/selinux/cdp/cdp-policy-installer.te
     - source: salt://{{ slspath }}/etc/selinux/cdp/cdp-policy-installer.te
-    - user: root
-    - group: root
-    - mode: 644
-    - makedirs: True
-
-/etc/selinux/cdp/user-data-helper/cdp-user-data-helper.fc:
-  file.managed:
-    - name: /etc/selinux/cdp/user-data-helper/cdp-user-data-helper.fc
-    - source: salt://{{ slspath }}/etc/selinux/cdp/user-data-helper/cdp-user-data-helper.fc
-    - user: root
-    - group: root
-    - mode: 644
-    - makedirs: True
-
-/etc/selinux/cdp/user-data-helper/cdp-user-data-helper.restorecon:
-  file.managed:
-    - name: /etc/selinux/cdp/user-data-helper/cdp-user-data-helper.restorecon
-    - source: salt://{{ slspath }}/etc/selinux/cdp/user-data-helper/cdp-user-data-helper.restorecon
-    - user: root
-    - group: root
-    - mode: 644
-    - makedirs: True
-
-/etc/selinux/cdp/user-data-helper/cdp-user-data-helper.te:
-  file.managed:
-    - name: /etc/selinux/cdp/user-data-helper/cdp-user-data-helper.te
-    - source: salt://{{ slspath }}/etc/selinux/cdp/user-data-helper/cdp-user-data-helper.te
     - user: root
     - group: root
     - mode: 644

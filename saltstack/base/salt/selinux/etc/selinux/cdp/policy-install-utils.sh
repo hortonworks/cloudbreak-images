@@ -67,14 +67,28 @@ apply_port_contexts() {
     mapfile -t ports < <(grep -v '^[[:space:]]*$' "$dir_abs_path/$policy_name.portcon")
     local port
     for port in "${ports[@]}"; do
+      local operation_type
       local port_type
       local port_protocol
       local port_number
-      port_type=$(echo "$port" | awk '{print $1}')
-      port_protocol=$(echo "$port" | awk '{print $2}')
-      port_number=$(echo "$port" | awk '{print $3}')
-      log "$log_file" "Applying port context using entry '$port'. Type='$port_type', protocol='$port_protocol', number='$port_number'."
-      semanage port -a -t "$port_type" -p "$port_protocol" "$port_number"
+      operation_type=$(echo "$port" | awk '{print $1}')
+      port_type=$(echo "$port" | awk '{print $2}')
+      port_protocol=$(echo "$port" | awk '{print $3}')
+      port_number=$(echo "$port" | awk '{print $4}')
+
+      case "$operation_type" in
+        -a)
+          log "$log_file" "Adding port context using entry '$port'. Type='$port_type', protocol='$port_protocol', number='$port_number'."
+          semanage port -a -t "$port_type" -p "$port_protocol" "$port_number"
+          ;;
+        -m)
+          log "$log_file" "Adding override for existing port context '$(semanage port -l | grep "$port_number")' using entry '$port'. Type='$port_type', protocol='$port_protocol', number='$port_number'."
+          semanage port -m -t "$port_type" -p "$port_protocol" "$port_number"
+          ;;
+        *)
+          log "$log_file" "Unknown operation type '$operation_type' in port context entry '$port'. Skipping."
+          ;;
+      esac
     done
     log "$log_file" "Applied port contexts for CDP SELinux policy '$policy_name'"
   else
