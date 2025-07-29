@@ -122,8 +122,6 @@ read_files_pattern(cdp_policy_installer_t, unconfined_t, unconfined_t)
 
 ########################################
 #
-# TEMPORARILY PERMISSIVE DOMAIN
-#
-# TODO - Remove this block once the domain is thoroughly tested.
+# PERMISSIVE DOMAIN
 #
 permissive cdp_policy_installer_t;

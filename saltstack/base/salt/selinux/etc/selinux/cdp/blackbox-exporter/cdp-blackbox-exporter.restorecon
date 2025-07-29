@@ -1,0 +1,2 @@
+/opt/blackbox_exporter/
+/etc/systemd/system/cdp-blackbox-exporter.service
