@@ -1,0 +1,3 @@
+/opt/cdp-prometheus/
+/var/log/cdp-prometheus/
+/etc/systemd/system/cdp-prometheus.service

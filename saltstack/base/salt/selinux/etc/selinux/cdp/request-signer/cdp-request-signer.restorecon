@@ -1,0 +1,3 @@
+/opt/cdp-request-signer/
+/var/log/cdp-request-signer/
+/etc/systemd/system/cdp-request-signer.service

@@ -1,0 +1,3 @@
+/opt/node_exporter/
+/var/lib/node_exporter/
+/etc/systemd/system/cdp-node-exporter.service
