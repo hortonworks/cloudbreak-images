@@ -1,31 +1,20 @@
 policy_module(cdp-user-data-helper, 1.0.0)
 
-# Define the domain and its entry point
-type cdp_user_data_helper_t;
-type cdp_user_data_helper_exec_t;
-domain_type(cdp_user_data_helper_t)
-domain_entry_file(cdp_user_data_helper_t, cdp_user_data_helper_exec_t)
-
-# Allow system_r to use the cdp_user_data_helper_t domain and transition to it when executing a cdp_user_data_helper_exec_t file
-gen_require(`
-    role system_r;
-    role unconfined_r;
-')
-role system_r types cdp_user_data_helper_t;
-role_transition unconfined_r cdp_user_data_helper_exec_t system_r;
-
 # Allow the unconfined_t domain to automatically transition to the cdp_user_data_helper_t domain
 gen_require(`
+    type cdp_user_data_helper_exec_t;
+    type cdp_user_data_helper_t;
     type unconfined_t;
 ')
 domtrans_pattern(unconfined_t, cdp_user_data_helper_exec_t, cdp_user_data_helper_t)
 
-type cdp_user_data_helper_log_t;
-logging_log_file(cdp_user_data_helper_log_t)
-
 gen_require(`
-    type cloud_init_t, var_log_t;
-    type cdp_salt_bootstrap_etc_t, cdp_salt_bootstrap_cert_t, etc_t;
+    type cdp_salt_bootstrap_cert_t;
+    type cdp_salt_bootstrap_etc_t;
+    type cdp_user_data_helper_log_t;
+    type cloud_init_t;
+    type etc_t;
+    type var_log_t;
 ')
 
 filetrans_pattern(cloud_init_t, var_log_t, cdp_user_data_helper_log_t, file, "user-data.log")

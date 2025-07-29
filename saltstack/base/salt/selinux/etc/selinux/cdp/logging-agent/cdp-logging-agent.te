@@ -1,0 +1,13 @@
+policy_module(cdp-logging-agent, 1.0.0)
+
+gen_require(`
+    type cdp_logging_agent_t;
+    type cdp_logging_agent_exec_t;
+    type cdp_logging_agent_conf_t;
+    type cdp_logging_agent_etc_t;
+    type cdp_logging_agent_lib_t;
+    type cdp_logging_agent_cert_t;
+    type cdp_logging_agent_var_log_t;
+    type cdp_logging_agent_var_run_t;
+    type cdp_logging_agent_systemd_unit_file_t;
+')

@@ -1,0 +1,10 @@
+policy_module(cdp-node-exporter, 1.0.0)
+
+gen_require(`
+    type cdp_node_exporter_t;
+    type cdp_node_exporter_exec_t;
+    type cdp_node_exporter_conf_t;
+    type cdp_node_exporter_cert_t;
+    type cdp_node_exporter_var_lib_t;
+    type cdp_node_exporter_systemd_unit_file_t;
+')

@@ -1,0 +1,10 @@
+policy_module(cdp-request-signer, 1.0.0)
+
+gen_require(`
+    type cdp_request_signer_t;
+    type cdp_request_signer_exec_t;
+    type cdp_request_signer_conf_t;
+    type cdp_request_signer_cert_t;
+    type cdp_request_signer_var_log_t;
+    type cdp_request_signer_systemd_unit_file_t;
+')

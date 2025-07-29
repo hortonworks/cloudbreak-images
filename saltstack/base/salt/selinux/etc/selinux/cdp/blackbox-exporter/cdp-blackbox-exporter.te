@@ -1,0 +1,11 @@
+policy_module(cdp-blackbox-exporter, 1.0.0)
+
+gen_require(`
+    type cdp_blackbox_exporter_t;
+    type cdp_blackbox_exporter_exec_t;
+    type cdp_blackbox_exporter_conf_t;
+    type cdp_blackbox_exporter_cert_t;
+    type cdp_blackbox_exporter_systemd_unit_file_t;
+')
+
+

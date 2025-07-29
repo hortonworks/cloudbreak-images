@@ -337,6 +337,7 @@ logging_read_syslog_config(cdp_salt_t)
 create_dirs_pattern(cdp_salt_t, var_log_t, var_log_t)
 getattr_dirs_pattern(cdp_salt_t, auditd_etc_t, auditd_etc_t)
 list_dirs_pattern(cdp_salt_t, syslog_conf_t, syslog_conf_t)
+setattr_files_pattern(cdp_salt_t, var_log_t, var_log_t)
 
 # mount
 mount_domtrans(cdp_salt_t)

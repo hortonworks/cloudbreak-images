@@ -1,0 +1,10 @@
+policy_module(cdp-prometheus, 1.0.0)
+
+gen_require(`
+    type cdp_prometheus_t;
+    type cdp_prometheus_exec_t;
+    type cdp_prometheus_conf_t;
+    type cdp_prometheus_cert_t;
+    type cdp_prometheus_var_log_t;
+    type cdp_prometheus_systemd_unit_file_t;
+')
