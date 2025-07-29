@@ -1,0 +1,14 @@
+/opt/node_exporter/node_exporter                    --      gen_context(system_u:object_r:cdp_node_exporter_exec_t,s0)
+/var/lib/node_exporter/scripts(/.*)?                --      gen_context(system_u:object_r:cdp_node_exporter_exec_t,s0)
+/var/lib/node_exporter/scripts(/.*)?                -d      gen_context(system_u:object_r:cdp_node_exporter_exec_t,s0)
+
+/opt/node_exporter(/.*)?                            --      gen_context(system_u:object_r:cdp_node_exporter_conf_t,s0)
+/opt/node_exporter(/.*)?                            -d      gen_context(system_u:object_r:cdp_node_exporter_conf_t,s0)
+
+/opt/node_exporter/node_exporter\.crt               --      gen_context(system_u:object_r:cdp_node_exporter_cert_t,s0)
+/opt/node_exporter/node_exporter\.key               --      gen_context(system_u:object_r:cdp_node_exporter_cert_t,s0)
+
+/var/lib/node_exporter(/.*)?                        --      gen_context(system_u:object_r:cdp_node_exporter_var_lib_t,s0)
+/var/lib/node_exporter(/.*)?                        -d      gen_context(system_u:object_r:cdp_node_exporter_var_lib_t,s0)
+
+/etc/systemd/system/cdp-node-exporter\.service      --      gen_context(system_u:object_r:cdp_node_exporter_systemd_unit_file_t,s0)

@@ -1,0 +1,7 @@
+/opt/cdp-logging-agent/
+/etc/cdp-logging-agent/
+/var/log/cdp-logging-agent/
+/var/run/cdp-logging-agent/
+/tmp/cdp-logging-agent/
+/etc/systemd/system/cdp-logging-agent.d/
+/etc/systemd/system/cdp-logging-agent.service

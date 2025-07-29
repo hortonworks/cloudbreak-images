@@ -1,0 +1,2 @@
+-a cdp_prometheus_port_t tcp 8429
+-a cdp_prometheus_port_t tcp 61010
