@@ -38,9 +38,9 @@ if [ "${CLOUD_PROVIDER}" == "Azure" ]; then
     if [ "${STIG_ENABLED}" != "True" ]; then
         SKIP_TAGS+=",kernel_module_udf_disabled"
     fi
-    # disable tmp noexec as CM fails to start REGIONSERVER. Can be removed when CM side fix is done by OPSAPS-68448
-    SKIP_TAGS+="{{ additional_tags }}"
 fi
+
+SKIP_TAGS+="{{ additional_tags }}"
 
 #Install and download what we need for the hardening
 python3 -m virtualenv --python="/usr/bin/python3.8" $ANSIBLE_PATH
