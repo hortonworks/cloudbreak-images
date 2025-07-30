@@ -38,9 +38,9 @@ function install_salt_with_pip3() {
 function install_with_yum() {
   update_yum_repos
 
+  # This is no longer needed for RHEL 9 - https://access.redhat.com/solutions/6973382
   if [ "${OS_TYPE}" == "redhat8" ] ; then
     yum install -y redhat-lsb-core
-    yum update -y python3
   else
     yum update -y python
   fi
@@ -66,15 +66,16 @@ function install_with_yum() {
 }
 
 function update_yum_repos() {
-  if [[ "${OS}" == "redhat8" ]]; then
-    # Remove RHEL official repos and use the internal mirror in case of RHEL8
+  if [[ "${OS}" == "redhat8" || "${OS}" == "redhat9" ]] ; then
+    # Remove RHEL official repos and use the internal mirror in case of RHEL 8/9
     if [[ "${CLOUD_PROVIDER}" != "AWS_GOV" ]]; then
       # Internal repo is not yet available for AWS_GOV images
       RHEL_VERSION=$(cat /etc/redhat-release | grep -oP "[0-9\.]*")
       RHEL_VERSION=${RHEL_VERSION/.0/}
+      RHEL_VERSION_MAJOR=${RHEL_VERSION:0:1}
       REPO_FILE=rhel${RHEL_VERSION}_cldr_mirrors.repo
       rm /etc/yum.repos.d/*.repo -f
-      curl https://mirror.infra.cloudera.com/repos/rhel/server/8/${RHEL_VERSION}/${REPO_FILE} --fail > /etc/yum.repos.d/${REPO_FILE}
+      curl https://mirror.infra.cloudera.com/repos/rhel/server/${RHEL_VERSION_MAJOR}/${RHEL_VERSION}/${REPO_FILE} --fail > /etc/yum.repos.d/${REPO_FILE}
     fi
   else
     # Workaround based on the official documentation: https://cloud.google.com/compute/docs/troubleshooting/known-issues#known_issues_for_linux_vm_instances
@@ -90,7 +91,9 @@ function update_yum_repos() {
 }
 
 function enable_epel_repository() {
-  if [ "${OS}" == "redhat8" ] ; then
+  if [ "${OS}" == "redhat9" ] ; then
+    dnf install -y https://dl.fedoraproject.org/pub/epel/epel-release-latest-9.noarch.rpm
+  elif [ "${OS}" == "redhat8" ] ; then
     dnf install -y https://dl.fedoraproject.org/pub/epel/epel-release-latest-8.noarch.rpm
   elif [ "${OS}" == "centos7" ] ; then
     cp /tmp/repos/RPM-GPG-KEY-CentOS-EPEL /etc/pki/rpm-gpg/
@@ -147,7 +150,7 @@ function redhat8_update_python36() {
 
   ## <Do we really need this?!>
   echo "RedHat8 update python36. OS: $OS CLOUD_PROVIDER: $CLOUD_PROVIDER"
-  if [ "${OS}" == "redhat8" ] &&  [ "${CLOUD_PROVIDER}" == "YARN" ]; then
+  if [ "${OS}" == "redhat8" ] && [ "${CLOUD_PROVIDER}" == "YARN" ]; then
     update-alternatives --install /usr/bin/python python /usr/bin/python2.7 1
     update-alternatives --install /usr/bin/python python /usr/bin/python3.6 2
     alternatives --set python /usr/bin/python3.6
@@ -230,12 +233,52 @@ EOF
   chmod +x /usr/local/bin/pip3.11
 }
 
+function redhat9_update_python39() {
+  echo "Installing python3-devel (the rest should be already installed in case of RHEL9)..."
+  yum update -y python3 || yum update -y python39
+  yum install -y python3-devel
+
+  echo PYTHON39=$(yum list installed | grep ^python39\\. | grep -oi " [^\s]* " | xargs) >> /tmp/python_install.properties
+
+  # Update PIP and enable global logging
+  /usr/bin/python3.9 -m pip install -U pip
+  /usr/bin/python3.9 -m pip config set global.log /var/log/pip39.log
+
+  # General required dependency
+  /usr/bin/python3.9 -m pip install virtualenv
+}
+
+function redhat9_install_python311() {
+  echo "Installing Python 3.11 with dependencies..."
+  yum install -y python3.11 python3.11-pip python3.11-devel python3.11-libs python3.11-cffi python3.11-lxml
+
+  echo PYTHON311=$(yum list installed | grep ^python3\\.11\\. | grep -oi " [^\s]* " | xargs) >> /tmp/python_install.properties
+
+  # Update PIP and enable global logging
+  /usr/bin/python3.11 -m pip install -U pip
+  /usr/bin/python3.11 -m pip config set global.log /var/log/pip311.log
+
+  # General required dependency
+  /usr/bin/python3.11 -m pip install virtualenv
+
+  # We need to create this "hack", because Saltstack's pip.installed only accepts a pip/pip3
+  # wrapper, but apparently can't call "python3 -m pip", so without this, we can't install
+  # packages to the non-default python3 installation.
+  cat <<EOF >/usr/local/bin/pip3.11
+#!/bin/bash
+/usr/bin/python3.11 -m pip "\$@"
+EOF
+  chmod +x /usr/local/bin/pip3.11
+}
 
 function install_python_pip() {
   
   yum install -y openldap-devel
   
-  if [ "${OS}" == "redhat8" ] ; then
+  if [ "${OS}" == "redhat9" ] ; then
+    redhat9_update_python39
+    redhat9_install_python311
+  elif [ "${OS}" == "redhat8" ] ; then
     redhat8_update_python36
     redhat8_install_python38
     redhat8_install_python39

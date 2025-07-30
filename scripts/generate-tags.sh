@@ -6,7 +6,7 @@ if [[ -z "$TAGS" ]]; then
     TAGS="{}"
 fi
 
-if [[ "$OS" == "redhat8" ]]; then
+if [[ "$OS" == "redhat8" || "$OS" == "redhat9" ]]; then
     FIPSMODE=enabled
     fips-mode-setup --is-enabled || FIPSMODE=disabled
 

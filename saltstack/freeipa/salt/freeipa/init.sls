@@ -30,7 +30,7 @@ freeipa-cipa-venv-wrapper:
         deactivate
 
 freeipa-install:
-{% if pillar['OS'] != 'redhat8' %}  
+{% if pillar['OS'] != 'redhat8' and pillar['OS'] != 'redhat9' %}
   pkg.installed:
     - pkgs:
         - ntp
