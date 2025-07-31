@@ -1,6 +1,9 @@
 include:
   - {{ slspath }}.path
   - {{ slspath }}.setroubleshoot
+{% if pillar['OS'] == 'redhat9' %}
+  - {{ slspath }}.geoclue
+{% endif %}
   - {{ slspath }}.user_uid
   - {{ slspath }}.subscription-manager
   - {{ slspath }}.repository

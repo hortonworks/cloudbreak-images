@@ -1,4 +1,29 @@
-{% if pillar['OS'] == 'redhat8' %}
+{% if pillar['OS'] == 'redhat9' %}
+
+{% set postgres_install_flags = '' %}
+{% if salt['environ.get']('CLOUD_PROVIDER') == 'AWS_GOV' or salt['environ.get']('ARCHITECTURE') == 'arm64' %}
+  {% set postgres_install_flags = '--skip-broken --nobest' %}
+{% endif %}
+
+install-postgres:
+  cmd.run:
+    - name: |
+        dnf -y install https://download.postgresql.org/pub/repos/yum/reporpms/EL-9-{{ grains['osarch'] }}/pgdg-redhat-repo-latest.noarch.rpm
+        dnf module -y disable postgresql
+        dnf clean all
+        dnf -y install postgresql14-server postgresql14 postgresql14-devel {{ postgres_install_flags }}
+        dnf -y install postgresql17-server postgresql17 postgresql17-devel {{ postgres_install_flags }}
+    - failhard: True
+
+{% if pillar['subtype'] == 'Docker' %}
+timeoutstop-postgres-ycloud:
+  cmd.run:
+    - name: mkdir /etc/systemd/system/postgresql-14.service.d  && echo $'[Service]\nTimeoutStopSec=120s' > /etc/systemd/system/postgresql-14.service.d/timeout.conf && mkdir /etc/systemd/system/postgresql-17.service.d && echo $'[Service]\nTimeoutStopSec=120s' > /etc/systemd/system/postgresql-17.service.d/timeout.conf
+{% endif %}
+
+{% set pg_default_version = '14' %}
+
+{% elif pillar['OS'] == 'redhat8' %}
 
 {% set postgres_install_flags = '' %}
 {% if salt['environ.get']('CLOUD_PROVIDER') == 'AWS_GOV' or salt['environ.get']('ARCHITECTURE') == 'arm64' %}
@@ -202,7 +227,7 @@ pgsql-vacuumdbman:
     - target: /usr/pgsql-{{ pg_default_version }}/bin/initdb
     - force: True
 
-{% if pillar['OS'] == 'redhat8' %}
+{% if pillar['OS'] == 'redhat8' or pillar['OS'] == 'redhat9' %}
 
 init-pg-database:
   cmd.run:
@@ -253,14 +278,14 @@ reenable-postgres:
 {% if pillar['subtype'] != 'Docker' %}
 start-postgresql:
   service.running:
-{% if  pillar['OS'] == 'redhat8' %}
+{% if pillar['OS'] == 'redhat8' or pillar['OS'] == 'redhat9' %}
     - name: postgresql-{{ pg_default_version }}
 {% else %}
     - name: postgresql
 {% endif %}
 log-postgres-service-status:
   cmd.run:
-{% if  pillar['OS'] == 'redhat8' %}
+{% if pillar['OS'] == 'redhat8' or pillar['OS'] == 'redhat9' %}
     - name: systemctl status postgresql-{{ pg_default_version }}.service
 {% else %}
     - name: systemctl status postgresql.service
@@ -287,7 +312,7 @@ configure-listen-address:
 {% if pillar['subtype'] != 'Docker' %}
 stop-postgresql:
   service.dead:
-{% if  pillar['OS'] == 'redhat8' %}
+{% if pillar['OS'] == 'redhat8' or pillar['OS'] == 'redhat9' %}
     - name: postgresql-{{ pg_default_version }}
     - enable: False
 {% else %}

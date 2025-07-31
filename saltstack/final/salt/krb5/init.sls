@@ -1,6 +1,6 @@
-# Disable new kerberos caching behavior on RHEL8, 
+# Disable new kerberos caching behavior on RHEL 8/9, 
 # so the logic will be the same as it is on CentOS 7
-{% if pillar['OS'] == 'redhat8' %}
+{% if pillar['OS'] == 'redhat8' or pillar['OS'] == 'redhat9' %}
 disable_kcm_ccache:
   file.absent:
     - name: /etc/krb5.conf.d/kcm_default_ccache
