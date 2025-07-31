@@ -108,6 +108,33 @@
     - mode: 644
     - makedirs: True
 
+/etc/selinux/cdp/tmp/cdp-tmp.fc:
+  file.managed:
+    - name: /etc/selinux/cdp/tmp/cdp-tmp.fc
+    - source: salt://{{ slspath }}/etc/selinux/cdp/tmp/cdp-tmp.fc
+    - user: root
+    - group: root
+    - mode: 644
+    - makedirs: True
+
+/etc/selinux/cdp/tmp/cdp-tmp.restorecon:
+  file.managed:
+    - name: /etc/selinux/cdp/tmp/cdp-tmp.restorecon
+    - source: salt://{{ slspath }}/etc/selinux/cdp/tmp/cdp-tmp.restorecon
+    - user: root
+    - group: root
+    - mode: 644
+    - makedirs: True
+
+/etc/selinux/cdp/tmp/cdp-tmp.te:
+  file.managed:
+    - name: /etc/selinux/cdp/tmp/cdp-tmp.te
+    - source: salt://{{ slspath }}/etc/selinux/cdp/tmp/cdp-tmp.te
+    - user: root
+    - group: root
+    - mode: 644
+    - makedirs: True
+
 /etc/selinux/cdp/install-cdp-policies.sh:
   file.managed:
     - name: /etc/selinux/cdp/install-cdp-policies.sh

@@ -1,0 +1,9 @@
+policy_module(cdp-tmp, 1.0.0)
+
+gen_require(`
+    type cloud_init_t;
+    type tmp_t;
+    type var_t;
+')
+
+filetrans_pattern(cloud_init_t, var_t, tmp_t, dir, "tmpfs")
