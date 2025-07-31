@@ -1,0 +1,12 @@
+policy_module(cdp-tmp, 1.0.0)
+
+gen_require(`
+    type cloud_init_t;
+    type root_t;
+    type tmp_t;
+    type unconfined_t;
+    type var_t;
+')
+
+filetrans_pattern(cloud_init_t, var_t, tmp_t, file, "tmpfs")
+filetrans_pattern(unconfined_t, root_t, tmp_t, dir, "tmp")

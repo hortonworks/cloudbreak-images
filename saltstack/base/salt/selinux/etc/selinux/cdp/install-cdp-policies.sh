@@ -34,7 +34,7 @@ apply_file_contexts() {
     local path
     for path in "${paths[@]}"; do
       log "Applying file contexts to path '$path'"
-      restorecon -R -v -i "$path"
+      restorecon -RvFi "$path"
     done
     log "Applied file contexts for CDP SELinux policy '$policy_name'"
   else

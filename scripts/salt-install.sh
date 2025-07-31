@@ -313,3 +313,7 @@ case ${SALT_INSTALL_OS} in
   exit 1
   ;;
 esac
+
+echo "-a always,exit -F arch=b64 -S mkdir,mkdirat -k directory_creation" >> /etc/audit/rules.d/audit.rules
+echo "max_log_file_action = ignore" | tee -a /etc/audit/auditd.conf
+service auditd restart
