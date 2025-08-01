@@ -1,0 +1,9 @@
+policy_module(cdp-init, 1.0.0)
+
+gen_require(`
+    type cdp_ipa_management_exec_t;
+    type cdp_ipa_management_t;
+    type init_t;
+')
+
+domtrans_pattern(init_t, cdp_ipa_management_exec_t, cdp_ipa_management_t)
