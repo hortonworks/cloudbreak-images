@@ -1,3 +1,8 @@
+/etc/init.d:
+  file.directory:
+    - makedirs: True
+    - mode: 0755
+
 /etc/init.d/disable-thp:
   file.managed:
     - source:
