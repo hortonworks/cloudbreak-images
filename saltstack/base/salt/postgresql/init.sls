@@ -1,44 +1,41 @@
-{% if pillar['OS'] == 'redhat9' %}
+{% if pillar['OS'] == 'redhat8' or pillar['OS'] == 'redhat9' %}
 
 {% set postgres_install_flags = '' %}
 {% if salt['environ.get']('CLOUD_PROVIDER') == 'AWS_GOV' or salt['environ.get']('ARCHITECTURE') == 'arm64' %}
   {% set postgres_install_flags = '--skip-broken --nobest' %}
 {% endif %}
 
-install-postgres:
-  cmd.run:
-    - name: |
-        dnf -y install https://download.postgresql.org/pub/repos/yum/reporpms/EL-9-{{ grains['osarch'] }}/pgdg-redhat-repo-latest.noarch.rpm
-        dnf module -y disable postgresql
-        dnf clean all
-        dnf -y install postgresql14-server postgresql14 postgresql14-devel {{ postgres_install_flags }}
-        dnf -y install postgresql17-server postgresql17 postgresql17-devel {{ postgres_install_flags }}
-    - failhard: True
-
-{% if pillar['subtype'] == 'Docker' %}
-timeoutstop-postgres-ycloud:
-  cmd.run:
-    - name: mkdir /etc/systemd/system/postgresql-14.service.d  && echo $'[Service]\nTimeoutStopSec=120s' > /etc/systemd/system/postgresql-14.service.d/timeout.conf && mkdir /etc/systemd/system/postgresql-17.service.d && echo $'[Service]\nTimeoutStopSec=120s' > /etc/systemd/system/postgresql-17.service.d/timeout.conf
-{% endif %}
-
-{% set pg_default_version = '14' %}
-
-{% elif pillar['OS'] == 'redhat8' %}
-
-{% set postgres_install_flags = '' %}
-{% if salt['environ.get']('CLOUD_PROVIDER') == 'AWS_GOV' or salt['environ.get']('ARCHITECTURE') == 'arm64' %}
-  {% set postgres_install_flags = '--skip-broken --nobest' %}
-{% endif %}
-
+{% if pillar['OS'] == 'redhat8' %}
 /etc/yum.repos.d/postgres11-el8.repo:
   file.managed:
     - source: salt://postgresql/yum/postgres11-el8.repo
     - template: jinja
+{% endif %}
+
+install-postgres-all-in-one-repo:
+  pkg.installed:
+    - sources:
+{% if pillar['OS'] == 'redhat9' %}
+      - pgdg-redhat-repo: https://download.postgresql.org/pub/repos/yum/reporpms/EL-9-{{ grains['osarch'] }}/pgdg-redhat-repo-latest.noarch.rpm
+{% else %}
+      - pgdg-redhat-repo: https://download.postgresql.org/pub/repos/yum/reporpms/EL-8-{{ grains['osarch'] }}/pgdg-redhat-repo-latest.noarch.rpm
+{% endif %}
+
+disable-pg13:
+  pkgrepo.absent:
+    - name: pgdg13
+
+disable-pg15:
+  pkgrepo.absent:
+    - name: pgdg15
+
+disable-pg16:
+  pkgrepo.absent:
+    - name: pgdg16
 
 install-postgres:
   cmd.run:
     - name: |
-        dnf -y install https://download.postgresql.org/pub/repos/yum/reporpms/EL-8-{{ grains['osarch'] }}/pgdg-redhat-repo-latest.noarch.rpm
         dnf module -y disable postgresql
         dnf clean all
 {% if pillar['subtype'] != 'Docker' %}
@@ -47,7 +44,7 @@ install-postgres:
         dnf -y remove postgresql11-server postgresql11 postgresql11-devel
 {% endif %}
         dnf -y install postgresql14-server postgresql14 postgresql14-devel {{ postgres_install_flags }}
-{% if pillar['OS'] == 'redhat8' and salt['environ.get']('RHEL_VERSION') == '8.10' %}
+{% if (pillar['OS'] == 'redhat8' and salt['environ.get']('RHEL_VERSION') == '8.10') or pillar['OS'] == 'redhat9' %}
         dnf -y install postgresql17-server postgresql17 postgresql17-devel {{ postgres_install_flags }}
 {% endif %}
     - failhard: True
