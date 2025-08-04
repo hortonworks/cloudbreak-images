@@ -16,9 +16,13 @@
     - mode: 644
 
 {% if jumpgate_agent_rpm_url %}
+
+# For now this is ignored in case of RHEL 9, because of RELENG-30645
+{% if pillar['OS'] != 'redhat9' %}
 install_cdp_jumpgate_gpg_key:
   cmd.run:
     - name: "cp /tmp/repos/jumpgate-gpg-key.pub /etc/pki/rpm-gpg/jumpgate-gpg-key.pub && rpm --import /etc/pki/rpm-gpg/jumpgate-gpg-key.pub"
+{% endif %}
 
 install_jumpgate_agent:
   pkg.installed:
