@@ -70,7 +70,7 @@
     - template: jinja
 {%- endif %}
 
- /etc/selinux/cdp/ipahealthagent/cdp-ipahealthagent.fc:
+/etc/selinux/cdp/ipahealthagent/cdp-ipahealthagent.fc:
   file.managed:
     - name: /etc/selinux/cdp/ipahealthagent/cdp-ipahealthagent.fc
     - source: salt://{{ slspath }}/etc/selinux/cdp/ipahealthagent/cdp-ipahealthagent.fc
