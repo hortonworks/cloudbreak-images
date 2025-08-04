@@ -16,41 +16,33 @@ type cdp_ipahealthagent_t;
 type cdp_ipahealthagent_exec_t;
 type cdp_ipahealthagent_cert_t;
 
-# Declare the custom port type
 type cdp_ipahealthagent_port_t;
 corenet_port(cdp_ipahealthagent_port_t)
 
-# Create daemon domain
 init_daemon_domain(cdp_ipahealthagent_t, cdp_ipahealthagent_exec_t)
 
 type_transition init_t cdp_ipahealthagent_exec_t:process cdp_ipahealthagent_t;
 allow init_t cdp_ipahealthagent_exec_t:file { read open execute map };
 
-# Execute standard binaries and shells
 corecmd_exec_bin(cdp_ipahealthagent_t)
 corecmd_exec_shell(cdp_ipahealthagent_t)
 files_exec_usr_files(cdp_ipahealthagent_t)
 
-# Logging
 logging_log_filetrans(cdp_ipahealthagent_t, var_log_t, file)
 logging_write_generic_logs(cdp_ipahealthagent_t)
 logging_search_logs(cdp_ipahealthagent_t)
 
-# IPA certs access
 files_search_var_lib(cdp_ipahealthagent_t)
 files_read_var_lib_files(cdp_ipahealthagent_t)
 
 allow cdp_ipahealthagent_t cdp_ipahealthagent_cert_t:file { read getattr open }
 
-# Read /etc/passwd
 files_read_etc_files(cdp_ipahealthagent_t)
 
-# Temp file handling
 files_tmp_filetrans(cdp_ipahealthagent_t, tmp_t, file)
 files_manage_tmp_files(cdp_ipahealthagent_t)
 files_manage_tmp_dirs(cdp_ipahealthagent_t)
 
-# Socket permissions
 corenet_all_recvfrom_unlabeled(cdp_ipahealthagent_t)
 corenet_all_recvfrom_netlabel(cdp_ipahealthagent_t)
 corenet_tcp_bind_generic_port(cdp_ipahealthagent_t)
@@ -62,40 +54,30 @@ corenet_tcp_bind_all_nodes(cdp_ipahealthagent_t)
 corenet_udp_bind_all_nodes(cdp_ipahealthagent_t)
 corenet_udp_bind_generic_port(cdp_ipahealthagent_t)
 
-# Allow binding to custom port
 corenet_tcp_bind_generic_port(cdp_ipahealthagent_t)
 allow cdp_ipahealthagent_t cdp_ipahealthagent_port_t:tcp_socket name_bind;
 
-# Misc file access
 files_exec_etc_files(cdp_ipahealthagent_t)
 libs_exec_ld_so(cdp_ipahealthagent_t)
 libs_use_ldconfig(cdp_ipahealthagent_t)
 miscfiles_read_generic_certs(cdp_ipahealthagent_t)
 
-# Keytabs and krb conf
 auth_use_kerberos(cdp_ipahealthagent_t)
 
-# Net config
 files_read_net_conf_files(cdp_ipahealthagent_t)
 
-# SSSD access
 sss_read_public_files(cdp_ipahealthagent_t)
 sss_read_var_lib_files(cdp_ipahealthagent_t)
 
-# System logs
 logging_search_logs(cdp_ipahealthagent_t)
 logging_read_generic_logs(cdp_ipahealthagent_t)
 
-# Write to /dev/log
 logging_send_syslog_msg(cdp_ipahealthagent_t)
 
-# Allow access to proc/net
 kernel_read_net_sysctls(cdp_ipahealthagent_t)
 
-# Filesystem labeling
 files_associate(cdp_ipahealthagent_t)
 
-# Self perms
 allow cdp_ipahealthagent_t self:tcp_socket create_stream_socket_perms;
 allow cdp_ipahealthagent_t self:dir { add_name create remove_name write };
 allow cdp_ipahealthagent_t self:file { execute map rename unlink };
