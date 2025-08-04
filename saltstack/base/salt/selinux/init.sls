@@ -70,6 +70,106 @@
     - template: jinja
 {%- endif %}
 
+ /etc/selinux/cdp/ipahealthagent/cdp-ipahealthagent.fc:
+  file.managed:
+    - name: /etc/selinux/cdp/ipahealthagent/cdp-ipahealthagent.fc
+    - source: salt://{{ slspath }}/etc/selinux/cdp/ipahealthagent/cdp-ipahealthagent.fc
+    - user: root
+    - group: root
+    - mode: 644
+    - makedirs: True
+
+/etc/selinux/cdp/ipahealthagent/cdp-ipahealthagent.restorecon:
+  file.managed:
+    - name: /etc/selinux/cdp/ipahealthagent/cdp-ipahealthagent.restorecon
+    - source: salt://{{ slspath }}/etc/selinux/cdp/ipahealthagent/cdp-ipahealthagent.restorecon
+    - user: root
+    - group: root
+    - mode: 644
+    - makedirs: True
+
+/etc/selinux/cdp/ipahealthagent/cdp-ipahealthagent.te:
+  file.managed:
+    - name: /etc/selinux/cdp/ipahealthagent/cdp-ipahealthagent.te
+    - source: salt://{{ slspath }}/etc/selinux/cdp/ipahealthagent/cdp-ipahealthagent.te
+    - user: root
+    - group: root
+    - mode: 644
+    - makedirs: True
+
+/etc/selinux/cdp/ipaldapagent/cdp-ipaldapagent.fc:
+  file.managed:
+    - name: /etc/selinux/cdp/ipaldapagent/cdp-ipaldapagent.fc
+    - source: salt://{{ slspath }}/etc/selinux/cdp/ipaldapagent/cdp-ipaldapagent.fc
+    - user: root
+    - group: root
+    - mode: 644
+    - makedirs: True
+
+/etc/selinux/cdp/ipaldapagent/cdp-ipaldapagent.restorecon:
+  file.managed:
+    - name: /etc/selinux/cdp/ipaldapagent/cdp-ipaldapagent.restorecon
+    - source: salt://{{ slspath }}/etc/selinux/cdp/ipaldapagent/cdp-ipaldapagent.restorecon
+    - user: root
+    - group: root
+    - mode: 644
+    - makedirs: True
+
+/etc/selinux/cdp/ipaldapagent/cdp-ipaldapagent.te:
+  file.managed:
+    - name: /etc/selinux/cdp/ipaldapagent/cdp-ipaldapagent.te
+    - source: salt://{{ slspath }}/etc/selinux/cdp/ipaldapagent/cdp-ipaldapagent.te
+    - user: root
+    - group: root
+    - mode: 644
+    - makedirs: True
+
+/etc/selinux/cdp/ipahealthagent-python-wrapper.sh:
+  file.managed:
+    - user: root
+    - group: root
+    - mode: 755
+    - makedirs: True
+    - template: jinja
+    - name: /etc/selinux/cdp/ipahealthagent-python-wrapper.sh
+    - source: salt://{{ slspath }}/etc/selinux/cdp/ipahealthagent-python-wrapper.sh
+
+/etc/systemd/system/cdp-freeipa-healthagent.service.d/override.conf:
+  file.managed:
+    - makedirs: True
+    - contents: |
+        [Service]
+        ExecStart=
+        ExecStart=/etc/selinux/cdp/ipahealthagent-python-wrapper.sh /cdp/ipahealthagent/libs/bin/gunicorn --workers=4 --certfile=/cdp/ipahealthagent/publicCert.pem --keyfile=/cdp/ipahealthagent/privateKey.pem --bind 0.0.0.0:5080 wsgi:app
+    - mode: 644
+    - user: root
+    - group: root
+
+/etc/selinux/cdp/ipaldapagent-python-wrapper.sh:
+  file.managed:
+    - user: root
+    - group: root
+    - mode: 755
+    - makedirs: True
+    - template: jinja
+    - name: /etc/selinux/cdp/ipaldapagent-python-wrapper.sh
+    - source: salt://{{ slspath }}/etc/selinux/cdp/ipaldapagent-python-wrapper.sh
+
+/etc/systemd/system/cdp-freeipa-ldapagent.service.d/override.conf:
+  file.managed:
+    - makedirs: True
+    - contents: |
+        [Service]
+        ExecStart=
+        ExecStart=/etc/selinux/cdp/ipaldapagent-python-wrapper.sh /cdp/ipaldapagent/libs/bin/gunicorn -c gunicorn.conf.py
+    - mode: 644
+    - user: root
+    - group: root
+
+reload-systemd:
+  cmd.run:
+    - name: systemctl daemon-reexec && systemctl daemon-reload
+
 /etc/selinux/cdp/salt/:
   file.recurse:
     - name: /etc/selinux/cdp/salt/
@@ -143,6 +243,15 @@
     - group: root
     - mode: 644
     - makedirs: True
+
+/cdp/ipahealthagent/httpd-crt-tracking.sh:
+  file.managed:
+    - name: /cdp/ipahealthagent/httpd-crt-tracking.sh
+    - makedirs: True
+    - user: root
+    - group: root
+    - mode: 700
+    - source: salt://{{ slspath }}/etc/selinux/cdp/httpd-crt-tracking.sh
 
 /etc/selinux/cdp/install-cdp-policies.sh:
   file.managed:
