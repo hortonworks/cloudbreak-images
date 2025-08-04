@@ -33,14 +33,13 @@ files_exec_usr_files(cdp_ipahealthagent_t)
 
 # Logging
 logging_log_filetrans(cdp_ipahealthagent_t, var_log_t, file)
-logging_log_filewrite(cdp_ipahealthagent_t)
+logging_write_generic_logs(cdp_ipahealthagent_t)
 logging_search_logs(cdp_ipahealthagent_t)
 
 # IPA certs access
 files_search_var_lib(cdp_ipahealthagent_t)
 files_read_var_lib_files(cdp_ipahealthagent_t)
 
-# Agent’s own certs
 allow cdp_ipahealthagent_t cdp_ipahealthagent_cert_t:file { read getattr open }
 
 # Read /etc/passwd
@@ -71,7 +70,7 @@ allow cdp_ipahealthagent_t cdp_ipahealthagent_port_t:tcp_socket name_bind;
 files_exec_etc_files(cdp_ipahealthagent_t)
 libs_exec_ld_so(cdp_ipahealthagent_t)
 libs_use_ldconfig(cdp_ipahealthagent_t)
-miscfiles_read_certs(cdp_ipahealthagent_t)
+miscfiles_read_generic_certs(cdp_ipahealthagent_t)
 
 # Keytabs and krb conf
 auth_use_kerberos(cdp_ipahealthagent_t)
@@ -101,7 +100,6 @@ allow cdp_ipahealthagent_t self:tcp_socket create_stream_socket_perms;
 allow cdp_ipahealthagent_t self:dir { add_name create remove_name write };
 allow cdp_ipahealthagent_t self:file { execute map rename unlink };
 
-# Interfaces not available — keep raw allows
 allow cdp_ipahealthagent_t default_t:file ioctl;
 allow cdp_ipahealthagent_t devlog_t:lnk_file read;
 allow cdp_ipahealthagent_t devlog_t:sock_file write;

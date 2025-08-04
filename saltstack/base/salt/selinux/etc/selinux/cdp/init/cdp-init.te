@@ -7,3 +7,4 @@ gen_require(`
 ')
 
 domtrans_pattern(init_t, cdp_ipa_management_exec_t, cdp_ipa_management_t)
+allow init_t cdp_ipahealthagent_t:file { execute execute_no_trans };

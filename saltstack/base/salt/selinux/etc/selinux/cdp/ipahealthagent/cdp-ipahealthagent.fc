@@ -1,4 +1,2 @@
 /cdp/ipahealthagent/httpd-crt-tracking\.sh                   --      gen_context(system_u:object_r:cdp_ipahealthagent_exec_t,s0)
 /etc/selinux/cdp/ipahealthagent-python-wrapper\.sh           --      gen_context(system_u:object_r:cdp_ipahealthagent_exec_t,s0)
-/cdp/ipahealthagent(/.*)?                                    --      gen_context(system_u:object_r:cdp_ipahealthagent_t,s0)
-/cdp/ipahealthagent(/.*)?                                    -d      gen_context(system_u:object_r:cdp_ipahealthagent_t,s0)
