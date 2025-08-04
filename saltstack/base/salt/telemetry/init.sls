@@ -3,10 +3,15 @@
   {% set platform = platform ~ 'arm64' %}
 {% endif %}
 
+# TODO: Get rid of the whole "internal repo file" as soon as the RHEL 9 builds of cdp-infra-tools are on archive
 add_cdp_infra_tools_repo:
   file.managed:
     - name: /etc/yum.repos.d/cdp-infra-tools.repo
+{% if pillar['OS'] == 'redhat9' %}
+    - source: salt://telemetry/yum/cdp-infra-tools-internal.repo.j2
+{% else %}
     - source: salt://telemetry/yum/cdp-infra-tools.repo.j2
+{% endif %}
     - template: jinja
     - platform: "{{ platform }}"
 
@@ -21,7 +26,9 @@ install_cdp_infra_tools_packages:
       - cdp-telemetry
 {% endif %}
 {% if salt['environ.get']('INCLUDE_FLUENT') == "Yes" %}
-      - redhat-lsb-core # this will install redhat-lsb-core is required for fluent
+  {% if pillar['OS'] != 'redhat9' %}
+      - redhat-lsb-core # this will install redhat-lsb-core which is required for fluent (but not on RHEL 9 as it's not available there!)
+  {% endif %}
       - cdp-logging-agent
 {% endif %}
 
@@ -29,6 +36,7 @@ remove_cdp_infra_tools_repo:
   file.absent:
     - name: /etc/yum.repos.d/cdp-infra-tools.repo
 
+# TODO: Why do we need this override? Do we still need this?
 {% if salt['environ.get']('CLOUD_PROVIDER') != "AWS_GOV" %}
 override_cdp_request_signer:
   cmd.run:
