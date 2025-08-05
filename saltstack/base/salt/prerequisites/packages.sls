@@ -42,7 +42,9 @@ packages_install:
       - ntp
       - deltarpm
   {% endif %}
+  {% if pillar['OS'] != 'redhat9' %}
       - iptables
+  {% endif %}
       - ruby
   {% if grains['os_family'] == 'RedHat' %}
       - snappy
