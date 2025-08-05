@@ -26,4 +26,4 @@ allow cdp_ipaldapagent_t cdp_salt_bin_t:dir { getattr search };
 allow cdp_ipaldapagent_t cdp_salt_lib_t:dir { getattr open read search };
 allow cdp_ipaldapagent_t cdp_salt_lib_t:file { getattr ioctl open read };
 allow cdp_ipaldapagent_t default_t:file { rename unlink };
-allow cdp_ipaldapagent_t self:tcp_socket create;
+allow cdp_ipaldapagent_t self:tcp_socket { create getattr setopt };
