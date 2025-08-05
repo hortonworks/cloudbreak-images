@@ -1,7 +1,7 @@
 policy_module(cdp-ipaldapagent, 1.0.0)
 
 gen_require(`
-    type httpd_sys_script_exec_t, httpd_config_t, bin_t, default_t, passwd_file_t, shell_exec_t, fs_t;
+    type httpd_sys_script_exec_t, httpd_config_t, bin_t, default_t, passwd_file_t, shell_exec_t, fs_t, cdp_salt_bin_t, cdp_salt_lib_t;
 ')
 
 type cdp_ipaldapagent_t;
@@ -21,3 +21,9 @@ allow cdp_ipaldapagent_t shell_exec_t:file { execute map };
 
 allow cdp_ipaldapagent_t fs_t:filesystem associate;
 allow cdp_ipaldapagent_t self:dir { write add_name create };
+
+allow cdp_ipaldapagent_t cdp_salt_bin_t:dir { getattr search };
+allow cdp_ipaldapagent_t cdp_salt_lib_t:dir { getattr open read search };
+allow cdp_ipaldapagent_t cdp_salt_lib_t:file { getattr ioctl open read };
+allow cdp_ipaldapagent_t default_t:file { rename unlink };
+allow cdp_ipaldapagent_t self:tcp_socket create;

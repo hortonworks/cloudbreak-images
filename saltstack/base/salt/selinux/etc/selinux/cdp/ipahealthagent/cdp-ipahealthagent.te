@@ -4,7 +4,7 @@ gen_require(`
     type bin_t, shell_exec_t, usr_t, var_log_t, ipa_var_lib_t, tmp_t, passwd_file_t, default_t, tmp_t;
     type unreserved_port_t, cert_t, devlog_t, http_port_t, httpd_config_t, kerberos_port_t, kernel_t;
     type krb5_conf_t, krb5_keytab_t, ldap_port_t, ldconfig_exec_t, net_conf_t, node_t, sssd_public_t;
-    type sssd_var_lib_t, syslogd_var_run_t, proc_net_t, cron_log_t, fs_t;
+    type sssd_var_lib_t, syslogd_var_run_t, proc_net_t, cron_log_t, fs_t, cdp_salt_bin_t, cdp_salt_lib_t;
     class file { execute map read write open create getattr unlink ioctl };
     class dir { read search open add_name remove_name write };
     class tcp_socket { getattr name_bind };
@@ -106,3 +106,7 @@ allow cdp_ipahealthagent_t cron_log_t:file { open read };
 allow cdp_ipahealthagent_t fs_t:filesystem associate;
 allow cdp_ipahealthagent_t self:dir { add_name create remove_name write };
 allow cdp_ipahealthagent_t self:file { execute map rename unlink };
+
+allow cdp_ipahealthagent_t cdp_salt_bin_t:dir { getattr search };
+allow cdp_ipahealthagent_t cdp_salt_lib_t:dir { getattr open read search };
+allow cdp_ipahealthagent_t cdp_salt_lib_t:file { getattr ioctl open read };
