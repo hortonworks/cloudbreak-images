@@ -1,15 +1,13 @@
 policy_module(cdp-ipahealthagent, 1.0.0)
 
 gen_require(`
-    gen_require(`
-        type bin_t, shell_exec_t, usr_t, var_log_t, ipa_var_lib_t, tmp_t, passwd_file_t, default_t, tmp_t;
-        type unreserved_port_t, cert_t, devlog_t, http_port_t, httpd_config_t, kerberos_port_t, kernel_t;
-        type krb5_conf_t, krb5_keytab_t, ldap_port_t, ldconfig_exec_t, net_conf_t, node_t, sssd_public_t;
-        type sssd_var_lib_t, syslogd_var_run_t, proc_net_t, cron_log_t, fs_t;
-        class file { execute map read write open create getattr unlink ioctl };
-        class dir { read search open add_name remove_name write };
-        class tcp_socket { getattr name_bind };
-    ')
+    type bin_t, shell_exec_t, usr_t, var_log_t, ipa_var_lib_t, tmp_t, passwd_file_t, default_t, tmp_t;
+    type unreserved_port_t, cert_t, devlog_t, http_port_t, httpd_config_t, kerberos_port_t, kernel_t;
+    type krb5_conf_t, krb5_keytab_t, ldap_port_t, ldconfig_exec_t, net_conf_t, node_t, sssd_public_t;
+    type sssd_var_lib_t, syslogd_var_run_t, proc_net_t, cron_log_t, fs_t;
+    class file { execute map read write open create getattr unlink ioctl };
+    class dir { read search open add_name remove_name write };
+    class tcp_socket { getattr name_bind };
 ')
 
 type cdp_ipahealthagent_t;
