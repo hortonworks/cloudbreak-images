@@ -7,9 +7,13 @@ policy_module(cdp-common, 1.0.0)
 
 # Define the cdp_salt_t and cdp_salt_exec_t domains, and set them up as a systemd domain
 systemd_domain_template(cdp_salt)
+systemd_domain_template(cdp_ipahealthagent)
+systemd_domain_template(cdp_ipaldapagent)
 
 # Define the cdp_salt_systemctl_t domain, which is used for processes started executing systemctl
 systemd_systemctl_domain(cdp_salt)
+systemd_systemctl_domain(cdp_ipahealthagent)
+systemd_systemctl_domain(cdp_ipaldapagent)
 
 # Define salt related file types
 type cdp_salt_bin_t;
