@@ -10,6 +10,7 @@ gen_require(`
     type krb5_keytab_t;
     type node_t;
     type syslogd_var_run_t;
+    type passwd_file_t;
 ')
 
 type cdp_ipahealthagent_t;
