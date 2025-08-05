@@ -14,83 +14,95 @@ type cdp_ipahealthagent_t;
 type cdp_ipahealthagent_exec_t;
 type cdp_ipahealthagent_cert_t;
 
-type cdp_ipahealthagent_port_t;
-corenet_port(cdp_ipahealthagent_port_t)
-
 init_daemon_domain(cdp_ipahealthagent_t, cdp_ipahealthagent_exec_t)
 
 type_transition init_t cdp_ipahealthagent_exec_t:process cdp_ipahealthagent_t;
 allow init_t cdp_ipahealthagent_exec_t:file { read open execute map };
 
-corecmd_exec_bin(cdp_ipahealthagent_t)
-corecmd_exec_shell(cdp_ipahealthagent_t)
-files_exec_usr_files(cdp_ipahealthagent_t)
+# Allow execution
+allow cdp_ipahealthagent_t bin_t:file { execute execute_no_trans map };
+allow cdp_ipahealthagent_t shell_exec_t:file { execute execute_no_trans map };
 
-logging_log_filetrans(cdp_ipahealthagent_t, var_log_t, file)
-logging_write_generic_logs(cdp_ipahealthagent_t)
-logging_search_logs(cdp_ipahealthagent_t)
+# Allow script execution
+allow cdp_ipahealthagent_t usr_t:file { execute map };
 
-files_search_var_lib(cdp_ipahealthagent_t)
-files_read_var_lib_files(cdp_ipahealthagent_t)
+# Allow log writing
+allow cdp_ipahealthagent_t var_log_t:file { create open write getattr append };
+allow cdp_ipahealthagent_t var_log_t:dir { search write add_name };
 
-allow cdp_ipahealthagent_t cdp_ipahealthagent_cert_t:file { read getattr open }
+# Allow access to IPA certs
+allow cdp_ipahealthagent_t ipa_var_lib_t:dir search;
+allow cdp_ipahealthagent_t ipa_var_lib_t:file { read getattr };
 
-files_read_etc_files(cdp_ipahealthagent_t)
+allow cdp_ipahealthagent_t cdp_ipahealthagent_cert_t:file { read getattr open };
 
+# /etc/passwd
+allow cdp_ipahealthagent_t passwd_file_t:file { open read getattr };
+
+# If using default_t temporarily
+allow cdp_ipahealthagent_t default_t:dir { search read open };
+allow cdp_ipahealthagent_t default_t:file { read open getattr execute };
+
+# Socket operations
+allow cdp_ipahealthagent_t self:tcp_socket { create setopt listen ioctl bind name_bind };
+
+# Temp file handling
+allow cdp_ipahealthagent_t tmp_t:dir { search write add_name remove_name };
+allow cdp_ipahealthagent_t tmp_t:file { create open read write unlink };
 files_tmp_filetrans(cdp_ipahealthagent_t, tmp_t, file)
-files_manage_tmp_files(cdp_ipahealthagent_t)
-files_manage_tmp_dirs(cdp_ipahealthagent_t)
 
-corenet_all_recvfrom_unlabeled(cdp_ipahealthagent_t)
-corenet_all_recvfrom_netlabel(cdp_ipahealthagent_t)
-corenet_tcp_bind_generic_port(cdp_ipahealthagent_t)
-corenet_tcp_bind_kerberos_port(cdp_ipahealthagent_t)
-corenet_tcp_connect_http_port(cdp_ipahealthagent_t)
-corenet_tcp_connect_kerberos_port(cdp_ipahealthagent_t)
-corenet_tcp_connect_ldap_port(cdp_ipahealthagent_t)
-corenet_tcp_bind_all_nodes(cdp_ipahealthagent_t)
-corenet_udp_bind_all_nodes(cdp_ipahealthagent_t)
-corenet_udp_bind_generic_port(cdp_ipahealthagent_t)
+# Allow getattr on tcp_socket to self
+allow cdp_ipahealthagent_t self:tcp_socket getattr;
 
-corenet_tcp_bind_generic_port(cdp_ipahealthagent_t)
-allow cdp_ipahealthagent_t cdp_ipahealthagent_port_t:tcp_socket name_bind;
+# Assuming port_type is unreserved_port_t, explicitly allow:
+allow cdp_ipahealthagent_t unreserved_port_t:tcp_socket name_bind;
 
-files_exec_etc_files(cdp_ipahealthagent_t)
-libs_exec_ld_so(cdp_ipahealthagent_t)
-libs_use_ldconfig(cdp_ipahealthagent_t)
-miscfiles_read_generic_certs(cdp_ipahealthagent_t)
-
-auth_use_kerberos(cdp_ipahealthagent_t)
-
-files_read_net_conf_files(cdp_ipahealthagent_t)
-
-sss_read_public_files(cdp_ipahealthagent_t)
-sss_read_var_lib_files(cdp_ipahealthagent_t)
-
-logging_search_logs(cdp_ipahealthagent_t)
-logging_read_generic_logs(cdp_ipahealthagent_t)
-
-logging_send_syslog_msg(cdp_ipahealthagent_t)
-
-kernel_read_net_sysctls(cdp_ipahealthagent_t)
-
-files_associate(cdp_ipahealthagent_t)
-
-allow cdp_ipahealthagent_t self:tcp_socket create_stream_socket_perms;
-allow cdp_ipahealthagent_t self:dir { add_name create remove_name write };
-allow cdp_ipahealthagent_t self:file { execute map rename unlink };
-
+# Allow ioctl on files labeled default_t (for the .py and .egg-info files)
 allow cdp_ipahealthagent_t default_t:file ioctl;
+
+# Declare the port type
+type cdp_ipahealthagent_port_t;
+corenet_port(cdp_ipahealthagent_port_t)
+
+# Allow binding to that port
+allow cdp_ipahealthagent_t cdp_ipahealthagent_port_t:tcp_socket name_bind;
+allow cdp_ipahealthagent_t self:tcp_socket create_stream_socket_perms;
+
+#============= cdp_ipahealthagent_t ==============
+allow cdp_ipahealthagent_t cert_t:dir search;
+allow cdp_ipahealthagent_t cert_t:file { getattr open read };
+allow cdp_ipahealthagent_t cert_t:lnk_file read;
+allow cdp_ipahealthagent_t default_t:dir { add_name create remove_name write };
+
+allow cdp_ipahealthagent_t default_t:file { append create rename unlink write map };
 allow cdp_ipahealthagent_t devlog_t:lnk_file read;
 allow cdp_ipahealthagent_t devlog_t:sock_file write;
+allow cdp_ipahealthagent_t http_port_t:tcp_socket name_connect;
 allow cdp_ipahealthagent_t httpd_config_t:dir search;
+allow cdp_ipahealthagent_t kerberos_port_t:tcp_socket name_connect;
 allow cdp_ipahealthagent_t kernel_t:unix_dgram_socket sendto;
+allow cdp_ipahealthagent_t krb5_conf_t:file { getattr open read };
 allow cdp_ipahealthagent_t krb5_keytab_t:file { lock open read };
+allow cdp_ipahealthagent_t ldap_port_t:tcp_socket name_connect;
+
+allow cdp_ipahealthagent_t ldconfig_exec_t:file { execute execute_no_trans open read map };
+allow cdp_ipahealthagent_t net_conf_t:file { getattr open read };
 allow cdp_ipahealthagent_t node_t:tcp_socket node_bind;
 allow cdp_ipahealthagent_t node_t:udp_socket node_bind;
 allow cdp_ipahealthagent_t self:netlink_route_socket { bind create getattr nlmsg_read };
 allow cdp_ipahealthagent_t self:udp_socket { bind connect create getattr getopt setopt };
 allow cdp_ipahealthagent_t self:unix_dgram_socket { connect create };
+allow cdp_ipahealthagent_t sssd_public_t:dir search;
+allow cdp_ipahealthagent_t sssd_public_t:file { open read };
+allow cdp_ipahealthagent_t sssd_var_lib_t:dir search;
 allow cdp_ipahealthagent_t syslogd_var_run_t:dir search;
 allow cdp_ipahealthagent_t tmp_t:file setattr;
+
+allow cdp_ipahealthagent_t proc_net_t:file { open read getattr };
 allow cdp_ipahealthagent_t self:netlink_tcpdiag_socket { create setopt bind getattr };
+
+allow cdp_ipahealthagent_t cron_log_t:file { open read };
+
+allow cdp_ipahealthagent_t fs_t:filesystem associate;
+allow cdp_ipahealthagent_t self:dir { add_name create remove_name write };
+allow cdp_ipahealthagent_t self:file { execute map rename unlink };

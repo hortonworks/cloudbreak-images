@@ -13,16 +13,11 @@ init_daemon_domain(cdp_ipaldapagent_t, cdp_ipaldapagent_exec_t)
 type_transition init_t cdp_ipaldapagent_exec_t:process cdp_ipaldapagent_t;
 allow init_t cdp_ipaldapagent_exec_t:file { read open execute map };
 
-corecmd_exec_bin(cdp_ipaldapagent_t)
+allow cdp_ipaldapagent_t bin_t:file { execute execute_no_trans map };
+allow cdp_ipaldapagent_t default_t:dir { read write add_name create remove_name };
+allow cdp_ipaldapagent_t default_t:file { getattr ioctl open read create write append };
+allow cdp_ipaldapagent_t passwd_file_t:file { getattr open read };
+allow cdp_ipaldapagent_t shell_exec_t:file { execute map };
 
-corecmd_exec_shell(cdp_ipaldapagent_t)
-
-files_create_file(cdp_ipaldapagent_t, default_t, file)
-files_rw_generic_tmp_dirs(cdp_ipaldapagent_t)
-files_manage_generic_tmp_dirs(cdp_ipaldapagent_t)
-
-files_read_etc_files(cdp_ipaldapagent_t)
-
-files_associate(cdp_ipaldapagent_t)
-
+allow cdp_ipaldapagent_t fs_t:filesystem associate;
 allow cdp_ipaldapagent_t self:dir { write add_name create };
