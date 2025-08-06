@@ -28,4 +28,4 @@ allow cdp_ipaldapagent_t cdp_salt_lib_t:file { getattr ioctl open read };
 allow cdp_ipaldapagent_t default_t:file { rename unlink };
 allow cdp_ipaldapagent_t self:tcp_socket { create getattr setopt listen };
 allow cdp_ipaldapagent_t geneve_port_t:tcp_socket name_bind;
-allow cdp_ipaldapagent_t tmp_t:dir write;
+allow cdp_ipaldapagent_t tmp_t:dir { write add_name };
