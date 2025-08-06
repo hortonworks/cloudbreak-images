@@ -109,9 +109,6 @@ type cdp_ipaldapagent_exec_t;
 
 domain_type(cdp_ipaldapagent_t)
 
-type cdp_ipaldapagent_cert_t;
-miscfiles_cert_type(cdp_ipaldapagent_cert_t)
-
 type cdp_ipaldapagent_etc_t;
 files_type(cdp_ipaldapagent_etc_t)
 
