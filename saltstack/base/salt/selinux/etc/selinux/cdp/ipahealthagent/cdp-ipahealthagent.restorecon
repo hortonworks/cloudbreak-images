@@ -1,2 +1,5 @@
-/cdp/ipahealthagent/httpd-crt-tracking.sh
 /etc/selinux/cdp/ipahealthagent-python-wrapper.sh
+/opt/salt/scripts/freeipa_healthagent_setup.sh
+/opt/ipahealthagent/config.yaml
+/cdp/ipahealthagent/freeipa_healthagent_getcerts.sh
+/cdp/ipahealthagent/httpd-crt-tracking.sh

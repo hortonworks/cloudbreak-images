@@ -1,1 +1,2 @@
 /etc/selinux/cdp/ipaldapagent-python-wrapper\.sh             --      gen_context(system_u:object_r:cdp_ipaldapagent_exec_t,s0)
+/opt/ipaldapagent/config\.yaml                               --      gen_context(system_u:object_r:cdp_ipaldapagent_etc_t,s0)

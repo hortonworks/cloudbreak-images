@@ -10,12 +10,6 @@ gen_require(`
     class tcp_socket { getattr name_bind };
 ')
 
-type cdp_ipahealthagent_t;
-type cdp_ipahealthagent_exec_t;
-type cdp_ipahealthagent_cert_t;
-
-init_daemon_domain(cdp_ipahealthagent_t, cdp_ipahealthagent_exec_t)
-
 type_transition init_t cdp_ipahealthagent_exec_t:process cdp_ipahealthagent_t;
 allow init_t cdp_ipahealthagent_exec_t:file { read open execute map };
 
