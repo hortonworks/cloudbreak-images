@@ -1,2 +1,2 @@
 /etc/selinux/cdp/ipaldapagent-python-wrapper.sh
-/opt/ipaldapagent/config.yaml
+/cdp/ipaldapagent/config.yaml
