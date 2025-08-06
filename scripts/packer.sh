@@ -50,6 +50,10 @@ packer_in_container() {
   if [[ "$ARCHITECTURE" == "arm64" ]]; then
     export DEFAULT_JAVA_MAJOR_VERSION=17
   fi
+  # RHEL 9 has no support for JDK 8, not even for base images
+  if [[ "$OS" == "redhat9" ]]; then
+    export DEFAULT_JAVA_MAJOR_VERSION=17
+  fi
 
   if [[ "$ENABLE_POSTPROCESSORS" ]]; then
     echo "Postprocessors are enabled"
