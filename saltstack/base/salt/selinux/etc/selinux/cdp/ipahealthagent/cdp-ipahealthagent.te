@@ -13,7 +13,6 @@ gen_require(`
 gen_require(`
     type cdp_ipahealthagent_t;
     type cdp_ipahealthagent_exec_t;
-    type cdp_ipahealthagent_cert_t;
 ')
 init_daemon_domain(cdp_ipahealthagent_t, cdp_ipahealthagent_exec_t)
 
@@ -35,6 +34,9 @@ allow cdp_ipahealthagent_t var_log_t:dir { search write add_name };
 allow cdp_ipahealthagent_t ipa_var_lib_t:dir search;
 allow cdp_ipahealthagent_t ipa_var_lib_t:file { read getattr };
 
+gen_require(`
+    type cdp_ipahealthagent_cert_t;
+')
 allow cdp_ipahealthagent_t cdp_ipahealthagent_cert_t:file { read getattr open };
 
 # /etc/passwd

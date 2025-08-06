@@ -91,8 +91,6 @@ role system_r types cdp_ipa_management_t;
 type cdp_ipahealthagent_t;
 type cdp_ipahealthagent_exec_t;
 
-domain_type(cdp_ipahealthagent_t)
-
 type cdp_ipahealthagent_cert_t;
 miscfiles_cert_type(cdp_ipahealthagent_cert_t)
 
@@ -106,8 +104,6 @@ files_type(cdp_ipahealthagent_etc_t)
 #
 type cdp_ipaldapagent_t;
 type cdp_ipaldapagent_exec_t;
-
-domain_type(cdp_ipaldapagent_t)
 
 type cdp_ipaldapagent_etc_t;
 files_type(cdp_ipaldapagent_etc_t)
