@@ -1,5 +1,5 @@
 /etc/selinux/cdp/ipahealthagent-python-wrapper\.sh           --      gen_context(system_u:object_r:cdp_ipahealthagent_exec_t,s0)
 /opt/salt/scripts/freeipa_healthagent_setup\.sh              --      gen_context(system_u:object_r:cdp_ipahealthagent_exec_t,s0)
-/opt/ipahealthagent/config\.yaml                              --      gen_context(system_u:object_r:cdp_ipahealthagent_etc_t,s0)
+/opt/ipahealthagent/config\.yaml                             --      gen_context(system_u:object_r:cdp_ipahealthagent_etc_t,s0)
 /cdp/ipahealthagent/freeipa_healthagent_getcerts\.sh         --      gen_context(system_u:object_r:cdp_ipahealthagent_exec_t,s0)
 /cdp/ipahealthagent/httpd-crt-tracking\.sh                   --      gen_context(system_u:object_r:cdp_ipahealthagent_exec_t,s0)

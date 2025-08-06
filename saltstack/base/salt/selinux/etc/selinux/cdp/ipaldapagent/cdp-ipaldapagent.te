@@ -1,7 +1,7 @@
 policy_module(cdp-ipaldapagent, 1.0.0)
 
 gen_require(`
-    type httpd_sys_script_exec_t, httpd_config_t, bin_t, default_t, passwd_file_t, shell_exec_t, fs_t, cdp_salt_bin_t, cdp_salt_lib_t, geneve_port_t, tmp_t;
+    type httpd_sys_script_exec_t, httpd_config_t, bin_t, default_t, passwd_file_t, shell_exec_t, fs_t, cdp_salt_bin_t, cdp_salt_lib_t, geneve_port_t, tmp_t, net_conf_t;
 ')
 
 gen_require(`
@@ -26,7 +26,9 @@ allow cdp_ipaldapagent_t cdp_salt_bin_t:dir { getattr search };
 allow cdp_ipaldapagent_t cdp_salt_lib_t:dir { getattr open read search };
 allow cdp_ipaldapagent_t cdp_salt_lib_t:file { getattr ioctl open read };
 allow cdp_ipaldapagent_t default_t:file { rename unlink };
-allow cdp_ipaldapagent_t self:tcp_socket { create getattr setopt listen };
+allow cdp_ipaldapagent_t self:tcp_socket { create getattr setopt listen bind };
 allow cdp_ipaldapagent_t geneve_port_t:tcp_socket name_bind;
 allow cdp_ipaldapagent_t tmp_t:dir { write add_name remove_name };
 allow cdp_ipaldapagent_t tmp_t:file { create write unlink };
+allow cdp_ipaldapagent_t net_conf_t:file { getattr read };
+allow cdp_ipaldapagent_t self:udp_socket create;
