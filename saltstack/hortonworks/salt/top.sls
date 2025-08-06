@@ -4,7 +4,6 @@ hortonworks:
 {% if pillar['subtype'] != 'Docker' %}
     - dhcp
 {% endif %}
-    - simple-webserver
     - eula
     - kerberos
     - java
