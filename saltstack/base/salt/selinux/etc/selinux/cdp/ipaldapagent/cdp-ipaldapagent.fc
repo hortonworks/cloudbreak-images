@@ -1,2 +1,16 @@
 /etc/selinux/cdp/ipaldapagent-python-wrapper\.sh             --      gen_context(system_u:object_r:cdp_ipaldapagent_exec_t,s0)
-/cdp/ipaldapagent/config\.yaml                               --      gen_context(system_u:object_r:cdp_ipaldapagent_etc_t,s0)
+/cdp/ipaldapagent/libs(/.*)?                                 --      gen_context(system_u:object_r:cdp_ipahealthagent_lib_t,s0)
+/cdp/ipaldapagent/__pycache__(/.*)?                          --      gen_context(system_u:object_r:cdp_ipahealthagent_lib_t,s0)
+/cdp/ipaldapagent/ipaldapagent(/.*)?                         --      gen_context(system_u:object_r:cdp_ipahealthagent_bin_t,s0)
+/cdp/ipaldapagent/cdp-freeipa-ldapagent                      --      gen_context(system_u:object_r:cdp_ipahealthagent_exec_t,s0)
+
+/cdp/ipaldapagent/wsgi\.py                                   --      gen_context(system_u:object_r:cdp_ipahealthagent_exec_t,s0)
+/cdp/ipaldapagent/gunicorn\.conf\.py                         --      gen_context(system_u:object_r:cdp_ipahealthagent_etc_t,s0)
+/cdp/ipaldapagent/devserver\.log\.conf                       --      gen_context(system_u:object_r:cdp_ipahealthagent_etc_t,s0)
+/cdp/ipaldapagent/gunicorn\.log\.conf                        --      gen_context(system_u:object_r:cdp_ipahealthagent_etc_t,s0)
+/cdp/ipaldapagent/config\.yaml                               --      gen_context(system_u:object_r:cdp_ipahealthagent_etc_t,s0)
+/cdp/ipaldapagent/requirements\.txt                          --      gen_context(system_u:object_r:cdp_ipahealthagent_etc_t,s0)
+/cdp/ipaldapagent/NOTICE\.txt                                --      gen_context(system_u:object_r:cdp_ipahealthagent_etc_t,s0)
+
+/cdp/ipaldapagent/access\.log                                --      gen_context(system_u:object_r:cdp_ipahealthagent_log_t,s0)
+/cdp/ipaldapagent/error\.log                                 --      gen_context(system_u:object_r:cdp_ipahealthagent_log_t,s0)
