@@ -86,6 +86,52 @@ role system_r types cdp_ipa_management_t;
 
 ########################################
 #
+# ipahealthagent
+#
+type cdp_ipahealthagent_t;
+type cdp_ipahealthagent_exec_t;
+
+domain_type(cdp_ipahealthagent_t)
+
+type cdp_ipahealthagent_cert_t;
+miscfiles_cert_type(cdp_ipahealthagent_cert_t)
+
+type cdp_ipahealthagent_etc_t;
+files_type(cdp_ipahealthagent_etc_t)
+
+type cdp_ipahealthagent_log_t;
+logging_log_file(cdp_ipahealthagent_log_t)
+
+type cdp_ipahealthagent_bin_t;
+files_type(cdp_ipahealthagent_bin_t)
+
+type cdp_ipahealthagent_lib_t;
+files_type(cdp_ipahealthagent_lib_t)
+
+
+########################################
+#
+# ipaldapagent
+#
+type cdp_ipaldapagent_t;
+type cdp_ipaldapagent_exec_t;
+
+domain_type(cdp_ipaldapagent_t)
+
+type cdp_ipaldapagent_etc_t;
+files_type(cdp_ipaldapagent_etc_t)
+
+type cdp_ipaldapagent_log_t;
+logging_log_file(cdp_ipaldapagent_log_t)
+
+type cdp_ipaldapagent_bin_t;
+files_type(cdp_ipaldapagent_bin_t)
+
+type cdp_ipaldapagent_lib_t;
+files_type(cdp_ipaldapagent_lib_t)
+
+########################################
+#
 # TEMPORARILY PERMISSIVE DOMAINS
 #
 # These domains are made permissive until sufficient testing has been done and most possible denies have been resolved.
@@ -96,3 +142,5 @@ role system_r types cdp_ipa_management_t;
 permissive cdp_salt_t;
 permissive cdp_salt_systemctl_t;
 permissive cdp_ipa_management_t;
+permissive cdp_ipahealthagent_t;
+permissive cdp_ipaldapagent_t;
