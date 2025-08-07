@@ -108,7 +108,7 @@ allow cdp_ipahealthagent_t cron_log_t:file { open read };
 
 allow cdp_ipahealthagent_t fs_t:filesystem associate;
 allow cdp_ipahealthagent_t self:dir { add_name create remove_name write };
-allow cdp_ipahealthagent_t self:file { execute map rename unlink };
+allow cdp_ipahealthagent_t self:file { execute map rename unlink create };
 
 allow cdp_ipahealthagent_t cdp_salt_bin_t:dir { getattr search };
 allow cdp_ipahealthagent_t cdp_salt_lib_t:dir { getattr open read search };
@@ -118,7 +118,12 @@ gen_require(`
     type cdp_ipahealthagent_bin_t;
     type cdp_ipahealthagent_lib_t;
 ')
-allow cdp_ipahealthagent_t cdp_ipahealthagent_bin_t:file { getattr ioctl open read create rename write };
+allow cdp_ipahealthagent_t cdp_ipahealthagent_bin_t:file { getattr ioctl open read create rename unlink write };
 allow cdp_ipahealthagent_t cdp_ipahealthagent_lib_t:file { getattr ioctl open read create rename unlink write };
 allow cdp_ipahealthagent_t cdp_ipahealthagent_bin_t:dir { add_name create getattr open read remove_name search write };
 allow cdp_ipahealthagent_t cdp_ipahealthagent_lib_t:dir { add_name getattr open read remove_name search write };
+
+filetrans_pattern(default_t, cdp_ipahealthagent_t, cdp_ipahealthagent_exec_t, file, "freeipa_healthagent_getcerts.sh")
+filetrans_pattern(default_t, cdp_ipahealthagent_t, cdp_ipahealthagent_exec_t, file, "httpd-crt-tracking.sh")
+filetrans_pattern(default_t, cdp_ipahealthagent_t, cdp_ipahealthagent_cert_t, file, "privateKey.pem")
+filetrans_pattern(default_t, cdp_ipahealthagent_t, cdp_ipahealthagent_cert_t, file, "publicCert.pem")
