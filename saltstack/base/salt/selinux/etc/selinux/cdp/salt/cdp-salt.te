@@ -543,10 +543,3 @@ gen_require(`
 ')
 allow httpd_t httpd_config_t:file { execute execute_no_trans };
 #
-
-gen_require(`
-    type cdp_ipahealthagent_etc_t;
-    type cdp_ipahealthagent_exec_t;
-')
-allow cdp_salt_t cdp_ipahealthagent_etc_t:file { getattr ioctl open read unlink };
-allow cdp_salt_t cdp_ipahealthagent_exec_t:file { getattr ioctl open read unlink };
