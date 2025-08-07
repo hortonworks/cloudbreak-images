@@ -11,7 +11,7 @@ gen_require(`
 init_daemon_domain(cdp_ipaldapagent_t, cdp_ipaldapagent_exec_t)
 
 type_transition init_t cdp_ipaldapagent_exec_t:process cdp_ipaldapagent_t;
-allow init_t cdp_ipaldapagent_exec_t:file { read open execute map };
+allow init_t cdp_ipaldapagent_exec_t:file { read open execute map getattr };
 
 allow cdp_ipaldapagent_t bin_t:file { execute execute_no_trans map };
 allow cdp_ipaldapagent_t default_t:dir { read write add_name create remove_name };
@@ -26,15 +26,38 @@ allow cdp_ipaldapagent_t cdp_salt_bin_t:dir { getattr search };
 allow cdp_ipaldapagent_t cdp_salt_lib_t:dir { getattr open read search };
 allow cdp_ipaldapagent_t cdp_salt_lib_t:file { getattr ioctl open read };
 allow cdp_ipaldapagent_t default_t:file { rename unlink };
-allow cdp_ipaldapagent_t self:tcp_socket { create getattr setopt listen bind };
+allow cdp_ipaldapagent_t self:tcp_socket { create getattr setopt listen bind ioctl };
 allow cdp_ipaldapagent_t geneve_port_t:tcp_socket name_bind;
 allow cdp_ipaldapagent_t tmp_t:dir { write add_name remove_name };
 allow cdp_ipaldapagent_t tmp_t:file { create write unlink };
 allow cdp_ipaldapagent_t net_conf_t:file { getattr read open };
-allow cdp_ipaldapagent_t self:udp_socket { create setopt };
-allow cdp_ipaldapagent_t node_t:tcp_socket node_bind;
+allow cdp_ipaldapagent_t self:udp_socket { create setopt connect getattr listen bind ioctl };
+allow cdp_ipaldapagent_t node_t:tcp_socket { node_bind ioctl };
+allow cdp_ipaldapagent_t self:netlink_route_socket { create getattr setopt listen bind ioctl };
 
 gen_require(`
     type cdp_ipahealthagent_lib_t;
 ')
-allow cdp_ipaldapagent_t cdp_ipahealthagent_lib_t:file { getattr ioctl open read };
+allow cdp_ipaldapagent_t cdp_ipahealthagent_lib_t:file { getattr ioctl open read create rename write unlink };
+allow cdp_ipaldapagent_t cdp_ipahealthagent_lib_t:dir { add_name getattr open read remove_name search write };
+
+gen_require(`
+    type cdp_ipahealthagent_etc_t;
+')
+allow cdp_ipaldapagent_t cdp_ipahealthagent_etc_t:file { getattr read open ioctl };
+
+gen_require(`
+    type cdp_ipahealthagent_log_t;
+')
+allow cdp_ipaldapagent_t cdp_ipahealthagent_log_t:file open;
+
+gen_require(`
+    type cdp_ipahealthagent_exec_t;
+')
+allow cdp_ipaldapagent_t cdp_ipahealthagent_exec_t:file { getattr read open ioctl };
+
+gen_require(`
+    type cdp_ipahealthagent_bin_t;
+')
+allow cdp_ipaldapagent_t cdp_ipahealthagent_bin_t:dir { add_name getattr open read remove_name search write };
+allow cdp_ipaldapagent_t cdp_ipahealthagent_bin_t:file { getattr ioctl open read create rename write unlink };

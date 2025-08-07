@@ -118,5 +118,7 @@ gen_require(`
     type cdp_ipahealthagent_bin_t;
     type cdp_ipahealthagent_lib_t;
 ')
-allow cdp_ipahealthagent_t cdp_ipahealthagent_bin_t:file { getattr ioctl open read };
-allow cdp_ipahealthagent_t cdp_ipahealthagent_lib_t:file { getattr ioctl open read };
+allow cdp_ipahealthagent_t cdp_ipahealthagent_bin_t:file { getattr ioctl open read create rename write };
+allow cdp_ipahealthagent_t cdp_ipahealthagent_lib_t:file { getattr ioctl open read create rename unlink write };
+allow cdp_ipahealthagent_t cdp_ipahealthagent_bin_t:dir { add_name create getattr open read remove_name search write };
+allow cdp_ipahealthagent_t cdp_ipahealthagent_lib_t:dir { add_name getattr open read remove_name search write };
