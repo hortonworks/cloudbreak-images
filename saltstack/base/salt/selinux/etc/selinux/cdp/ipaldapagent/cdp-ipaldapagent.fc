@@ -1,7 +1,10 @@
 /etc/selinux/cdp/ipaldapagent-python-wrapper\.sh             --      gen_context(system_u:object_r:cdp_ipaldapagent_exec_t,s0)
 /cdp/ipaldapagent/libs(/.*)?                                 --      gen_context(system_u:object_r:cdp_ipahealthagent_lib_t,s0)
+/cdp/ipaldapagent/libs(/.*)?                                 -d      gen_context(system_u:object_r:cdp_ipahealthagent_lib_t,s0)
 /cdp/ipaldapagent/__pycache__(/.*)?                          --      gen_context(system_u:object_r:cdp_ipahealthagent_lib_t,s0)
+/cdp/ipaldapagent/__pycache__(/.*)?                          -d      gen_context(system_u:object_r:cdp_ipahealthagent_lib_t,s0)
 /cdp/ipaldapagent/ipaldapagent(/.*)?                         --      gen_context(system_u:object_r:cdp_ipahealthagent_bin_t,s0)
+/cdp/ipaldapagent/ipaldapagent(/.*)?                         -d      gen_context(system_u:object_r:cdp_ipahealthagent_bin_t,s0)
 /cdp/ipaldapagent/cdp-freeipa-ldapagent                      --      gen_context(system_u:object_r:cdp_ipahealthagent_exec_t,s0)
 
 /cdp/ipaldapagent/wsgi\.py                                   --      gen_context(system_u:object_r:cdp_ipahealthagent_exec_t,s0)

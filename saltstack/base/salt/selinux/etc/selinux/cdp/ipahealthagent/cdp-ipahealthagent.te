@@ -113,3 +113,10 @@ allow cdp_ipahealthagent_t self:file { execute map rename unlink };
 allow cdp_ipahealthagent_t cdp_salt_bin_t:dir { getattr search };
 allow cdp_ipahealthagent_t cdp_salt_lib_t:dir { getattr open read search };
 allow cdp_ipahealthagent_t cdp_salt_lib_t:file { getattr ioctl open read };
+
+gen_require(`
+    type cdp_ipahealthagent_bin_t;
+    type cdp_ipahealthagent_lib_t;
+')
+allow cdp_ipahealthagent_t cdp_ipahealthagent_bin_t:file { getattr ioctl open read };
+allow cdp_ipahealthagent_t cdp_ipahealthagent_lib_t:file { getattr ioctl open read };

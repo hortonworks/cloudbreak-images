@@ -2,8 +2,11 @@
 /opt/salt/scripts/freeipa_healthagent_setup\.sh              --      gen_context(system_u:object_r:cdp_ipahealthagent_exec_t,s0)
 
 /cdp/ipahealthagent/__pycache__(/.*)?                        --      gen_context(system_u:object_r:cdp_ipahealthagent_lib_t,s0)
+/cdp/ipahealthagent/__pycache__(/.*)?                        -d      gen_context(system_u:object_r:cdp_ipahealthagent_lib_t,s0)
 /cdp/ipahealthagent/libs(/.*)?                               --      gen_context(system_u:object_r:cdp_ipahealthagent_lib_t,s0)
+/cdp/ipahealthagent/libs(/.*)?                               -d      gen_context(system_u:object_r:cdp_ipahealthagent_lib_t,s0)
 /cdp/ipahealthagent/ipahealthagent(/.*)?                     --      gen_context(system_u:object_r:cdp_ipahealthagent_bin_t,s0)
+/cdp/ipahealthagent/ipahealthagent(/.*)?                     -d      gen_context(system_u:object_r:cdp_ipahealthagent_bin_t,s0)
 
 /cdp/ipahealthagent/cdp-freeipa-healthagent                  --      gen_context(system_u:object_r:cdp_ipahealthagent_exec_t,s0)
 /cdp/ipahealthagent/wsgi\.py                                 --      gen_context(system_u:object_r:cdp_ipahealthagent_exec_t,s0)

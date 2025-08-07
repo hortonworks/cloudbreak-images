@@ -33,3 +33,8 @@ allow cdp_ipaldapagent_t tmp_t:file { create write unlink };
 allow cdp_ipaldapagent_t net_conf_t:file { getattr read open };
 allow cdp_ipaldapagent_t self:udp_socket { create setopt };
 allow cdp_ipaldapagent_t node_t:tcp_socket node_bind;
+
+gen_require(`
+    type cdp_ipahealthagent_lib_t;
+')
+allow cdp_ipaldapagent_t cdp_ipahealthagent_lib_t:file { getattr ioctl open read };
