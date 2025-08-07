@@ -8,8 +8,6 @@
 /cdp/ipahealthagent/ipahealthagent(/.*)?                     --      gen_context(system_u:object_r:cdp_ipahealthagent_bin_t,s0)
 /cdp/ipahealthagent/ipahealthagent(/.*)?                     -d      gen_context(system_u:object_r:cdp_ipahealthagent_bin_t,s0)
 
-/cdp/ipahealthagent(/.*)?                                    -d      gen_context(system_u:object_r:cdp_ipahealthagent_t,s0)
-
 /cdp/ipahealthagent/cdp-freeipa-healthagent                  --      gen_context(system_u:object_r:cdp_ipahealthagent_exec_t,s0)
 /cdp/ipahealthagent/wsgi\.py                                 --      gen_context(system_u:object_r:cdp_ipahealthagent_exec_t,s0)
 /cdp/ipahealthagent/freeipa_healthagent_getcerts\.sh         --      gen_context(system_u:object_r:cdp_ipahealthagent_exec_t,s0)
@@ -20,3 +18,5 @@
 
 /cdp/ipahealthagent/publicCert\.pem                          --      gen_context(system_u:object_r:cdp_ipahealthagent_cert_t,s0)
 /cdp/ipahealthagent/privateKey\.pem                          --      gen_context(system_u:object_r:cdp_ipahealthagent_cert_t,s0)
+
+/cdp/ipahealthagent(/)?                                        -d      gen_context(system_u:object_r:cdp_ipahealthagent_t,s0)
