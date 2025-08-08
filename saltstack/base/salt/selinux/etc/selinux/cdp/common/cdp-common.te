@@ -88,11 +88,49 @@ role system_r types cdp_ipa_management_t;
 #
 # ipahealthagent
 #
+systemd_domain_template(cdp_ipahealthagent)
+systemd_systemctl_domain(cdp_ipahealthagent)
+
+type cdp_ipahealthagent_cert_t;
+miscfiles_cert_type(cdp_ipahealthagent_cert_t)
+
+type cdp_ipahealthagent_etc_t;
+files_config_file(cdp_ipahealthagent_etc_t)
+
+type cdp_ipahealthagent_log_t;
+logging_log_file(cdp_ipahealthagent_log_t)
+
+type cdp_ipahealthagent_bin_t;
+files_type(cdp_ipahealthagent_bin_t)
+
+type cdp_ipahealthagent_lib_t;
+files_type(cdp_ipahealthagent_lib_t)
+
+type cdp_ipahealthagent_systemd_unit_file_t;
+systemd_unit_file(cdp_ipahealthagent_systemd_unit_file_t)
+
 
 ########################################
 #
 # ipaldapagent
 #
+systemd_domain_template(cdp_ipaldapagent)
+systemd_systemctl_domain(cdp_ipaldapagent)
+
+type cdp_ipaldapagent_etc_t;
+files_config_file(cdp_ipaldapagent_etc_t)
+
+type cdp_ipaldapagent_log_t;
+logging_log_file(cdp_ipaldapagent_log_t)
+
+type cdp_ipaldapagent_bin_t;
+files_type(cdp_ipaldapagent_bin_t)
+
+type cdp_ipaldapagent_lib_t;
+files_type(cdp_ipaldapagent_lib_t)
+
+type cdp_ipaldapagent_systemd_unit_file_t;
+systemd_unit_file(cdp_ipaldapagent_systemd_unit_file_t)
 
 ########################################
 #
