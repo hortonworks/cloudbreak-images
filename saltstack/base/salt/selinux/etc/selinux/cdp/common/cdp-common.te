@@ -86,6 +86,19 @@ role system_r types cdp_ipa_management_t;
 
 ########################################
 #
+# recipes
+#
+type cdp_recipes_unconfined_t;
+type cdp_recipes_exec_t;
+
+domain_type(cdp_recipes_unconfined_t)
+unconfined_domain(cdp_recipes_unconfined_t)
+domain_entry_file(cdp_recipes_unconfined_t, cdp_recipes_exec_t)
+role system_r types cdp_recipes_unconfined_t;
+
+
+########################################
+#
 # TEMPORARILY PERMISSIVE DOMAINS
 #
 # These domains are made permissive until sufficient testing has been done and most possible denies have been resolved.
