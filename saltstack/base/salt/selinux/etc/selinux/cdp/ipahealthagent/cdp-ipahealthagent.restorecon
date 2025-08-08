@@ -1,6 +1,11 @@
+/usr/lib/systemd/system/cdp-freeipa-healthagent.service
 /etc/selinux/cdp/ipahealthagent-python-wrapper.sh
 /opt/salt/scripts/freeipa_healthagent_setup.sh
-/usr/lib/systemd/system/cdp-freeipa-healthagent.service
 /cdp/ipahealthagent/cdp-freeipa-healthagent
+/cdp/ipahealthagent/wsgi.py
 /cdp/ipahealthagent/freeipa_healthagent_getcerts.sh
 /cdp/ipahealthagent/httpd-crt-tracking.sh
+/cdp/ipahealthagent/config.yaml
+/cdp/ipahealthagent/requirements.txt
+/cdp/ipahealthagent/publicCert.pem
+/cdp/ipahealthagent/privateKey.pem
