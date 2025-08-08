@@ -9,3 +9,7 @@ gen_require(`
     type cdp_ipaldapagent_systemd_unit_file_t;
     type cdp_ipaldapagent_log_t;
 ')
+
+filetrans_pattern(cdp_salt_t, cdp_ipaldapagent_lib_t, cdp_ipaldapagent_etc_t, file, "config.yaml")
+filetrans_pattern(cdp_salt_t, cdp_ipaldapagent_lib_t, cdp_ipaldapagent_log_t, file, "access.log")
+filetrans_pattern(cdp_salt_t, cdp_ipaldapagent_lib_t, cdp_ipaldapagent_log_t, file, "error.log")
