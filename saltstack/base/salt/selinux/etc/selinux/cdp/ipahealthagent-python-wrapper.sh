@@ -2,4 +2,4 @@
 
 # This script is a wrapper for the Python interpreter used with ipahealthagent so that we can run ipahealthagent processes the correct SELinux domain
 
-exec {{ pillar['salt_path'] }}/bin/python3.11 "$@"
+exec /usr/bin/env python3 "$@"
