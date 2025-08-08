@@ -1,7 +1,25 @@
 policy_module(cdp-ipahealthagent, 1.0.0)
 
-gen_require(`
-    type cdp_ipahealthagent_t;
-    type cdp_ipahealthagent_exec_t;
-')
+type cdp_ipahealthagent_t;
+type cdp_ipahealthagent_exec_t;
+
 init_daemon_domain(cdp_ipahealthagent_t, cdp_ipahealthagent_exec_t)
+
+gen_require(`
+    class tcp_socket { bind create getattr ioctl listen setopt };
+')
+
+allow cdp_ipahealthagent_t self:tcp_socket { bind create getattr ioctl listen setopt };
+auth_read_passwd_file(cdp_ipahealthagent_t)
+corecmd_check_exec_shell(cdp_ipahealthagent_t)
+corecmd_exec_bin(cdp_ipahealthagent_t)
+corenet_tcp_bind_generic_node(cdp_ipahealthagent_t)
+corenet_tcp_bind_generic_port(cdp_ipahealthagent_t)
+files_manage_default_dirs(cdp_ipahealthagent_t)
+files_manage_default_files(cdp_ipahealthagent_t)
+files_manage_generic_tmp_files(cdp_ipahealthagent_t)
+gnome_read_generic_data_home_dirs(cdp_ipahealthagent_t)
+insights_client_filetrans_tmp(cdp_ipahealthagent_t)
+
+type cdp_ipahealthagent_systemd_unit_file_t;
+systemd_unit_file(cdp_ipahealthagent_systemd_unit_file_t)

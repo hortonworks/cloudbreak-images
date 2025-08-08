@@ -88,17 +88,11 @@ role system_r types cdp_ipa_management_t;
 #
 # ipahealthagent
 #
-type cdp_ipahealthagent_t;
-type cdp_ipahealthagent_exec_t;
-
 
 ########################################
 #
 # ipaldapagent
 #
-type cdp_ipaldapagent_t;
-type cdp_ipaldapagent_exec_t;
-
 
 ########################################
 #

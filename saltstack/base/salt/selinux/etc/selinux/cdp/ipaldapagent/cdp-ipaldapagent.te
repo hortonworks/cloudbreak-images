@@ -1,7 +1,8 @@
 policy_module(cdp-ipaldapagent, 1.0.0)
 
-gen_require(`
-    type cdp_ipaldapagent_t;
-    type cdp_ipaldapagent_exec_t;
-')
+type cdp_ipaldapagent_t;
+type cdp_ipaldapagent_exec_t;
 init_daemon_domain(cdp_ipaldapagent_t, cdp_ipaldapagent_exec_t)
+
+type cdp_ipaldapagent_systemd_unit_file_t;
+systemd_unit_file(cdp_ipaldapagent_systemd_unit_file_t)
