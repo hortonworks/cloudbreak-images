@@ -109,6 +109,13 @@ files_type(cdp_ipahealthagent_lib_t)
 type cdp_ipahealthagent_systemd_unit_file_t;
 systemd_unit_file(cdp_ipahealthagent_systemd_unit_file_t)
 
+gen_require(`
+    attribute defined_port_type;
+    attribute port_type;
+    attribute unreserved_port_type;
+')
+type cdp_ipahealthagent_port_t, port_type, defined_port_type;
+typeattribute cdp_ipahealthagent_port_t unreserved_port_type;
 
 ########################################
 #
@@ -131,6 +138,14 @@ files_type(cdp_ipaldapagent_lib_t)
 
 type cdp_ipaldapagent_systemd_unit_file_t;
 systemd_unit_file(cdp_ipaldapagent_systemd_unit_file_t)
+
+gen_require(`
+    attribute defined_port_type;
+    attribute port_type;
+    attribute unreserved_port_type;
+')
+type cdp_ipaldapagent_port_t, port_type, defined_port_type;
+typeattribute cdp_ipaldapagent_port_t unreserved_port_type;
 
 ########################################
 #
