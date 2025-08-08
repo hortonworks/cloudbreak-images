@@ -3,7 +3,6 @@ policy_module(cdp-ipaldapagent, 1.0.0)
 gen_require(`
     type cdp_ipaldapagent_t;
     type cdp_ipaldapagent_bin_t;
-    type cdp_ipaldapagent_cert_t;
     type cdp_ipaldapagent_etc_t;
     type cdp_ipaldapagent_lib_t;
     type cdp_ipaldapagent_systemctl_t;
