@@ -1,0 +1,29 @@
+/opt/cdp-logging-agent/bin(/.*)?                    --      gen_context(system_u:object_r:cdp_logging_agent_exec_t,s0)
+/opt/cdp-logging-agent/bin(/.*)?                    -d      gen_context(system_u:object_r:cdp_logging_agent_exec_t,s0)
+
+/opt/cdp-logging-agent(/.*)?                        --      gen_context(system_u:object_r:cdp_logging_agent_conf_t,s0)
+/opt/cdp-logging-agent(/.*)?                        -d      gen_context(system_u:object_r:cdp_logging_agent_conf_t,s0)
+
+/etc/cdp-logging-agent(/.*)?                        --      gen_context(system_u:object_r:cdp_logging_agent_etc_t,s0)
+/etc/cdp-logging-agent(/.*)?                        -d      gen_context(system_u:object_r:cdp_logging_agent_etc_t,s0)
+
+/opt/cdp-logging-agent/lib(/.*)?                    --      gen_context(system_u:object_r:cdp_logging_agent_lib_t,s0)
+/opt/cdp-logging-agent/lib(/.*)?                    -d      gen_context(system_u:object_r:cdp_logging_agent_lib_t,s0)
+/opt/cdp-logging-agent/lib64(/.*)?                  --      gen_context(system_u:object_r:cdp_logging_agent_lib_t,s0)
+/opt/cdp-logging-agent/lib64(/.*)?                  -d      gen_context(system_u:object_r:cdp_logging_agent_lib_t,s0)
+
+/opt/cdp-logging-agent/certs(/.*)?                  --      gen_context(system_u:object_r:cdp_logging_agent_cert_t,s0)
+/opt/cdp-logging-agent/certs(/.*)?                  -d      gen_context(system_u:object_r:cdp_logging_agent_cert_t,s0)
+
+/var/log/cdp-logging-agent(/.*)?                    --      gen_context(system_u:object_r:cdp_logging_agent_var_log_t,s0)
+/var/log/cdp-logging-agent(/.*)?                    -d      gen_context(system_u:object_r:cdp_logging_agent_var_log_t,s0)
+
+/var/run/cdp-logging-agent(/.*)?                    --      gen_context(system_u:object_r:cdp_logging_agent_var_run_t,s0)
+/var/run/cdp-logging-agent(/.*)?                    -d      gen_context(system_u:object_r:cdp_logging_agent_var_run_t,s0)
+
+/tmp/cdp-logging-agent(/.*)?                        --      gen_context(system_u:object_r:cdp_logging_agent_tmp_t,s0)
+/tmp/cdp-logging-agent(/.*)?                        -d      gen_context(system_u:object_r:cdp_logging_agent_tmp_t,s0)
+
+/etc/systemd/system/cdp-logging-agent\.d(/.*)?      --      gen_context(system_u:object_r:cdp_logging_agent_systemd_unit_file_t,s0)
+/etc/systemd/system/cdp-logging-agent\.d(/.*)?      -d      gen_context(system_u:object_r:cdp_logging_agent_systemd_unit_file_t,s0)
+/etc/systemd/system/cdp-logging-agent\.service      --      gen_context(system_u:object_r:cdp_logging_agent_systemd_unit_file_t,s0)
