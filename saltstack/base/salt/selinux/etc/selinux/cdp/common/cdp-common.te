@@ -216,6 +216,19 @@ typeattribute cdp_prometheus_port_t unreserved_port_type;
 
 ########################################
 #
+# recipes
+#
+type cdp_recipes_unconfined_t;
+type cdp_recipes_exec_t;
+
+domain_type(cdp_recipes_unconfined_t)
+unconfined_domain(cdp_recipes_unconfined_t)
+domain_entry_file(cdp_recipes_unconfined_t, cdp_recipes_exec_t)
+role system_r types cdp_recipes_unconfined_t;
+
+
+########################################
+#
 # cdp-request-signer
 #
 systemd_domain_template(cdp_request_signer)

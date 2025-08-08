@@ -1,0 +1,22 @@
+policy_module(cdp-recipes, 1.0.0)
+
+gen_require(`
+    type cdp_recipes_unconfined_t;
+    type cdp_recipes_exec_t;
+')
+
+# Transition from salt domain to recipes domain when executing cdp_recipes_exec_t
+domtrans_pattern(cdp_salt_t, cdp_recipes_exec_t, cdp_recipes_unconfined_t)
+
+# file transitions
+gen_require(`
+    type cdp_salt_t;
+    type usr_t;
+')
+filetrans_pattern(cdp_salt_t, usr_t, cdp_recipes_exec_t, file, "recipe-runner.sh")
+filetrans_pattern(cdp_salt_t, usr_t, cdp_recipes_exec_t, dir, "post-cloudera-manager-start")
+filetrans_pattern(cdp_salt_t, usr_t, cdp_recipes_exec_t, dir, "post-cluster-install")
+filetrans_pattern(cdp_salt_t, usr_t, cdp_recipes_exec_t, dir, "post-service-deployment")
+filetrans_pattern(cdp_salt_t, usr_t, cdp_recipes_exec_t, dir, "pre-cloudera-manager-start")
+filetrans_pattern(cdp_salt_t, usr_t, cdp_recipes_exec_t, dir, "pre-service-deployment")
+filetrans_pattern(cdp_salt_t, usr_t, cdp_recipes_exec_t, dir, "pre-termination")
