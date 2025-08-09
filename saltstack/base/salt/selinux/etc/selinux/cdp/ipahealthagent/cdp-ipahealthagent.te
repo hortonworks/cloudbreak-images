@@ -20,6 +20,16 @@ exec_files_pattern(cdp_ipahealthagent_t, cdp_ipahealthagent_lib_t, cdp_ipahealth
 manage_files_pattern(cdp_ipahealthagent_t, cdp_ipahealthagent_cert_t, cdp_ipahealthagent_cert_t)
 
 gen_require(`
+    type bin_t;
+')
+exec_files_pattern(cdp_ipahealthagent_t, bin_t, bin_t)
+
+gen_require(`
+    type shell_exec_t;
+')
+exec_files_pattern(cdp_ipahealthagent_t, shell_exec_t, shell_exec_t)
+
+gen_require(`
     type cron_log_t;
 ')
 read_files_pattern(cdp_ipahealthagent_t, cron_log_t, cron_log_t)
@@ -29,6 +39,7 @@ gen_require(`
 ')
 manage_dirs_pattern(cdp_ipahealthagent_t, default_t, default_t)
 manage_files_pattern(cdp_ipahealthagent_t, default_t, default_t)
+exec_files_pattern(cdp_ipahealthagent_t, default_t, default_t)
 
 logging_create_devlog_dev(cdp_ipahealthagent_t)
 

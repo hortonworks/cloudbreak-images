@@ -16,6 +16,8 @@ manage_files_pattern(cdp_ipaldapagent_t, cdp_ipaldapagent_bin_t, cdp_ipaldapagen
 manage_dirs_pattern(cdp_ipaldapagent_t, cdp_ipaldapagent_lib_t, cdp_ipaldapagent_lib_t)
 manage_files_pattern(cdp_ipaldapagent_t, cdp_ipaldapagent_lib_t, cdp_ipaldapagent_lib_t)
 exec_files_pattern(cdp_ipaldapagent_t, cdp_ipaldapagent_lib_t, cdp_ipaldapagent_lib_t)
+manage_dirs_pattern(cdp_ipaldapagent_t, cdp_ipaldapagent_etc_t, cdp_ipaldapagent_etc_t)
+manage_files_pattern(cdp_ipaldapagent_t, cdp_ipaldapagent_etc_t, cdp_ipaldapagent_etc_t)
 
 gen_require(`
     type default_t;
@@ -29,12 +31,23 @@ apache_search_config(cdp_ipaldapagent_t)
 
 allow cdp_ipaldapagent_t self:tcp_socket { accept listen };
 corecmd_check_exec_shell(cdp_ipaldapagent_t)
+libs_exec_ldconfig(cdp_ipahealthagent_t)
 
 gen_require(`
     type tmp_t;
 ')
 manage_dirs_pattern(cdp_ipaldapagent_t, tmp_t, tmp_t)
 manage_files_pattern(cdp_ipaldapagent_t, tmp_t, tmp_t)
+
+gen_require(`
+    type bin_t;
+')
+exec_files_pattern(cdp_ipaldapagent_t, bin_t, bin_t)
+
+gen_require(`
+    type shell_exec_t;
+')
+exec_files_pattern(cdp_ipaldapagent_t, shell_exec_t, shell_exec_t)
 
 gen_require(`
     type cdp_salt_t;
