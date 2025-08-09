@@ -543,3 +543,8 @@ gen_require(`
 ')
 allow httpd_t httpd_config_t:file { execute execute_no_trans };
 #
+
+gen_require(`
+    type cdp_ipaldapagent_exec_t;
+')
+getattr_files_pattern(cdp_ipaldapagent_exec_t)

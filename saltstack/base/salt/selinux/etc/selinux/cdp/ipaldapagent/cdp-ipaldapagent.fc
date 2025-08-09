@@ -5,6 +5,7 @@
 /cdp/ipaldapagent/cdp-freeipa-ldapagent                      --      gen_context(system_u:object_r:cdp_ipaldapagent_exec_t,s0)
 
 /cdp/ipaldapagent/wsgi\.py                                   --      gen_context(system_u:object_r:cdp_ipaldapagent_exec_t,s0)
+/cdp/ipaldapagent/config\.yaml                               --      gen_context(system_u:object_r:cdp_ipaldapagent_etc_t,s0)
 /cdp/ipaldapagent/gunicorn\.conf\.py                         --      gen_context(system_u:object_r:cdp_ipaldapagent_etc_t,s0)
 /cdp/ipaldapagent/devserver\.log\.conf                       --      gen_context(system_u:object_r:cdp_ipaldapagent_etc_t,s0)
 /cdp/ipaldapagent/gunicorn\.log\.conf                        --      gen_context(system_u:object_r:cdp_ipaldapagent_etc_t,s0)

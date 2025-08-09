@@ -2,6 +2,7 @@
 /etc/selinux/cdp/ipaldapagent-python-wrapper.sh
 /cdp/ipaldapagent/cdp-freeipa-ldapagent
 /cdp/ipaldapagent/wsgi.py
+/cdp/ipaldapagent/config.yaml
 /cdp/ipaldapagent/gunicorn.conf.py
 /cdp/ipaldapagent/devserver.log.conf
 /cdp/ipaldapagent/gunicorn.log.conf

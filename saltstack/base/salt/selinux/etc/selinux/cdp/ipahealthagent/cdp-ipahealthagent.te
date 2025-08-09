@@ -79,7 +79,7 @@ gen_require(`
     type usr_t;
 ')
 filetrans_pattern(cdp_salt_t, cdp_ipahealthagent_lib_t, cdp_ipahealthagent_exec_t, file, "freeipa_healthagent_getcerts.sh")
-filetrans_pattern(initrc_t, cdp_ipahealthagent_lib_t, cdp_ipahealthagent_exec_t, file, "httpd-crt-tracking.sh")
+filetrans_pattern(cdp_salt_t, cdp_ipahealthagent_lib_t, cdp_ipahealthagent_exec_t, file, "httpd-crt-tracking.sh")
 filetrans_pattern(cdp_salt_t, usr_t, cdp_ipahealthagent_exec_t, file, "freeipa_healthagent_setup.sh")
 filetrans_pattern(cdp_salt_t, cdp_ipahealthagent_lib_t, cdp_ipahealthagent_log_t, file, "ipahealthagent.log")
 filetrans_pattern(cdp_salt_t, cdp_ipahealthagent_lib_t, cdp_ipahealthagent_log_t, file, "ipahealthagent.log.1")
