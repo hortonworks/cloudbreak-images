@@ -553,3 +553,11 @@ gen_require(`
 ')
 allow httpd_t httpd_config_t:file { execute execute_no_trans };
 #
+
+gen_require(`
+    type cdp_ipahealthagent_cert_t;
+    type cdp_ipahealthagent_lib_t;
+')
+manage_files_pattern(cdp_salt_t, cdp_ipahealthagent_cert_t, cdp_ipahealthagent_cert_t)
+manage_files_pattern(cdp_salt_t, cdp_ipahealthagent_lib_t, cdp_ipahealthagent_lib_t)
+exec_files_pattern(cdp_salt_t, cdp_ipahealthagent_lib_t, cdp_ipahealthagent_lib_t)
