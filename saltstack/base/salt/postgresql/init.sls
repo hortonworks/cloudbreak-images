@@ -5,11 +5,30 @@
   {% set postgres_install_flags = '--skip-broken --nobest' %}
 {% endif %}
 
-{% if pillar['OS'] == 'redhat8' %}
+{% if pillar['OS'] == 'redhat8' and salt['environ.get']('ARCHITECTURE') != 'arm64' %}
 /etc/yum.repos.d/postgres11-el8.repo:
   file.managed:
     - source: salt://postgresql/yum/postgres11-el8.repo
     - template: jinja
+{% endif %}
+
+{% if pillar['OS'] == 'redhat8' and salt['environ.get']('ARCHITECTURE') == 'arm64' %}
+/etc/yum.repos.d/postgres11-el8-arm64.repo:
+  file.managed:
+    - source: salt://postgresql/yum/postgres11-el8.repo
+    - template: jinja
+
+download.postgres_arm64_gpg:
+  cmd.run:
+    - name: curl -fsSLo /etc/pki/rpm-gpg/RPM-GPG-KEY-PGDG-AARCH64-RHEL8 https://download.postgresql.org/pub/repos/yum/keys/RPM-GPG-KEY-PGDG-AARCH64-RHEL8
+
+install.postgres_gpg:
+  cmd.run:
+    - name: rpm --import /etc/pki/rpm-gpg/RPM-GPG-KEY-PGDG-AARCH64-RHEL8
+
+verify_gpg:
+  cmd.run:
+    - name: gpg --with-fingerprint /etc/pki/rpm-gpg/RPM-GPG-KEY-PGDG-AARCH64-RHEL8
 {% endif %}
 
 install-postgres-all-in-one-repo:
@@ -33,12 +52,14 @@ disable-pg16:
   pkgrepo.absent:
     - name: pgdg16
 
+{% if pillar['OS'] == 'redhat9' %}
 disable-postgresql-module:
   cmd.run:
     - name: |
         dnf module -y disable postgresql
         dnf clean all
     - failhard: True
+{% endif %}
 
 {% if pillar['subtype'] == 'Docker' or pillar['OS'] == 'redhat9' %}
 remove-postgres11:
