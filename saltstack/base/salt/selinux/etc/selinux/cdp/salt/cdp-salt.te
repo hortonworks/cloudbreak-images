@@ -527,16 +527,6 @@ manage_files_pattern(useradd_t, lib_t, lib_t)
 manage_files_pattern(useradd_t, var_lib_t, var_lib_t)
 
 ###
-# TODO Remove this block when CB-29600 is done
-gen_require(`
-    type default_t;
-    type init_t;
-')
-allow cdp_salt_t default_t:file { execute execute_no_trans };
-allow init_t default_t:file { execute execute_no_trans open read };
-###
-
-###
 # TODO Remove this block when CB-30029 is done
 gen_require(`
     type postgresql_t;
@@ -553,3 +543,12 @@ gen_require(`
 ')
 allow httpd_t httpd_config_t:file { execute execute_no_trans };
 #
+
+gen_require(`
+    type cdp_ipaldapagent_exec_t;
+    type cdp_ipaldapagent_etc_t;
+    type cdp_ipaldapagent_lib_t;
+')
+getattr_files_pattern(cdp_salt_t, cdp_ipaldapagent_exec_t, cdp_ipaldapagent_exec_t)
+manage_files_pattern(cdp_salt_t, cdp_ipaldapagent_etc_t, cdp_ipaldapagent_etc_t)
+manage_files_pattern(cdp_salt_t, cdp_ipaldapagent_lib_t, cdp_ipaldapagent_lib_t)

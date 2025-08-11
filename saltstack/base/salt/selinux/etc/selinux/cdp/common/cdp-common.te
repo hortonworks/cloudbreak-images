@@ -86,6 +86,36 @@ role system_r types cdp_ipa_management_t;
 
 ########################################
 #
+# ipaldapagent
+#
+systemd_domain_template(cdp_ipaldapagent)
+systemd_systemctl_domain(cdp_ipaldapagent)
+
+type cdp_ipaldapagent_etc_t;
+files_config_file(cdp_ipaldapagent_etc_t)
+
+type cdp_ipaldapagent_log_t;
+logging_log_file(cdp_ipaldapagent_log_t)
+
+type cdp_ipaldapagent_bin_t;
+files_type(cdp_ipaldapagent_bin_t)
+
+type cdp_ipaldapagent_lib_t;
+files_type(cdp_ipaldapagent_lib_t)
+
+type cdp_ipaldapagent_systemd_unit_file_t;
+systemd_unit_file(cdp_ipaldapagent_systemd_unit_file_t)
+
+gen_require(`
+    attribute defined_port_type;
+    attribute port_type;
+    attribute unreserved_port_type;
+')
+type cdp_ipaldapagent_port_t, port_type, defined_port_type;
+typeattribute cdp_ipaldapagent_port_t unreserved_port_type;
+
+########################################
+#
 # TEMPORARILY PERMISSIVE DOMAINS
 #
 # These domains are made permissive until sufficient testing has been done and most possible denies have been resolved.
@@ -96,3 +126,4 @@ role system_r types cdp_ipa_management_t;
 permissive cdp_salt_t;
 permissive cdp_salt_systemctl_t;
 permissive cdp_ipa_management_t;
+permissive cdp_ipaldapagent_t;

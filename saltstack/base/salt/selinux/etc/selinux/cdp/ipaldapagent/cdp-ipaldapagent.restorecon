@@ -1,0 +1,9 @@
+/usr/lib/systemd/system/cdp-freeipa-ldapagent.service
+/etc/selinux/cdp/ipaldapagent-python-wrapper.sh
+/cdp/ipaldapagent/cdp-freeipa-ldapagent
+/cdp/ipaldapagent/wsgi.py
+/cdp/ipaldapagent/gunicorn.conf.py
+/cdp/ipaldapagent/devserver.log.conf
+/cdp/ipaldapagent/gunicorn.log.conf
+/cdp/ipaldapagent/requirements.txt
+/cdp/ipaldapagent/NOTICE.txt

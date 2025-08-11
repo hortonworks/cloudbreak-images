@@ -78,6 +78,67 @@ remove_krb5_conf_file_context_rule:
     - template: jinja
 {%- endif %}
 
+/etc/selinux/cdp/ipaldapagent-python-wrapper.sh:
+  file.managed:
+    - user: root
+    - group: root
+    - mode: 755
+    - makedirs: True
+    - template: jinja
+    - name: /etc/selinux/cdp/ipaldapagent-python-wrapper.sh
+    - source: salt://{{ slspath }}/etc/selinux/cdp/ipaldapagent-python-wrapper.sh
+
+/etc/systemd/system/cdp-freeipa-ldapagent.service.d/override.conf:
+  file.managed:
+    - makedirs: True
+    - contents: |
+        [Service]
+        ExecStart=
+        ExecStart=/etc/selinux/cdp/ipaldapagent-python-wrapper.sh /cdp/ipaldapagent/libs/bin/gunicorn -c gunicorn.conf.py
+    - mode: 644
+    - user: root
+    - group: root
+
+reload-systemd:
+  cmd.run:
+    - name: systemctl daemon-reexec && systemctl daemon-reload
+
+/etc/selinux/cdp/ipaldapagent/cdp-ipaldapagent.fc:
+  file.managed:
+    - name: /etc/selinux/cdp/ipaldapagent/cdp-ipaldapagent.fc
+    - source: salt://{{ slspath }}/etc/selinux/cdp/ipaldapagent/cdp-ipaldapagent.fc
+    - user: root
+    - group: root
+    - mode: 644
+    - makedirs: True
+
+/etc/selinux/cdp/ipaldapagent/cdp-ipaldapagent.portcon:
+  file.managed:
+    - name: /etc/selinux/cdp/ipaldapagent/cdp-ipaldapagent.portcon
+    - source: salt://{{ slspath }}/etc/selinux/cdp/ipaldapagent/cdp-ipaldapagent.portcon
+    - user: root
+    - group: root
+    - mode: 644
+    - makedirs: True
+
+/etc/selinux/cdp/ipaldapagent/cdp-ipaldapagent.restorecon:
+  file.managed:
+    - name: /etc/selinux/cdp/ipaldapagent/cdp-ipaldapagent.restorecon
+    - source: salt://{{ slspath }}/etc/selinux/cdp/ipaldapagent/cdp-ipaldapagent.restorecon
+    - user: root
+    - group: root
+    - mode: 644
+    - makedirs: True
+
+/etc/selinux/cdp/ipaldapagent/cdp-ipaldapagent.te:
+  file.managed:
+    - name: /etc/selinux/cdp/ipaldapagent/cdp-ipaldapagent.te
+    - source: salt://{{ slspath }}/etc/selinux/cdp/ipaldapagent/cdp-ipaldapagent.te
+    - user: root
+    - group: root
+    - mode: 644
+    - makedirs: True
+
 /etc/selinux/cdp/salt/:
   file.recurse:
     - name: /etc/selinux/cdp/salt/
