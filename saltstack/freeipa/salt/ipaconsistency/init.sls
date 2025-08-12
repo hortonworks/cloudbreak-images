@@ -7,7 +7,7 @@
     - onlyif: ls -la /usr/local/lib/python3.6/site-packages/checkipaconsistency/
 
 # RHEL 8 + Python 3.8
-  /usr/local/lib/python3.8/site-packages/checkipaconsistency/main.py:
+/usr/local/lib/python3.8/site-packages/checkipaconsistency/main.py:
   file.managed:
     - name: /usr/local/lib/python3.8/site-packages/checkipaconsistency/main.py
     - source: salt://{{ slspath }}/scripts/main.py
