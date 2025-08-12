@@ -62,3 +62,8 @@ filetrans_pattern(cdp_ipaldapagent_t, cdp_ipaldapagent_lib_t, cdp_ipaldapagent_e
 
 filetrans_pattern(cdp_ipaldapagent_t, cdp_ipaldapagent_lib_t, cdp_ipaldapagent_log_t, file, "access.log")
 filetrans_pattern(cdp_ipaldapagent_t, cdp_ipaldapagent_lib_t, cdp_ipaldapagent_log_t, file, "error.log")
+
+gen_require(`
+    type selinux_config_t;
+')
+filetrans_pattern(selinux_config_t, selinux_config_t, cdp_ipaldapagent_exec_t, file, "ipaldapagent-python-wrapper.sh")
