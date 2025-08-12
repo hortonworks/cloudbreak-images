@@ -57,10 +57,6 @@ gen_require(`
 ')
 allow cdp_ipaldapagent_t cdp_ipaldapagent_port_t:tcp_socket { name_bind name_connect };
 
-gen_require(`
-    type cdp_salt_t;
-')
-
 # TODO CB-30035 This line can be removed when cdp/ipaldapagent/config.yaml gets cdp_ipaldapagent_etc_t file context
 filetrans_pattern(cdp_ipaldapagent_t, cdp_ipaldapagent_lib_t, cdp_ipaldapagent_etc_t, file, "config.yaml")
 
