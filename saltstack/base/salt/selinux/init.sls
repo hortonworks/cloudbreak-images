@@ -70,6 +70,26 @@
     - template: jinja
 {%- endif %}
 
+/etc/selinux/cdp/ipahealthagent-python-wrapper.sh:
+  file.managed:
+    - user: root
+    - group: root
+    - mode: 755
+    - makedirs: True
+    - template: jinja
+    - name: /etc/selinux/cdp/ipahealthagent-python-wrapper.sh
+    - source: salt://{{ slspath }}/etc/selinux/cdp/ipahealthagent-python-wrapper.sh
+
+/etc/selinux/cdp/ipaldapagent-python-wrapper.sh:
+  file.managed:
+    - user: root
+    - group: root
+    - mode: 755
+    - makedirs: True
+    - template: jinja
+    - name: /etc/selinux/cdp/ipaldapagent-python-wrapper.sh
+    - source: salt://{{ slspath }}/etc/selinux/cdp/ipaldapagent-python-wrapper.sh
+
 /etc/selinux/cdp/ipahealthagent:
   file.recurse:
     - name: /etc/selinux/cdp/ipahealthagent/

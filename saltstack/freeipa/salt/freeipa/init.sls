@@ -58,16 +58,6 @@ inotifytools-install:
     - pkgs:
         - inotify-tools
 
-/etc/selinux/cdp/ipahealthagent-python-wrapper.sh:
-  file.managed:
-    - user: root
-    - group: root
-    - mode: 755
-    - makedirs: True
-    - template: jinja
-    - name: /etc/selinux/cdp/ipahealthagent-python-wrapper.sh
-    - source: salt://{{ slspath }}/scripts/ipahealthagent-python-wrapper.sh
-
 /etc/systemd/system/cdp-freeipa-healthagent.service.d/override.conf:
   file.managed:
     - makedirs: True
@@ -89,16 +79,6 @@ install_freeipa_healthagent_rpm:
 {% endif %}
 
 {% if freeipa_ldapagent_rpm_url %}
-
-/etc/selinux/cdp/ipaldapagent-python-wrapper.sh:
-  file.managed:
-    - user: root
-    - group: root
-    - mode: 755
-    - makedirs: True
-    - template: jinja
-    - name: /etc/selinux/cdp/ipaldapagent-python-wrapper.sh
-    - source: salt://{{ slspath }}/scripts/ipaldapagent-python-wrapper.sh
 
 /etc/systemd/system/cdp-freeipa-ldapagent.service.d/override.conf:
   file.managed:

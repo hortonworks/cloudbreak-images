@@ -125,8 +125,3 @@ filetrans_pattern(cdp_salt_t, cdp_ipahealthagent_lib_t, cdp_ipahealthagent_cert_
 
 # TODO CB-30035 This line can be removed when cdp/ipahealthagent/publicCert.pem gets cdp_ipahealthagent_cert_t file context
 filetrans_pattern(cdp_salt_t, cdp_ipahealthagent_lib_t, cdp_ipahealthagent_cert_t, file, "publicCert.pem")
-
-gen_require(`
-    type selinux_config_t;
-')
-filetrans_pattern(cdp_salt_t, selinux_config_t, cdp_ipahealthagent_exec_t, file, "ipahealthagent-python-wrapper.sh")
