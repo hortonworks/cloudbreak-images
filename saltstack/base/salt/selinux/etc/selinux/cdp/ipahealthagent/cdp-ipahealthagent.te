@@ -129,4 +129,4 @@ filetrans_pattern(cdp_salt_t, cdp_ipahealthagent_lib_t, cdp_ipahealthagent_cert_
 gen_require(`
     type selinux_config_t;
 ')
-filetrans_pattern(selinux_config_t, selinux_config_t, cdp_ipahealthagent_exec_t, file, "ipahealthagent-python-wrapper.sh")
+filetrans_pattern(cdp_salt_t, selinux_config_t, cdp_ipahealthagent_exec_t, file, "ipahealthagent-python-wrapper.sh")

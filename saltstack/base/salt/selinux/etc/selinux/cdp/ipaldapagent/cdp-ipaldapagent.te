@@ -65,5 +65,6 @@ filetrans_pattern(cdp_ipaldapagent_t, cdp_ipaldapagent_lib_t, cdp_ipaldapagent_l
 
 gen_require(`
     type selinux_config_t;
+    type cdp_salt_t;
 ')
-filetrans_pattern(selinux_config_t, selinux_config_t, cdp_ipaldapagent_exec_t, file, "ipaldapagent-python-wrapper.sh")
+filetrans_pattern(cdp_salt_t, selinux_config_t, cdp_ipaldapagent_exec_t, file, "ipaldapagent-python-wrapper.sh")
