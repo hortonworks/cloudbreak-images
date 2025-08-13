@@ -68,22 +68,11 @@ install_freeipa_healthagent_rpm:
 
 {% set exec_start = salt['cmd.run']('systemctl show cdp-freeipa-healthagent.service -p ExecStart --no-pager') %}
 {% set argv_index = exec_start.find("argv[]=") %}
-{% if argv_index != -1 %}
-  {% set argv_line = exec_start[argv_index + 7:] %}
-  {% set argv_line = argv_line.split(" ;", 1)[0] %}
-  {% set split_index = argv_line.find("/cdp/ipahealthagent/") %}
-  {% if split_index != -1 %}
-    {% set python_bin = argv_line[:split_index].strip() %}
-    {% set exec_args = argv_line[split_index:].strip() %}
-  {% else %}
-    {% set python_bin = argv_line %}
-    {% set exec_args = '' %}
-  {% endif %}
-{% else %}
-  {% set python_bin = '' %}
-  {% set exec_args = '' %}
-{% endif %}
-
+{% set argv_line = exec_start[argv_index + 7:] %}
+{% set argv_line = argv_line.split(" ;", 1)[0] %}
+{% set split_index = argv_line.find("/cdp/ipahealthagent/") %}
+{% set python_bin = argv_line[:split_index].strip() %}
+{% set exec_args = argv_line[split_index:].strip() %}
 
 modify_ipahealthagent_python_wrapper:
   file.managed:
@@ -130,16 +119,47 @@ install_freeipa_ldapagent_rpm:
     - require:
       - freeipa-install
 
-/etc/systemd/system/cdp-freeipa-ldapagent.service.d/override.conf:
+{% set exec_start = salt['cmd.run']('systemctl show cdp-freeipa-ldapagent.service -p ExecStart --no-pager') %}
+{% set argv_index = exec_start.find("argv[]=") %}
+{% set argv_line = exec_start[argv_index + 7:] %}
+{% set argv_line = argv_line.split(" ;", 1)[0] %}
+{% set split_index = argv_line.find("/cdp/ipaldapagent/") %}
+{% set python_bin = argv_line[:split_index].strip() %}
+{% set exec_args = argv_line[split_index:].strip() %}
+
+modify_ipaldapagent_python_wrapper:
   file.managed:
+    - name: /etc/selinux/cdp/ipaldapagent-python-wrapper.sh
+    - mode: 755
+    - user: root
+    - group: root
     - makedirs: True
     - contents: |
-        [Service]
-        ExecStart=
-        ExecStart=/etc/selinux/cdp/ipaldapagent-python-wrapper.sh /cdp/ipaldapagent/libs/bin/gunicorn -c gunicorn.conf.py
+        #!/bin/bash
+        # Wrapper for ipaldapagent to run Python in correct SELinux domain
+        exec {{ python_bin }} "$@"
+    - require:
+      - install_freeipa_ldapagent_rpm
+
+override_ipaldap_agent_exec_start:
+  file.managed:
+    - name: /etc/systemd/system/cdp-freeipa-ldapagent.service.d/override.conf
+    - makedirs: True
     - mode: 644
     - user: root
     - group: root
+    - contents: |
+        [Service]
+        ExecStart=
+        ExecStart=/etc/selinux/cdp/ipaldapagent-python-wrapper.sh {{ exec_args }}
+    - require:
+      - /etc/selinux/cdp/ipaldapagent-python-wrapper.sh
+
+reload_systemd:
+  cmd.run:
+    - name: systemctl daemon-reload
+    - require:
+      - file: /etc/systemd/system/cdp-freeipa-ldapagent.service.d/override.conf
 {% endif %}
 
 net.ipv6.conf.lo.disable_ipv6:
