@@ -1,0 +1,3 @@
+[Service]
+ExecStart=
+ExecStart=/etc/selinux/cdp/ipahealthagent-python-wrapper.sh {{ salt['cmd.run']("cat " + ipaldapagent_exec_args_file).strip() }}

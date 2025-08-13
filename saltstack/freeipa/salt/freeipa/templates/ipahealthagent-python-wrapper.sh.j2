@@ -1,0 +1,3 @@
+#!/bin/bash
+# Wrapper for ipahealthagent to run Python in correct SELinux domain
+exec {{ salt['cmd.run']("cat " + ipahealthagent_python_bin_file).strip() }} "$@"

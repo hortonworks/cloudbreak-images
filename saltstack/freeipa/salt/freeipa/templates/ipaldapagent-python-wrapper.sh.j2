@@ -1,0 +1,3 @@
+#!/bin/bash
+# Wrapper for ipaldapagent to run Python in correct SELinux domain
+exec {{ salt['cmd.run']("cat " + ipaldapagent_python_bin_file).strip() }} "$@"
