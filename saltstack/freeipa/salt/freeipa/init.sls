@@ -69,15 +69,15 @@ install_freeipa_healthagent_rpm:
 {% set ipahealthagent_python_bin_file = "/tmp/ipahealthagent_python_bin.txt" %}
 {% set ipahealthagent_exec_args_file = "/tmp/ipahealthagent_exec_args.txt" %}
 
-parse_ipahealthagent_exec_start:
+parse_python_bin_ipahealthagent_exec_start:
   cmd.run:
-    - name: >
-        systemctl show cdp-freeipa-healthagent.service -p ExecStart --no-pager
-        | sed -n 's/.*argv\[\]=//p'
-        | awk '{print $1}' > {{ ipahealthagent_python_bin_file }};
-        systemctl show cdp-freeipa-healthagent.service -p ExecStart --no-pager
-        | sed -n 's/.*argv\[\]=//p'
-        | cut -d' ' -f2- > {{ ipahealthagent_exec_args_file }}
+    - name: "systemctl show cdp-freeipa-healthagent.service | sed -n 's/.*argv\\[\\]=\\([^ ]* [^ ]*\\) \\/cdp.*/\\1/p' > {{ ipahealthagent_python_bin_file }}"
+    - require:
+      - install_freeipa_healthagent_rpm
+
+parse_exec_args_ipahealthagent_exec_start:
+  cmd.run:
+    - name: "systemctl show cdp-freeipa-healthagent.service | sed -n 's/.*argv\\[\\]=[^ ]* [^ ]* \\(\\/cdp[^;]*\\) ;.*/\\1/p' > {{ ipahealthagent_exec_args_file }}"
     - require:
       - install_freeipa_healthagent_rpm
 
@@ -90,7 +90,7 @@ modify_ipahealthagent_python_wrapper:
     - template: jinja
     - source: salt://{{ slspath }}/templates/ipahealthagent-python-wrapper.sh.j2
     - require:
-      - parse_ipahealthagent_exec_start
+      - parse_python_bin_ipahealthagent_exec_start
 
 override_ipahealthagent_exec_start:
   file.managed:
@@ -102,6 +102,7 @@ override_ipahealthagent_exec_start:
     - source: salt://{{ slspath }}/templates/ipahealthagent-override.conf.j2
     - require:
       - modify_ipahealthagent_python_wrapper
+      - parse_exec_args_ipahealthagent_exec_start
 
 reload_systemd:
   cmd.run:
@@ -124,15 +125,15 @@ install_freeipa_ldapagent_rpm:
 {% set ipaldapagent_python_bin_file = "/tmp/ipaldapagent_python_bin.txt" %}
 {% set ipaldapagent_exec_args_file = "/tmp/ipaldapagent_exec_args.txt" %}
 
-parse_ipaldapagent_exec_start:
+parse_python_bin_ipaldapagent_exec_start:
   cmd.run:
-    - name: >
-        systemctl show cdp-freeipa-ldapagent.service -p ExecStart --no-pager
-        | sed -n 's/.*argv\[\]=//p'
-        | awk '{print $1}' > {{ ipaldapagent_python_bin_file }};
-        systemctl show cdp-freeipa-ldapagent.service -p ExecStart --no-pager
-        | sed -n 's/.*argv\[\]=//p'
-        | cut -d' ' -f2- > {{ ipaldapagent_exec_args_file }}
+    - name: "systemctl show cdp-freeipa-ldapagent.service | sed -n 's/.*argv\\[\\]=\\([^ ]* [^ ]*\\) \\/cdp.*/\\1/p' > {{ ipaldapagent_python_bin_file }}"
+    - require:
+      - install_freeipa_ldapagent_rpm
+
+parse_exec_args_ipaldapagent_exec_start:
+  cmd.run:
+    - name: "systemctl show cdp-freeipa-ldapagent.service | sed -n 's/.*argv\\[\\]=[^ ]* [^ ]* \\(\\/cdp[^;]*\\) ;.*/\\1/p' > {{ ipaldapagent_exec_args_file }}"
     - require:
       - install_freeipa_ldapagent_rpm
 
@@ -145,7 +146,7 @@ modify_ipaldapagent_python_wrapper:
     - template: jinja
     - source: salt://{{ slspath }}/templates/ipaldapagent-python-wrapper.sh.j2
     - require:
-      - parse_ipaldapagent_exec_start
+      - parse_python_bin_ipaldapagent_exec_start
 
 override_ipaldapagent_exec_start:
   file.managed:
@@ -157,6 +158,7 @@ override_ipaldapagent_exec_start:
     - source: salt://{{ slspath }}/templates/ipaldapagent-override.conf.j2
     - require:
       - modify_ipaldapagent_python_wrapper
+      - parse_exec_args_ipaldapagent_exec_start
 
 reload_systemd:
   cmd.run:
