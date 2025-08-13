@@ -104,7 +104,7 @@ override_ipahealthagent_exec_start:
       - modify_ipahealthagent_python_wrapper
       - parse_exec_args_ipahealthagent_exec_start
 
-reload_systemd:
+reload_ipahealthagent_systemd:
   cmd.run:
     - name: systemctl daemon-reload
     - require:
@@ -160,7 +160,7 @@ override_ipaldapagent_exec_start:
       - modify_ipaldapagent_python_wrapper
       - parse_exec_args_ipaldapagent_exec_start
 
-reload_systemd:
+reload_ipaldapagent_systemd:
   cmd.run:
     - name: systemctl daemon-reload
     - require:
