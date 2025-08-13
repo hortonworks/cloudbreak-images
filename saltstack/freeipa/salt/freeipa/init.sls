@@ -71,7 +71,7 @@ install_freeipa_healthagent_rpm:
 
 ipahealthagent_python_bin_file:
   file.managed:
-    - name: /tmp/ipahealthagent_python_bin.txt
+    - name: {{ ipahealthagent_python_bin_file }}
     - contents: ""
     - mode: 644
     - user: root
@@ -82,7 +82,7 @@ ipahealthagent_python_bin_file:
 
 ipahealthagent_exec_args_file:
   file.managed:
-    - name: /tmp/ipahealthagent_exec_args.txt
+    - name: {{ ipahealthagent_exec_args_file }}
     - contents: ""
     - mode: 644
     - user: root
@@ -115,7 +115,7 @@ modify_ipahealthagent_python_wrapper:
     - template: jinja
     - source: salt://{{ slspath }}/templates/ipahealthagent-python-wrapper.sh.j2
     - context:
-        python_bin: {{ salt['file.read'](ipahealthagent_python_bin_file) | trim }}
+        python_bin: {{ ipahealthagent_python_bin_file }}
     - require:
       - parse_python_bin_ipahealthagent_exec_start
       - ipahealthagent_python_bin_file
@@ -130,7 +130,7 @@ override_ipahealthagent_exec_start:
     - template: jinja
     - source: salt://{{ slspath }}/templates/ipahealthagent-override.conf.j2
     - context:
-        exec_args: {{ salt['file.read'](ipahealthagent_exec_args_file) | trim }}
+        exec_args: {{ ipahealthagent_exec_args_file }}
     - require:
       - modify_ipahealthagent_python_wrapper
       - parse_exec_args_ipahealthagent_exec_start
@@ -158,7 +158,7 @@ install_freeipa_ldapagent_rpm:
 
 ipaldapagent_python_bin_file:
   file.managed:
-    - name: /tmp/ipaldapagent_python_bin.txt
+    - name: {{ ipaldapagent_python_bin_file }}
     - contents: ""
     - mode: 644
     - user: root
@@ -169,7 +169,7 @@ ipaldapagent_python_bin_file:
 
 ipaldapagent_exec_args_file:
   file.managed:
-    - name: /tmp/ipaldapagent_exec_args.txt
+    - name: {{ ipaldapagent_exec_args_file }}
     - contents: ""
     - mode: 644
     - user: root
@@ -202,7 +202,7 @@ modify_ipaldapagent_python_wrapper:
     - template: jinja
     - source: salt://{{ slspath }}/templates/ipaldapagent-python-wrapper.sh.j2
     - context:
-        python_bin: {{ salt['file.read'](ipaldapagent_python_bin_file) | trim }}
+        python_bin: {{ ipaldapagent_python_bin_file }}
     - require:
       - parse_python_bin_ipaldapagent_exec_start
       - ipaldapagent_python_bin_file
@@ -217,7 +217,7 @@ override_ipaldapagent_exec_start:
     - template: jinja
     - source: salt://{{ slspath }}/templates/ipaldapagent-override.conf.j2
     - context:
-        exec_args: {{ salt['file.read'](ipaldapagent_exec_args_file) | trim }}
+        exec_args: {{ ipaldapagent_exec_args_file }}
     - require:
       - modify_ipaldapagent_python_wrapper
       - parse_exec_args_ipaldapagent_exec_start
