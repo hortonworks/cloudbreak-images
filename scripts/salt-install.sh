@@ -74,8 +74,8 @@ function update_yum_repos() {
       RHEL_VERSION=${RHEL_VERSION/.0/}
       RHEL_VERSION_MAJOR=${RHEL_VERSION:0:1}
       REPO_FILE=rhel${RHEL_VERSION}_cldr_mirrors.repo
-      rm /etc/yum.repos.d/*.repo -f
-      curl https://mirror.infra.cloudera.com/repos/rhel/server/${RHEL_VERSION_MAJOR}/${RHEL_VERSION}/${REPO_FILE} --fail > /etc/yum.repos.d/${REPO_FILE}
+      #rm /etc/yum.repos.d/*.repo -f
+      #curl https://mirror.infra.cloudera.com/repos/rhel/server/${RHEL_VERSION_MAJOR}/${RHEL_VERSION}/${REPO_FILE} --fail > /etc/yum.repos.d/${REPO_FILE}
     fi
   else
     # Workaround based on the official documentation: https://cloud.google.com/compute/docs/troubleshooting/known-issues#known_issues_for_linux_vm_instances
