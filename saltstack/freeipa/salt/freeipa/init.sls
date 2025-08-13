@@ -83,11 +83,13 @@ create_ipahealthagent_service_override:
     - name: |
         EXEC_ARGS=$(systemctl show cdp-freeipa-healthagent.service -p ExecStart --no-pager | sed -n 's/.*argv\[\]=[^ ]* [^ ]* \(\/cdp\/ipahealthagent[^;]*\) ;.*/\1/p')
 
+        mkdir -p /etc/systemd/system/cdp-freeipa-healthagent.service.d/
+
         cat > /etc/systemd/system/cdp-freeipa-healthagent.service.d/override.conf << EOF
-[Service]
-ExecStart=
-ExecStart=/etc/selinux/cdp/ipahealthagent-python-wrapper.sh $EXEC_ARGS
-EOF
+        [Service]
+        ExecStart=
+        ExecStart=/etc/selinux/cdp/ipahealthagent-python-wrapper.sh $EXEC_ARGS
+        EOF
 
         echo "Created systemd override with args: $EXEC_ARGS"
     - require:
@@ -129,11 +131,13 @@ create_ipaldapagent_service_override:
     - name: |
         EXEC_ARGS=$(systemctl show cdp-freeipa-ldapagent.service -p ExecStart --no-pager | sed -n 's/.*argv\[\]=[^ ]* [^ ]* \(\/cdp\/ipaldapagent[^;]*\) ;.*/\1/p')
 
+        mkdir -p /etc/systemd/system/cdp-freeipa-ldapagent.service.d/
+
         cat > /etc/systemd/system/cdp-freeipa-ldapagent.service.d/override.conf << EOF
-[Service]
-ExecStart=
-ExecStart=/etc/selinux/cdp/ipaldapagent-python-wrapper.sh $EXEC_ARGS
-EOF
+        [Service]
+        ExecStart=
+        ExecStart=/etc/selinux/cdp/ipaldapagent-python-wrapper.sh $EXEC_ARGS
+        EOF
 
         echo "Created systemd override with args: $EXEC_ARGS"
     - require:
