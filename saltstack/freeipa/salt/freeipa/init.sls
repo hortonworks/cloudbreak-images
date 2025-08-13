@@ -90,17 +90,22 @@ modify_ipahealthagent_python_wrapper:
     - makedirs: True
     - template: jinja
     - source: salt://{{ slspath }}/templates/ipahealthagent-python-wrapper.sh.j2
+    - context:
+        python_bin: {{ salt['file.read'](ipahealthagent_python_bin_file) | trim }}
     - require:
       - parse_python_bin_ipahealthagent_exec_start
 
 override_ipahealthagent_exec_start:
   file.managed:
-    - name: /etc/systemd/system/cdp-freeipa-healthagent.service.d/override.conf
+    - name: /etc/systemd/system/cdp-freeipa-healthagent.override
     - mode: 644
     - user: root
     - group: root
+    - makedirs: True
     - template: jinja
     - source: salt://{{ slspath }}/templates/ipahealthagent-override.conf.j2
+    - context:
+        exec_args: {{ salt['file.read'](ipahealthagent_exec_args_file) | trim }}
     - require:
       - modify_ipahealthagent_python_wrapper
       - parse_exec_args_ipahealthagent_exec_start
@@ -147,17 +152,22 @@ modify_ipaldapagent_python_wrapper:
     - makedirs: True
     - template: jinja
     - source: salt://{{ slspath }}/templates/ipaldapagent-python-wrapper.sh.j2
+    - context:
+        python_bin: {{ salt['file.read'](ipaldapagent_python_bin_file) | trim }}
     - require:
       - parse_python_bin_ipaldapagent_exec_start
 
 override_ipaldapagent_exec_start:
   file.managed:
-    - name: /etc/systemd/system/cdp-freeipa-ldapagent.service.d/override.conf
+    - name: /etc/systemd/system/cdp-freeipa-ldapagent.override
     - mode: 644
     - user: root
     - group: root
+    - makedirs: True
     - template: jinja
     - source: salt://{{ slspath }}/templates/ipaldapagent-override.conf.j2
+    - context:
+        exec_args: {{ salt['file.read'](ipaldapagent_exec_args_file) | trim }}
     - require:
       - modify_ipaldapagent_python_wrapper
       - parse_exec_args_ipaldapagent_exec_start
