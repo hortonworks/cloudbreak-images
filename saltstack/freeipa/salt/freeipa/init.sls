@@ -58,17 +58,6 @@ inotifytools-install:
     - pkgs:
         - inotify-tools
 
-/etc/systemd/system/cdp-freeipa-healthagent.service.d/override.conf:
-  file.managed:
-    - makedirs: True
-    - contents: |
-        [Service]
-        ExecStart=
-        ExecStart=/etc/selinux/cdp/ipahealthagent-python-wrapper.sh /cdp/ipahealthagent/libs/bin/gunicorn --workers=4 --certfile=/cdp/ipahealthagent/publicCert.pem --keyfile=/cdp/ipahealthagent/privateKey.pem --bind 0.0.0.0:5080 wsgi:app
-    - mode: 644
-    - user: root
-    - group: root
-
 install_freeipa_healthagent_rpm:
   pkg.installed:
     - sources:
@@ -76,9 +65,56 @@ install_freeipa_healthagent_rpm:
     - skip_verify: True
     - require:
       - freeipa-install
+
+{% set exec_line = salt['cmd.run']('systemctl show cdp-freeipa-healthagent.service -p ExecStart | cut -d= -f2-') %}
+{% set parts = exec_line.split(' ', 1) %}
+{% set python_bin = parts[0] %}
+{% set exec_args = parts[1] if parts|length > 1 else '' %}
+
+modify_ipahealthagent_python_wrapper:
+  file.managed:
+    - name: /etc/selinux/cdp/ipahealthagent-python-wrapper.sh
+    - mode: 755
+    - user: root
+    - group: root
+    - makedirs: True
+    - contents: |
+        #!/bin/bash
+        # Wrapper for ipahealthagent to run Python in correct SELinux domain
+        exec {{ python_bin }} "$@"
+    - require:
+      - install_freeipa_healthagent_rpm
+
+override_ipahealth_agent_exec_start:
+  file.managed:
+    - name: /etc/systemd/system/cdp-freeipa-healthagent.service.d/override.conf
+    - makedirs: True
+    - mode: 644
+    - user: root
+    - group: root
+    - contents: |
+        [Service]
+        ExecStart=
+        ExecStart=/etc/selinux/cdp/ipahealthagent-python-wrapper.sh {{ exec_args }}
+    - require:
+      - /etc/selinux/cdp/ipahealthagent-python-wrapper.sh
+
+reload_systemd:
+  cmd.run:
+    - name: systemctl daemon-reload
+    - require:
+      - file: /etc/systemd/system/cdp-freeipa-healthagent.service.d/override.conf
 {% endif %}
 
 {% if freeipa_ldapagent_rpm_url %}
+
+install_freeipa_ldapagent_rpm:
+  pkg.installed:
+    - sources:
+      - freeipa-ldap-agent: {{ freeipa_ldapagent_rpm_url }}
+    - skip_verify: True
+    - require:
+      - freeipa-install
 
 /etc/systemd/system/cdp-freeipa-ldapagent.service.d/override.conf:
   file.managed:
@@ -90,14 +126,6 @@ install_freeipa_healthagent_rpm:
     - mode: 644
     - user: root
     - group: root
-
-install_freeipa_ldapagent_rpm:
-  pkg.installed:
-    - sources:
-      - freeipa-ldap-agent: {{ freeipa_ldapagent_rpm_url }}
-    - skip_verify: True
-    - require:
-      - freeipa-install
 {% endif %}
 
 net.ipv6.conf.lo.disable_ipv6:
