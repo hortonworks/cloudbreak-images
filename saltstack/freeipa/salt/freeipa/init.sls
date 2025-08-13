@@ -66,10 +66,24 @@ install_freeipa_healthagent_rpm:
     - require:
       - freeipa-install
 
-{% set exec_line = salt['cmd.run']("systemctl show cdp-freeipa-healthagent.service -p ExecStart --no-pager | cut -d';' -f2 | sed 's@argv\\[\\]=@@' | sed 's@^ @@'") %}
-{% set parts = exec_line.split(' ', 1) %}
-{% set python_bin = parts[0] %}
-{% set exec_args = parts[1] if parts|length > 1 else '' %}
+{% set exec_start = salt['cmd.run']('systemctl show cdp-freeipa-healthagent.service -p ExecStart --no-pager') %}
+{% set argv_index = exec_start.find("argv[]=") %}
+{% if argv_index != -1 %}
+  {% set argv_line = exec_start[argv_index + 7:] %}
+  {% set argv_line = argv_line.split(" ;", 1)[0] %}
+  {% set split_index = argv_line.find("/cdp/ipahealthagent/") %}
+  {% if split_index != -1 %}
+    {% set python_bin = argv_line[:split_index].strip() %}
+    {% set exec_args = argv_line[split_index:].strip() %}
+  {% else %}
+    {% set python_bin = argv_line %}
+    {% set exec_args = '' %}
+  {% endif %}
+{% else %}
+  {% set python_bin = '' %}
+  {% set exec_args = '' %}
+{% endif %}
+
 
 modify_ipahealthagent_python_wrapper:
   file.managed:
