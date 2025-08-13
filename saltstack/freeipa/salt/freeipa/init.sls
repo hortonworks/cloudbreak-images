@@ -83,6 +83,7 @@ parse_exec_args_ipahealthagent_exec_start:
 
 modify_ipahealthagent_python_wrapper:
   file.managed:
+    - name: /etc/selinux/cdp/ipahealthagent-python-wrapper.sh
     - mode: 755
     - user: root
     - group: root
@@ -94,7 +95,7 @@ modify_ipahealthagent_python_wrapper:
 
 override_ipahealthagent_exec_start:
   file.managed:
-    - makedirs: True
+    - name: /etc/systemd/system/cdp-freeipa-healthagent.service.d/override.conf
     - mode: 644
     - user: root
     - group: root
@@ -139,6 +140,7 @@ parse_exec_args_ipaldapagent_exec_start:
 
 modify_ipaldapagent_python_wrapper:
   file.managed:
+    - name: /etc/selinux/cdp/ipaldapagent-python-wrapper.sh
     - mode: 755
     - user: root
     - group: root
@@ -150,7 +152,7 @@ modify_ipaldapagent_python_wrapper:
 
 override_ipaldapagent_exec_start:
   file.managed:
-    - makedirs: True
+    - name: /etc/systemd/system/cdp-freeipa-ldapagent.service.d/override.conf
     - mode: 644
     - user: root
     - group: root
