@@ -66,13 +66,13 @@ install_freeipa_healthagent_rpm:
     - require:
       - freeipa-install
 
-{% set exec_start = salt['cmd.run']('systemctl show cdp-freeipa-healthagent.service -p ExecStart --no-pager') %}
-{% set argv_index = exec_start.find("argv[]=") %}
-{% set argv_line = exec_start[argv_index + 7:] %}
-{% set argv_line = argv_line.split(" ;", 1)[0] %}
-{% set split_index = argv_line.find("/cdp/ipahealthagent/") %}
-{% set python_bin = argv_line[:split_index].strip() %}
-{% set exec_args = argv_line[split_index:].strip() %}
+{% set healthagent_exec_start = salt['cmd.run']('systemctl show cdp-freeipa-healthagent.service -p ExecStart --no-pager') %}
+{% set healthagent_argv_index = healthagent_exec_start.find("argv[]=") %}
+{% set healthagent_argv_line = healthagent_exec_start[healthagent_argv_index + 7:] %}
+{% set healthagent_argv_line = healthagent_argv_line.split(" ;", 1)[0] %}
+{% set healthagent_split_index = healthagent_argv_line.find("/cdp/ipahealthagent/") %}
+{% set healthagent_python_bin = healthagent_argv_line[:healthagent_split_index].strip() %}
+{% set healthagent_exec_args = healthagent_argv_line[healthagent_split_index:].strip() %}
 
 modify_ipahealthagent_python_wrapper:
   file.managed:
@@ -84,7 +84,7 @@ modify_ipahealthagent_python_wrapper:
     - contents: |
         #!/bin/bash
         # Wrapper for ipahealthagent to run Python in correct SELinux domain
-        exec {{ python_bin }} "$@"
+        exec {{ healthagent_python_bin }} "$@"
     - require:
       - install_freeipa_healthagent_rpm
 
@@ -98,7 +98,7 @@ override_ipahealth_agent_exec_start:
     - contents: |
         [Service]
         ExecStart=
-        ExecStart=/etc/selinux/cdp/ipahealthagent-python-wrapper.sh {{ exec_args }}
+        ExecStart=/etc/selinux/cdp/ipahealthagent-python-wrapper.sh {{ healthagent_exec_args }}
     - require:
       - /etc/selinux/cdp/ipahealthagent-python-wrapper.sh
 
@@ -119,13 +119,13 @@ install_freeipa_ldapagent_rpm:
     - require:
       - freeipa-install
 
-{% set exec_start = salt['cmd.run']('systemctl show cdp-freeipa-ldapagent.service -p ExecStart --no-pager') %}
-{% set argv_index = exec_start.find("argv[]=") %}
-{% set argv_line = exec_start[argv_index + 7:] %}
-{% set argv_line = argv_line.split(" ;", 1)[0] %}
-{% set split_index = argv_line.find("/cdp/ipaldapagent/") %}
-{% set python_bin = argv_line[:split_index].strip() %}
-{% set exec_args = argv_line[split_index:].strip() %}
+{% set ldapagent_exec_start = salt['cmd.run']('systemctl show cdp-freeipa-ldapagent.service -p ExecStart --no-pager') %}
+{% set ldapagent_argv_index = ldapagent_exec_start.find("argv[]=") %}
+{% set ldapagent_argv_line = ldapagent_exec_start[ldapagent_argv_index + 7:] %}
+{% set ldapagent_argv_line = ldapagent_argv_line.split(" ;", 1)[0] %}
+{% set ldapagent_split_index = ldapagent_argv_line.find("/cdp/ipaldapagent/") %}
+{% set ldapagent_python_bin = ldapagent_argv_line[:ldapagent_split_index].strip() %}
+{% set ldapagent_exec_args = ldapagent_argv_line[ldapagent_split_index:].strip() %}
 
 modify_ipaldapagent_python_wrapper:
   file.managed:
