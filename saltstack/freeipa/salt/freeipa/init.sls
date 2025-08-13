@@ -118,6 +118,7 @@ modify_ipahealthagent_python_wrapper:
         python_bin: {{ salt['file.read'](ipahealthagent_python_bin_file) | trim }}
     - require:
       - parse_python_bin_ipahealthagent_exec_start
+      - ipahealthagent_python_bin_file
 
 override_ipahealthagent_exec_start:
   file.managed:
@@ -204,6 +205,7 @@ modify_ipaldapagent_python_wrapper:
         python_bin: {{ salt['file.read'](ipaldapagent_python_bin_file) | trim }}
     - require:
       - parse_python_bin_ipaldapagent_exec_start
+      - ipaldapagent_python_bin_file
 
 override_ipaldapagent_exec_start:
   file.managed:
