@@ -72,8 +72,6 @@ update_ipahealthagent_python_wrapper:
         PYTHON_BIN=$(systemctl show cdp-freeipa-healthagent.service -p ExecStart --no-pager | sed -n 's/.*argv\[\]=\(.*\) \/cdp\/ipahealthagent.*/\1/p')
 
         sed -i "s|^exec /usr/bin/env python3|exec $PYTHON_BIN|g" /etc/selinux/cdp/ipahealthagent-python-wrapper.sh
-
-        echo "Updated wrapper with Python interpreter: $PYTHON_BIN"
     - require:
       - install_freeipa_healthagent_rpm
     - onlyif: test -f /etc/selinux/cdp/ipahealthagent-python-wrapper.sh
@@ -90,8 +88,6 @@ create_ipahealthagent_service_override:
         ExecStart=
         ExecStart=/etc/selinux/cdp/ipahealthagent-python-wrapper.sh $EXEC_ARGS
         EOF
-
-        echo "Created systemd override with args: $EXEC_ARGS"
     - require:
       - update_ipahealthagent_python_wrapper
     - unless: test -f /etc/systemd/system/cdp-freeipa-healthagent.service.d/override.conf
@@ -120,8 +116,6 @@ update_ipaldapagent_python_wrapper:
         PYTHON_BIN=$(systemctl show cdp-freeipa-ldapagent.service -p ExecStart --no-pager | sed -n 's/.*argv\[\]=\(.*\) \/cdp\/ipaldapagent.*/\1/p')
 
         sed -i "s|^exec /usr/bin/env python3|exec $PYTHON_BIN|g" /etc/selinux/cdp/ipaldapagent-python-wrapper.sh
-
-        echo "Updated wrapper with Python interpreter: $PYTHON_BIN"
     - require:
       - install_freeipa_ldapagent_rpm
     - onlyif: test -f /etc/selinux/cdp/ipaldapagent-python-wrapper.sh
@@ -138,8 +132,6 @@ create_ipaldapagent_service_override:
         ExecStart=
         ExecStart=/etc/selinux/cdp/ipaldapagent-python-wrapper.sh $EXEC_ARGS
         EOF
-
-        echo "Created systemd override with args: $EXEC_ARGS"
     - require:
       - update_ipaldapagent_python_wrapper
     - unless: test -f /etc/systemd/system/cdp-freeipa-ldapagent.service.d/override.conf
