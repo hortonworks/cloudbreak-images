@@ -100,7 +100,7 @@ reload_ipahealthagent_systemd:
   cmd.run:
     - name: systemctl daemon-reload
     - require:
-      - /etc/systemd/system/cdp-freeipa-healthagent.service.d/override.conf
+      - create_ipahealthagent_service_override
 {% endif %}
 
 
@@ -148,7 +148,7 @@ reload_ipaldapagent_systemd:
   cmd.run:
     - name: systemctl daemon-reload
     - require:
-      - /etc/systemd/system/cdp-freeipa-ldapagent.service.d/override.conf
+      - create_ipaldapagent_service_override
 {% endif %}
 
 net.ipv6.conf.lo.disable_ipv6:
