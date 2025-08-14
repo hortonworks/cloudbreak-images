@@ -78,6 +78,16 @@ remove_krb5_conf_file_context_rule:
     - template: jinja
 {%- endif %}
 
+/etc/selinux/cdp/recipes/:
+  file.recurse:
+    - name: /etc/selinux/cdp/recipes/
+    - source: salt://{{ slspath }}/etc/selinux/cdp/recipes/
+    - user: root
+    - group: root
+    - dir_mode: 755
+    - file_mode: 644
+    - template: jinja
+
 /etc/selinux/cdp/salt/:
   file.recurse:
     - name: /etc/selinux/cdp/salt/
