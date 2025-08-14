@@ -38,10 +38,10 @@ install-postgres:
     - name: |
         dnf module -y disable postgresql
         dnf clean all
-{% if pillar['subtype'] != 'Docker' %}
-        dnf -y install postgresql11-server postgresql11 postgresql11-devel {{ postgres_install_flags }}
-{% else %}
+{% if (pillar['subtype'] == 'Docker' or pillar['OS'] == 'redhat9') %}
         dnf -y remove postgresql11-server postgresql11 postgresql11-devel
+{% else %}
+        dnf -y install postgresql11-server postgresql11 postgresql11-devel {{ postgres_install_flags }}
 {% endif %}
         dnf -y install postgresql14-server postgresql14 postgresql14-devel {{ postgres_install_flags }}
 {% if (pillar['OS'] == 'redhat8' and salt['environ.get']('RHEL_VERSION') == '8.10') or pillar['OS'] == 'redhat9' %}
