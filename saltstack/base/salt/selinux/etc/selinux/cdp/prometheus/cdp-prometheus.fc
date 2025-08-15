@@ -1,0 +1,12 @@
+/opt/cdp-prometheus/prometheus                  --      gen_context(system_u:object_r:cdp_prometheus_exec_t,s0)
+
+/opt/cdp-prometheus(/.*)?                       --      gen_context(system_u:object_r:cdp_prometheus_conf_t,s0)
+/opt/cdp-prometheus(/.*)?                       -d      gen_context(system_u:object_r:cdp_prometheus_conf_t,s0)
+
+/opt/cdp-prometheus/cdp-prometheus\.crt         --      gen_context(system_u:object_r:cdp_prometheus_cert_t,s0)
+/opt/cdp-prometheus/cdp-prometheus\.key         --      gen_context(system_u:object_r:cdp_prometheus_cert_t,s0)
+
+/var/log/cdp-prometheus(/.*)?                   --      gen_context(system_u:object_r:cdp_prometheus_var_log_t,s0)
+/var/log/cdp-prometheus(/.*)?                   -d      gen_context(system_u:object_r:cdp_prometheus_var_log_t,s0)
+
+/etc/systemd/system/cdp-prometheus\.service     --      gen_context(system_u:object_r:cdp_prometheus_systemd_unit_file_t,s0)

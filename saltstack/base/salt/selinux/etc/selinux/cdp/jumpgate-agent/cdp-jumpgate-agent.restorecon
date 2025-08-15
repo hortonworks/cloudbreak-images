@@ -1,0 +1,5 @@
+/usr/bin/jumpgate-agent
+/etc/jumpgate/
+/usr/lib/systemd/system/jumpgate-agent.service
+/var/log/jumpgate/
+/var/run/jumpgate-agent.pid

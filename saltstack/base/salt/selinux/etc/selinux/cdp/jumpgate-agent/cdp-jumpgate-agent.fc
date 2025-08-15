@@ -1,0 +1,12 @@
+/usr/bin/jumpgate-agent                             --      gen_context(system_u:object_r:cdp_jumpgate_agent_exec_t,s0)
+
+/etc/jumpgate(/.*)?                                 --      gen_context(system_u:object_r:cdp_jumpgate_agent_etc_t,s0)
+/etc/jumpgate(/.*)?                                 -d      gen_context(system_u:object_r:cdp_jumpgate_agent_etc_t,s0)
+/etc/jumpgate/cluster\.pem                          --      gen_context(system_u:object_r:cdp_jumpgate_agent_cert_t,s0)
+
+/usr/lib/systemd/system/jumpgate-agent\.service     --      gen_context(system_u:object_r:cdp_jumpgate_agent_systemd_unit_file_t,s0)
+
+/var/log/jumpgate(/.*)?                             --      gen_context(system_u:object_r:cdp_jumpgate_agent_var_log_t,s0)
+/var/log/jumpgate(/.*)?                             -d      gen_context(system_u:object_r:cdp_jumpgate_agent_var_log_t,s0)
+
+/var/run/jumpgate-agent\.pid                        --      gen_context(system_u:object_r:cdp_jumpgate_agent_var_run_t,s0)
