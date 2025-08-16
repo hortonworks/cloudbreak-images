@@ -58,14 +58,6 @@
     - file_mode: 644
     - template: jinja
 
-{%- if pillar['OS'] == 'redhat9' %}
-remove_krb5_conf_file_context_rule:
-  file.line:
-    - name: /etc/selinux/cdp/kerberos/cdp-kerberos.fc
-    - match: '/etc/krb5\\\.conf\s+--\s+gen_context\(system_u:object_r:krb5_conf_t,s0\)'
-    - mode: delete
-{%- endif %}
-
 {%- if salt['environ.get']('CUSTOM_IMAGE_TYPE') != 'freeipa' %}
 /etc/selinux/cdp/postgresql/:
   file.recurse:
