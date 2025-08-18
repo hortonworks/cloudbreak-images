@@ -210,35 +210,12 @@ EOF
   chmod +x /usr/local/bin/pip3.9
 }
 
-function redhat8_install_python311() {
-  echo "Installing Python 3.11 with dependencies..."
-  yum install -y python3.11 python3.11-pip python3.11-devel python3.11-libs python3.11-cffi python3.11-lxml
-
-  echo PYTHON311=$(yum list installed | grep ^python3\\.11\\. | grep -oi " [^\s]* " | xargs) >> /tmp/python_install.properties
-
-  # Update PIP and enable global logging
-  /usr/bin/python3.11 -m pip install -U pip
-  /usr/bin/python3.11 -m pip config set global.log /var/log/pip311.log
-
-  # General required dependency
-  /usr/bin/python3.11 -m pip install virtualenv
-
-  # We need to create this "hack", because Saltstack's pip.installed only accepts a pip/pip3
-  # wrapper, but apparently can't call "python3 -m pip", so without this, we can't install
-  # packages to the non-default python3 installation.
-  cat <<EOF >/usr/local/bin/pip3.11
-#!/bin/bash
-/usr/bin/python3.11 -m pip "\$@"
-EOF
-  chmod +x /usr/local/bin/pip3.11
-}
-
 function redhat9_update_python39() {
   echo "Installing python3-devel (the rest should be already installed in case of RHEL9)..."
-  yum update -y python3 || yum update -y python39
+  yum update -y python3
   yum install -y python3-devel
 
-  echo PYTHON39=$(yum list installed | grep ^python39\\. | grep -oi " [^\s]* " | xargs) >> /tmp/python_install.properties
+  echo PYTHON39=$(dnf list installed | grep ^python3\\. | grep @System | grep -oi " [^\s]* " | xargs) >> /tmp/python_install.properties
 
   # Update PIP and enable global logging
   /usr/bin/python3.9 -m pip install -U pip
@@ -248,7 +225,7 @@ function redhat9_update_python39() {
   /usr/bin/python3.9 -m pip install virtualenv
 }
 
-function redhat9_install_python311() {
+function redhat89_install_python311() {
   echo "Installing Python 3.11 with dependencies..."
   yum install -y python3.11 python3.11-pip python3.11-devel python3.11-libs python3.11-cffi python3.11-lxml
 
@@ -271,18 +248,43 @@ EOF
   chmod +x /usr/local/bin/pip3.11
 }
 
+function redhat89_install_python312() {
+  echo "Installing Python 3.12 with dependencies..."
+  yum install -y python3.12 python3.12-pip python3.12-devel python3.12-libs python3.12-cffi python3.12-lxml
+
+  echo PYTHON312=$(yum list installed | grep ^python3\\.12\\. | grep -oi " [^\s]* " | xargs) >> /tmp/python_install.properties
+
+  # Update PIP and enable global logging
+  /usr/bin/python3.12 -m pip install -U pip
+  /usr/bin/python3.12 -m pip config set global.log /var/log/pip312.log
+
+  # General required dependency
+  /usr/bin/python3.12 -m pip install virtualenv
+
+  # We need to create this "hack", because Saltstack's pip.installed only accepts a pip/pip3
+  # wrapper, but apparently can't call "python3 -m pip", so without this, we can't install
+  # packages to the non-default python3 installation.
+  cat <<EOF >/usr/local/bin/pip3.12
+#!/bin/bash
+/usr/bin/python3.12 -m pip "\$@"
+EOF
+  chmod +x /usr/local/bin/pip3.12
+}
+
 function install_python_pip() {
   
   yum install -y openldap-devel
   
   if [ "${OS}" == "redhat9" ] ; then
     redhat9_update_python39
-    redhat9_install_python311
+    redhat89_install_python311
+    redhat89_install_python312
   elif [ "${OS}" == "redhat8" ] ; then
     redhat8_update_python36
     redhat8_install_python38
     redhat8_install_python39
-    redhat8_install_python311
+    redhat89_install_python311
+    redhat89_install_python312
   elif [ "${OS}" == "centos7" ] ; then
     centos7_update_python27
     centos7_install_python36

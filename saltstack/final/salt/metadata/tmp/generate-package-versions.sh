@@ -150,6 +150,10 @@ if [[ -n "$PYTHON311" ]]; then
 	cat /tmp/package-versions.json | jq --arg version ${PYTHON311} '. + {"python311": $version}' > /tmp/package-versions.json.tmp && mv /tmp/package-versions.json.tmp /tmp/package-versions.json
 fi
 
+if [[ -n "$PYTHON312" ]]; then
+	cat /tmp/package-versions.json | jq --arg version ${PYTHON312} '. + {"python312": $version}' > /tmp/package-versions.json.tmp && mv /tmp/package-versions.json.tmp /tmp/package-versions.json
+fi
+
 if [[ -n "$RHEL_VERSION" ]]; then
 	cat /tmp/package-versions.json | jq --arg version ${RHEL_VERSION} '. + {"os-version": $version}' > /tmp/package-versions.json.tmp && mv /tmp/package-versions.json.tmp /tmp/package-versions.json
 fi
