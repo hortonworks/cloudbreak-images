@@ -84,7 +84,7 @@ packer_in_container() {
     ## Download the jumpgate-agent rpm, get the version and call REDB to lookup the GBN
     wget $JUMPGATE_AGENT_RPM_URL
     JUMPGATE_AGENT_VERSION=$(rpm -qp --queryformat '%{VERSION}' ${JUMPGATE_AGENT_RPM_URL##*/} | sed s/~/-/)
-    JUMPGATE_AGENT_GBN=$(curl -Ls "https://release.infra.cloudera.com/hwre-api/latestcompiledbuild?stack=JUMPGATE&release=$JUMPGATE_AGENT_VERSION" --fail | jq -r '.gbn')
+    JUMPGATE_AGENT_GBN=$(curl -Ls "https://release.eng.cloudera.com/hwre-api/latestcompiledbuild?stack=JUMPGATE&release=$JUMPGATE_AGENT_VERSION" --fail | jq -r '.gbn')
   fi
 
   if ! [[ $METERING_AGENT_RPM_URL =~ ^http.*rpm$ ]]; then
