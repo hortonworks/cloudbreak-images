@@ -40,7 +40,7 @@ if [[ -n $JUMPGATE_AGENT_RPM_URL ]]; then
 	if [[ "$CLOUD_PROVIDER" == "YARN" ]]; then
 			wget $JUMPGATE_AGENT_RPM_URL
 			JUMPGATE_AGENT_VERSION=$(rpm -qp --queryformat '%{VERSION}' ${JUMPGATE_AGENT_RPM_URL##*/})
-  			JUMPGATE_AGENT_GBN=$(curl -Ls "https://release.infra.cloudera.com/hwre-api/latestcompiledbuild?stack=JUMPGATE&release=$JUMPGATE_AGENT_VERSION" --fail | jq -r '.gbn')
+  			JUMPGATE_AGENT_GBN=$(curl -Ls "https://release.eng.cloudera.com/hwre-api/latestcompiledbuild?stack=JUMPGATE&release=$JUMPGATE_AGENT_VERSION" --fail | jq -r '.gbn')
 	fi
 	if [[ -n $JUMPGATE_AGENT_GBN ]]; then
 		cat /tmp/package-versions.json | jq --arg inverting_proxy_agent_gbn ${JUMPGATE_AGENT_GBN} '. + {"inverting-proxy-agent_gbn": $inverting_proxy_agent_gbn}' > /tmp/package-versions.json.tmp && mv /tmp/package-versions.json.tmp /tmp/package-versions.json

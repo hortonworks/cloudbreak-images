@@ -148,6 +148,6 @@ if [[ $1 == aws ]]; then
     -e AZURE_DESTINATION_STORAGE_ACCOUNT_KEY=$5 \
     -e AZURE_DESTINATION_BLOB=$6 \
     --entrypoint "/bin/bash" \
-    docker-sandbox.infra.cloudera.com/cloudbreak-tools/cloudbreak-azure-cli-tools:1.25.0 -c ./azure-copy-for-developers.sh
+    docker-sandbox.eng.cloudera.com/cloudbreak-tools/cloudbreak-azure-cli-tools:1.25.0 -c ./azure-copy-for-developers.sh
 
 fi
