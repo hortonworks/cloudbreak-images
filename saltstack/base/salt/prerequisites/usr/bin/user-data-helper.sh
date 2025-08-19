@@ -141,9 +141,9 @@ start_nginx() {
   if [[ -d /yarn-private ]]; then
       pkill -1 -P 1 nginx || true
   else
-      service nginx restart
+      sudo systemctl restart nginx
   fi
-  chkconfig nginx on
+  sudo systemctl enable nginx
 }
 
 setup_tls() {
