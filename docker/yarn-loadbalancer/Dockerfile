@@ -1,4 +1,4 @@
-FROM docker-sandbox.eng.cloudera.com/cloudbreak/base-centos7.6:0.1.0.0-88
+FROM docker-sandbox.infra.cloudera.com/cloudbreak/base-centos7.6:0.1.0.0-88
 ARG PRE_WARM_PARCELS
 ARG PRE_WARM_CSD
 
