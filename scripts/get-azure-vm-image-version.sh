@@ -17,6 +17,6 @@ docker run -i --rm \
     -e AZURE_IMAGE_OFFER=$AZURE_IMAGE_OFFER \
     -e AZURE_IMAGE_SKU=$AZURE_IMAGE_SKU \
     --entrypoint azure-get-latest-vm-image-version \
-    docker-sandbox.eng.cloudera.com/cloudbreak-tools/cloudbreak-azure-cli-tools:1.26.0 1>&2
+    docker-sandbox.infra.cloudera.com/cloudbreak-tools/cloudbreak-azure-cli-tools:1.26.0 1>&2
 
 cat azure_get_latest_vm_image_version.out

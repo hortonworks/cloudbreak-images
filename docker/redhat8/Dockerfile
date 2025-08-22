@@ -1,4 +1,4 @@
-FROM docker-sandbox.eng.cloudera.com/ycloud-base/base-rhel8.8:0.1.0.0-7
+FROM docker-sandbox.infra.cloudera.com/ycloud-base/base-rhel8.8:0.1.0.0-7
 
 ARG SALT_VERSION
 ARG SALT_PATH
