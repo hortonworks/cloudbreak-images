@@ -319,5 +319,8 @@ esac
 ## Useful for SELinux policy development. Uncomment if needed.
 ##echo "-a always,exit -F arch=b64 -S openat,open,creat,rename,renameat -F success=1 -k all_file_ops" >> /etc/audit/rules.d/audit.rules  # This one is really heavy, so use with caution
 #echo "-a always,exit -F arch=b64 -S mkdir,mkdirat -k directory_creation" >> /etc/audit/rules.d/audit.rules
+#echo "-a always,exit -F arch=b64 -S openat,open,creat,rename,renameat -F dir=/usr/bin -F success=1 -k usr_bin_ops" >> /etc/audit/rules.d/audit.rules
+#echo "-a always,exit -F arch=b64 -S openat,open,creat,rename,renameat -F dir=/etc -F success=1 -k etc_ops" >> /etc/audit/rules.d/audit.rules
+#echo "-a always,exit -F arch=b64 -S openat,open,creat,rename,renameat -F dir=/var/log -F success=1 -k var_log_ops" >> /etc/audit/rules.d/audit.rules
 #echo "max_log_file_action = ignore" | tee -a /etc/audit/auditd.conf
 #service auditd restart

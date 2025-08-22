@@ -1,0 +1,29 @@
+policy_module(cdp-prometheus, 1.0.0)
+
+gen_require(`
+    type cdp_prometheus_t;
+    type cdp_prometheus_exec_t;
+    type cdp_prometheus_conf_t;
+    type cdp_prometheus_cert_t;
+    type cdp_prometheus_var_log_t;
+    type cdp_prometheus_systemd_unit_file_t;
+')
+
+cdp_manage_pattern(cdp_prometheus_t, cdp_prometheus_conf_t)
+
+# network
+gen_require(`
+    type cdp_blackbox_exporter_port_t;
+    type cdp_node_exporter_port_t;
+    type cdp_prometheus_port_t;
+    type cdp_request_signer_port_t;
+')
+allow cdp_prometheus_t cdp_blackbox_exporter_port_t:tcp_socket { name_connect };
+allow cdp_prometheus_t cdp_node_exporter_port_t:tcp_socket { name_connect };
+allow cdp_prometheus_t cdp_prometheus_port_t:tcp_socket { name_bind name_connect };
+allow cdp_prometheus_t cdp_request_signer_port_t:tcp_socket { name_connect };
+allow cdp_prometheus_t self:tcp_socket { accept listen };
+
+# Read necessary system settings
+cdp_read_network_sysctl(cdp_prometheus_t)
+cdp_read_sysfs(cdp_prometheus_t)

@@ -20,3 +20,22 @@ interface(`cdp_connectto_unix_stream_socket',`
 
     allow $1 $2:unix_stream_socket connectto;
 ')
+
+interface(`cdp_read_network_sysctl',`
+    gen_require(`
+        type sysctl_net_t;
+    ')
+
+    allow $1 sysctl_net_t:dir { search };
+    allow $1 sysctl_net_t:file { open read };
+')
+
+interface(`cdp_read_sysfs',`
+    gen_require(`
+        type sysfs_t;
+    ')
+
+    allow $1 sysfs_t:dir { read };
+    allow $1 sysfs_t:file { getattr open read };
+    allow $1 sysfs_t:lnk_file { read };
+')
