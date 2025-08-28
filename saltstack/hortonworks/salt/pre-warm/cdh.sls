@@ -1,7 +1,14 @@
+{% if pillar['OS'] == 'redhat9' %}
+install_py3createtorrent:
+  pip.installed:
+    - name: py3createtorrent
+    - bin_env: /usr/local/bin/pip3.11
+{% else %}
 install_mktorrent:
   pkg.installed:
     - pkgs:
       - mktorrent
+{% endif %}
 
 install_cdh:
   cmd.script:
