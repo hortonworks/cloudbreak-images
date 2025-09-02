@@ -46,7 +46,8 @@ packer_in_container() {
     -e AWS_REGION="$REGION" \
     -e AWS_AMI="$AMI" \
     -e IMAGE_NAME=$IMAGE_NAME \
-    -e IMAGE_OWNER=$IMAGE_OWNER \
+    -e OWNER_TAG=$OWNER_TAG \
+    -e IMAGE_OWNER_TAG=$IMAGE_OWNER_TAG \
     -e IMAGE_SIZE=$IMAGE_SIZE \
     -e ROOT_VOLUME_SIZE=$((2*IMAGE_SIZE)) \
     -e SOURCE_AMI=$SOURCE_AMI \
