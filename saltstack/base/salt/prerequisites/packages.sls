@@ -32,6 +32,11 @@ packages_install:
   pkg.installed:
     - refresh: False
     - pkgs:
+  # This is legacy, but needed by CM and it creates /etc/init.d which is also needed by /saltstack/base/salt/performance/thp.sls
+  # on RHEL 8 and CentOS 7 it is installed by default.
+  {% if pillar['OS'] == 'redhat9' %}
+      - chkconfig
+  {% endif %}
       - wget
       - tar
       - unzip
