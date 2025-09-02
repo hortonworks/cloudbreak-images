@@ -68,11 +68,7 @@ extract_cdh_parcel() {
   parcels=("$PARCEL_ARCHIVE_PATH"/*.parcel)
   for tmp_parcel in "${parcels[@]}"; do
     parcel="$PARCEL_REPO/$(basename "$tmp_parcel")"
-    if [[ "$OS" == "redhat9" ]]; then
-      /usr/local/bin/py3createtorrent "${tmp_parcel}" -v -P -o "${parcel}.torrent"
-    else
-      mktorrent -l 19 -v -p -a "" -o "${parcel}.torrent" "${tmp_parcel}"
-    fi
+    /usr/local/bin/py3createtorrent "${tmp_parcel}" -v -P -o "${parcel}.torrent"
     touch "${parcel}" "${parcel}.skiphash"
     rm -f "${tmp_parcel}"
     ln "${parcel}" "/opt/cloudera/parcel-cache/$(basename "$parcel")"
