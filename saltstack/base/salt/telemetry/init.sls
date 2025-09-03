@@ -45,7 +45,9 @@ override_cdp_request_signer:
         dnf -y install https://archive.cloudera.com/cdp-infra-tools/1.3.7/redhat8arm64/yum/cdp_request_signer-1.3.7_b2.rpm
 {% elif pillar['OS'] == 'redhat8' %}
         dnf -y install https://archive.cloudera.com/cdp-infra-tools/1.3.7/redhat8/yum/cdp_request_signer-1.3.7_b2.rpm
-{% else %}
+{% elif pillar['OS'] == 'centos7' %}
         yum -y install https://archive.cloudera.com/cdp-infra-tools/1.3.7/redhat7/yum/cdp_request_signer-1.3.7_b2.rpm
+{% else %}
+        echo "No override for RHEL 9."
 {% endif %}
 {% endif %}
