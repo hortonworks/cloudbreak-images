@@ -215,7 +215,11 @@ function redhat9_update_python39() {
   yum update -y python3
   yum install -y python3-devel
 
-  echo PYTHON39=$(dnf list installed | grep ^python3\\. | grep @System | grep -oi " [^\s]* " | xargs) >> /tmp/python_install.properties
+  if [[ "${CLOUD_PROVIDER}" == "AWS" ]]; then
+    echo PYTHON39=$(dnf list installed | grep ^python3\\. | grep @System | grep -oi " [^\s]* " | xargs) >> /tmp/python_install.properties
+  else
+    echo PYTHON39=$(dnf list installed | grep ^python3\\. | grep -oi " [^\s]* " | xargs) >> /tmp/python_install.properties
+  fi
 
   # Update PIP and enable global logging
   /usr/bin/python3.9 -m pip install -U pip
@@ -271,6 +275,15 @@ EOF
   chmod +x /usr/local/bin/pip3.12
 }
 
+function redhat9_fix_default_pip3() {
+  echo "Fixing default pip3 for RHEL 9 to properly point to Python 3.9's pip3..."
+  rm /usr/local/bin/pip3
+  ln -s /usr/local/bin/pip3.9 /usr/local/bin/pip3
+
+  local pip3bin=$(/usr/local/bin/pip3 --version)
+  echo "pip3 now points to: $pip3bin"
+}
+
 function install_python_pip() {
   
   yum install -y openldap-devel
@@ -279,6 +292,7 @@ function install_python_pip() {
     redhat9_update_python39
     redhat89_install_python311
     redhat89_install_python312
+    redhat9_fix_default_pip3
   elif [ "${OS}" == "redhat8" ] ; then
     redhat8_update_python36
     redhat8_install_python38
