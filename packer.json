@@ -48,7 +48,8 @@
     "atlas_artifact_type": "{{ env `ATLAS_ARTIFACT_TYPE` }}",
     "image_name": "{{ env `IMAGE_NAME` }}",
     "image_size": "{{ env `IMAGE_SIZE` }}",
-    "image_owner": "{{ env `IMAGE_OWNER` }}",
+    "owner_tag": "{{ env `OWNER_TAG` }}",
+    "image_owner_tag": "{{ env `IMAGE_OWNER_TAG` }}",
     "prewarm_tag": "{{ env `PREWARM_TAG` }}",
     "include_fluent": "{{ env `INCLUDE_FLUENT` }}",
     "fluent_prewarm_tag": "{{env `FLUENT_PREWARM_TAG` }}",
@@ -138,12 +139,14 @@
         "builder": "packer",
         "version": "{{user `version`}}",
         "cb-creation-timestamp": "{{timestamp}}",
-        "owner": "{{ user `image_owner` }}",
+        "owner": "{{ user `owner_tag` }}",
+        "image-owner": "{{ user `image_owner_tag` }}",
         "Customer Delivered": "{{user `tag_customer_delivered`}}",
         "Name": "{{ user `image_name`}}"
       },
       "run_tags": {
-        "owner": "{{ user `image_owner` }}",
+        "owner": "{{ user `owner_tag` }}",
+        "image-owner": "{{ user `image_owner_tag` }}",
         "Name": "Packer Builder"
       },
       "ami_block_device_mappings": [
@@ -180,12 +183,14 @@
         "builder": "packer",
         "version": "{{user `version`}}",
         "cb-creation-timestamp": "{{timestamp}}",
-        "owner": "{{ user `image_owner` }}",
+        "owner": "{{ user `owner_tag` }}",
+        "image-owner": "{{ user `image_owner_tag` }}",
         "Customer Delivered": "{{user `tag_customer_delivered`}}",
         "Name": "{{ user `image_name`}}"
       },
       "run_tags": {
-        "owner": "{{ user `image_owner` }}",
+        "owner": "{{ user `owner_tag` }}",
+        "image-owner": "{{ user `image_owner_tag` }}",
         "Name": "Packer Builder"
       },
       "snapshot_users": "{{ user `aws_snapshot_users` }}",
@@ -238,12 +243,14 @@
         "builder": "packer",
         "version": "{{user `version`}}",
         "cb-creation-timestamp": "{{timestamp}}",
-        "owner": "{{ user `image_owner` }}",
+        "owner": "{{ user `owner_tag` }}",
+        "image-owner": "{{ user `image_owner_tag` }}",
         "Customer Delivered": "{{user `tag_customer_delivered`}}",
         "Name": "{{ user `image_name`}}"
       },
       "run_tags": {
-        "owner": "{{ user `image_owner` }}",
+        "owner": "{{ user `owner_tag` }}",
+        "image-owner": "{{ user `image_owner_tag` }}",
         "Name": "Packer Builder"
       },
       "snapshot_users": "{{ user `aws_snapshot_users` }}",
@@ -296,12 +303,14 @@
         "builder": "packer",
         "version": "{{user `version`}}",
         "cb-creation-timestamp": "{{timestamp}}",
-        "owner": "{{ user `image_owner` }}",
+        "owner": "{{ user `owner_tag` }}",
+        "image-owner": "{{ user `image_owner_tag` }}",
         "Customer Delivered": "{{user `tag_customer_delivered`}}",
         "Name": "{{ user `image_name`}}"
       },
       "run_tags": {
-        "owner": "{{ user `image_owner` }}",
+        "owner": "{{ user `owner_tag` }}",
+        "image-owner": "{{ user `image_owner_tag` }}",
         "Name": "Packer Builder"
       },
       "snapshot_users": "{{ user `aws_snapshot_users` }}",
@@ -342,12 +351,14 @@
         "builder": "packer",
         "version": "{{user `version`}}",
         "cb-creation-timestamp": "{{timestamp}}",
-        "owner": "{{ user `image_owner` }}",
+        "owner": "{{ user `owner_tag` }}",
+        "image-owner": "{{ user `image_owner_tag` }}",
         "Customer Delivered": "{{user `tag_customer_delivered`}}",
         "Name": "{{ user `image_name`}}"
       },
       "run_tags": {
-        "owner": "{{ user `image_owner` }}",
+        "owner": "{{ user `owner_tag` }}",
+        "image-owner": "{{ user `image_owner_tag` }}",
         "Name": "Packer Builder"
       },
       "ami_block_device_mappings": [
@@ -404,7 +415,8 @@
         "builder": "packer",
         "version": "{{user `version`}}",
         "cb-creation-timestamp": "{{timestamp}}",
-        "owner": "{{ user `image_owner` }}",
+        "owner": "{{ user `owner_tag` }}",
+        "image-owner": "{{ user `image_owner_tag` }}",
         "Customer Delivered": "{{user `tag_customer_delivered`}}"
       }
     },
@@ -442,7 +454,8 @@
         "builder": "packer",
         "version": "{{user `version`}}",
         "cb-creation-timestamp": "{{timestamp}}",
-        "Owner": "{{ user `image_owner` }}",
+        "owner": "{{ user `owner_tag` }}",
+        "image-owner": "{{ user `image_owner_tag` }}",
         "Customer Delivered": "{{user `tag_customer_delivered`}}"
       }
     },
@@ -480,7 +493,8 @@
         "builder": "packer",
         "version": "{{user `version`}}",
         "cb-creation-timestamp": "{{timestamp}}",
-        "Owner": "{{ user `image_owner` }}",
+        "owner": "{{ user `owner_tag` }}",
+        "image-owner": "{{ user `image_owner_tag` }}",
         "Customer Delivered": "{{user `tag_customer_delivered`}}"
       },
       "plan_info": {
@@ -523,7 +537,8 @@
         "builder": "packer",
         "version": "{{user `version`}}",
         "cb-creation-timestamp": "{{timestamp}}",
-        "Owner": "{{ user `image_owner` }}",
+        "owner": "{{ user `owner_tag` }}",
+        "image-owner": "{{ user `image_owner_tag` }}",
         "Customer Delivered": "{{user `tag_customer_delivered`}}"
       },
       "plan_info": {
@@ -555,7 +570,8 @@
       "tags": [
         "builder--packer",
         "cb-creation-timestamp--{{timestamp}}",
-        "owner--{{ user `image_owner` | clean_resource_name }}",
+        "owner--{{ user `owner_tag` | clean_resource_name }}",
+        "image-owner--{{ user `image_owner_tag` | clean_resource_name }}",
         "customer-delivered--{{user `tag_customer_delivered` | clean_resource_name}}",
         "gcp-dev-cloudbreak-ingress-internet-deny",
         "gcp-dev-cloudbreak-egress-internet-allow",
@@ -593,7 +609,8 @@
       "tags": [
         "builder--packer",
         "cb-creation-timestamp--{{timestamp}}",
-        "owner--{{ user `image_owner` | clean_resource_name }}",
+        "owner--{{ user `owner_tag` | clean_resource_name }}",
+        "image-owner--{{ user `image_owner_tag` | clean_resource_name }}",
         "customer-delivered--{{user `tag_customer_delivered` | clean_resource_name}}",
         "gcp-dev-cloudbreak-ingress-internet-deny",
         "gcp-dev-cloudbreak-egress-internet-allow",
@@ -631,7 +648,8 @@
       "tags": [
         "builder--packer",
         "cb-creation-timestamp--{{timestamp}}",
-        "owner--{{ user `image_owner` | clean_resource_name }}",
+        "owner--{{ user `owner_tag` | clean_resource_name }}",
+        "image-owner--{{ user `image_owner_tag` | clean_resource_name }}",
         "customer-delivered--{{user `tag_customer_delivered` | clean_resource_name}}",
         "gcp-dev-cloudbreak-ingress-internet-deny",
         "gcp-dev-cloudbreak-egress-internet-allow",
