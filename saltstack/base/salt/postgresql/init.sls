@@ -55,7 +55,12 @@ timeoutstop-postgres-ycloud:
     - name: mkdir /etc/systemd/system/postgresql-14.service.d  && echo $'[Service]\nTimeoutStopSec=120s' > /etc/systemd/system/postgresql-14.service.d/timeout.conf && mkdir /etc/systemd/system/postgresql-17.service.d && echo $'[Service]\nTimeoutStopSec=120s' > /etc/systemd/system/postgresql-17.service.d/timeout.conf
 {% endif %}
 
-{% set pg_default_version = '14' %}
+{% set version = salt['environ.get']('STACK_VERSION') %}
+{% if version and version.split('.') | map('int') | list >= [7, 3, 2] %}
+  {% set pg_default_version = '17' %}
+{% else %}
+  {% set pg_default_version = '14' %}
+{% endif %}
 
 {% elif pillar['OS'] == 'centos7' %}
 
