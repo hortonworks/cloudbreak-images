@@ -4,9 +4,11 @@ gen_require(`
     type httpd_sys_script_t;
     type httpd_t;
     type cdp_httpd_cert_t;
+    type cdp_ipa_management_exec_t;
 ')
 
 apache_search_config(httpd_sys_script_t)
+can_exec(httpd_t, cdp_ipa_management_exec_t)
 init_ioctl_stream_sockets(httpd_sys_script_t)
 search_dirs_pattern(httpd_t, cdp_httpd_cert_t, cdp_httpd_cert_t)
 read_files_pattern(httpd_t, cdp_httpd_cert_t, cdp_httpd_cert_t)
