@@ -1,0 +1,64 @@
+policy_module(cdp-ipaldapagent, 1.0.0)
+
+gen_require(`
+    type cdp_ipaldapagent_t;
+    type cdp_ipaldapagent_exec_t;
+    type cdp_ipaldapagent_bin_t;
+    type cdp_ipaldapagent_etc_t;
+    type cdp_ipaldapagent_lib_t;
+    type cdp_ipaldapagent_systemctl_t;
+    type cdp_ipaldapagent_systemd_unit_file_t;
+    type cdp_ipaldapagent_log_t;
+')
+
+manage_dirs_pattern(cdp_ipaldapagent_t, cdp_ipaldapagent_bin_t, cdp_ipaldapagent_bin_t)
+manage_files_pattern(cdp_ipaldapagent_t, cdp_ipaldapagent_bin_t, cdp_ipaldapagent_bin_t)
+manage_dirs_pattern(cdp_ipaldapagent_t, cdp_ipaldapagent_lib_t, cdp_ipaldapagent_lib_t)
+manage_files_pattern(cdp_ipaldapagent_t, cdp_ipaldapagent_lib_t, cdp_ipaldapagent_lib_t)
+exec_files_pattern(cdp_ipaldapagent_t, cdp_ipaldapagent_lib_t, cdp_ipaldapagent_lib_t)
+manage_dirs_pattern(cdp_ipaldapagent_t, cdp_ipaldapagent_etc_t, cdp_ipaldapagent_etc_t)
+manage_files_pattern(cdp_ipaldapagent_t, cdp_ipaldapagent_etc_t, cdp_ipaldapagent_etc_t)
+manage_files_pattern(cdp_ipaldapagent_t, cdp_ipaldapagent_log_t, cdp_ipaldapagent_log_t)
+
+# TODO This block should be removed or investigated when CB-30035 is done. It has been introduced because some files did not get proper file context
+gen_require(`
+    type default_t;
+')
+manage_dirs_pattern(cdp_ipaldapagent_t, default_t, default_t)
+manage_files_pattern(cdp_ipaldapagent_t, default_t, default_t)
+exec_files_pattern(cdp_ipaldapagent_t, default_t, default_t)
+
+gnome_search_gconf(cdp_ipaldapagent_t)
+corenet_tcp_bind_geneve_port(cdp_ipaldapagent_t)
+apache_search_config(cdp_ipaldapagent_t)
+
+allow cdp_ipaldapagent_t self:tcp_socket { accept listen };
+corecmd_check_exec_shell(cdp_ipaldapagent_t)
+libs_exec_ldconfig(cdp_ipaldapagent_t)
+
+gen_require(`
+    type tmp_t;
+')
+manage_dirs_pattern(cdp_ipaldapagent_t, tmp_t, tmp_t)
+manage_files_pattern(cdp_ipaldapagent_t, tmp_t, tmp_t)
+
+gen_require(`
+    type bin_t;
+')
+exec_files_pattern(cdp_ipaldapagent_t, bin_t, bin_t)
+
+gen_require(`
+    type shell_exec_t;
+')
+exec_files_pattern(cdp_ipaldapagent_t, shell_exec_t, shell_exec_t)
+
+gen_require(`
+    type cdp_ipaldapagent_port_t;
+')
+allow cdp_ipaldapagent_t cdp_ipaldapagent_port_t:tcp_socket { name_bind name_connect };
+
+# TODO CB-30035 This line can be removed when cdp/ipaldapagent/config.yaml gets cdp_ipaldapagent_etc_t file context
+filetrans_pattern(cdp_ipaldapagent_t, cdp_ipaldapagent_lib_t, cdp_ipaldapagent_etc_t, file, "config.yaml")
+
+filetrans_pattern(cdp_ipaldapagent_t, cdp_ipaldapagent_lib_t, cdp_ipaldapagent_log_t, file, "access.log")
+filetrans_pattern(cdp_ipaldapagent_t, cdp_ipaldapagent_lib_t, cdp_ipaldapagent_log_t, file, "error.log")
