@@ -919,7 +919,7 @@
     },
     {
       "type": "file",
-      "source": "/tmp/cis/*",
+      "source": "/tmp/oscap/*",
       "destination": "./",
       "direction" : "download",
       "only": [

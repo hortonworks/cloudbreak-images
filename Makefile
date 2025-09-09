@@ -745,6 +745,17 @@ ifdef UUID
 endif
 endif
 
+copy-cve-scan-results-to-s3-bucket:
+ifneq ($(CLOUD_PROVIDER),YARN)
+ifdef UUID
+	cp -- oscap_cve_results.xml "${UUID}_results.xml"
+	cp -- oscap_cve_report.html "${UUID}_report.html"
+	AWS_DEFAULT_REGION=eu-west-1
+	aws s3 cp "${UUID}_results.xml" s3://cloudbreak-imagecatalog/image-cve-scans/ --acl public-read
+	aws s3 cp "${UUID}_report.html" s3://cloudbreak-imagecatalog/image-cve-scans/ --acl public-read
+endif
+endif
+
 copy-changelog-to-s3-bucket:
 ifdef IMAGE_UUID_1
 ifdef IMAGE_UUID_2
