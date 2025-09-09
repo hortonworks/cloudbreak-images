@@ -82,10 +82,10 @@ endif
 ifeq ($(CLOUD_PROVIDER),AWS)
 	ifeq ($(OS),redhat9)
 		ifeq ($(ARCHITECTURE),arm64)
-			AWS_SOURCE_AMI ?= ami-02b88e379f3080bba
+			AWS_SOURCE_AMI ?= ami-06f1805217126b0d0
 			AWS_INSTANCE_TYPE ?= r7gd.2xlarge
 		else
-			AWS_SOURCE_AMI ?= ami-0e2dd07dc70f88b3a
+			AWS_SOURCE_AMI ?= ami-08a3a46b7bf22015a
 			AWS_INSTANCE_TYPE ?= t3.2xlarge
 		endif
 	else ifeq ($(OS),redhat8)
