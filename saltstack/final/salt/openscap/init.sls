@@ -43,7 +43,7 @@ openscap_cve_scan:
         oscap oval eval --verbose INFO \
           --results /tmp/oscap/oscap_cve_results.xml \
           --report /tmp/oscap/oscap_cve_report.html \
-          /tmp/oscap/{{ oval_file }} | tee oscap_cve_log.txt
+          /tmp/oscap/{{ oval_file }} > oscap_cve_log.txt
     - require:
       - pkg: oscap_scan
       - file: oscap_scan
