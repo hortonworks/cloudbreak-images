@@ -753,17 +753,6 @@ ifdef IMAGE_UUID_2
 endif
 endif
 
-copy-cve-scan-results-to-s3-bucket: copy-manifest-to-s3-bucket
-ifneq ($(CLOUD_PROVIDER),YARN)
-ifdef UUID
-	cp -- oscap_cve_results.xml "${UUID}_results.xml"
-	cp -- oscap_cve_report.html "${UUID}_report.html"
-	AWS_DEFAULT_REGION=eu-west-1
-	aws s3 cp "${UUID}_results.xml" s3://cloudbreak-imagecatalog/image-cve-scans/ --acl public-read
-	aws s3 cp "${UUID}_report.html" s3://cloudbreak-imagecatalog/image-cve-scans/ --acl public-read
-endif
-endif
-
 generate-last-metadata-url-file:
 ifdef IMAGE_NAME
 	echo "METADATA_URL=https://raw.githubusercontent.com/$(GITHUB_ORG)/$(GITHUB_REPO)/master/$(IMAGE_NAME)_$(METADATA_FILENAME_POSTFIX).json" > last_md
@@ -772,6 +761,17 @@ else
 # This block remains here for backward compatibility reasons when the IMAGE_NAME is not defined as an env variable
 	echo "METADATA_URL=https://raw.githubusercontent.com/$(GITHUB_ORG)/$(GITHUB_REPO)/master/$(shell (ls -1tr *_manifest.json | tail -1 | sed "s/_manifest//"))" > last_md
 	echo "IMAGE_NAME=$(shell (ls -1tr *_manifest.json | tail -1 | sed "s/_.*_manifest.json//"))" >> last_md
+endif
+
+copy-cve-scan-results-to-s3-bucket: generate-last-metadata-url-file
+ifneq ($(CLOUD_PROVIDER),YARN)
+ifdef UUID
+	cp -- oscap_cve_results.xml "${UUID}_results.xml"
+	cp -- oscap_cve_report.html "${UUID}_report.html"
+	AWS_DEFAULT_REGION=eu-west-1
+	aws s3 cp "${UUID}_results.xml" s3://cloudbreak-imagecatalog/image-cve-scans/ --acl public-read
+	aws s3 cp "${UUID}_report.html" s3://cloudbreak-imagecatalog/image-cve-scans/ --acl public-read
+endif
 endif
 
 generate-image-properties:

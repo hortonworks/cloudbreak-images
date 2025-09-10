@@ -40,10 +40,10 @@ openscap_cve_scan:
         cd /tmp/oscap && \
         wget -q -O {{ oval_file }}.bz2 {{ oval_url }} && \
         bunzip2 -f {{ oval_file }}.bz2 && \
-        oscap oval eval --verbose INFO \
+        oscap oval eval \
           --results /tmp/oscap/oscap_cve_results.xml \
           --report /tmp/oscap/oscap_cve_report.html \
-          /tmp/oscap/{{ oval_file }} > oscap_cve_log.txt
+          /tmp/oscap/{{ oval_file }}
     - require:
       - pkg: oscap_scan
       - file: oscap_scan
