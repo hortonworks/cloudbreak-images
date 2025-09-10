@@ -233,12 +233,21 @@
   "provisioners": [
     {
       "type": "shell",
+      "inline": [
+        "sudo mkdir -p /opt/changelog-scripts",
+        "sudo chown cloudbreak:cloudbreak /opt/changelog-scripts"
+      ],
+      "remote_folder": "/var/tmp"
+    },
+    {
+      "type": "shell",
       "script": "scripts/changelog/collect-package-changelogs.sh",
       "environment_vars": [
         "OS={{ user `os` }}",
         "IMAGE_UUID={{ user `image_uuid` }}"
       ],
-      "execute_command": "chmod +x {{ .Path }}; sudo {{ .Vars }} {{ .Path }};"
+      "execute_command": "chmod +x {{ .Path }}; sudo {{ .Vars }} {{ .Path }};",
+      "remote_folder": "/opt/changelog-scripts"
     },
     {
       "type": "file",
