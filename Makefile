@@ -768,13 +768,13 @@ copy-oscap-results-to-s3-bucket:
 ifneq ($(CLOUD_PROVIDER),YARN)
 ifdef UUID
 	AWS_DEFAULT_REGION=eu-west-1
-    for file in "oscap_cve_report.html" "oscap_cis_l1_report.html" "oscap_stig_report.html"; do \
-        if [ -f "$$file" ]; then \
-            base_name=$$(basename "$$file" .html); \
-            cp -- "$$file" "${UUID}_$${base_name}.html"; \
-            aws s3 cp "${UUID}_$${base_name}.html" s3://cloudbreak-imagecatalog/image-scans/ --acl public-read; \
-        fi \
-    done
+	for file in "oscap_cve_report.html" "oscap_cis_l1_report.html" "oscap_stig_report.html"; do \
+		if [ -f "$$file" ]; then \
+			base_name=$$(basename "$$file" .html); \
+			cp -- "$$file" "${UUID}_$${base_name}.html"; \
+			aws s3 cp "${UUID}_$${base_name}.html" s3://cloudbreak-imagecatalog/image-scans/ --acl public-read; \
+		fi \
+	done
 endif
 endif
 
