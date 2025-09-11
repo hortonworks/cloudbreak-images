@@ -763,14 +763,18 @@ else
 	echo "IMAGE_NAME=$(shell (ls -1tr *_manifest.json | tail -1 | sed "s/_.*_manifest.json//"))" >> last_md
 endif
 
-copy-cve-scan-results-to-s3-bucket: generate-last-metadata-url-file
+copy-oscap-results-to-s3-bucket:
 ifneq ($(CLOUD_PROVIDER),YARN)
 ifdef UUID
-	cp -- oscap_cve_results.xml "${UUID}_results.xml"
-	cp -- oscap_cve_report.html "${UUID}_report.html"
 	AWS_DEFAULT_REGION=eu-west-1
-	aws s3 cp "${UUID}_results.xml" s3://cloudbreak-imagecatalog/image-cve-scans/ --acl public-read
-	aws s3 cp "${UUID}_report.html" s3://cloudbreak-imagecatalog/image-cve-scans/ --acl public-read
+	cp -- oscap_cve_report.html "${UUID}_cve_report.html"
+	aws s3 cp "${UUID}_cve_report.html" s3://cloudbreak-imagecatalog/image-scans/ --acl public-read
+	cp -- oscap_cis_l1_report.html "${UUID}_cis_l1_report.html"
+	aws s3 cp "${UUID}_cis_l1_report.html" s3://cloudbreak-imagecatalog/image-scans/ --acl public-read
+	if [ -f "oscap_stig_report.html" ]; then
+		cp -- oscap_stig_report.html "${UUID}_stig_report.html"
+		aws s3 cp "${UUID}_stig_report.html" s3://cloudbreak-imagecatalog/image-scans/ --acl public-read
+	fi
 endif
 endif
 

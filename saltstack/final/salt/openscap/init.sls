@@ -10,6 +10,18 @@ oscap_scan:
     - name: /tmp/oscap
     - mode: 755
 
+openscap_run_cis_l1:
+  cmd.run:
+    - name: |
+        sudo oscap xccdf eval \
+          --profile xccdf_org.ssgproject.content_profile_cis_server_l1 \
+          --results /tmp/oscap/oscap_cis_l1_results.xml \
+          --report /tmp/oscap/oscap_cis_l1_report.html \
+          /usr/share/xml/scap/ssg/content/ssg-rhel8-ds.xml | tee /tmp/oscap/oscap_cis_l1_log.txt
+    - require:
+      - pkg: oscap_scan
+      - file: oscap_scan
+
 {% if salt['environ.get']('STIG_ENABLED') == 'true' %}
 openscap_info:
   cmd.run:
@@ -19,7 +31,12 @@ openscap_info:
 
 openscap_run_stig:
   cmd.run:
-    - name: sudo oscap xccdf eval --profile xccdf_org.ssgproject.content_profile_stig --results /tmp/oscap/oscap_stig_report.xml --report /tmp/oscap/oscap_stig_report.html /usr/share/xml/scap/ssg/content/ssg-rhel8-ds.xml | tee /tmp/oscap/oscap_log.txt
+    - name: |
+        sudo oscap xccdf eval \
+          --profile xccdf_org.ssgproject.content_profile_stig \
+          --results /tmp/oscap/oscap_stig_results.xml \
+          --report /tmp/oscap/oscap_stig_report.html \
+          /usr/share/xml/scap/ssg/content/ssg-rhel8-ds.xml | tee /tmp/oscap/oscap_stig_log.txt
     - require:
       - pkg: oscap_scan
       - file: oscap_scan
