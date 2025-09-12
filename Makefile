@@ -736,6 +736,10 @@ docker-build-redhat8:
 	echo "Building RHEL 8.10 image for YCloud"
 	@ OS=redhat8 OS_TYPE=redhat8 CLOUD_PROVIDER=YARN TAG=redhat-8 DIR=redhat8.10 make docker-build
 
+docker-build-redhat9:
+	echo "Building RHEL 9.6 image for YCloud"
+	@ OS=redhat9 OS_TYPE=redhat9 CLOUD_PROVIDER=YARN TAG=redhat-9 DIR=redhat9.6 make docker-build
+
 docker-build-yarn-loadbalancer:
 	echo "Building loadbalancer image for YCloud"
 	@ OS=centos7 OS_TYPE=redhat7 CLOUD_PROVIDER=YARN TAG=yarn-loadbalancer DIR=yarn-loadbalancer make docker-build
