@@ -30,6 +30,11 @@ export IS_FREEIPA=true
 {% else %}
 export IS_FREEIPA=false
 {% endif %}
+{% if pillar['IMAGE_BURNING_TYPE'] == 'base' %}
+export IS_BASE=true
+{% else %}
+export IS_BASE=false
+{% endif %}
 OS={{ pillar['OS'] }}
 STACK_VERSION={{ stack_version }}
 
@@ -268,7 +273,7 @@ resize_partitions() {
       # Extend root logical volume to remaining free space
       lvextend -l +100%free -r /dev/mapper/rootvg-rootlv
     fi
-  elif [ -n "$STACK_VERSION" ] && [ $(version $STACK_VERSION) -gt $(version "7.3.1") ]; then
+  elif [ "$IS_BASE" == "true" ] || ([ -n "$STACK_VERSION" ] && [ $(version $STACK_VERSION) -gt $(version "7.3.1") ]); then
     # create and mount loopback filesystem for /tmp with same size as Azure logical volume
     dd if=/dev/zero of=/var/tmpfs bs=1M count=12288
     yes | mkfs.ext4 /var/tmpfs
