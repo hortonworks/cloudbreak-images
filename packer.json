@@ -122,7 +122,8 @@
     "stig_enabled": "{{ env `STIG_ENABLED` }}",
     "default_java_major_version": "{{ env `DEFAULT_JAVA_MAJOR_VERSION` }}",
     "saltboot_version": "{{ env `SALTBOOT_VERSION` }}",
-    "saltboot_https_enabled": "{{ env `SALTBOOT_HTTPS_ENABLED` }}"
+    "saltboot_https_enabled": "{{ env `SALTBOOT_HTTPS_ENABLED` }}",
+    "oscap_scan_enabled": "{{ env `OSCAP_SCAN_ENABLED` }}"
   },
   "builders": [
     {
@@ -759,6 +760,7 @@
         "SALT_REPO_FILE={{user `salt_repo_file` }}",
         "CLOUD_PROVIDER={{user `cloud_provider`}}",
         "STIG_ENABLED={{user `stig_enabled`}}",
+        "OSCAP_SCAN_ENABLED={{user `oscap_scan_enabled`}}",
         "DEFAULT_JAVA_MAJOR_VERSION={{user `default_java_major_version`}}"
       ],
       "execute_command": "chmod +x {{ .Path }}; sudo {{ .Vars }} {{ .Path }}",
@@ -833,6 +835,7 @@
         "CLOUD_PROVIDER={{user `cloud_provider`}}",
         "IMAGE_BURNING_TYPE={{ user `image_burning_type` }}",
         "STIG_ENABLED={{user `stig_enabled`}}",
+        "OSCAP_SCAN_ENABLED={{user `oscap_scan_enabled`}}",
         "DEFAULT_JAVA_MAJOR_VERSION={{user `default_java_major_version`}}",
         "SALTBOOT_VERSION={{user `saltboot_version`}}",
         "SALTBOOT_HTTPS_ENABLED={{user `saltboot_https_enabled`}}"
@@ -919,7 +922,7 @@
     },
     {
       "type": "file",
-      "source": "/tmp/cis/*",
+      "source": "/tmp/oscap/oscap_*",
       "destination": "./",
       "direction" : "download",
       "only": [
