@@ -19,6 +19,27 @@ set_waagent_execute_user_data:
     - repl: "Provisioning.ExecuteCustomData=y"
     - onlyif: ls /etc/waagent.conf
 
+set_waagent_resourcedisk_format:
+  file.replace:
+    - name: /etc/waagent.conf
+    - pattern: "ResourceDisk.Format*"
+    - repl: "ResourceDisk.Format=n"
+    - onlyif: ls /etc/waagent.conf
+
+set_waagent_resourcedisk_swap:
+  file.replace:
+    - name: /etc/waagent.conf
+    - pattern: "ResourceDisk.EnableSwap*"
+    - repl: "ResourceDisk.EnableSwap=n"
+    - onlyif: ls /etc/waagent.conf
+
+set_waagent_resourcedisk_mount:
+  file.replace:
+    - name: /etc/waagent.conf
+    - pattern: "ResourceDisk.MountPoint*"
+    - repl: "ResourceDisk.MountPoint="
+    - onlyif: ls /etc/waagent.conf
+
 deprovision_waagent:
   cmd.run:
     - name: waagent -deprovision -force -verbose
