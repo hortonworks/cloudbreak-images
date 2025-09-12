@@ -1,4 +1,4 @@
-FROM docker-sandbox.infra.cloudera.com/ycloud-base/base-rhel8.10:0.1.0.0-2
+FROM docker-sandbox.infra.cloudera.com/ycloud-base/base-rhel9.6:0.1.0.0-1
 
 ARG SALT_VERSION
 ARG SALT_PATH
@@ -14,7 +14,8 @@ ARG CLOUD_PROVIDER
 ARG PRE_WARM_PARCELS
 ARG PRE_WARM_CSD
 
-ENV SYSTEMCTL_REPLACEMENT=https://raw.githubusercontent.com/hortonworks/docker-systemctl-replacement/3a885817b377f0307bd03d82323fa5749136de8f/files/docker/systemctl.py
+# ENV SYSTEMCTL_REPLACEMENT=https://raw.githubusercontent.com/hortonworks/docker-systemctl-replacement/3a885817b377f0307bd03d82323fa5749136de8f/files/docker/systemctl.py
+ENV SYSTEMCTL_REPLACEMENT=https://raw.githubusercontent.com/gdraheim/docker-systemctl-replacement/refs/heads/master/files/docker/systemctl3.py
 ENV PRE_WARM_PARCELS=${PRE_WARM_PARCELS}
 ENV PRE_WARM_CSD=${PRE_WARM_CSD}
 
@@ -41,6 +42,7 @@ COPY /scripts/salt-install.sh /tmp/saltstack/
 COPY /scripts/salt-setup.sh /tmp/saltstack/
 COPY /scripts/salt-final.sh /tmp/saltstack/
 COPY /scripts/salt_${SALT_VERSION}_requirements.txt /tmp/salt_${SALT_VERSION}_requirements.txt
+COPY /scripts/rhel8_salt_fix.patch /tmp/rhel8_salt_fix.patch
 
 # Workaround problem caused by sytemd not being pid-1:
 # Force the minions to use systemd on this host
@@ -57,7 +59,7 @@ RUN /tmp/saltstack/salt-install.sh redhat
 ADD ${SYSTEMCTL_REPLACEMENT} /usr/bin
 RUN chmod 755 /usr/bin/$(basename ${SYSTEMCTL_REPLACEMENT}) && \
     mv /usr/bin/systemctl /usr/bin/systemctl.orig && \
-    ln -sf /usr/bin/systemctl.py /usr/bin/systemctl
+    ln -sf /usr/bin/systemctl3.py /usr/bin/systemctl
 
 ARG PARCELS_NAME
 ARG STACK_REPOSITORY_VERSION
@@ -121,7 +123,7 @@ RUN rm -f /etc/salt/minion_id /etc/salt/pki/minion/minion.pem /etc/salt/pki/mini
 # restore systemctl to system default
 RUN ln -sf /usr/bin/systemctl.orig /usr/bin/systemctl
 
-ADD docker/redhat8.10/image-runtime-scripts/start-services-script.sh /bootstrap/
+ADD docker/redhat9.6/image-runtime-scripts/start-services-script.sh /bootstrap/
 
 #################################################################################
 
