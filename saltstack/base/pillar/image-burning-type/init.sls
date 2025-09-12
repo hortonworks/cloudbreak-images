@@ -1,0 +1,1 @@
+IMAGE_BURNING_TYPE: {{ salt['environ.get']('IMAGE_BURNING_TYPE') }}
