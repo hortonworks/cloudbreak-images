@@ -73,6 +73,5 @@ openscap_log_and_report_chmod:
 oscap_scan_cleanup:
   pkg.removed:
     - pkgs:
-      - wget
       - openscap-scanner
       - scap-security-guide
