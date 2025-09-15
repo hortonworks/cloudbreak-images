@@ -3,12 +3,15 @@
   {% set platform = platform ~ 'arm64' %}
 {% endif %}
 
-# TODO: Get rid of the whole "internal repo file" as soon as the RHEL 9 builds of cdp-infra-tools are on archive
+# TODO: Use the cdp-infra-tools-internal repo file for Internal releases (assuming there's an UNIREL ticket, etc)
+# TODO: Use the cdp-infra-tools-latest repo file for Base releases
 add_cdp_infra_tools_repo:
   file.managed:
     - name: /etc/yum.repos.d/cdp-infra-tools.repo
-{% if pillar['OS'] == 'redhat9' %}
-    - source: salt://telemetry/yum/cdp-infra-tools-internal.repo.j2
+{% if salt['environ.get']('IMAGE_BURNING_TYPE') == 'prewarm' and salt['environ.get']('STACK_VERSION').split('.') | map('int') | list >= '7.3.2'.split('.') | map('int') | list %}
+    - source: salt://telemetry/yum/cdp-infra-tools-latest.repo.j2
+{% elif salt['environ.get']('IMAGE_BURNING_TYPE') == 'base' %}
+    - source: salt://telemetry/yum/cdp-infra-tools-latest.repo.j2
 {% else %}
     - source: salt://telemetry/yum/cdp-infra-tools.repo.j2
 {% endif %}
