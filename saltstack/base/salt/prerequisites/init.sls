@@ -27,6 +27,7 @@ include:
   - {{ slspath }}.storage
   - {{ slspath }}.authconfig
   - {{ slspath }}.ipa
+  - {{ slspath }}.oscap
 
 /usr/bin/:
   file.recurse:
