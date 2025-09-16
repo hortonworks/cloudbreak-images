@@ -6,6 +6,7 @@ Description=Salt Bootstrap Service
 After=network.target
 After=network.service
 After=cloud-final.service
+After=multi-user.target
 After=waagent.service
 After=google-startup-scripts.service
 Wants=cloud-final.service
