@@ -150,7 +150,7 @@ ifeq ($(CLOUD_PROVIDER),GCP)
 	endif
 endif
 
-DOCKER_REPOSITORY ?= docker-sandbox.eng.cloudera.com
+DOCKER_REPOSITORY ?= docker-sandbox.infra.cloudera.com
 DOCKER_REPO_USERNAME ?= ""
 DOCKER_REPO_PASSWORD ?= ""
 
