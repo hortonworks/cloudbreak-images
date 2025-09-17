@@ -910,7 +910,10 @@
       "only": [
         "aws-redhat8",
         "gc-redhat8",
-        "arm-redhat8"
+        "arm-redhat8",
+        "aws-redhat9",
+        "gc-redhat9",
+        "arm-redhat9"
       ]
     }
   ],
