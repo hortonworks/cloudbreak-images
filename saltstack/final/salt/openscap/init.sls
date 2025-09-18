@@ -10,6 +10,17 @@ oscap_scan:
     - name: /tmp/oscap
     - mode: 755
 
+{% set os_type = salt['environ.get']('OS_TYPE') %}
+{% if os_type == 'redhat9' %}
+  {% set oval_url = 'https://security.access.redhat.com/data/oval/v2/RHEL9/rhel-9.6-eus.oval.xml.bz2' %}
+  {% set oval_file = 'rhel-9.6-eus.oval.xml' %}
+  {% set ssg_file = '/usr/share/xml/scap/ssg/content/ssg-rhel9-ds.xml' %}
+{% else %}
+  {% set oval_url = 'https://security.access.redhat.com/data/oval/v2/RHEL8/rhel-8.oval.xml.bz2' %}
+  {% set oval_file = 'rhel-8.oval.xml' %}
+  {% set ssg_file = '/usr/share/xml/scap/ssg/content/ssg-rhel8-ds.xml' %}
+{% endif %}
+
 openscap_run_cis_l1:
   cmd.run:
     - name: |
@@ -17,7 +28,7 @@ openscap_run_cis_l1:
           --profile xccdf_org.ssgproject.content_profile_cis_server_l1 \
           --results /tmp/oscap/oscap_cis_l1_results.xml \
           --report /tmp/oscap/oscap_cis_l1_report.html \
-          /usr/share/xml/scap/ssg/content/ssg-rhel8-ds.xml | tee /tmp/oscap/oscap_cis_l1_log.txt
+          {{ ssg_file }} | tee /tmp/oscap/oscap_cis_l1_log.txt
     - require:
       - pkg: oscap_scan
       - file: oscap_scan
@@ -40,15 +51,6 @@ openscap_run_stig:
     - require:
       - pkg: oscap_scan
       - file: oscap_scan
-{% endif %}
-
-{% set os_type = salt['environ.get']('OS_TYPE') %}
-{% if os_type == 'redhat9' %}
-  {% set oval_url = 'https://security.access.redhat.com/data/oval/v2/RHEL9/rhel-9.6-eus.oval.xml.bz2' %}
-  {% set oval_file = 'rhel-9.6-eus.oval.xml' %}
-{% else %}
-  {% set oval_url = 'https://security.access.redhat.com/data/oval/v2/RHEL8/rhel-8.oval.xml.bz2' %}
-  {% set oval_file = 'rhel-8.oval.xml' %}
 {% endif %}
 
 openscap_cve_scan:
