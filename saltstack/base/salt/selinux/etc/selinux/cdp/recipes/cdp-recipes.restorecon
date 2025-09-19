@@ -1,0 +1,7 @@
+/opt/scripts/recipe-runner.sh
+/opt/scripts/post-cloudera-manager-start/
+/opt/scripts/post-cluster-install/
+/opt/scripts/post-service-deployment/
+/opt/scripts/pre-cloudera-manager-start/
+/opt/scripts/pre-service-deployment/
+/opt/scripts/pre-termination/
