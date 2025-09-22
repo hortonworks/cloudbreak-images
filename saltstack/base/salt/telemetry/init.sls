@@ -34,6 +34,9 @@ install_cdp_infra_tools_packages:
   {% endif %}
       - cdp-logging-agent
 {% endif %}
+{% if pillar['OS'] == 'redhat9' %}
+      - cdp-request-signer # For other OSes there's an override - see a few lines below
+{% endif %}
 
 remove_cdp_infra_tools_repo:
   file.absent:
