@@ -6,6 +6,7 @@
 set -ex -o pipefail -o errexit
 
 function copy_resources {
+  echo "Uploading SaltStack resources..."
   local saltenv=${1}
   sudo mkdir -p /srv/salt/${saltenv} /srv/pillar/${saltenv}
   sudo cp -R /tmp/saltstack/${saltenv}/salt/* /srv/salt/${saltenv}
@@ -13,12 +14,16 @@ function copy_resources {
   then
     sudo cp -R /tmp/saltstack/${saltenv}/pillar/* /srv/pillar/${saltenv}
   fi
+  echo "Done uploading SaltStack resources."
 }
 
 function highstate {
+  echo "Preparing to run SaltStack highstate: final..."
   local saltenv=${1}
   copy_resources ${saltenv}
+  echo "Launching highstate final now..."
   ${SALT_PATH}/bin/salt-call --no-color --local state.highstate saltenv=${saltenv} -l info --log-file=/tmp/salt-build-${saltenv}.log --log-file-level=info --config-dir=/tmp/saltstack/config
+  echo "Done running hightate final." 
 }
 
 if [[ "${OS}" == "redhat8" || "${OS}" == "redhat9" ]] ; then
