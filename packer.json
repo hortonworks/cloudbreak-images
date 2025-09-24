@@ -484,8 +484,13 @@
       "resource_group_name": "{{user `resource_group_name`}}",
       "storage_account": "{{user `storage_account`}}",
       "build_resource_group_name": "{{user `build_resource_group_name`}}",
-      "capture_container_name": "packer",
-      "capture_name_prefix": "{{user `image_name`}}",
+      "shared_image_gallery_destination": {
+        "gallery_name": "cloudbreak-images",
+        "image_name": "{{user `image_name`}}",
+        "image_version": "1.0.0",
+        "resource_group": "{{user `resource_group_name`}}",
+        "replication_regions": ["westus"]
+      },
       "image_url": "{{ user `azure_image_vhd` }}",
       "image_publisher": "{{user `azure_image_publisher`}}",
       "image_offer": "{{user `azure_image_offer`}}",
