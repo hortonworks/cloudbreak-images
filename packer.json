@@ -861,6 +861,12 @@
       "remote_folder": "/opt/provision-scripts"
     },
     {
+      "type": "file",
+      "source": "/var/log/selinux/install-cdp-policies-allout.log",
+      "destination": "selinux-install-cdp-policies-allout.log",
+      "direction" : "download",
+    },
+    {
       "type": "shell",
       "script": "scripts/generate-delta-package-list.sh",
       "environment_vars": [
