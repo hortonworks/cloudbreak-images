@@ -65,10 +65,20 @@ cdp_read_sysfs(cdp_logging_agent_t)
 # Read and search even if DAC does not allow it
 allow cdp_logging_agent_t self:capability { dac_read_search };
 
-###
-# TODO Remove this block when CB-29599 is done
 gen_require(`
-    type default_t;
+    type cdp_ipahealthagent_lib_t;
+    type cdp_ipahealthagent_log_t;
 ')
-allow cdp_logging_agent_t default_t:file { getattr ioctl open read };
-#
+list_dirs_pattern(cdp_logging_agent_t, cdp_ipahealthagent_lib_t, cdp_ipahealthagent_lib_t)
+read_files_pattern(cdp_logging_agent_t, cdp_ipahealthagent_lib_t, cdp_ipahealthagent_lib_t)
+list_dirs_pattern(cdp_logging_agent_t, cdp_ipahealthagent_log_t, cdp_ipahealthagent_log_t)
+read_files_pattern(cdp_logging_agent_t, cdp_ipahealthagent_log_t, cdp_ipahealthagent_log_t)
+
+gen_require(`
+    type cdp_ipaldapagent_lib_t;
+    type cdp_ipaldapagent_log_t;
+')
+list_dirs_pattern(cdp_logging_agent_t, cdp_ipaldapagent_lib_t, cdp_ipaldapagent_lib_t)
+read_files_pattern(cdp_logging_agent_t, cdp_ipaldapagent_lib_t, cdp_ipaldapagent_lib_t)
+list_dirs_pattern(cdp_logging_agent_t, cdp_ipaldapagent_log_t, cdp_ipaldapagent_log_t)
+read_files_pattern(cdp_logging_agent_t, cdp_ipaldapagent_log_t, cdp_ipaldapagent_log_t)
