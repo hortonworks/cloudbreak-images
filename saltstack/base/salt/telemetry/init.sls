@@ -10,7 +10,7 @@ add_cdp_infra_tools_repo:
     - name: /etc/yum.repos.d/cdp-infra-tools.repo
 {% if salt['environ.get']('IMAGE_BURNING_TYPE') == 'prewarm' and salt['environ.get']('STACK_VERSION').split('.') | map('int') | list >= '7.3.2'.split('.') | map('int') | list %}
     - source: salt://telemetry/yum/cdp-infra-tools-latest.repo.j2
-{% elif salt['environ.get']('IMAGE_BURNING_TYPE') == 'base' %}
+{% elif salt['environ.get']('IMAGE_BURNING_TYPE') == 'base' or salt['environ.get']('IMAGE_BURNING_TYPE') == 'freeipa' %}
     - source: salt://telemetry/yum/cdp-infra-tools-latest.repo.j2
 {% else %}
     - source: salt://telemetry/yum/cdp-infra-tools.repo.j2
