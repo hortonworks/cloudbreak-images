@@ -1,0 +1,7 @@
+policy_module(cdp-tomcat, 1.0.0)
+
+gen_require(`
+    type tomcat_t;
+')
+
+apache_signull(tomcat_t)
