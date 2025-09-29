@@ -160,6 +160,16 @@
     - file_mode: 644
     - template: jinja
 
+/etc/selinux/cdp/tomcat/:
+  file.recurse:
+    - name: /etc/selinux/cdp/tomcat/
+    - source: salt://{{ slspath }}/etc/selinux/cdp/tomcat/
+    - user: root
+    - group: root
+    - dir_mode: 755
+    - file_mode: 644
+    - template: jinja
+
 /etc/selinux/cdp/cdp-policy-installer.fc:
   file.managed:
     - name: /etc/selinux/cdp/cdp-policy-installer.fc
