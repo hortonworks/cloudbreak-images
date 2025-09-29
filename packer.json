@@ -864,7 +864,7 @@
       "type": "file",
       "source": "/var/log/selinux/install-cdp-policies-allout.log",
       "destination": "selinux-install-cdp-policies-allout.log",
-      "direction" : "download",
+      "direction" : "download"
     },
     {
       "type": "shell",
