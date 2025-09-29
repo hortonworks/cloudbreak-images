@@ -65,6 +65,9 @@ cdp_read_sysfs(cdp_logging_agent_t)
 # Read and search even if DAC does not allow it
 allow cdp_logging_agent_t self:capability { dac_read_search };
 
+# Execute arbitrary code in its own memory space (usually needed for interpreted languages)
+allow cdp_logging_agent_t self:process { execmem };
+
 gen_require(`
     type cdp_ipahealthagent_lib_t;
     type cdp_ipahealthagent_log_t;

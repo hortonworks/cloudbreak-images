@@ -18,6 +18,16 @@
     - file_mode: 644
     - template: jinja
 
+/etc/selinux/cdp/crontab/:
+  file.recurse:
+    - name: /etc/selinux/cdp/crontab/
+    - source: salt://{{ slspath }}/etc/selinux/cdp/crontab/
+    - user: root
+    - group: root
+    - dir_mode: 755
+    - file_mode: 644
+    - template: jinja
+
 /etc/selinux/cdp/hostname/:
   file.recurse:
     - name: /etc/selinux/cdp/hostname/
@@ -210,10 +220,10 @@
     - file_mode: 644
     - template: jinja
 
-/etc/selinux/cdp/crontab/:
+/etc/selinux/cdp/tomcat/:
   file.recurse:
-    - name: /etc/selinux/cdp/crontab/
-    - source: salt://{{ slspath }}/etc/selinux/cdp/crontab/
+    - name: /etc/selinux/cdp/tomcat/
+    - source: salt://{{ slspath }}/etc/selinux/cdp/tomcat/
     - user: root
     - group: root
     - dir_mode: 755

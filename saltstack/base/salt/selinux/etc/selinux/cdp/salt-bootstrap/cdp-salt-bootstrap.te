@@ -181,3 +181,15 @@ files_rw_etc_files(cdp_salt_bootstrap_t)
 # /tmp/*.zip (and possibly its contents unpacked)
 #
 files_manage_generic_tmp_files(cdp_salt_bootstrap_t)
+
+########################################
+#
+# Diagnostic bundle collection
+#
+gen_require(`
+    type tmp_t;
+    type usr_t;
+')
+create_dirs_pattern(cdp_salt_bootstrap_t, tmp_t, tmp_t)
+create_files_pattern(cdp_salt_bootstrap_t, usr_t, usr_t)
+write_files_pattern(cdp_salt_bootstrap_t, usr_t, usr_t)
