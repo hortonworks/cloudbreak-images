@@ -257,6 +257,10 @@ run_install-cdp-policies.sh:
       - file: /etc/selinux/cdp/install-cdp-policies.sh
       - file: /etc/selinux/cdp/policy-install-utils.sh
 
+chmod_selinux_logs:
+  cmd.run:
+    - name: chmod 644 /var/log/selinux/*.log
+
 ## Useful SELinux policy development. Uncomment if needed.
 #disable_dontaudit_rules:
 #  cmd.run:
