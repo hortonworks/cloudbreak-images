@@ -256,6 +256,18 @@ run_install-cdp-policies.sh:
       - file: /etc/selinux/cdp/install-cdp-policies.sh
       - file: /etc/selinux/cdp/policy-install-utils.sh
 
+/tmp/selinux-logs/:
+  file.directory:
+    - name: /tmp/selinux-logs/
+    - user: root
+    - group: root
+    - mode: 755
+    - makedirs: True
+
+collect_selinux_logs:
+  cmd.run:
+    - name: cp /var/log/selinux/*.log /tmp/selinux-logs/
+
 ## Useful SELinux policy development. Uncomment if needed.
 #disable_dontaudit_rules:
 #  cmd.run:
