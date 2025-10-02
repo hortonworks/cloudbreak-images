@@ -49,8 +49,7 @@
     "image_name": "{{ env `IMAGE_NAME` }}",
     "image_size": "{{ env `IMAGE_SIZE` }}",
     "owner_tag": "{{ env `OWNER_TAG` }}",
-    "image_owner_tag": "{{ env `IMAGE_OWNER_TAG` }}",
-    "release_id_tag": "{{ env `RELEASE_ID_TAG` }}",
+    "cloudera_usage_type_tag": "{{ env `CLOUDERA_USAGE_TYPE_TAG` }}",
     "prewarm_tag": "{{ env `PREWARM_TAG` }}",
     "include_fluent": "{{ env `INCLUDE_FLUENT` }}",
     "fluent_prewarm_tag": "{{env `FLUENT_PREWARM_TAG` }}",
@@ -142,15 +141,13 @@
         "version": "{{user `version`}}",
         "cb-creation-timestamp": "{{timestamp}}",
         "owner": "{{ user `owner_tag` }}",
-        "image-owner": "{{ user `image_owner_tag` }}",
-        "release-id": "{{ user `release_id_tag` }}",
+        "cloudera-usage-type": "{{ user `cloudera_usage_type_tag` }}",
         "Customer Delivered": "{{user `tag_customer_delivered`}}",
         "Name": "{{ user `image_name`}}"
       },
       "run_tags": {
         "owner": "{{ user `owner_tag` }}",
-        "image-owner": "{{ user `image_owner_tag` }}",
-        "release-id": "{{ user `release_id_tag` }}",
+        "cloudera-usage-type": "{{ user `cloudera_usage_type_tag` }}",
         "Name": "Packer Builder"
       },
       "ami_block_device_mappings": [
@@ -188,15 +185,13 @@
         "version": "{{user `version`}}",
         "cb-creation-timestamp": "{{timestamp}}",
         "owner": "{{ user `owner_tag` }}",
-        "image-owner": "{{ user `image_owner_tag` }}",
-        "release-id": "{{ user `release_id_tag` }}",
+        "cloudera-usage-type": "{{ user `cloudera_usage_type_tag` }}",
         "Customer Delivered": "{{user `tag_customer_delivered`}}",
         "Name": "{{ user `image_name`}}"
       },
       "run_tags": {
         "owner": "{{ user `owner_tag` }}",
-        "image-owner": "{{ user `image_owner_tag` }}",
-        "release-id": "{{ user `release_id_tag` }}",
+        "cloudera-usage-type": "{{ user `cloudera_usage_type_tag` }}",
         "Name": "Packer Builder"
       },
       "snapshot_users": "{{ user `aws_snapshot_users` }}",
@@ -250,15 +245,13 @@
         "version": "{{user `version`}}",
         "cb-creation-timestamp": "{{timestamp}}",
         "owner": "{{ user `owner_tag` }}",
-        "image-owner": "{{ user `image_owner_tag` }}",
-        "release-id": "{{ user `release_id_tag` }}",
+        "cloudera-usage-type": "{{ user `cloudera_usage_type_tag` }}",
         "Customer Delivered": "{{user `tag_customer_delivered`}}",
         "Name": "{{ user `image_name`}}"
       },
       "run_tags": {
         "owner": "{{ user `owner_tag` }}",
-        "image-owner": "{{ user `image_owner_tag` }}",
-        "release-id": "{{ user `release_id_tag` }}",
+        "cloudera-usage-type": "{{ user `cloudera_usage_type_tag` }}",
         "Name": "Packer Builder"
       },
       "snapshot_users": "{{ user `aws_snapshot_users` }}",
@@ -312,15 +305,13 @@
         "version": "{{user `version`}}",
         "cb-creation-timestamp": "{{timestamp}}",
         "owner": "{{ user `owner_tag` }}",
-        "image-owner": "{{ user `image_owner_tag` }}",
-        "release-id": "{{ user `release_id_tag` }}",
+        "cloudera-usage-type": "{{ user `cloudera_usage_type_tag` }}",
         "Customer Delivered": "{{user `tag_customer_delivered`}}",
         "Name": "{{ user `image_name`}}"
       },
       "run_tags": {
         "owner": "{{ user `owner_tag` }}",
-        "image-owner": "{{ user `image_owner_tag` }}",
-        "release-id": "{{ user `release_id_tag` }}",
+        "cloudera-usage-type": "{{ user `cloudera_usage_type_tag` }}",
         "Name": "Packer Builder"
       },
       "snapshot_users": "{{ user `aws_snapshot_users` }}",
@@ -362,15 +353,13 @@
         "version": "{{user `version`}}",
         "cb-creation-timestamp": "{{timestamp}}",
         "owner": "{{ user `owner_tag` }}",
-        "image-owner": "{{ user `image_owner_tag` }}",
-        "release-id": "{{ user `release_id_tag` }}",
+        "cloudera-usage-type": "{{ user `cloudera_usage_type_tag` }}",
         "Customer Delivered": "{{user `tag_customer_delivered`}}",
         "Name": "{{ user `image_name`}}"
       },
       "run_tags": {
         "owner": "{{ user `owner_tag` }}",
-        "image-owner": "{{ user `image_owner_tag` }}",
-        "release-id": "{{ user `release_id_tag` }}",
+        "cloudera-usage-type": "{{ user `cloudera_usage_type_tag` }}",
         "Name": "Packer Builder"
       },
       "ami_block_device_mappings": [
@@ -428,8 +417,7 @@
         "version": "{{user `version`}}",
         "cb-creation-timestamp": "{{timestamp}}",
         "owner": "{{ user `owner_tag` }}",
-        "image-owner": "{{ user `image_owner_tag` }}",
-        "release-id": "{{ user `release_id_tag` }}",
+        "cloudera-usage-type": "{{ user `cloudera_usage_type_tag` }}",
         "Customer Delivered": "{{user `tag_customer_delivered`}}"
       }
     },
@@ -468,8 +456,7 @@
         "version": "{{user `version`}}",
         "cb-creation-timestamp": "{{timestamp}}",
         "owner": "{{ user `owner_tag` }}",
-        "image-owner": "{{ user `image_owner_tag` }}",
-        "release-id": "{{ user `release_id_tag` }}",
+        "cloudera-usage-type": "{{ user `cloudera_usage_type_tag` }}",
         "Customer Delivered": "{{user `tag_customer_delivered`}}"
       }
     },
@@ -508,8 +495,7 @@
         "version": "{{user `version`}}",
         "cb-creation-timestamp": "{{timestamp}}",
         "owner": "{{ user `owner_tag` }}",
-        "image-owner": "{{ user `image_owner_tag` }}",
-        "release-id": "{{ user `release_id_tag` }}",
+        "cloudera-usage-type": "{{ user `cloudera_usage_type_tag` }}",
         "Customer Delivered": "{{user `tag_customer_delivered`}}"
       },
       "plan_info": {
@@ -553,8 +539,7 @@
         "version": "{{user `version`}}",
         "cb-creation-timestamp": "{{timestamp}}",
         "owner": "{{ user `owner_tag` }}",
-        "image-owner": "{{ user `image_owner_tag` }}",
-        "release-id": "{{ user `release_id_tag` }}",
+        "cloudera-usage-type": "{{ user `cloudera_usage_type_tag` }}",
         "Customer Delivered": "{{user `tag_customer_delivered`}}"
       },
       "plan_info": {
@@ -587,8 +572,7 @@
         "builder--packer",
         "cb-creation-timestamp--{{timestamp}}",
         "owner--{{ user `owner_tag` | clean_resource_name }}",
-        "image-owner--{{ user `image_owner_tag` | clean_resource_name }}",
-        "release-id--{{ user `release_id_tag` | clean_resource_name }}",
+        "cloudera-usage-type--{{ user `cloudera_usage_type_tag` | clean_resource_name }}",
         "customer-delivered--{{user `tag_customer_delivered` | clean_resource_name}}",
         "gcp-dev-cloudbreak-ingress-internet-deny",
         "gcp-dev-cloudbreak-egress-internet-allow",
@@ -627,8 +611,7 @@
         "builder--packer",
         "cb-creation-timestamp--{{timestamp}}",
         "owner--{{ user `owner_tag` | clean_resource_name }}",
-        "image-owner--{{ user `image_owner_tag` | clean_resource_name }}",
-        "release-id--{{ user `release_id_tag` | clean_resource_name }}",
+        "cloudera-usage-type--{{ user `cloudera_usage_type_tag` | clean_resource_name }}",
         "customer-delivered--{{user `tag_customer_delivered` | clean_resource_name}}",
         "gcp-dev-cloudbreak-ingress-internet-deny",
         "gcp-dev-cloudbreak-egress-internet-allow",
@@ -667,8 +650,7 @@
         "builder--packer",
         "cb-creation-timestamp--{{timestamp}}",
         "owner--{{ user `owner_tag` | clean_resource_name }}",
-        "image-owner--{{ user `image_owner_tag` | clean_resource_name }}",
-        "release-id--{{ user `release_id_tag` | clean_resource_name }}",
+        "cloudera-usage-type--{{ user `cloudera_usage_type_tag` | clean_resource_name }}",
         "customer-delivered--{{user `tag_customer_delivered` | clean_resource_name}}",
         "gcp-dev-cloudbreak-ingress-internet-deny",
         "gcp-dev-cloudbreak-egress-internet-allow",
