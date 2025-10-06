@@ -10,7 +10,7 @@ CUSTOM_IMAGE_TYPE ?= "hortonworks"
 OWNER_TAG ?= "cloudbreak-dev"
 IMAGE_OWNER_TAG ?= "cloudbreak-dev"
 RELEASE_ID_TAG ?= ""
-CLOUDERA_USAGE_TYPE_TAG = cloudbreak:imagetracking:$(RELEASE_ID_TAG):$(IMAGE_OWNER_TAG)
+CLOUDERA_USAGE_TYPE_TAG = $(shell ./scripts/get-cloudera-usage-type-tag.sh "$(IMAGE_OWNER_TAG)" "$(RELEASE_ID_TAG)")
 OPTIONAL_STATES ?= ""
 # for splitting image copy (test and prod phases)
 IMAGE_COPY_PHASE ?= ""
