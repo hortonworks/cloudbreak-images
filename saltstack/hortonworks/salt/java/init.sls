@@ -15,13 +15,11 @@ set_java_home_systemd:
     - repl: \1 JAVA_HOME={{ pillar['JAVA_HOME'] }}
 {% endif %}
 
-{% if grains['os_family'] == 'RedHat' %}
+{% if salt['environ.get']('OS') == 'centos7' %}
 remove_openjdk1_7:
   pkg.removed:
     - name: java-1.7.0-openjdk
-{% endif %}
 
-{% if grains['os'] == 'RedHat' and grains['osmajorrelease'] | int == 7 %}
 enable_redhat_rhui_repos:
   file.replace:
     - name: /etc/yum.repos.d/redhat-rhui.repo
@@ -34,6 +32,8 @@ install_openjdk:
   pkg.installed:
     - pkgs: {{ pillar['openjdk_packages'] }}
 
+{% if salt['environ.get']('OS') == 'redhat8' %}
+
 {% if salt['environ.get']('ARCHITECTURE') == 'arm64' %}
 remove_unused_openjdk:
   pkg.removed:
@@ -44,7 +44,6 @@ remove_unused_openjdk:
       - java-11-openjdk-devel
 {% endif %}
 
-{% if salt['environ.get']('OS') == 'redhat8' %}
 {% if salt['environ.get']('IMAGE_BURNING_TYPE') == 'base' or salt['environ.get']('STACK_VERSION').split('.') | map('int') | list >= '7.2.18'.split('.') | map('int') | list %}
 download_rhel8_repo:
   file.managed:
@@ -74,7 +73,7 @@ delete_rhel8_repo:
 {% endif %}
 
 {% if salt['environ.get']('OS') == 'redhat8' or salt['environ.get']('OS') == 'redhat9' %}
-{% if salt['environ.get']('DEFAULT_JAVA_MAJOR_VERSION') == '17' %}
+{% if salt['environ.get']('DEFAULT_JAVA_MAJOR_VERSION') == '17' or salt['environ.get']('STACK_VERSION').split('.') | map('int') | list >= '7.3.2'.split('.') | map('int') | list %}
 set_openjdk_version_17:
   cmd.run:
     - name: | 
