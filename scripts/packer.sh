@@ -91,7 +91,13 @@ packer_in_container() {
     export METERING_AGENT_RPM_URL=$DEFAULT_METERING_AGENT_RPM_URL
   fi
   if ! [[ $FREEIPA_PLUGIN_RPM_URL =~ ^http.*rpm$ ]]; then
-    if [[ "$OS" == "redhat8" ]]; then
+    if [[ "$OS" == "redhat9" ]]; then
+      if [[ "$ARCHITECTURE" == "arm64" ]]; then
+        export FREEIPA_PLUGIN_RPM_URL="https://cloudera-build-2-us-west-2.vpc.cloudera.com/s3/build/70158318/thunderhead/1.x/redhat8/yum/cdp-hashed-pwd-1.1.0.3-b1407.aarch64.rpm"   # This is RHEL 8 for now...
+      else
+        export FREEIPA_PLUGIN_RPM_URL="https://archive.cloudera.com/cdp-freeipa-artifacts/cdp-hashed-pwd-1.1.0.4-b51.el9.x86_64.rpm"
+      fi
+    elif [[ "$OS" == "redhat8" ]]; then
       if [[ "$ARCHITECTURE" == "arm64" ]]; then
         export FREEIPA_PLUGIN_RPM_URL="https://cloudera-build-2-us-west-2.vpc.cloudera.com/s3/build/70158318/thunderhead/1.x/redhat8/yum/cdp-hashed-pwd-1.1.0.3-b1407.aarch64.rpm"
       else
@@ -102,7 +108,13 @@ packer_in_container() {
     fi
   fi
   if ! [[ $FREEIPA_HEALTH_AGENT_RPM_URL =~ ^http.*rpm$ ]]; then
-    if [[ "$OS" == "redhat8" ]]; then
+    if [[ "$OS" == "redhat9" ]]; then
+      if [[ "$ARCHITECTURE" == "arm64" ]]; then
+        export FREEIPA_HEALTH_AGENT_RPM_URL="https://cloudera-build-2-us-west-2.vpc.cloudera.com/s3/build/70158318/thunderhead/1.x/redhat8/yum/freeipa-health-agent-3.1.0.3-b1407.aarch64.rpm"  # This is RHEL 8 for now...
+      else
+        export FREEIPA_HEALTH_AGENT_RPM_URL="https://archive.cloudera.com/cdp-freeipa-artifacts/freeipa-health-agent-3.1.0.4-b51.el9.x86_64.rpm"
+      fi
+    elif [[ "$OS" == "redhat8" ]]; then
       if [[ "$ARCHITECTURE" == "arm64" ]]; then
         export FREEIPA_HEALTH_AGENT_RPM_URL="https://cloudera-build-2-us-west-2.vpc.cloudera.com/s3/build/70158318/thunderhead/1.x/redhat8/yum/freeipa-health-agent-3.1.0.3-b1407.aarch64.rpm"
       else
@@ -113,7 +125,13 @@ packer_in_container() {
     fi
   fi
   if ! [[  $FREEIPA_LDAP_AGENT_RPM_URL =~ ^http.*rpm$ ]]; then
-    if [[ "$OS" == "redhat8" ]]; then
+    if [[ "$OS" == "redhat9" ]]; then
+      if [[ "$ARCHITECTURE" == "arm64" ]]; then
+        export FREEIPA_LDAP_AGENT_RPM_URL="https://archive.cloudera.com/cdp-freeipa-artifacts/freeipa-ldap-agent-1.1.0.3-b525.aarch64.rpm" # This is RHEL 8 for now...
+      else
+        export FREEIPA_LDAP_AGENT_RPM_URL="https://archive.cloudera.com/cdp-freeipa-artifacts/freeipa-ldap-agent-1.1.0.4-b51.el9.x86_64.rpm"
+      fi
+    elif [[ "$OS" == "redhat8" ]]; then
       if [[ "$ARCHITECTURE" == "arm64" ]]; then
         export FREEIPA_LDAP_AGENT_RPM_URL="https://archive.cloudera.com/cdp-freeipa-artifacts/freeipa-ldap-agent-1.1.0.3-b525.aarch64.rpm"
       else
