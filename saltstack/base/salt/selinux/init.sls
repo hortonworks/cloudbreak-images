@@ -160,6 +160,16 @@
     - file_mode: 644
     - template: jinja
 
+/etc/selinux/cdp/crontab/:
+  file.recurse:
+    - name: /etc/selinux/cdp/crontab/
+    - source: salt://{{ slspath }}/etc/selinux/cdp/crontab/
+    - user: root
+    - group: root
+    - dir_mode: 755
+    - file_mode: 644
+    - template: jinja
+
 /etc/selinux/cdp/cdp-policy-installer.fc:
   file.managed:
     - name: /etc/selinux/cdp/cdp-policy-installer.fc
