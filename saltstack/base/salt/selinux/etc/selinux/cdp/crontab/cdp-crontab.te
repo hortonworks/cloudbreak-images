@@ -1,0 +1,7 @@
+policy_module(cdp-crontab, 1.0.0)
+
+gen_require(`
+    type crontab_t;
+    type tmp_t;
+')
+allow crontab_t tmp_t:file { open };
