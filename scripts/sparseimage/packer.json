@@ -11,7 +11,6 @@
         "aws_sriov_support": "true",
         "owner": "{{env `OWNER_TAG`}}",
         "image_owner": "{{env `IMAGE_OWNER_TAG`}}",
-        "release_id": "{{env `RELEASE_ID_TAG`}}",
         "ami_virtualization_type": "hvm",
         "root_volume_size": "{{ env `ROOT_VOLUME_SIZE` }}",
         "instance_size" : "m4.xlarge",
@@ -42,14 +41,10 @@
         "vpc_id": "{{ user `aws_vpc_id`}}",
         "subnet_id": "{{ user `aws_subnet_id`}}",
         "tags": {
-            "owner": "{{user `owner`}}",
-            "image-owner": "{{user `image_owner_tag`}}",
-            "release-id": "{{user `release_id_tag`}}"
+            "owner": "{{user `owner`}}"
         },
         "run_tags": {
-            "owner": "{{user `owner`}}",
-            "image-owner": "{{user `image_owner_tag`}}",
-            "release-id": "{{user `release_id_tag`}}"
+            "owner": "{{user `owner`}}"
         },
         "snapshot_groups": "{{ user `aws_snapshot_groups` }}",
         "ami_groups": "{{ user `aws_ami_groups` }}",
