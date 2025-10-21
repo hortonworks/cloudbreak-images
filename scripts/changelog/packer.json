@@ -199,6 +199,7 @@
         "builder--packer",
         "cb-creation-timestamp--{{timestamp}}",
         "owner--{{ user `owner_tag` | clean_resource_name }}",
+        "cloudera-usage-type--{{ user `cloudera_usage_type_tag` | clean_resource_name }}",
         "gcp-dev-cloudbreak-ingress-internet-deny",
         "gcp-dev-cloudbreak-egress-internet-allow",
         "gcp-dev-cloudbreak-ingress-rfc1918-allow"
@@ -230,6 +231,7 @@
         "builder--packer",
         "cb-creation-timestamp--{{timestamp}}",
         "owner--{{ user `owner_tag` | clean_resource_name }}",
+        "cloudera-usage-type--{{ user `cloudera_usage_type_tag` | clean_resource_name }}",
         "gcp-dev-cloudbreak-ingress-internet-deny",
         "gcp-dev-cloudbreak-egress-internet-allow",
         "gcp-dev-cloudbreak-ingress-rfc1918-allow"
