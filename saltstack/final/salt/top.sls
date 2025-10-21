@@ -10,7 +10,7 @@ final:
     - metadata
 {% if pillar['subtype'] != 'Docker' and salt['environ.get']('OS') != 'redhat9' %}
     - cis-controls
-{% if salt['environ.get']('OSCAP_SCAN_ENABLED') == 'true' %}
+{% if salt['environ.get']('STIG_ENABLED') == 'true' %}
     - openscap
 {% endif %}
 {% endif %}
