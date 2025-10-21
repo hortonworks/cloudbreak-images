@@ -9,7 +9,7 @@ OSCAP_SCAN_ENABLED ?= false
 CUSTOM_IMAGE_TYPE ?= "hortonworks"
 OWNER_TAG ?= "cloudbreak-dev"
 IMAGE_OWNER_TAG ?= "cloudbreak-dev"
-RELEASE_ID_TAG ?= "none"
+RELEASE_ID_TAG ?= ""
 OPTIONAL_STATES ?= ""
 # for splitting image copy (test and prod phases)
 IMAGE_COPY_PHASE ?= ""
