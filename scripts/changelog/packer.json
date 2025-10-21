@@ -10,7 +10,6 @@
     "vpc_id": "{{ env `VPC_ID` }}",
     "owner_tag": "{{ env `OWNER_TAG` }}",
     "image_owner_tag": "{{ env `IMAGE_OWNER_TAG` }}",
-    "release_id_tag": "{{ env `RELEASE_ID_TAG` }}",
     "gcp_account_file": "{{env `GCP_ACCOUNT_FILE`}}",
     "client_id": "{{ env `ARM_CLIENT_ID` }}",
     "client_secret": "{{ env `ARM_CLIENT_SECRET` }}",
@@ -36,13 +35,11 @@
         "builder": "packer",
         "cb-creation-timestamp": "{{timestamp}}",
         "owner": "{{ user `owner_tag` }}",
-        "image-owner": "{{ user `image_owner_tag` }}",
-        "release-id": "{{ user `release_id_tag` }}"
+        "image-owner": "{{ user `image_owner_tag` }}"
       },
       "run_tags": {
         "owner": "{{ user `owner_tag` }}",
-        "image-owner": "{{ user `image_owner_tag` }}",
-        "release-id": "{{ user `release_id_tag` }}"
+        "image-owner": "{{ user `image_owner_tag` }}"
       },
       "ami_block_device_mappings": [
         {
@@ -79,13 +76,11 @@
         "builder": "packer",
         "cb-creation-timestamp": "{{timestamp}}",
         "owner": "{{ user `owner_tag` }}",
-        "image-owner": "{{ user `image_owner_tag` }}",
-        "release-id": "{{ user `release_id_tag` }}"
+        "image-owner": "{{ user `image_owner_tag` }}"
       },
       "run_tags": {
         "owner": "{{ user `owner_tag` }}",
-        "image-owner": "{{ user `image_owner_tag` }}",
-        "release-id": "{{ user `release_id_tag` }}"
+        "image-owner": "{{ user `image_owner_tag` }}"
       },
       "ami_block_device_mappings": [
         {
@@ -136,8 +131,7 @@
         "builder": "packer",
         "cb-creation-timestamp": "{{timestamp}}",
         "owner": "{{ user `owner_tag` }}",
-        "image-owner": "{{ user `image_owner_tag` }}",
-        "release-id": "{{ user `release_id_tag` }}"
+        "image-owner": "{{ user `image_owner_tag` }}"
       },
       "skip_create_image": true,
       "communicator": "ssh"
@@ -170,8 +164,7 @@
         "builder": "packer",
         "cb-creation-timestamp": "{{timestamp}}",
         "owner": "{{ user `owner_tag` }}",
-        "image-owner": "{{ user `image_owner_tag` }}",
-        "release-id": "{{ user `release_id_tag` }}"
+        "image-owner": "{{ user `image_owner_tag` }}"
       },
       "plan_info": {
         "plan_name": "{{user `plan_name`}}",
@@ -207,7 +200,6 @@
         "cb-creation-timestamp--{{timestamp}}",
         "owner--{{ user `owner_tag` | clean_resource_name }}",
         "image-owner--{{ user `image_owner_tag` | clean_resource_name }}",
-        "release-id--{{ user `release_id_tag` | clean_resource_name }}",
         "gcp-dev-cloudbreak-ingress-internet-deny",
         "gcp-dev-cloudbreak-egress-internet-allow",
         "gcp-dev-cloudbreak-ingress-rfc1918-allow"
@@ -240,7 +232,6 @@
         "cb-creation-timestamp--{{timestamp}}",
         "owner--{{ user `owner_tag` | clean_resource_name }}",
         "image-owner--{{ user `image_owner_tag` | clean_resource_name }}",
-        "release-id--{{ user `release_id_tag` | clean_resource_name }}",
         "gcp-dev-cloudbreak-ingress-internet-deny",
         "gcp-dev-cloudbreak-egress-internet-allow",
         "gcp-dev-cloudbreak-ingress-rfc1918-allow"

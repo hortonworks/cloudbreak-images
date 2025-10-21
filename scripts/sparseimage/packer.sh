@@ -48,7 +48,6 @@ packer_in_container() {
     -e IMAGE_NAME=$IMAGE_NAME \
     -e OWNER_TAG=$OWNER_TAG \
     -e IMAGE_OWNER_TAG=$IMAGE_OWNER_TAG \
-    -e RELEASE_ID_TAG=$RELEASE_ID_TAG \
     -e IMAGE_SIZE=$IMAGE_SIZE \
     -e ROOT_VOLUME_SIZE=$((2*IMAGE_SIZE)) \
     -e SOURCE_AMI=$SOURCE_AMI \
