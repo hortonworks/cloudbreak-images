@@ -23,4 +23,4 @@ if [[ -n $RELEASE_ID_TAG ]]; then
   fi
 fi
 
-echo "cb-images-$RELEASE_ID_TAG-$IMAGE_OWNER_TAG"
+echo "cloudbreak-imagetracking-$RELEASE_ID_TAG-$IMAGE_OWNER_TAG"
