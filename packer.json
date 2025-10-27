@@ -873,6 +873,12 @@
       "direction" : "download"
     },
     {
+      "type": "file",
+      "source": "/tmp/package-versions.log",
+      "destination": "package-versions.log",
+      "direction" : "download"
+    },
+    {
       "type": "shell",
       "script": "scripts/generate-tags.sh",
       "environment_vars": [
