@@ -262,7 +262,6 @@ run_install-policy-installer-policy.sh:
 run_install-cdp-policies.sh:
   cmd.run:
     - name: /etc/selinux/cdp/install-cdp-policies.sh 2>&1 | tee /var/log/selinux/install-cdp-policies-allout.log && exit ${PIPESTATUS[0]}
-    - hide_output: True
     - require:
       - file: /etc/selinux/cdp/install-cdp-policies.sh
       - file: /etc/selinux/cdp/policy-install-utils.sh
