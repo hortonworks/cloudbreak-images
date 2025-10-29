@@ -13,3 +13,12 @@ psycopg2-rhel8-py38-hue-hack:
     - name: rm -rf /opt/cloudera/parcels/CDH/lib/hue/build/env/lib/python3.8/site-packages/psycopg2*
     - onlyif: ls -la /opt/cloudera/parcels/CDH/lib/hue/build/env/lib/python3.8/site-packages/psycopg2
 {% endif %}
+
+# For whatever reason Microsoft Azure's certification scanner picks this file up as Malware, so we need to get rid of it
+# see CB-30984 for more details
+{% if salt['environ.get']('CLOUD_PROVIDER') == 'Azure' %}
+remove_jna_readme_md:
+  cmd.run:
+    - name: rm -f /usr/share/doc/jna/README.md
+    - onlyif: ls -la /usr/share/doc/jna/README.md
+{% endif %}
