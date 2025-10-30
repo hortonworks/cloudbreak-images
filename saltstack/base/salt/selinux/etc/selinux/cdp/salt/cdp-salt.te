@@ -210,6 +210,25 @@ gen_require(`
 manage_dirs_pattern(cdp_salt_t, cdp_blackbox_exporter_conf_t, cdp_blackbox_exporter_conf_t)
 manage_files_pattern(cdp_salt_t, cdp_blackbox_exporter_conf_t, cdp_blackbox_exporter_conf_t)
 
+# cdp-ipahealthagent
+gen_require(`
+    type cdp_ipahealthagent_cert_t;
+    type cdp_ipahealthagent_lib_t;
+')
+manage_files_pattern(cdp_salt_t, cdp_ipahealthagent_cert_t, cdp_ipahealthagent_cert_t)
+manage_files_pattern(cdp_salt_t, cdp_ipahealthagent_lib_t, cdp_ipahealthagent_lib_t)
+exec_files_pattern(cdp_salt_t, cdp_ipahealthagent_lib_t, cdp_ipahealthagent_lib_t)
+
+# cdp-ipaldapagent
+gen_require(`
+    type cdp_ipaldapagent_exec_t;
+    type cdp_ipaldapagent_etc_t;
+    type cdp_ipaldapagent_lib_t;
+')
+getattr_files_pattern(cdp_salt_t, cdp_ipaldapagent_exec_t, cdp_ipaldapagent_exec_t)
+manage_files_pattern(cdp_salt_t, cdp_ipaldapagent_etc_t, cdp_ipaldapagent_etc_t)
+manage_files_pattern(cdp_salt_t, cdp_ipaldapagent_lib_t, cdp_ipaldapagent_lib_t)
+
 # cdp-jumpgate-agent
 gen_require(`
     type cdp_jumpgate_agent_etc_t;
@@ -573,16 +592,6 @@ gen_require(`
 manage_dirs_pattern(useradd_t, lib_t, lib_t)
 manage_files_pattern(useradd_t, lib_t, lib_t)
 manage_files_pattern(useradd_t, var_lib_t, var_lib_t)
-
-###
-# TODO Remove this block when CB-29600 is done
-gen_require(`
-    type default_t;
-    type init_t;
-')
-allow cdp_salt_t default_t:file { execute execute_no_trans };
-allow init_t default_t:file { execute execute_no_trans open read };
-###
 
 ###
 # TODO Remove this block when CB-30029 is done
