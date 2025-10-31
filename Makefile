@@ -78,6 +78,10 @@ $(error Unexpected OS type $(OS) for Azure)
 			PLAN_NAME ?= rhel-lvm88
 		else ifeq ($(OS_VERSION),8.10)
 			PLAN_NAME ?= rhel-lvm810
+		else ifeq ($(OS_VERSION),9.5)
+			PLAN_NAME ?= rhel-lvm95
+		else ifeq ($(OS_VERSION),9.6)
+			PLAN_NAME ?= rhel-lvm96
 		endif
 	endif
 endif
@@ -617,6 +621,18 @@ ifdef SOURCE_IMAGE
 endif
 endif
 
+generate-aws-redhat9-changelog:
+ifdef IMAGE_UUID
+ifdef SOURCE_IMAGE
+	$(ENVS) \
+	OS=redhat9 \
+	IMAGE_UUID=$(IMAGE_UUID) \
+	SOURCE_IMAGE=$(SOURCE_IMAGE) \
+	AWS_INSTANCE_TYPE=$(AWS_INSTANCE_TYPE) \
+	./scripts/changelog/packer.sh build -color=false -only=aws-redhat9 -force $(PACKER_OPTS)
+endif
+endif
+
 generate-azure-centos7-changelog:
 ifdef IMAGE_UUID
 ifdef SOURCE_IMAGE
@@ -641,6 +657,22 @@ ifdef SOURCE_IMAGE
 	SOURCE_IMAGE=$(SOURCE_IMAGE) \
 	PLAN_NAME=$(PLAN_NAME) \
 	./scripts/changelog/packer.sh build -color=false -only=arm-redhat8 -force $(PACKER_OPTS)
+endif
+endif
+
+generate-azure-redhat9-changelog:
+ifndef PLAN_NAME
+	$(error PLAN_NAME parameter is mandatory for azure redhat9 related changelog generation)
+endif
+
+ifdef IMAGE_UUID
+ifdef SOURCE_IMAGE
+	$(ENVS) \
+	OS=redhat9 \
+	IMAGE_UUID=$(IMAGE_UUID) \
+	SOURCE_IMAGE=$(SOURCE_IMAGE) \
+	PLAN_NAME=$(PLAN_NAME) \
+	./scripts/changelog/packer.sh build -color=false -only=arm-redhat9 -force $(PACKER_OPTS)
 endif
 endif
 
@@ -669,6 +701,20 @@ ifdef SOURCE_IMAGE
 	GCP_STORAGE_BUNDLE_LOG=$(GCP_STORAGE_BUNDLE_LOG) \
 	STACK_VERSION=$(STACK_VERSION) \
 	./scripts/changelog/packer.sh build -color=false -only=gc-redhat8 -force $(PACKER_OPTS)
+endif
+endif
+
+generate-gc-redhat9-changelog:
+ifdef IMAGE_UUID
+ifdef SOURCE_IMAGE
+	$(ENVS) \
+	OS=redhat9 \
+	IMAGE_UUID=$(IMAGE_UUID) \
+	SOURCE_IMAGE=$(SOURCE_IMAGE) \
+	GCP_STORAGE_BUNDLE=$(GCP_STORAGE_BUNDLE) \
+	GCP_STORAGE_BUNDLE_LOG=$(GCP_STORAGE_BUNDLE_LOG) \
+	STACK_VERSION=$(STACK_VERSION) \
+	./scripts/changelog/packer.sh build -color=false -only=gc-redhat9 -force $(PACKER_OPTS)
 endif
 endif
 
