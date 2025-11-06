@@ -63,7 +63,7 @@ $(error "AZURE_IMAGE_VHD and Marketplace image properties (AZURE_IMAGE_PUBLISHER
 		else ifeq ($(OS),redhat9)
 			AZURE_IMAGE_PUBLISHER ?= RedHat
 			AZURE_IMAGE_OFFER ?= rhel-byos
-			AZURE_IMAGE_SKU ?= rhel-lvm95
+			AZURE_IMAGE_SKU ?= rhel-lvm96
 		else ifeq ($(OS),centos7)
 			AZURE_IMAGE_PUBLISHER ?= OpenLogic
 			AZURE_IMAGE_OFFER ?= CentOS
