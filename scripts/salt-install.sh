@@ -72,6 +72,12 @@ function update_yum_repos() {
       # Internal repo is not yet available for AWS_GOV images
       RHEL_VERSION=$(cat /etc/redhat-release | grep -oP "[0-9\.]*")
       RHEL_VERSION=${RHEL_VERSION/.0/}
+
+      # CB-30236: We need this override, because we only have a 9.5 base image for Azure
+      if [[ "${CLOUD_PROVIDER}" == "Azure" && "${RHEL_VERSION}" == "9.5" ]]; then
+        RHEL_VERSION="9.6"
+      fi
+
       RHEL_VERSION_MAJOR=${RHEL_VERSION:0:1}
       REPO_FILE=rhel${RHEL_VERSION}_cldr_mirrors.repo
       rm /etc/yum.repos.d/*.repo -f
