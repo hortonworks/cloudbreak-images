@@ -1,4 +1,12 @@
-{% if salt['environ.get']('CLOUD_PROVIDER') == 'AWS_GOV' %}
+# CB-30236: We need this distro upgrade, because we only have a 9.5 base image for Azure
+{% if salt['environ.get']('CLOUD_PROVIDER') == 'Azure' %}
+distro-upgrade:
+  cmd.run:
+    - name: |
+        dnf clean all
+        dnf upgrade -y --releasever=9.6
+
+{% elif salt['environ.get']('CLOUD_PROVIDER') == 'AWS_GOV' %}
 update-packages:
   cmd.run:
     - name: dnf update -y --releasever=8.8 --nobest
