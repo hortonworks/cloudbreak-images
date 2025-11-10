@@ -1,11 +1,10 @@
 # CB-30236: We need this distro upgrade, because we only have a 9.5 base image for Azure
-{% if salt['environ.get']('CLOUD_PROVIDER') == 'Azure' %}
+{% if salt['environ.get']('CLOUD_PROVIDER') == 'Azure' and pillar['OS'] == 'redhat9' %}
 distro-upgrade:
   cmd.run:
     - name: |
         dnf clean all
         dnf upgrade -y --releasever=9.6
-
 {% elif salt['environ.get']('CLOUD_PROVIDER') == 'AWS_GOV' %}
 update-packages:
   cmd.run:
