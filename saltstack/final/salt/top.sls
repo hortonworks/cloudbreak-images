@@ -8,7 +8,7 @@ final:
 {% endif %}
     - krb5
     - metadata
-{% if pillar['subtype'] != 'Docker' and salt['environ.get']('OS') != 'redhat9' %}
+{% if pillar['subtype'] != 'Docker'  %}
     - cis-controls
 {% if salt['environ.get']('OSCAP_SCAN_ENABLED') == 'true' %}
     - openscap
