@@ -718,6 +718,18 @@ ifdef SOURCE_IMAGE
 endif
 endif
 
+generate-aws-gov-redhat8-changelog:
+ifdef IMAGE_UUID
+ifdef SOURCE_IMAGE
+	$(ENVS) \
+	OS=redhat8 \
+	IMAGE_UUID=$(IMAGE_UUID) \
+	SOURCE_IMAGE=$(SOURCE_IMAGE) \
+	AWS_INSTANCE_TYPE=$(AWS_INSTANCE_TYPE) \
+	./scripts/changelog/packer.sh build -color=false -only=aws-gov-redhat8 -force $(PACKER_OPTS)
+endif
+endif
+
 get-azure-storage-accounts:
 	@ AZURE_STORAGE_ACCOUNTS="$(AZURE_STORAGE_ACCOUNTS)" TARGET_LOCATIONS="$(TARGET_LOCATIONS)" ./scripts/get-azure-storage-accounts.sh
 
