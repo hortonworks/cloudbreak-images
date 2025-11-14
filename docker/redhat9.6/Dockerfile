@@ -1,4 +1,4 @@
-FROM docker-sandbox.infra.cloudera.com/ycloud-base/base-rhel8.10:0.1.0.0-2
+FROM docker-sandbox.infra.cloudera.com/ycloud-base/base-rhel9.6:0.1.0.0-1
 
 ARG SALT_VERSION
 ARG SALT_PATH
@@ -14,7 +14,8 @@ ARG CLOUD_PROVIDER
 ARG PRE_WARM_PARCELS
 ARG PRE_WARM_CSD
 
-ENV SYSTEMCTL_REPLACEMENT=https://raw.githubusercontent.com/hortonworks/docker-systemctl-replacement/3a885817b377f0307bd03d82323fa5749136de8f/files/docker/systemctl.py
+# ENV SYSTEMCTL_REPLACEMENT=https://raw.githubusercontent.com/hortonworks/docker-systemctl-replacement/3a885817b377f0307bd03d82323fa5749136de8f/files/docker/systemctl.py
+ENV SYSTEMCTL_REPLACEMENT=https://raw.githubusercontent.com/gdraheim/docker-systemctl-replacement/refs/heads/master/files/docker/systemctl3.py
 ENV PRE_WARM_PARCELS=${PRE_WARM_PARCELS}
 ENV PRE_WARM_CSD=${PRE_WARM_CSD}
 
@@ -41,7 +42,6 @@ COPY /scripts/salt-install.sh /tmp/saltstack/
 COPY /scripts/salt-setup.sh /tmp/saltstack/
 COPY /scripts/salt-final.sh /tmp/saltstack/
 COPY /scripts/salt_${SALT_VERSION}_requirements.txt /tmp/salt_${SALT_VERSION}_requirements.txt
-COPY /scripts/rhel8_salt_fix.patch /tmp/rhel8_salt_fix.patch
 
 # Workaround problem caused by sytemd not being pid-1:
 # Force the minions to use systemd on this host
@@ -58,7 +58,7 @@ RUN /tmp/saltstack/salt-install.sh redhat
 ADD ${SYSTEMCTL_REPLACEMENT} /usr/bin
 RUN chmod 755 /usr/bin/$(basename ${SYSTEMCTL_REPLACEMENT}) && \
     mv /usr/bin/systemctl /usr/bin/systemctl.orig && \
-    ln -sf /usr/bin/systemctl.py /usr/bin/systemctl
+    ln -sf /usr/bin/systemctl3.py /usr/bin/systemctl
 
 ARG PARCELS_NAME
 ARG STACK_REPOSITORY_VERSION
@@ -94,7 +94,7 @@ ENV OS=${OS}
 ENV OS_TYPE=${OS_TYPE}
 ENV ARCHITECTURE=${ARCHITECTURE}
 
-ENV DEFAULT_JAVA_MAJOR_VERSION=8
+ENV DEFAULT_JAVA_MAJOR_VERSION=17
 
 ARG INCLUDE_FLUENT
 ARG INCLUDE_CDP_TELEMETRY
@@ -108,22 +108,20 @@ ARG JUMPGATE_AGENT_GBN
 ENV INCLUDE_FLUENT="Yes"
 ENV INCLUDE_CDP_TELEMETRY="Yes"
 ENV INCLUDE_METERING="Yes"
-ENV FREEIPA_PLUGIN_RPM_URL="https://cloudera-build-us-west-1.vpc.cloudera.com/s3/build/49070467/thunderhead/1.x/redhat8/yum/cdp-hashed-pwd-1.0-20240109061814git4230396.el8.x86_64.rpm"
-ENV FREEIPA_LDAP_AGENT_RPM_URL="https://cloudera-build-us-west-1.vpc.cloudera.com/s3/build/49050621/thunderhead/1.x/redhat8/yum/freeipa-ldap-agent-1.0.0-b12325.x86_64.rpm"
-ENV JUMPGATE_AGENT_RPM_URL="https://archive.cloudera.com/ccm/3.0.9/jumpgate-agent.rpm"
-
+ENV FREEIPA_PLUGIN_RPM_URL="https://archive.cloudera.com/cdp-freeipa-artifacts/cdp-hashed-pwd-1.1-b847.el7.x86_64.rpm"
+ENV FREEIPA_LDAP_AGENT_RPM_URL="https://archive.cloudera.com/cdp-freeipa-artifacts/freeipa-ldap-agent-1.1.0.3-b525.x86_64.rpm"
+ENV JUMPGATE_AGENT_RPM_URL="https://archive.cloudera.com/ccm/3.13.0/jumpgate-agent.rpm"
 #we build logic on the existance of this directory, please DO NOT REMOVE
 RUN mkdir /yarn-private
 
 RUN /tmp/saltstack/salt-setup.sh hortonworks
 RUN /tmp/saltstack/salt-final.sh
 RUN rm -f /etc/salt/minion_id /etc/salt/pki/minion/minion.pem /etc/salt/pki/minion/minion.pub
-COPY /scripts/rhel8_salt_fix.patch /tmp/rhel8_salt_fix.patch
 
 # restore systemctl to system default
 RUN ln -sf /usr/bin/systemctl.orig /usr/bin/systemctl
 
-ADD docker/redhat8.10/image-runtime-scripts/start-services-script.sh /bootstrap/
+ADD docker/redhat9.6/image-runtime-scripts/start-services-script.sh /bootstrap/
 
 #################################################################################
 
