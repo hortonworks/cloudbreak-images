@@ -46,17 +46,17 @@ $(error "AZURE_IMAGE_VHD and Marketplace image properties (AZURE_IMAGE_PUBLISHER
 	else
 		ifeq ($(OS),redhat8)
 			AZURE_IMAGE_PUBLISHER ?= RedHat
-			AZURE_IMAGE_OFFER ?= rhel-byos
+			AZURE_IMAGE_OFFER ?= RHEL
 			ifeq ($(STACK_VERSION),7.3.2)
-				AZURE_IMAGE_SKU ?= rhel-lvm810
+				AZURE_IMAGE_SKU ?= 89-gen2
 			else ifeq ($(STACK_VERSION),7.3.1)
-				AZURE_IMAGE_SKU ?= rhel-lvm810
+				AZURE_IMAGE_SKU ?= 89-gen2
 			else ifeq ($(STACK_VERSION),7.2.18)
-				AZURE_IMAGE_SKU ?= rhel-lvm810
+				AZURE_IMAGE_SKU ?= 89-gen2
 			else ifeq ($(IMAGE_BURNING_TYPE),base)
-				AZURE_IMAGE_SKU ?= rhel-lvm810
+				AZURE_IMAGE_SKU ?= 89-gen2
 			else ifeq ($(CUSTOM_IMAGE_TYPE),freeipa)
-				AZURE_IMAGE_SKU ?= rhel-lvm810
+				AZURE_IMAGE_SKU ?= 89-gen2
 			else
 				AZURE_IMAGE_SKU ?= rhel-lvm88
 			endif
