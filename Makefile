@@ -46,24 +46,24 @@ $(error "AZURE_IMAGE_VHD and Marketplace image properties (AZURE_IMAGE_PUBLISHER
 	else
 		ifeq ($(OS),redhat8)
 			AZURE_IMAGE_PUBLISHER ?= RedHat
-			AZURE_IMAGE_OFFER ?= RHEL
+			AZURE_IMAGE_OFFER ?= rhel-byos
 			ifeq ($(STACK_VERSION),7.3.2)
-				AZURE_IMAGE_SKU ?= 89-gen2
+				AZURE_IMAGE_SKU ?= rhel-lvm810-gen2
 			else ifeq ($(STACK_VERSION),7.3.1)
-				AZURE_IMAGE_SKU ?= 89-gen2
+				AZURE_IMAGE_SKU ?= rhel-lvm810-gen2
 			else ifeq ($(STACK_VERSION),7.2.18)
-				AZURE_IMAGE_SKU ?= 89-gen2
+				AZURE_IMAGE_SKU ?= rhel-lvm810-gen2
 			else ifeq ($(IMAGE_BURNING_TYPE),base)
-				AZURE_IMAGE_SKU ?= 89-gen2
+				AZURE_IMAGE_SKU ?= rhel-lvm810-gen2
 			else ifeq ($(CUSTOM_IMAGE_TYPE),freeipa)
-				AZURE_IMAGE_SKU ?= 89-gen2
+				AZURE_IMAGE_SKU ?= rhel-lvm810-gen2
 			else
-				AZURE_IMAGE_SKU ?= rhel-lvm88
+				AZURE_IMAGE_SKU ?= rhel-lvm810-gen2
 			endif
 		else ifeq ($(OS),redhat9)
 			AZURE_IMAGE_PUBLISHER ?= RedHat
 			AZURE_IMAGE_OFFER ?= rhel-byos
-			AZURE_IMAGE_SKU ?= rhel-lvm95
+			AZURE_IMAGE_SKU ?= rhel-lvm810-gen2
 		else ifeq ($(OS),centos7)
 			AZURE_IMAGE_PUBLISHER ?= OpenLogic
 			AZURE_IMAGE_OFFER ?= CentOS
@@ -72,8 +72,19 @@ $(error "AZURE_IMAGE_VHD and Marketplace image properties (AZURE_IMAGE_PUBLISHER
 $(error Unexpected OS type $(OS) for Azure)
 		endif
 	endif
+	ifdef OS_VERSION
+		ifeq ($(OS_VERSION),8.8)
+			PLAN_NAME ?= rhel-lvm88
+		else ifeq ($(OS_VERSION),8.10)
+			PLAN_NAME ?= rhel-lvm810
+		else ifeq ($(OS_VERSION),9.5)
+			PLAN_NAME ?= rhel-lvm95
+		else ifeq ($(OS_VERSION),9.6)
+			PLAN_NAME ?= rhel-lvm96
+		endif
+	endif
 endif
-#
+
 # AWS source ami and instance type specification
 ifeq ($(CLOUD_PROVIDER),AWS)
 	ifeq ($(OS),redhat9)
