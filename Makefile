@@ -72,20 +72,8 @@ $(error "AZURE_IMAGE_VHD and Marketplace image properties (AZURE_IMAGE_PUBLISHER
 $(error Unexpected OS type $(OS) for Azure)
 		endif
 	endif
-
-	ifdef OS_VERSION
-		ifeq ($(OS_VERSION),8.8)
-			PLAN_NAME ?= rhel-lvm88
-		else ifeq ($(OS_VERSION),8.10)
-			PLAN_NAME ?= rhel-lvm810
-		else ifeq ($(OS_VERSION),9.5)
-			PLAN_NAME ?= rhel-lvm95
-		else ifeq ($(OS_VERSION),9.6)
-			PLAN_NAME ?= rhel-lvm96
-		endif
-	endif
 endif
-
+#
 # AWS source ami and instance type specification
 ifeq ($(CLOUD_PROVIDER),AWS)
 	ifeq ($(OS),redhat9)
