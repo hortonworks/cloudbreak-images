@@ -119,7 +119,7 @@ RUN /tmp/saltstack/salt-final.sh
 RUN rm -f /etc/salt/minion_id /etc/salt/pki/minion/minion.pem /etc/salt/pki/minion/minion.pub
 
 # restore systemctl to system default
-RUN ln -sf /usr/bin/systemctl.orig /usr/bin/systemctl
+#RUN ln -sf /usr/bin/systemctl.orig /usr/bin/systemctl
 
 ADD docker/redhat9.6/image-runtime-scripts/start-services-script.sh /bootstrap/
 
