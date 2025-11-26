@@ -1,0 +1,14 @@
+/usr/lib/systemd/system/cdp-freeipa-healthagent\.service     --      gen_context(system_u:object_r:cdp_ipahealthagent_systemd_unit_file_t,s0)
+/etc/selinux/cdp/ipahealthagent-python-wrapper\.sh           --      gen_context(system_u:object_r:cdp_ipahealthagent_exec_t,s0)
+/opt/salt/scripts/freeipa_healthagent_setup\.sh              --      gen_context(system_u:object_r:cdp_ipahealthagent_exec_t,s0)
+
+/cdp/ipahealthagent/ipahealthagent(/.*)?                     --      gen_context(system_u:object_r:cdp_ipahealthagent_bin_t,s0)
+/cdp/ipahealthagent/ipahealthagent(/.*)?                     -d      gen_context(system_u:object_r:cdp_ipahealthagent_bin_t,s0)
+
+/cdp/ipahealthagent/cdp-freeipa-healthagent                  --      gen_context(system_u:object_r:cdp_ipahealthagent_exec_t,s0)
+/cdp/ipahealthagent/wsgi\.py                                 --      gen_context(system_u:object_r:cdp_ipahealthagent_exec_t,s0)
+
+/cdp/ipahealthagent/config\.yaml                             --      gen_context(system_u:object_r:cdp_ipahealthagent_etc_t,s0)
+/cdp/ipahealthagent/requirements\.txt                        --      gen_context(system_u:object_r:cdp_ipahealthagent_etc_t,s0)
+
+/cdp/ipahealthagent(/.*)?                                    -d      gen_context(system_u:object_r:cdp_ipahealthagent_lib_t,s0)

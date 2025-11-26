@@ -105,6 +105,71 @@ role system_r types cdp_ipa_management_t;
 
 ########################################
 #
+# ipahealthagent
+#
+systemd_domain_template(cdp_ipahealthagent)
+systemd_systemctl_domain(cdp_ipahealthagent)
+
+type cdp_ipahealthagent_cert_t;
+miscfiles_cert_type(cdp_ipahealthagent_cert_t)
+
+type cdp_ipahealthagent_etc_t;
+files_config_file(cdp_ipahealthagent_etc_t)
+
+type cdp_ipahealthagent_log_t;
+logging_log_file(cdp_ipahealthagent_log_t)
+
+type cdp_ipahealthagent_bin_t;
+files_type(cdp_ipahealthagent_bin_t)
+
+type cdp_ipahealthagent_lib_t;
+files_type(cdp_ipahealthagent_lib_t)
+
+type cdp_ipahealthagent_systemd_unit_file_t;
+systemd_unit_file(cdp_ipahealthagent_systemd_unit_file_t)
+
+gen_require(`
+    attribute defined_port_type;
+    attribute port_type;
+    attribute unreserved_port_type;
+')
+type cdp_ipahealthagent_port_t, port_type, defined_port_type;
+typeattribute cdp_ipahealthagent_port_t unreserved_port_type;
+
+
+########################################
+#
+# ipaldapagent
+#
+systemd_domain_template(cdp_ipaldapagent)
+systemd_systemctl_domain(cdp_ipaldapagent)
+
+type cdp_ipaldapagent_etc_t;
+files_config_file(cdp_ipaldapagent_etc_t)
+
+type cdp_ipaldapagent_log_t;
+logging_log_file(cdp_ipaldapagent_log_t)
+
+type cdp_ipaldapagent_bin_t;
+files_type(cdp_ipaldapagent_bin_t)
+
+type cdp_ipaldapagent_lib_t;
+files_type(cdp_ipaldapagent_lib_t)
+
+type cdp_ipaldapagent_systemd_unit_file_t;
+systemd_unit_file(cdp_ipaldapagent_systemd_unit_file_t)
+
+gen_require(`
+    attribute defined_port_type;
+    attribute port_type;
+    attribute unreserved_port_type;
+')
+type cdp_ipaldapagent_port_t, port_type, defined_port_type;
+typeattribute cdp_ipaldapagent_port_t unreserved_port_type;
+
+
+########################################
+#
 # jumpgate
 #
 systemd_domain_template(cdp_jumpgate_agent)
@@ -245,6 +310,8 @@ typeattribute cdp_request_signer_port_t unreserved_port_type;
 #
 permissive cdp_blackbox_exporter_t;
 permissive cdp_ipa_management_t;
+permissive cdp_ipahealthagent_t;
+permissive cdp_ipaldapagent_t;
 permissive cdp_jumpgate_agent_t;
 permissive cdp_logging_agent_t;
 permissive cdp_node_exporter_t;

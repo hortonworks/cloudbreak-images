@@ -1,0 +1,14 @@
+/usr/lib/systemd/system/cdp-freeipa-ldapagent\.service       --      gen_context(system_u:object_r:cdp_ipaldapagent_systemd_unit_file_t,s0)
+/etc/selinux/cdp/ipaldapagent-python-wrapper\.sh             --      gen_context(system_u:object_r:cdp_ipaldapagent_exec_t,s0)
+/cdp/ipaldapagent/ipaldapagent(/.*)?                         --      gen_context(system_u:object_r:cdp_ipaldapagent_bin_t,s0)
+/cdp/ipaldapagent/ipaldapagent(/.*)?                         -d      gen_context(system_u:object_r:cdp_ipaldapagent_bin_t,s0)
+/cdp/ipaldapagent/cdp-freeipa-ldapagent                      --      gen_context(system_u:object_r:cdp_ipaldapagent_exec_t,s0)
+
+/cdp/ipaldapagent/wsgi\.py                                   --      gen_context(system_u:object_r:cdp_ipaldapagent_exec_t,s0)
+/cdp/ipaldapagent/gunicorn\.conf\.py                         --      gen_context(system_u:object_r:cdp_ipaldapagent_etc_t,s0)
+/cdp/ipaldapagent/devserver\.log\.conf                       --      gen_context(system_u:object_r:cdp_ipaldapagent_etc_t,s0)
+/cdp/ipaldapagent/gunicorn\.log\.conf                        --      gen_context(system_u:object_r:cdp_ipaldapagent_etc_t,s0)
+/cdp/ipaldapagent/requirements\.txt                          --      gen_context(system_u:object_r:cdp_ipaldapagent_etc_t,s0)
+/cdp/ipaldapagent/NOTICE\.txt                                --      gen_context(system_u:object_r:cdp_ipaldapagent_etc_t,s0)
+
+/cdp/ipaldapagent(/.*)?                                      -d      gen_context(system_u:object_r:cdp_ipaldapagent_lib_t,s0)

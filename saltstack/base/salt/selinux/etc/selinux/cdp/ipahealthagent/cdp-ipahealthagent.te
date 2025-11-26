@@ -1,0 +1,127 @@
+policy_module(cdp-ipahealthagent, 1.0.0)
+
+gen_require(`
+    type cdp_ipahealthagent_t;
+    type cdp_ipahealthagent_exec_t;
+    type cdp_ipahealthagent_bin_t;
+    type cdp_ipahealthagent_cert_t;
+    type cdp_ipahealthagent_etc_t;
+    type cdp_ipahealthagent_lib_t;
+    type cdp_ipahealthagent_systemctl_t;
+    type cdp_ipahealthagent_systemd_unit_file_t;
+    type cdp_ipahealthagent_log_t;
+')
+
+manage_dirs_pattern(cdp_ipahealthagent_t, cdp_ipahealthagent_bin_t, cdp_ipahealthagent_bin_t)
+manage_files_pattern(cdp_ipahealthagent_t, cdp_ipahealthagent_bin_t, cdp_ipahealthagent_bin_t)
+manage_dirs_pattern(cdp_ipahealthagent_t, cdp_ipahealthagent_lib_t, cdp_ipahealthagent_lib_t)
+manage_files_pattern(cdp_ipahealthagent_t, cdp_ipahealthagent_lib_t, cdp_ipahealthagent_lib_t)
+exec_files_pattern(cdp_ipahealthagent_t, cdp_ipahealthagent_lib_t, cdp_ipahealthagent_lib_t)
+domain_entry_file(cdp_ipahealthagent_t, cdp_ipahealthagent_lib_t)
+manage_files_pattern(cdp_ipahealthagent_t, cdp_ipahealthagent_cert_t, cdp_ipahealthagent_cert_t)
+manage_files_pattern(cdp_ipahealthagent_t, cdp_ipahealthagent_log_t, cdp_ipahealthagent_log_t)
+
+gen_require(`
+    type bin_t;
+')
+exec_files_pattern(cdp_ipahealthagent_t, bin_t, bin_t)
+
+gen_require(`
+    type shell_exec_t;
+')
+exec_files_pattern(cdp_ipahealthagent_t, shell_exec_t, shell_exec_t)
+
+gen_require(`
+    type cron_log_t;
+')
+read_files_pattern(cdp_ipahealthagent_t, cron_log_t, cron_log_t)
+
+# TODO This block should be removed or investigated when CB-30035 is done. It has been introduced because some files did not get proper file context
+gen_require(`
+    type default_t;
+')
+manage_dirs_pattern(cdp_ipahealthagent_t, default_t, default_t)
+manage_files_pattern(cdp_ipahealthagent_t, default_t, default_t)
+exec_files_pattern(cdp_ipahealthagent_t, default_t, default_t)
+
+logging_create_devlog_dev(cdp_ipahealthagent_t)
+
+gnome_search_gconf(cdp_ipahealthagent_t)
+
+apache_search_config(cdp_ipahealthagent_t)
+corenet_tcp_connect_http_port(cdp_ipahealthagent_t)
+kernel_request_load_module(cdp_ipahealthagent_t)
+gen_require(`
+    type cron_log_t;
+')
+read_files_pattern(cdp_ipahealthagent_t, cron_log_t, cron_log_t)
+
+gen_require(`
+    type default_t;
+')
+manage_dirs_pattern(cdp_ipahealthagent_t, default_t, default_t)
+manage_files_pattern(cdp_ipahealthagent_t, default_t, default_t)
+
+gen_require(`
+    type devlog_t;
+')
+allow cdp_ipahealthagent_t devlog_t:lnk_file read;
+allow cdp_ipahealthagent_t devlog_t:sock_file write;
+
+gnome_search_gconf(cdp_ipahealthagent_t)
+
+apache_search_config(cdp_ipahealthagent_t)
+corenet_tcp_connect_http_port(cdp_ipahealthagent_t)
+kernel_request_load_module(cdp_ipahealthagent_t)
+
+kernel_dgram_send(cdp_ipahealthagent_t)
+kerberos_etc_filetrans_keytab(cdp_ipahealthagent_t)
+libs_exec_ldconfig(cdp_ipahealthagent_t)
+allow cdp_ipahealthagent_t self:netlink_tcpdiag_socket { bind create getattr nlmsg_read setopt };
+allow cdp_ipahealthagent_t self:tcp_socket { accept listen };
+corecmd_check_exec_shell(cdp_ipahealthagent_t)
+
+gen_require(`
+    type tmp_t;
+')
+manage_dirs_pattern(cdp_ipahealthagent_t, tmp_t, tmp_t)
+manage_files_pattern(cdp_ipahealthagent_t, tmp_t, tmp_t)
+
+gen_require(`
+    type ipa_var_lib_t;
+')
+read_files_pattern(cdp_ipahealthagent_t, ipa_var_lib_t, ipa_var_lib_t)
+
+gen_require(`
+    type var_log_t;
+')
+manage_dirs_pattern(cdp_ipahealthagent_t, var_log_t, var_log_t)
+manage_files_pattern(cdp_ipahealthagent_t, var_log_t, var_log_t)
+
+gen_require(`
+    type cdp_ipahealthagent_port_t;
+')
+allow cdp_ipahealthagent_t cdp_ipahealthagent_port_t:tcp_socket { name_bind name_connect };
+
+gen_require(`
+    type cdp_salt_t;
+    type usr_t;
+')
+
+# TODO CB-30035 This line can be removed when cdp/ipahealthagent/freeipa_healthagent_getcerts.sh gets cdp_ipahealthagent_exec_t file context
+filetrans_pattern(cdp_salt_t, cdp_ipahealthagent_lib_t, cdp_ipahealthagent_exec_t, file, "freeipa_healthagent_getcerts.sh")
+
+# TODO CB-30035 This line can be removed when cdp/ipahealthagent/httpd-crt-tracking.sh gets cdp_ipahealthagent_exec_t file context
+filetrans_pattern(cdp_salt_t, cdp_ipahealthagent_lib_t, cdp_ipahealthagent_exec_t, file, "httpd-crt-tracking.sh")
+
+# TODO CB-30035 This line can be removed when /opt/salt/scripts/freeipa_healthagent_setup.sh gets cdp_ipahealthagent_exec_t file context
+filetrans_pattern(cdp_salt_t, usr_t, cdp_ipahealthagent_exec_t, file, "freeipa_healthagent_setup.sh")
+
+filetrans_pattern(cdp_ipahealthagent_t, cdp_ipahealthagent_lib_t, cdp_ipahealthagent_log_t, file, "ipahealthagent.log")
+filetrans_pattern(cdp_ipahealthagent_t, cdp_ipahealthagent_lib_t, cdp_ipahealthagent_log_t, file, "ipahealthagent.log.1")
+
+# TODO CB-30035 This line can be removed when cdp/ipahealthagent/privateKey.pem gets cdp_ipahealthagent_cert_t file context
+filetrans_pattern(cdp_salt_t, cdp_ipahealthagent_lib_t, cdp_ipahealthagent_cert_t, file, "privateKey.pem")
+
+# TODO CB-30035 This line can be removed when cdp/ipahealthagent/publicCert.pem gets cdp_ipahealthagent_cert_t file context
+filetrans_pattern(cdp_salt_t, cdp_ipahealthagent_lib_t, cdp_ipahealthagent_cert_t, file, "publicCert.pem")

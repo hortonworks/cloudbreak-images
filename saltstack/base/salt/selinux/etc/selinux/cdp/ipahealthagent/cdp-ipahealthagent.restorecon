@@ -1,0 +1,4 @@
+/usr/lib/systemd/system/cdp-freeipa-healthagent.service
+/etc/selinux/cdp/ipahealthagent-python-wrapper.sh
+/opt/salt/scripts/freeipa_healthagent_setup.sh
+/cdp/ipahealthagent
