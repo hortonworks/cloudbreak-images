@@ -160,6 +160,16 @@
     - file_mode: 644
     - template: jinja
 
+/etc/selinux/cdp/recipes/:
+  file.recurse:
+    - name: /etc/selinux/cdp/recipes/
+    - source: salt://{{ slspath }}/etc/selinux/cdp/recipes/
+    - user: root
+    - group: root
+    - dir_mode: 755
+    - file_mode: 644
+    - template: jinja
+
 /etc/selinux/cdp/request-signer/:
   file.recurse:
     - name: /etc/selinux/cdp/request-signer/

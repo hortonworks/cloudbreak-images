@@ -1,0 +1,19 @@
+/opt/scripts/recipe-runner\.sh                          --      gen_context(system_u:object_r:cdp_recipes_exec_t,s0)
+
+/opt/scripts/post-cloudera-manager-start(/.*)?          --      gen_context(system_u:object_r:cdp_recipes_exec_t,s0)
+/opt/scripts/post-cloudera-manager-start(/.*)?          -d      gen_context(system_u:object_r:cdp_recipes_exec_t,s0)
+
+/opt/scripts/post-cluster-install(/.*)?                 --      gen_context(system_u:object_r:cdp_recipes_exec_t,s0)
+/opt/scripts/post-cluster-install(/.*)?                 -d      gen_context(system_u:object_r:cdp_recipes_exec_t,s0)
+
+/opt/scripts/post-service-deployment(/.*)?              --      gen_context(system_u:object_r:cdp_recipes_exec_t,s0)
+/opt/scripts/post-service-deployment(/.*)?              -d      gen_context(system_u:object_r:cdp_recipes_exec_t,s0)
+
+/opt/scripts/pre-cloudera-manager-start(/.*)?           --      gen_context(system_u:object_r:cdp_recipes_exec_t,s0)
+/opt/scripts/pre-cloudera-manager-start(/.*)?           -d      gen_context(system_u:object_r:cdp_recipes_exec_t,s0)
+
+/opt/scripts/pre-service-deployment(/.*)?               --      gen_context(system_u:object_r:cdp_recipes_exec_t,s0)
+/opt/scripts/pre-service-deployment(/.*)?               -d      gen_context(system_u:object_r:cdp_recipes_exec_t,s0)
+
+/opt/scripts/pre-termination(/.*)?                      --      gen_context(system_u:object_r:cdp_recipes_exec_t,s0)
+/opt/scripts/pre-termination(/.*)?                      -d      gen_context(system_u:object_r:cdp_recipes_exec_t,s0)
