@@ -132,6 +132,7 @@ cdp_manage_pattern(cdp_salt_t, cdp_salt_var_log_t, cdp_salt_var_log_t)
 # Execute services/commands/scripts in the cdp_salt_t domain
 can_exec(cdp_salt_t, cdp_salt_bin_t)
 can_exec(cdp_salt_t, cdp_salt_lib_t)
+can_exec(cdp_salt_t, tmp_t)
 corecmd_exec_bin(cdp_salt_t)
 corecmd_exec_shell(cdp_salt_t)
 fs_exec_tmpfs_files(cdp_salt_t)
@@ -237,8 +238,10 @@ getattr_dirs_pattern(cdp_salt_t, cdp_jumpgate_agent_etc_t, cdp_jumpgate_agent_et
 
 # cdp-logging-agent
 gen_require(`
+    type cdp_logging_agent_conf_t;
     type cdp_logging_agent_etc_t;
 ')
+list_dirs_pattern(cdp_salt_t, cdp_logging_agent_conf_t, cdp_logging_agent_conf_t)
 manage_dirs_pattern(cdp_salt_t, cdp_logging_agent_etc_t, cdp_logging_agent_etc_t)
 manage_files_pattern(cdp_salt_t, cdp_logging_agent_etc_t, cdp_logging_agent_etc_t)
 
@@ -298,6 +301,12 @@ getattr_files_pattern(cdp_salt_t, chronyd_keys_t, chronyd_keys_t)
 # clock
 clock_read_adjtime(cdp_salt_t)
 
+# cron
+gen_require(`
+    type system_cronjob_tmp_t;
+')
+delete_files_pattern(cdp_salt_t, system_cronjob_tmp_t, system_cronjob_tmp_t)
+
 # crontab
 gen_require(`
     type system_cron_spool_t;
@@ -346,6 +355,9 @@ fs_read_efivarfs_files(cdp_salt_t)
 storage_getattr_fixed_disk_dev(cdp_salt_t)
 list_dirs_pattern(cdp_salt_t, efivarfs_t, efivarfs_t)
 cdp_manage_pattern(cdp_salt_t, tmpfs_t, tmpfs_t)
+
+# firewalld
+firewalld_read_config(cdp_salt_t)
 
 # fstools
 fstools_domtrans(cdp_salt_t)
@@ -400,17 +412,25 @@ modutils_list_module_config(cdp_salt_t)
 # logging
 gen_require(`
     type auditd_etc_t;
+    type auditd_log_t;
     type syslog_conf_t;
     type var_log_t;
 ')
 logging_create_devlog_dev(cdp_salt_t)
 logging_manage_generic_logs(cdp_salt_t)
+logging_read_all_logs(cdp_salt_t)
 logging_read_syslog_config(cdp_salt_t)
 create_dirs_pattern(cdp_salt_t, var_log_t, var_log_t)
-getattr_dirs_pattern(cdp_salt_t, auditd_etc_t, auditd_etc_t)
+list_dirs_pattern(cdp_salt_t, auditd_etc_t, auditd_etc_t)
+list_dirs_pattern(cdp_salt_t, auditd_log_t, auditd_log_t)
 list_dirs_pattern(cdp_salt_t, syslog_conf_t, syslog_conf_t)
+read_files_pattern(cdp_salt_t, auditd_etc_t, auditd_etc_t)
+read_files_pattern(cdp_salt_t, auditd_log_t, auditd_log_t)
 setattr_dirs_pattern(cdp_salt_t, var_log_t, var_log_t)
 setattr_files_pattern(cdp_salt_t, var_log_t, var_log_t)
+
+# lvm
+lvm_domtrans(cdp_salt_t)
 
 # mount
 mount_domtrans(cdp_salt_t)
@@ -481,6 +501,7 @@ gen_require(`
     type security_t;
 ')
 selinux_compute_access_vector(cdp_salt_t)
+selinux_read_policy(cdp_salt_t)
 selinux_set_enforce_mode(cdp_salt_t)
 seutil_domtrans_semanage(cdp_salt_t)
 seutil_domtrans_setfiles(cdp_salt_t)
@@ -543,6 +564,7 @@ gen_require(`
 corecmd_manage_bin_files(cdp_salt_t)
 dev_read_nvme(cdp_salt_t)
 dev_read_sysfs(cdp_salt_t)
+domain_getattr_all_domains(cdp_salt_t)
 domain_read_all_domains_state(cdp_salt_t)
 domain_obj_id_change_exemption(cdp_salt_t)
 files_list_var(cdp_salt_t)
@@ -574,7 +596,9 @@ usermanage_domtrans_useradd(cdp_salt_t)
 
 create_dirs_pattern(cdp_salt_t, root_t, root_t)
 create_files_pattern(cdp_salt_t, root_t, root_t)
+delete_dirs_pattern(cdp_salt_t, root_t, root_t)
 list_dirs_pattern(cdp_salt_t, games_exec_t, games_exec_t)
+manage_sock_files_pattern(cdp_salt_t, tmp_t, tmp_t)
 read_lnk_files_pattern(cdp_salt_t, var_lock_t, var_lock_t)
 relabel_files_pattern(cdp_salt_t, bin_t, bin_t)
 relabel_files_pattern(cdp_salt_t, etc_t, etc_t)
@@ -586,9 +610,9 @@ cdp_manage_pattern(cdp_salt_t, lib_t, lib_t)
 cdp_manage_pattern(cdp_salt_t, self, self)
 cdp_manage_pattern(cdp_salt_t, var_lib_t, var_lib_t)
 
-allow cdp_salt_t self:capability { audit_write chown dac_override dac_read_search fowner fsetid kill setgid setuid sys_resource };
+allow cdp_salt_t self:capability { audit_write chown dac_override dac_read_search fowner fsetid kill setgid setuid sys_admin sys_ptrace sys_resource };
 allow cdp_salt_t self:netlink_selinux_socket { bind create };
-allow cdp_salt_t self:process { execmem setrlimit setsched };
+allow cdp_salt_t self:process { execmem getattr setrlimit setsched };
 
 # useradd_t (called by salt)
 gen_require(`
