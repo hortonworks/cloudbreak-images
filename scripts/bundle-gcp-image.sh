@@ -27,6 +27,7 @@ main() {
 	: ${GCP_PROJECT:=$(cat $GCP_ACCOUNT_FILE | jq .project_id -r)}
 	: ${SERVICE_ACCOUNT_EMAIL:=$(cat $GCP_ACCOUNT_FILE | jq .client_email -r)}
 	: ${IMAGE_PRE_NAME:=}
+	: ${GCP_LABELS:=}
 
 	docker rm -f gcloud-config-$IMAGE_NAME || true
 
@@ -45,6 +46,14 @@ main() {
 
 	docker run --rm --name gcloud-create-instance-$IMAGE_NAME --volumes-from gcloud-config-$IMAGE_NAME google/cloud-sdk gcloud compute images export --quiet --destination-uri gs://${GCP_STORAGE_BUNDLE}/${IMAGE_PRE_NAME}${IMAGE_NAME}.tar.gz --image ${IMAGE_NAME} --project ${GCP_PROJECT}
 	docker run --rm --name gcloud-create-instance-public-$IMAGE_NAME --volumes-from gcloud-config-$IMAGE_NAME google/cloud-sdk gsutil -m acl ch -r -u AllUsers:R gs://${GCP_STORAGE_BUNDLE}/${IMAGE_PRE_NAME}${IMAGE_NAME}.tar.gz
+
+	# Apply the labels (GCS Metadata)
+    if [[ -n "$GCP_LABELS" ]]; then
+        echo "Applying GCS metadata labels: $GCP_LABELS"
+        # Convert comma-separated key:value pairs into the required -h header format with prefix 'x-goog-meta-'
+        HEADER=$(echo "$GCP_LABELS" | sed 's/\([^,]\+\)/x-goog-meta-\1/g' | sed 's/,/ -h /g' | sed 's/^/-h /')
+        docker run --rm --name gcloud-set-labels-$IMAGE_NAME --volumes-from gcloud-config-$IMAGE_NAME google/cloud-sdk gsutil setmeta ${HEADER} gs://${GCP_STORAGE_BUNDLE}/${IMAGE_PRE_NAME}${IMAGE_NAME}.tar.gz
+    fi
 
     echo "Removing compute image"
     docker run --rm --name gcloud-remove-compute-image-$IMAGE_NAME --volumes-from gcloud-config-$IMAGE_NAME google/cloud-sdk gcloud compute images delete --quiet $IMAGE_NAME
