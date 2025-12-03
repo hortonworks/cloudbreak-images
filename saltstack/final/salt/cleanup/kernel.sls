@@ -14,7 +14,7 @@ package_cleanup_oldkernels:
     - name: package-cleanup --oldkernels --count=1 -y
 {% else %}
     - name: dnf -y remove --oldinstallonly --setopt installonly_limit=2 kernel
-    - onlyif: test $(rpm -q kernel | wc -l) -gt 2
+    - onlyif: test $(rpm -q kernel | wc -l) -gt 1
 {% endif %}
 
 list_installed_kernels_after_cleanup:
