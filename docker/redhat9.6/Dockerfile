@@ -55,10 +55,10 @@ COPY docker/common/_grains/ /tmp/saltstack/hortonworks/salt/_grains/
 
 RUN /tmp/saltstack/salt-install.sh redhat
 
-ADD ${SYSTEMCTL_REPLACEMENT} /usr/bin
-RUN chmod 755 /usr/bin/$(basename ${SYSTEMCTL_REPLACEMENT}) && \
-    mv /usr/bin/systemctl /usr/bin/systemctl.orig && \
-    ln -sf /usr/bin/systemctl3.py /usr/bin/systemctl
+#ADD ${SYSTEMCTL_REPLACEMENT} /usr/bin
+#RUN chmod 755 /usr/bin/$(basename ${SYSTEMCTL_REPLACEMENT}) && \
+#    mv /usr/bin/systemctl /usr/bin/systemctl.orig && \
+#    ln -sf /usr/bin/systemctl3.py /usr/bin/systemctl
 
 ARG PARCELS_NAME
 ARG STACK_REPOSITORY_VERSION
