@@ -275,14 +275,20 @@
       "disk_size": "{{user `image_size`}}",
       "state_timeout": "15m",
       "tags": [
-        "builder--packer",
-        "cb-creation-timestamp--{{timestamp}}",
-        "owner--{{ user `owner_tag` | clean_resource_name }}",
-        "cloudera-usage-type--{{ user `cloudera_usage_type_tag` | clean_resource_name }}",
         "gcp-dev-cloudbreak-ingress-internet-deny",
         "gcp-dev-cloudbreak-egress-internet-allow",
         "gcp-dev-cloudbreak-ingress-rfc1918-allow"
       ],
+      "image_labels": {
+        "builder": "packer",
+        "cb-creation-timestamp": "{{timestamp}}",
+        "owner": "{{ user `owner_tag` | clean_resource_name }}",
+        "cloudera-usage-type": "{{ user `cloudera_usage_type_tag` | clean_resource_name }}"
+      },
+      "labels": {
+        "owner": "{{ user `owner_tag` | clean_resource_name }}",
+        "cloudera-usage-type": "{{ user `cloudera_usage_type_tag` | clean_resource_name }}"
+      },
       "skip_create_image": true
     },
     {
@@ -307,14 +313,20 @@
       "disk_size": "{{user `image_size`}}",
       "state_timeout": "15m",
       "tags": [
-        "builder--packer",
-        "cb-creation-timestamp--{{timestamp}}",
-        "owner--{{ user `owner_tag` | clean_resource_name }}",
-        "cloudera-usage-type--{{ user `cloudera_usage_type_tag` | clean_resource_name }}",
         "gcp-dev-cloudbreak-ingress-internet-deny",
         "gcp-dev-cloudbreak-egress-internet-allow",
         "gcp-dev-cloudbreak-ingress-rfc1918-allow"
       ],
+      "image_labels": {
+        "builder": "packer",
+        "cb-creation-timestamp": "{{timestamp}}",
+        "owner": "{{ user `owner_tag` | clean_resource_name }}",
+        "cloudera-usage-type": "{{ user `cloudera_usage_type_tag` | clean_resource_name }}"
+      },
+      "labels": {
+        "owner": "{{ user `owner_tag` | clean_resource_name }}",
+        "cloudera-usage-type": "{{ user `cloudera_usage_type_tag` | clean_resource_name }}"
+      },
       "skip_create_image": true
     },
     {
@@ -339,14 +351,20 @@
       "disk_size": "{{user `image_size`}}",
       "state_timeout": "15m",
       "tags": [
-        "builder--packer",
-        "cb-creation-timestamp--{{timestamp}}",
-        "owner--{{ user `owner_tag` | clean_resource_name }}",
-        "cloudera-usage-type--{{ user `cloudera_usage_type_tag` | clean_resource_name }}",
         "gcp-dev-cloudbreak-ingress-internet-deny",
         "gcp-dev-cloudbreak-egress-internet-allow",
         "gcp-dev-cloudbreak-ingress-rfc1918-allow"
       ],
+      "image_labels": {
+        "builder": "packer",
+        "cb-creation-timestamp": "{{timestamp}}",
+        "owner": "{{ user `owner_tag` | clean_resource_name }}",
+        "cloudera-usage-type": "{{ user `cloudera_usage_type_tag` | clean_resource_name }}"
+      },
+      "labels": {
+        "owner": "{{ user `owner_tag` | clean_resource_name }}",
+        "cloudera-usage-type": "{{ user `cloudera_usage_type_tag` | clean_resource_name }}"
+      },
       "skip_create_image": true
     },
     {

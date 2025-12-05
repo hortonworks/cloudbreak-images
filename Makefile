@@ -538,6 +538,7 @@ build-gc-tar-file:
 	GCP_STORAGE_BUNDLE=$(GCP_STORAGE_BUNDLE) \
 	GCP_STORAGE_BUNDLE_LOG=$(GCP_STORAGE_BUNDLE_LOG) \
 	STACK_VERSION=$(STACK_VERSION) \
+	GCP_LABELS="cloudera-usage-type:$(CLOUDERA_USAGE_TYPE_TAG)" \
 	./scripts/bundle-gcp-image.sh
 
 build-gc-centos7:
