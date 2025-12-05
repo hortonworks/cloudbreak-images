@@ -180,7 +180,7 @@ ifeq ($(SALT_NEWER_PYZMQ),1)
 else
 	PYZMQ_VERSION ?= 19.0
 endif
-SALTBOOT_VERSION ?= "0.14.4"
+SALTBOOT_VERSION ?= "0.14.5"
 ifneq ($(CLOUD_PROVIDER),YARN)
 	ifneq ($(OS),centos7)
 		SALTBOOT_MINOR_VERSION = $(shell echo $(SALTBOOT_VERSION) | cut -d. -f2)
