@@ -299,14 +299,20 @@ function install_python_pip() {
   if [ "${OS}" == "redhat9" ] ; then
     redhat9_update_python39
     redhat89_install_python311
-    redhat89_install_python312
+    if [ "${IMAGE_BASE_NAME}" != "freeipa" ] ; then
+      redhat89_install_python312
+    fi
     redhat9_fix_default_pip3
   elif [ "${OS}" == "redhat8" ] ; then
     redhat8_update_python36
-    redhat8_install_python38
-    redhat8_install_python39
+    if [ "${IMAGE_BASE_NAME}" != "freeipa" ] ; then
+      redhat8_install_python38
+      redhat8_install_python39
+    fi
     redhat89_install_python311
-    redhat89_install_python312
+    if [ "${IMAGE_BASE_NAME}" != "freeipa" ] ; then
+      redhat89_install_python312
+    fi
   elif [ "${OS}" == "centos7" ] ; then
     centos7_update_python27
     centos7_install_python36
