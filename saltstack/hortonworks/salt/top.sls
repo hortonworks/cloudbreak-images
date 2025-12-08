@@ -8,6 +8,3 @@ hortonworks:
     - kerberos
     - java
     - pre-warm
-{% if salt['environ.get']('INCLUDE_METERING') == 'Yes' %}
-    - metering
-{% endif %}
