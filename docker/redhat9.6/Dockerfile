@@ -98,7 +98,6 @@ ENV DEFAULT_JAVA_MAJOR_VERSION=17
 
 ARG INCLUDE_FLUENT
 ARG INCLUDE_CDP_TELEMETRY
-ARG INCLUDE_METERING
 ARG FREEIPA_PLUGIN_RPM_URL
 ARG FREEIPA_LDAP_AGENT_RPM_URL
 ARG JUMPGATE_AGENT_RPM_URL
@@ -107,7 +106,6 @@ ARG JUMPGATE_AGENT_GBN
 
 ENV INCLUDE_FLUENT="Yes"
 ENV INCLUDE_CDP_TELEMETRY="Yes"
-ENV INCLUDE_METERING="Yes"
 ENV FREEIPA_PLUGIN_RPM_URL="https://archive.cloudera.com/cdp-freeipa-artifacts/cdp-hashed-pwd-1.1-b847.el7.x86_64.rpm"
 ENV FREEIPA_LDAP_AGENT_RPM_URL="https://archive.cloudera.com/cdp-freeipa-artifacts/freeipa-ldap-agent-1.1.0.3-b525.x86_64.rpm"
 ENV JUMPGATE_AGENT_RPM_URL="https://archive.cloudera.com/ccm/3.13.0/jumpgate-agent.rpm"
