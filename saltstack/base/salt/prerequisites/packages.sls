@@ -149,7 +149,7 @@ remove_azcopy_extract:
 rhel88_security_add_repo:
   file.managed:
     - name: /etc/yum.repos.d/rhel8_cldr_mirrors.repo
-    - source: https://mirror.infra.cloudera.com/repos/rhel/server/8/8/rhel8_cldr_mirrors.repo
+    - source: https://mirror.eng.cloudera.com/repos/rhel/server/8/8/rhel8_cldr_mirrors.repo
     - skip_verify: True
 
 {% if salt['environ.get']('ARCHITECTURE') == 'arm64' %} # ubi-8-supplementary-cldr and ubi-8-codeready-builder-cldr are not yet available for arm64
