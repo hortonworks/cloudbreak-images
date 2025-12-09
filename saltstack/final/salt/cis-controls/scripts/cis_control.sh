@@ -43,19 +43,9 @@ fi
 SKIP_TAGS+="{{ additional_tags }}"
 
 #Install and download what we need for the hardening
-python3 -m virtualenv $ANSIBLE_PATH
+python3 -m virtualenv --python="/usr/bin/python3.8" $ANSIBLE_PATH
 source $ANSIBLE_PATH/bin/activate
-case ${OS} in
-  "redhat8")
-    PLAYBOOK="rhel8-playbook"
-    python3 -m pip install ansible
-    ;;
-
-  "redhat9")
-    PLAYBOOK="rhel9-playbook"
-    python3 -m pip install ansible "ansible-core==2.13"
-    ;;
-esac
+python3 -m pip install ansible
 yum install -y git
 git clone https://github.com/AutomateCompliance/AnsibleCompliancePlaybooks.git $ANSIBLE_PATH/ansible-compliance-playbooks
 
@@ -65,12 +55,11 @@ ssh-keygen -A
 #Apply the SSG Ansible playbook
 mkdir -p /tmp/cis
 chmod 777 /tmp/cis
-
 if [ "${STIG_ENABLED}" == "True" ]; then
-    ansible-playbook -i localhost, -c local $ANSIBLE_PATH/ansible-compliance-playbooks/$PLAYBOOK-stig.yml --skip-tags $SKIP_TAGS | tee /tmp/cis/stig_log.txt
+    ansible-playbook -i localhost, -c local $ANSIBLE_PATH/ansible-compliance-playbooks/rhel8-playbook-stig.yml --skip-tags $SKIP_TAGS | tee /tmp/cis/stig_log.txt
     chmod 777 /tmp/cis/stig_log.txt
 else
-    ansible-playbook -i localhost, -c local $ANSIBLE_PATH/ansible-compliance-playbooks/$PLAYBOOK-cis_server_l1.yml --skip-tags $SKIP_TAGS --extra-vars "$EXTRA_VARS" | tee /tmp/cis/cis_log.txt
+    ansible-playbook -i localhost, -c local $ANSIBLE_PATH/ansible-compliance-playbooks/rhel8-playbook-cis_server_l1.yml --skip-tags $SKIP_TAGS --extra-vars "$EXTRA_VARS" | tee /tmp/cis/cis_log.txt
     chmod 777 /tmp/cis/cis_log.txt
 fi
 
