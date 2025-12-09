@@ -107,22 +107,19 @@ packer_in_container() {
       export FREEIPA_PLUGIN_RPM_URL=$DEFAULT_FREEIPA_PLUGIN_RPM_URL
     fi
   fi
+
+  case "$OS" in
+    "redhat8") OSPART="el8" ;;
+    "redhat9") OSPART="el9" ;;
+  esac
+
+  case "$ARCHITECTURE" in
+    "arm64") ARCHPART="aarch64" ;;
+    *) ARCHPART="x86_64" ;;
+  esac
+
   if ! [[ $FREEIPA_HEALTH_AGENT_RPM_URL =~ ^http.*rpm$ ]]; then
-    if [[ "$OS" == "redhat9" ]]; then
-      if [[ "$ARCHITECTURE" == "arm64" ]]; then
-        export FREEIPA_HEALTH_AGENT_RPM_URL="https://cloudera-build-2-us-west-2.vpc.cloudera.com/s3/build/72233998/thunderhead/1.x/redhat8/yum/freeipa-health-agent-3.1.0.4-b246.el8.aarch64.rpm"  # This is RHEL 8 for now...
-      else
-        export FREEIPA_HEALTH_AGENT_RPM_URL="https://archive.cloudera.com/cdp-freeipa-artifacts/freeipa-health-agent-3.1.0.4-b141.el9.x86_64.rpm"
-      fi
-    elif [[ "$OS" == "redhat8" ]]; then
-      if [[ "$ARCHITECTURE" == "arm64" ]]; then
-        export FREEIPA_HEALTH_AGENT_RPM_URL="https://cloudera-build-2-us-west-2.vpc.cloudera.com/s3/build/72233998/thunderhead/1.x/redhat8/yum/freeipa-health-agent-3.1.0.4-b246.el8.aarch64.rpm"
-      else
-        export FREEIPA_HEALTH_AGENT_RPM_URL="https://archive.cloudera.com/cdp-freeipa-artifacts/freeipa-health-agent-2.1.0.2-b2228.x86_64.rpm"
-      fi
-    else
-      export FREEIPA_HEALTH_AGENT_RPM_URL=$DEFAULT_FREEIPA_HEALTH_AGENT_RPM_URL
-    fi
+    export FREEIPA_HEALTH_AGENT_RPM_URL="https://cbd-binary.s3.eu-central-1.amazonaws.com/freeipa-health-agent-3.4.2.3-b666.${OSPART}.${ARCHPART}.rpm"
   fi
   if ! [[  $FREEIPA_LDAP_AGENT_RPM_URL =~ ^http.*rpm$ ]]; then
     if [[ "$OS" == "redhat9" ]]; then
