@@ -51,7 +51,7 @@ download_rhel8_repo:
     - name: /etc/yum.repos.d/rhel8_cldr_mirrors.repo
     # This actually points to 8.10, not 8.8, however there's no JDK 21 in the 8.8 repo, so we're installing it
     # from the 8.10 repo - hence we need to add it and after the installation of JDK 21, remove it.
-    - source: https://mirror.infra.cloudera.com/repos/rhel/server/8/8/rhel8_cldr_mirrors.repo
+    - source: https://mirror.eng.cloudera.com/repos/rhel/server/8/8/rhel8_cldr_mirrors.repo
     - skip_verify: True
 
 {% if salt['environ.get']('ARCHITECTURE') == 'arm64' %} # ubi-8-supplementary-cldr and ubi-8-codeready-builder-cldr are not yet available for arm64
