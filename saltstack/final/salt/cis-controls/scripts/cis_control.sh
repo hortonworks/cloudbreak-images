@@ -40,6 +40,10 @@ if [ "${CLOUD_PROVIDER}" == "Azure" ]; then
     fi
 fi
 
+if [ "${OS}" == "redhat9" ] && [ "${ARCHITECTURE}" == "arm64" ]; then
+    SKIP_TAGS+=",accounts_umask_etc_bashrc"
+fi
+
 SKIP_TAGS+="{{ additional_tags }}"
 
 #Install and download what we need for the hardening
