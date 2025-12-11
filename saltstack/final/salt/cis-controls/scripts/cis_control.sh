@@ -40,7 +40,7 @@ if [ "${CLOUD_PROVIDER}" == "Azure" ]; then
     fi
 fi
 
-if [ "${OS}" == "redhat9" ] && [ "${ARCHITECTURE}" == "arm64" ]; then
+if [ "${OS}" == "redhat9" ]; then
     SKIP_TAGS+=",accounts_umask_etc_bashrc"
 fi
 
