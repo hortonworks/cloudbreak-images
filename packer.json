@@ -909,6 +909,14 @@
     },
     {
       "type": "shell",
+      "inline": [
+        "sudo rm /tmp/installed-delta-packages.csv",
+        "sudo rm /tmp/installed-full-packages.csv"
+      ],
+      "remote_folder": "/opt/provision-scripts"
+    },
+    {
+      "type": "shell",
       "script": "scripts/remove-debug-user.sh",
       "execute_command": "chmod +x {{ .Path }}; sudo {{ .Vars }} {{ .Path }}",
       "remote_folder": "/opt/provision-scripts"
