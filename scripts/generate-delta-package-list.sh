@@ -287,7 +287,7 @@ function merge_packages() {
 
   if [ -f $output ] ; then
     echo "Final detailed package list was saved under ${output}"
-    chmod 644 "$output"
+    chmod 666 "$output"
   else
     echo "Final detailed package file not found: " $output
   fi
