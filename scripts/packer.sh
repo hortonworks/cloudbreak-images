@@ -93,13 +93,13 @@ packer_in_container() {
   if ! [[ $FREEIPA_PLUGIN_RPM_URL =~ ^http.*rpm$ ]]; then
     if [[ "$OS" == "redhat9" ]]; then
       if [[ "$ARCHITECTURE" == "arm64" ]]; then
-        export FREEIPA_PLUGIN_RPM_URL="https://cloudera-build-2-us-west-2.vpc.cloudera.com/s3/build/72233998/thunderhead/1.x/redhat8/yum/cdp-hashed-pwd-1.1.0.4-b246.el8.aarch64.rpm"   # This is RHEL 8 for now...
+        export FREEIPA_PLUGIN_RPM_URL="https://cloudera-build-2-us-west-2.vpc.cloudera.com/s3/build/73928870/thunderhead/1.x/redhat8/yum/cdp-hashed-pwd-1.1.0.4-b645.el8.aarch64.rpm"   # This is RHEL 8 for now...
       else
         export FREEIPA_PLUGIN_RPM_URL="https://archive.cloudera.com/cdp-freeipa-artifacts/cdp-hashed-pwd-1.1.0.4-b51.el9.x86_64.rpm"
       fi
     elif [[ "$OS" == "redhat8" ]]; then
       if [[ "$ARCHITECTURE" == "arm64" ]]; then
-        export FREEIPA_PLUGIN_RPM_URL="https://cloudera-build-2-us-west-2.vpc.cloudera.com/s3/build/72233998/thunderhead/1.x/redhat8/yum/cdp-hashed-pwd-1.1.0.4-b246.el8.aarch64.rpm"
+        export FREEIPA_PLUGIN_RPM_URL="https://cloudera-build-2-us-west-2.vpc.cloudera.com/s3/build/73928870/thunderhead/1.x/redhat8/yum/cdp-hashed-pwd-1.1.0.4-b645.el8.aarch64.rpm"
       else
         export FREEIPA_PLUGIN_RPM_URL="https://archive.cloudera.com/cdp-freeipa-artifacts/cdp-hashed-pwd-1.1-b847.el8.x86_64.rpm"
       fi
@@ -110,13 +110,13 @@ packer_in_container() {
   if ! [[ $FREEIPA_HEALTH_AGENT_RPM_URL =~ ^http.*rpm$ ]]; then
     if [[ "$OS" == "redhat9" ]]; then
       if [[ "$ARCHITECTURE" == "arm64" ]]; then
-        export FREEIPA_HEALTH_AGENT_RPM_URL="https://cloudera-build-2-us-west-2.vpc.cloudera.com/s3/build/72233998/thunderhead/1.x/redhat8/yum/freeipa-health-agent-3.1.0.4-b246.el8.aarch64.rpm"  # This is RHEL 8 for now...
+        export FREEIPA_HEALTH_AGENT_RPM_URL="https://cloudera-build-2-us-west-2.vpc.cloudera.com/s3/build/73928870/thunderhead/1.x/redhat8/yum/freeipa-health-agent-3.1.0.4-b645.el9.aarch64.rpm" 
       else
         export FREEIPA_HEALTH_AGENT_RPM_URL="https://archive.cloudera.com/cdp-freeipa-artifacts/freeipa-health-agent-3.1.0.4-b141.el9.x86_64.rpm"
       fi
     elif [[ "$OS" == "redhat8" ]]; then
       if [[ "$ARCHITECTURE" == "arm64" ]]; then
-        export FREEIPA_HEALTH_AGENT_RPM_URL="https://cloudera-build-2-us-west-2.vpc.cloudera.com/s3/build/72233998/thunderhead/1.x/redhat8/yum/freeipa-health-agent-3.1.0.4-b246.el8.aarch64.rpm"
+        export FREEIPA_HEALTH_AGENT_RPM_URL="https://cloudera-build-2-us-west-2.vpc.cloudera.com/s3/build/73928870/thunderhead/1.x/redhat8/yum/freeipa-health-agent-3.1.0.4-b645.el8.aarch64.rpm"
       else
         export FREEIPA_HEALTH_AGENT_RPM_URL="https://archive.cloudera.com/cdp-freeipa-artifacts/freeipa-health-agent-2.1.0.2-b2228.x86_64.rpm"
       fi
