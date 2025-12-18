@@ -22,6 +22,8 @@ set_hardening_to_stig:
       - "cis_server_l1"
 {% endif %}
 
+{% if salt['environ.get']('CLOUD_PROVIDER') != 'Azure' %}
+
 #### CIS: Strengthen the ownership for job Scheduler
 # https://jira.cloudera.com/browse/CB-8932
 #Cron permission
@@ -159,6 +161,8 @@ Chrony_config:
     - pattern: "^OPTIONS=.*"
     - repl: 'OPTIONS="-u chrony"'
     - append_if_not_found: True
+
+{% endif %}
 
 #### CIS: Log configurations
 # https://jira.cloudera.com/browse/CB-8928
