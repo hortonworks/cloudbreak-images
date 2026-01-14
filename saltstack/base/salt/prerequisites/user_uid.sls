@@ -24,11 +24,6 @@ change_saslauth_uid:
 
 {% if salt['environ.get']('CLOUD_PROVIDER') == 'Azure' %}
 
-{% set ids = {
-  'cloudera_scm_user': '991',
-  'cloudera_scm_group': '987',
-} %}
-
 {% if pillar['OS'] == 'redhat8' %}
 # sssd has the needed uid/gid for cloudera-scm so it has to be modified
 change_sssd_ids:
@@ -40,6 +35,11 @@ change_sssd_ids:
         find / -not -path "/proc/*" -group {{ ids.cloudera_scm_group }}  -exec chgrp -h sssd {} \;
 
 {% elif pillar['OS'] == 'redhat9' %}
+
+{% set ids = {
+  'cloudera_scm_user': '991',
+  'cloudera_scm_group': '987',
+} %}
 
 # pipewire has the needed gid for cloudera-scm so it has to be modified
 change_pipewire_ids:
