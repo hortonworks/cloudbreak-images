@@ -34,6 +34,15 @@ create_saltbootstrap_service_files:
     - template: jinja
     - source: salt://{{ slspath }}/etc/systemd/system/salt-bootstrap.service
 
+{% if pillar['subtype'] == 'Docker' and pillar['OS'] == 'redhat9' %}
+# Salt-Bootstrap expects this file to be there, but it's missing on RHEL9 YARN images
+add_empty_networkcfg:
+  cmd.run:
+    - name: |
+        touch /etc/sysconfig/network
+{% endif %}
+
+
 salt-bootstrap:
 {% if pillar['subtype'] != 'Docker' %}
   service.running:
