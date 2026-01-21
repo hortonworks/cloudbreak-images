@@ -214,9 +214,11 @@ manage_files_pattern(cdp_salt_t, cdp_blackbox_exporter_conf_t, cdp_blackbox_expo
 # cdp-ipahealthagent
 gen_require(`
     type cdp_ipahealthagent_cert_t;
+    type cdp_ipahealthagent_etc_t;
     type cdp_ipahealthagent_lib_t;
 ')
 manage_files_pattern(cdp_salt_t, cdp_ipahealthagent_cert_t, cdp_ipahealthagent_cert_t)
+manage_files_pattern(cdp_salt_t, cdp_ipahealthagent_etc_t, cdp_ipahealthagent_etc_t)
 manage_files_pattern(cdp_salt_t, cdp_ipahealthagent_lib_t, cdp_ipahealthagent_lib_t)
 exec_files_pattern(cdp_salt_t, cdp_ipahealthagent_lib_t, cdp_ipahealthagent_lib_t)
 
@@ -353,11 +355,16 @@ fs_read_cgroup_files(cdp_salt_t)
 fs_read_dos_files(cdp_salt_t)
 fs_read_efivarfs_files(cdp_salt_t)
 storage_getattr_fixed_disk_dev(cdp_salt_t)
+storage_getattr_removable_dev(cdp_salt_t)
 list_dirs_pattern(cdp_salt_t, efivarfs_t, efivarfs_t)
 cdp_manage_pattern(cdp_salt_t, tmpfs_t, tmpfs_t)
 
 # firewalld
+gen_require(`
+    type firewalld_etc_rw_t;
+')
 firewalld_read_config(cdp_salt_t)
+getattr_dirs_pattern(cdp_salt_t, firewalld_etc_rw_t, firewalld_etc_rw_t)
 
 # fstools
 fstools_domtrans(cdp_salt_t)
@@ -374,6 +381,9 @@ gpg_domtrans(cdp_salt_t)
 
 # hostname
 hostname_domtrans(cdp_salt_t)
+
+# init
+init_read_utmp(cdp_salt_t)
 
 # insights_client
 insights_client_read_config(cdp_salt_t)
@@ -405,6 +415,7 @@ kdump_read_config(cdp_salt_t)
 kernel_dgram_send(cdp_salt_t)
 kernel_read_network_state(cdp_salt_t)
 kernel_read_net_sysctls(cdp_salt_t)
+kernel_read_fs_sysctls(cdp_salt_t)
 kernel_read_software_raid_state(cdp_salt_t)
 kernel_signal(cdp_salt_t)
 modutils_list_module_config(cdp_salt_t)
@@ -431,10 +442,20 @@ setattr_files_pattern(cdp_salt_t, var_log_t, var_log_t)
 
 # lvm
 lvm_domtrans(cdp_salt_t)
+lvm_read_config(cdp_salt_t)
+lvm_read_metadata(cdp_salt_t)
+
+# mcelog
+gen_require(`
+    type mcelog_etc_t;
+')
+mcelog_domtrans(cdp_salt_t)
+getattr_dirs_pattern(cdp_salt_t, mcelog_etc_t, mcelog_etc_t)
 
 # mount
 mount_domtrans(cdp_salt_t)
 mount_domtrans_showmount(cdp_salt_t)
+mount_read_pid_files(cdp_salt_t)
 
 # named
 gen_require(`
@@ -558,12 +579,13 @@ gen_require(`
     type root_t;
     type tmp_t;
     type user_home_dir_t;
+    type usr_t;
     type var_lib_t;
     type var_lock_t;
 ')
 corecmd_manage_bin_files(cdp_salt_t)
 dev_read_nvme(cdp_salt_t)
-dev_read_sysfs(cdp_salt_t)
+dev_manage_sysfs(cdp_salt_t)
 domain_getattr_all_domains(cdp_salt_t)
 domain_read_all_domains_state(cdp_salt_t)
 domain_obj_id_change_exemption(cdp_salt_t)
@@ -579,8 +601,6 @@ files_manage_generic_tmp_files(cdp_salt_t)
 files_manage_isid_type_dirs(cdp_salt_t)
 files_manage_isid_type_files(cdp_salt_t)
 files_manage_system_conf_files(cdp_salt_t)
-files_manage_usr_dirs(cdp_salt_t)
-files_manage_usr_files(cdp_salt_t)
 files_manage_var_files(cdp_salt_t)
 libs_domtrans_ldconfig(cdp_salt_t)
 miscfiles_manage_generic_cert_dirs(cdp_salt_t)
@@ -608,6 +628,7 @@ setattr_dirs_pattern(cdp_salt_t, user_home_dir_t, user_home_dir_t)
 cdp_manage_pattern(cdp_salt_t, bin_t, bin_t)
 cdp_manage_pattern(cdp_salt_t, lib_t, lib_t)
 cdp_manage_pattern(cdp_salt_t, self, self)
+cdp_manage_pattern(cdp_salt_t, usr_t, usr_t)
 cdp_manage_pattern(cdp_salt_t, var_lib_t, var_lib_t)
 
 allow cdp_salt_t self:capability { audit_write chown dac_override dac_read_search fowner fsetid kill setgid setuid sys_admin sys_ptrace sys_resource };

@@ -32,6 +32,9 @@ filetrans_pattern(cdp_logging_agent_t, tmp_t, cdp_logging_agent_tmp_t, { dir fil
 # network
 corenet_tcp_connect_http_port(cdp_logging_agent_t)
 
+# Execute core commands
+corecmd_exec_bin(cdp_logging_agent_t)
+
 # Read all log files and manage the /var/log directory
 gen_require(`
     type auditd_log_t;
@@ -62,11 +65,25 @@ read_files_pattern(cdp_logging_agent_t, unlabeled_t, unlabeled_t)
 # Read necessary system settings
 cdp_read_sysfs(cdp_logging_agent_t)
 
+# Manage home config files and directories
+gnome_manage_home_config(cdp_logging_agent_t)
+gnome_manage_home_config_dirs(cdp_logging_agent_t)
+gnome_search_gconf(cdp_logging_agent_t)
+
 # Read and search even if DAC does not allow it
 allow cdp_logging_agent_t self:capability { dac_read_search };
 
 # Execute arbitrary code in its own memory space (usually needed for interpreted languages)
 allow cdp_logging_agent_t self:process { execmem };
+
+# Execute shells
+corecmd_exec_shell(cdp_logging_agent_t)
+
+# Execute lib_t files
+gen_require(`
+    type lib_t;
+')
+can_exec(cdp_logging_agent_t, lib_t)
 
 gen_require(`
     type cdp_ipahealthagent_lib_t;
