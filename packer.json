@@ -339,13 +339,13 @@
       "vpc_id": "{{ user `vpc_id`}}"
     },
     {
-      "name": "aws-gov-centos7",
+      "name": "aws-gov-redhat9",
       "type": "amazon-ebs",
       "region": "us-gov-west-1",
       "ssh_pty": true,
       "source_ami": "{{ user `aws_gov_source_ami` }}",
       "instance_type": "{{ user `aws_instance_type` }}",
-      "ssh_username": "centos",
+      "ssh_username": "ec2-user",
       "ena_support": true,
       "skip_region_validation": true,
       "tags": {
@@ -362,6 +362,10 @@
         "cloudera-usage-type": "{{ user `cloudera_usage_type_tag` }}",
         "Name": "Packer Builder"
       },
+      "snapshot_users": "{{ user `aws_snapshot_users` }}",
+      "snapshot_groups": "{{ user `aws_snapshot_groups` }}",
+      "ami_groups": "{{ user `aws_ami_groups` }}",
+      "ami_org_arns": "{{ user `aws_ami_org_arns` }}",
       "ami_block_device_mappings": [
         {
           "device_name": "/dev/sda1",

@@ -125,11 +125,12 @@ endif
 # AWS_GOV source ami specification
 ifeq ($(CLOUD_PROVIDER),AWS_GOV)
 	AWS_INSTANCE_TYPE ?= t3.2xlarge
-    ifeq ($(OS),centos7)
-		AWS_GOV_SOURCE_AMI ?= ami-bbba86da
-	endif
-	ifeq ($(OS),redhat8)
+	ifeq ($(OS),redhat9)
+		AWS_GOV_SOURCE_AMI ?= ami-076ee76048eec9dd9
+	else ifeq ($(OS),redhat8)
 		AWS_GOV_SOURCE_AMI ?= ami-0ac4e06a69870e5be
+	else ifeq ($(OS),centos7)
+		AWS_GOV_SOURCE_AMI ?= ami-bbba86da
 	endif
 endif
 
@@ -517,6 +518,21 @@ build-aws-gov-redhat8:
 	PACKER_VERSION="1.8.3" \
 	./scripts/packer.sh build -color=false -only=aws-gov-redhat8 $(PACKER_OPTS)
 
+build-aws-gov-redhat9:
+	$(ENVS) \
+	AWS_AMI_REGIONS="us-gov-west-1" \
+	AWS_GOV_SOURCE_AMI=$(AWS_GOV_SOURCE_AMI) \
+	AWS_INSTANCE_TYPE=$(AWS_INSTANCE_TYPE) \
+	OS=redhat9 \
+	OS_TYPE=redhat9 \
+	ATLAS_ARTIFACT_TYPE=amazon-gov \
+	SALT_INSTALL_OS=redhat \
+	GIT_REV=$(GIT_REV) \
+	GIT_BRANCH=$(GIT_BRANCH) \
+	GIT_TAG=$(GIT_TAG) \
+	PACKER_VERSION="1.8.3" \
+	./scripts/packer.sh build -color=false -only=aws-gov-redhat9 $(PACKER_OPTS)
+
 copy-aws-gov-images:
 	docker run -i --rm \
 		-v "${PWD}/scripts:/scripts" \
@@ -728,6 +744,18 @@ ifdef SOURCE_IMAGE
 	SOURCE_IMAGE=$(SOURCE_IMAGE) \
 	AWS_INSTANCE_TYPE=$(AWS_INSTANCE_TYPE) \
 	./scripts/changelog/packer.sh build -color=false -only=aws-gov-redhat8 -force $(PACKER_OPTS)
+endif
+endif
+
+generate-aws-gov-redhat9-changelog:
+ifdef IMAGE_UUID
+ifdef SOURCE_IMAGE
+	$(ENVS) \
+	OS=redhat9 \
+	IMAGE_UUID=$(IMAGE_UUID) \
+	SOURCE_IMAGE=$(SOURCE_IMAGE) \
+	AWS_INSTANCE_TYPE=$(AWS_INSTANCE_TYPE) \
+	./scripts/changelog/packer.sh build -color=false -only=aws-gov-redhat9 -force $(PACKER_OPTS)
 endif
 endif
 
