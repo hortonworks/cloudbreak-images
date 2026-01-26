@@ -1,6 +1,6 @@
 {% set ids = {
-  'cloudera_scm_user': '992',
-  'cloudera_scm_group': '988',
+  'cloudera_scm_user': '9992',
+  'cloudera_scm_group': '9988',
 } %}
 
 {% if (salt['environ.get']('CLOUD_PROVIDER') == 'AWS' or salt['environ.get']('CLOUD_PROVIDER') == 'GCP') and pillar['OS'] == 'redhat9' %}

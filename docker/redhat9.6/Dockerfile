@@ -1,4 +1,4 @@
-FROM docker-sandbox.infra.cloudera.com/ycloud-base/base-rhel9.6:0.1.0.0-1
+FROM docker-sandbox.infra.cloudera.com/dbajzath/rhel-9.6-bootc:latest
 
 ARG SALT_VERSION
 ARG SALT_PATH
@@ -42,6 +42,11 @@ COPY /scripts/salt-install.sh /tmp/saltstack/
 COPY /scripts/salt-setup.sh /tmp/saltstack/
 COPY /scripts/salt-final.sh /tmp/saltstack/
 COPY /scripts/salt_${SALT_VERSION}_requirements.txt /tmp/salt_${SALT_VERSION}_requirements.txt
+
+# Precreate directories that may not be present on bootc image
+RUN mkdir -p /var/home /usr/lib /usr/lib64 /run/media /var/mnt /var/roothome /usr/sbin /var/srv /var/empty
+RUN chmod 755 /var/empty
+#RUN echo "d /var/empty 0755 root root -" >> /usr/lib/tmpfiles.d/sshd.conf
 
 # Workaround problem caused by sytemd not being pid-1:
 # Force the minions to use systemd on this host
