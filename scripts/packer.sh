@@ -228,6 +228,7 @@ packer_in_container() {
     -e PARCELS_ROOT="$PARCELS_ROOT" \
     -e PRE_WARM_PARCELS="${PRE_WARM_PARCELS}" \
     -e PRE_WARM_CSD="${PRE_WARM_CSD}" \
+    -e PRE_WARM_RPMS="${PRE_WARM_RPMS}" \
     -e VPC_ID="$VPC_ID" \
     -e SUBNET_ID="$SUBNET_ID" \
     -e BASE_AMI_ID="$BASE_AMI_ID" \
