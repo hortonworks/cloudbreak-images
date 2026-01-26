@@ -125,11 +125,12 @@ endif
 # AWS_GOV source ami specification
 ifeq ($(CLOUD_PROVIDER),AWS_GOV)
 	AWS_INSTANCE_TYPE ?= t3.2xlarge
-    ifeq ($(OS),centos7)
-		AWS_GOV_SOURCE_AMI ?= ami-bbba86da
-	endif
-	ifeq ($(OS),redhat8)
+	ifeq ($(OS),redhat9)
+		AWS_GOV_SOURCE_AMI ?= ami-076ee76048eec9dd9
+	else ifeq ($(OS),redhat8)
 		AWS_GOV_SOURCE_AMI ?= ami-0ac4e06a69870e5be
+	else ifeq ($(OS),centos7)
+		AWS_GOV_SOURCE_AMI ?= ami-bbba86da
 	endif
 endif
 
