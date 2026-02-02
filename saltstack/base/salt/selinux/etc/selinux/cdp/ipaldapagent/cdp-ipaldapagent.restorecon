@@ -1,3 +1,2 @@
 /usr/lib/systemd/system/cdp-freeipa-ldapagent.service
-/etc/selinux/cdp/ipaldapagent-python-wrapper.sh
 /cdp/ipaldapagent

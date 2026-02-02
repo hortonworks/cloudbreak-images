@@ -68,45 +68,25 @@
     - file_mode: 644
     - template: jinja
 
-#/etc/selinux/cdp/ipahealthagent-python-wrapper.sh:
-#  file.managed:
-#    - user: root
-#    - group: root
-#    - mode: 755
-#    - makedirs: True
-#    - template: jinja
-#    - name: /etc/selinux/cdp/ipahealthagent-python-wrapper.sh
-#    - source: salt://{{ slspath }}/etc/selinux/cdp/ipahealthagent-python-wrapper.sh
-#
-#/etc/selinux/cdp/ipaldapagent-python-wrapper.sh:
-#  file.managed:
-#    - user: root
-#    - group: root
-#    - mode: 755
-#    - makedirs: True
-#    - template: jinja
-#    - name: /etc/selinux/cdp/ipaldapagent-python-wrapper.sh
-#    - source: salt://{{ slspath }}/etc/selinux/cdp/ipaldapagent-python-wrapper.sh
-#
-#/etc/selinux/cdp/ipahealthagent:
-#  file.recurse:
-#    - name: /etc/selinux/cdp/ipahealthagent/
-#    - source: salt://{{ slspath }}/etc/selinux/cdp/ipahealthagent/
-#    - user: root
-#    - group: root
-#    - dir_mode: 755
-#    - file_mode: 644
-#    - makedirs: True
-#
-#/etc/selinux/cdp/ipaldapagent:
-#  file.recurse:
-#    - name: /etc/selinux/cdp/ipaldapagent/
-#    - source: salt://{{ slspath }}/etc/selinux/cdp/ipaldapagent/
-#    - user: root
-#    - group: root
-#    - dir_mode: 755
-#    - file_mode: 644
-#    - makedirs: True
+/etc/selinux/cdp/ipahealthagent:
+  file.recurse:
+    - name: /etc/selinux/cdp/ipahealthagent/
+    - source: salt://{{ slspath }}/etc/selinux/cdp/ipahealthagent/
+    - user: root
+    - group: root
+    - dir_mode: 755
+    - file_mode: 644
+    - makedirs: True
+
+/etc/selinux/cdp/ipaldapagent:
+  file.recurse:
+    - name: /etc/selinux/cdp/ipaldapagent/
+    - source: salt://{{ slspath }}/etc/selinux/cdp/ipaldapagent/
+    - user: root
+    - group: root
+    - dir_mode: 755
+    - file_mode: 644
+    - makedirs: True
 
 /etc/selinux/cdp/jumpgate-agent/:
   file.recurse:
