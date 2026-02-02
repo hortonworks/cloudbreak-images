@@ -1,5 +1,5 @@
 /usr/lib/systemd/system/cdp-freeipa-healthagent\.service     --      gen_context(system_u:object_r:cdp_ipahealthagent_systemd_unit_file_t,s0)
-/cdp/ipahealthagent/start-freeipa-healthagent.sh             --      gen_context(system_u:object_r:cdp_ipahealthagent_exec_t,s0)
+/cdp/ipahealthagent/start-freeipa-healthagent\.sh            --      gen_context(system_u:object_r:cdp_ipahealthagent_exec_t,s0)
 /opt/salt/scripts/freeipa_healthagent_setup\.sh              --      gen_context(system_u:object_r:cdp_ipahealthagent_exec_t,s0)
 
 /cdp/ipahealthagent/ipahealthagent(/.*)?                     --      gen_context(system_u:object_r:cdp_ipahealthagent_bin_t,s0)

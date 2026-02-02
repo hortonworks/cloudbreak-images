@@ -1,5 +1,5 @@
 /usr/lib/systemd/system/cdp-freeipa-ldapagent\.service       --      gen_context(system_u:object_r:cdp_ipaldapagent_systemd_unit_file_t,s0)
-/cdp/ipaldapagent/start-freeipa-ldapagent.sh                 --      gen_context(system_u:object_r:cdp_ipaldapagent_exec_t,s0)
+/cdp/ipaldapagent/start-freeipa-ldapagent\.sh                --      gen_context(system_u:object_r:cdp_ipaldapagent_exec_t,s0)
 /cdp/ipaldapagent/ipaldapagent(/.*)?                         --      gen_context(system_u:object_r:cdp_ipaldapagent_bin_t,s0)
 /cdp/ipaldapagent/ipaldapagent(/.*)?                         -d      gen_context(system_u:object_r:cdp_ipaldapagent_bin_t,s0)
 /cdp/ipaldapagent/cdp-freeipa-ldapagent                      --      gen_context(system_u:object_r:cdp_ipaldapagent_exec_t,s0)
