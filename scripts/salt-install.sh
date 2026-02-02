@@ -351,5 +351,6 @@ esac
 #echo "-a always,exit -F arch=b64 -S openat,open,creat,rename,renameat -F dir=/usr/bin -F success=1 -k usr_bin_ops" >> /etc/audit/rules.d/audit.rules
 #echo "-a always,exit -F arch=b64 -S openat,open,creat,rename,renameat -F dir=/etc -F success=1 -k etc_ops" >> /etc/audit/rules.d/audit.rules
 #echo "-a always,exit -F arch=b64 -S openat,open,creat,rename,renameat -F dir=/var/log -F success=1 -k var_log_ops" >> /etc/audit/rules.d/audit.rules
-#echo "max_log_file_action = ignore" | tee -a /etc/audit/auditd.conf
-#service auditd restart
+echo "-w /etc/hostname -p wa -k etc_hostname_ops" >> /etc/audit/rules.d/audit.rules
+echo "max_log_file_action = ignore" | tee -a /etc/audit/auditd.conf
+service auditd restart
