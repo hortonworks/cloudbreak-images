@@ -80,6 +80,8 @@ deny_nobody:
     - name: /etc/ssh/sshd_config
     - text: "DenyUsers nobody"
 
+{% if salt['environ.get']('FIPS_MODE') == 'false' %}
+
 ignore_system_wide_crypto_policy_for_ssh::
   cmd.run:
     - name: echo "CRYPTO_POLICY=" | sudo tee -a /etc/sysconfig/sshd
@@ -117,6 +119,8 @@ sshd_Exchange_algorithms:
     - pattern: "^KexAlgorithms .*"
     - repl: "KexAlgorithms curve25519-sha256,curve25519-sha256@libssh.org,diffie-hellman-group14-sha256,diffie-hellman-group16-sha512,diffie-hellman-group18-sha512,ecdh-sha2-nistp521,ecdh-sha2-nistp384,ecdh-sha2-nistp256,diffie-hellman-group-exchange-sha256"
     - append_if_not_found: True
+
+{% endif %}
 
 add_cis_control_sh:
   file.managed:

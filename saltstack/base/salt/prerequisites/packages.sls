@@ -5,7 +5,7 @@ distro-upgrade:
     - name: |
         dnf clean all
         dnf upgrade -y --releasever=9.6
-{% elif salt['environ.get']('CLOUD_PROVIDER') == 'AWS_GOV' %}
+{% elif salt['environ.get']('CLOUD_PROVIDER') == 'AWS_GOV' and pillar['OS'] == 'redhat8' %}
 update-packages:
   cmd.run:
     - name: dnf update -y --releasever=8.8 --nobest

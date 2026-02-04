@@ -3,26 +3,23 @@
   'cloudera_scm_group': '988',
 } %}
 
-{% if (salt['environ.get']('CLOUD_PROVIDER') == 'AWS' or salt['environ.get']('CLOUD_PROVIDER') == 'GCP') and pillar['OS'] == 'redhat9' %}
-
+{% if (salt['environ.get']('CLOUD_PROVIDER') == 'AWS' or salt['environ.get']('CLOUD_PROVIDER') == 'AWS_GOV' or salt['environ.get']('CLOUD_PROVIDER') == 'GCP') and pillar['OS'] == 'redhat9' %}
 # pesign has the needed uid/gid for cloudera-scm so it has to be modified
 change_pesign_uid:
   cmd.run:
     - name: |
         usermod -u 10001 pesign
         find / -not -path "/proc/*" -user {{ ids.cloudera_scm_user }} -exec chown -h pesign {} \;
-{% endif %}
 
-{% if pillar['subtype'] == 'Docker' and pillar['OS'] == 'redhat9' %}
+{% elif pillar['subtype'] == 'Docker' and pillar['OS'] == 'redhat9' %}
 # saslauth has the needed uid/gid for cloudera-scm so it has to be modified, YCLOUD only
 change_saslauth_uid:
   cmd.run:
     - name: |
         usermod -u 10002 saslauth
         find / -not -path "/proc/*" -user {{ ids.cloudera_scm_user }} -exec chown -h saslauth {} \;
-{% endif %}
 
-{% if salt['environ.get']('CLOUD_PROVIDER') == 'Azure' %}
+{% elif salt['environ.get']('CLOUD_PROVIDER') == 'Azure' %}
 
 {% if pillar['OS'] == 'redhat8' %}
 # sssd has the needed uid/gid for cloudera-scm so it has to be modified
