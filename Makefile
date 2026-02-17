@@ -291,7 +291,8 @@ endef
 
 define AZURE_STORAGE_ACCOUNTS_INTERNAL_TEST_PHASE
 West US:cldrwestus,\
-West US 2:cldrwestus2
+West US 2:cldrwestus2,\
+East US 2:cldreastus2
 endef
 
 define AZURE_STORAGE_ACCOUNTS_ALL
