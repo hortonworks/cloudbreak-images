@@ -5,4 +5,32 @@ gen_require(`
     type postgresql_exec_t;
     type postgresql_db_t;
     type postgresql_log_t;
+    type default_t;
+    class dir { create setattr getattr relabelfrom relabelto };
+    class file { create setattr getattr relabelfrom relabelto };
 ')
+
+# ====================================================================
+# Type Transitions
+# These rules ensure files "born" in /dbfs get the right label immediately
+# ====================================================================
+
+# 1. When pg_upgrade creates a NEW directory in a default_t area (/dbfs),
+#    label it as postgresql_db_t.
+filetrans_pattern(postgresql_t, default_t, postgresql_db_t, dir)
+
+# 2. When pg_upgrade creates a NEW file in a default_t area (/dbfs),
+#    label it as postgresql_exec_t.
+filetrans_pattern(postgresql_t, default_t, postgresql_exec_t, file)
+
+# ====================================================================
+# Permissions
+# Granting the postgresql_t domain the right to manage these types
+# ====================================================================
+
+allow postgresql_t default_t:dir { getattr search };
+allow postgresql_t default_t:file { getattr open read };
+
+# Allow management of its own DB and Exec types within the default_t parent
+allow postgresql_t postgresql_db_t:dir { create setattr getattr relabelfrom relabelto };
+allow postgresql_t postgresql_exec_t:file { create setattr getattr relabelfrom relabelto };
