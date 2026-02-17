@@ -32,7 +32,10 @@ function install_salt_with_pip3() {
   python3 -m pip install pbr
   python3 -m pip install -r /tmp/salt_${SALT_VERSION}_requirements.txt
 
+  echo === SaltStack installation information ===
   salt --versions-report
+  echo === Installed SaltStack modules ===
+  salt-call --local sys.list_modules || true
 }
 
 function install_with_yum() {
