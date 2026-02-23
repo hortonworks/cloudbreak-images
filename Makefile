@@ -203,7 +203,7 @@ endif
 # This block remains here for backward compatibility reasons when the IMAGE_NAME is not defined as an env variable
 ifndef IMAGE_NAME
 	STACK_VERSION_SHORT=$(STACK_TYPE)-$(shell echo $(STACK_VERSION) | tr -d . | cut -c1-4 )
-	export IMAGE_NAME := $(BASE_NAME)-$(shell echo $(STACK_VERSION_SHORT) | tr '[:upper:]' '[:lower:]')-$(shell date +%s)$(IMAGE_NAME_SUFFIX)
+	export IMAGE_NAME := $(BASE_NAME)-$(shell echo $(STACK_VERSION_SHORT) | tr '[:upper:]' '[:lower:]')-$(shell date +%s%3N)$(IMAGE_NAME_SUFFIX)
 @echo IMAGE_NAME was not defined as an environment variable. Generated value: $(IMAGE_NAME)
 endif
 
