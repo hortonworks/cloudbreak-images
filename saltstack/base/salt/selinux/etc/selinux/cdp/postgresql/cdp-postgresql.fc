@@ -17,3 +17,14 @@
 
 /dbfs/pgsql/scripts(/.*)?               --      gen_context(system_u:object_r:postgresql_exec_t,s0)
 /dbfs/pgsql/scripts(/.*)?               -d      gen_context(system_u:object_r:postgresql_exec_t,s0)
+
+# Temporary path for old binaries during upgrade
+/dbfs/tmp/pgsql-11/bin(/.*)?            --      gen_context(system_u:object_r:postgresql_exec_t,s0)
+/dbfs/tmp/pgsql-14/bin(/.*)?            --      gen_context(system_u:object_r:postgresql_exec_t,s0)
+
+# New PostgreSQL 17 data directory
+/dbfs/pgsql-14(/.*)?                    --      gen_context(system_u:object_r:postgresql_db_t,s0)
+/dbfs/pgsql-14(/.*)?                    -d      gen_context(system_u:object_r:postgresql_db_t,s0)
+
+/dbfs/pgsql-17(/.*)?                    --      gen_context(system_u:object_r:postgresql_db_t,s0)
+/dbfs/pgsql-17(/.*)?                    -d      gen_context(system_u:object_r:postgresql_db_t,s0)
