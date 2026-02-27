@@ -254,6 +254,7 @@ packer_in_container() {
     -e DEFAULT_JAVA_MAJOR_VERSION="$DEFAULT_JAVA_MAJOR_VERSION" \
     -e SALTBOOT_VERSION="$SALTBOOT_VERSION" \
     -e SALTBOOT_HTTPS_ENABLED="$SALTBOOT_HTTPS_ENABLED" \
+    -e PACKER_GITHUB_API_TOKEN="$PACKER_GITHUB_API_TOKEN" \
     -v /var/run/docker.sock:/var/run/docker.sock \
     -v $PWD:$PWD \
     -w $PWD \
