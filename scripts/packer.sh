@@ -127,6 +127,14 @@ packer_in_container() {
     NO_PROXY=172.20.0.0/16,127.0.0.1,localhost,169.254.169.254,internal,local,s3.us-gov-west-1.amazonaws.com,us-gov-west-1.eks.amazonaws.com
   fi
 
+  if [[ -n "$PACKER_GITHUB_API_TOKEN" ]]; then
+    echo "PACKER_GITHUB_API_TOKEN is set."
+    # Retrieve the cat: it should fail on auth error.
+    # Some documentation also notes that sometimes Bearer or token prefix before the actual token is required depending on the token's type.
+    # For testing purposes let's start with this.
+    curl -L -H "Authorization: $PACKER_GITHUB_API_TOKEN" https://api.github.com/octocat
+  fi
+
   [[ "$TRACE" ]] && set -x
   ${DRY_RUN:+echo ===} docker run -i $TTY_OPTS --rm \
     -e MOCK=$MOCK \
