@@ -283,6 +283,45 @@ resize_partitions() {
   fi
 }
 
+get_instance_id() {
+  local instance_id=""
+  local attempts=10
+  local delay=5
+
+  for ((i=1; i<=attempts; i++)); do
+    if [[ "$CLOUD_PLATFORM" == "AWS" ]]; then
+      local token
+      token=$(curl -s \
+        -X PUT "http://169.254.169.254/latest/api/token" \
+        -H "X-aws-ec2-metadata-token-ttl-seconds: 21600") || true
+      if [[ -n "$token" ]]; then
+        instance_id=$(curl -s \
+          -H "X-aws-ec2-metadata-token: $token" \
+          http://169.254.169.254/latest/meta-data/instance-id) || true
+      fi
+    elif [[ "$CLOUD_PLATFORM" == "AZURE" ]]; then
+      instance_id=$(wget -q -O - \
+        --header="Metadata: true" \
+        'http://169.254.169.254/metadata/instance/compute/name?api-version=2017-08-01&format=text') || true
+    elif [[ "$CLOUD_PLATFORM" == "GCP" ]]; then
+      instance_id=$(wget -q -O - \
+        --header="Metadata-Flavor: Google" \
+        'http://metadata.google.internal/computeMetadata/v1/instance/name') || true
+    fi
+
+    if [[ -n "$instance_id" ]]; then
+      echo "$instance_id"
+      return 0
+    fi
+
+    echo "Attempt $i/$attempts: Failed to retrieve instance ID for $CLOUD_PLATFORM, retrying in ${delay}s..." >&2
+    sleep "$delay"
+  done
+
+  echo "ERROR: Could not retrieve instance ID for $CLOUD_PLATFORM after $attempts attempts" >&2
+  return 1
+}
+
 main() {
   if [[ "$SECRET_ENCRYPTION_ENABLED" == "true" ]]; then
     create_luks_volume
@@ -308,14 +347,7 @@ main() {
     create_cert_for_saltboot_tls
 {% endif %}
 
-    INSTANCE_ID=
-    if [[ "$CLOUD_PLATFORM" == "AWS" ]]; then
-      INSTANCE_ID="$(TOKEN=`curl -s -X PUT "http://169.254.169.254/latest/api/token" -H "X-aws-ec2-metadata-token-ttl-seconds: 21600"` && curl -s -H "X-aws-ec2-metadata-token: $TOKEN" http://169.254.169.254/latest/meta-data/instance-id)"
-    elif [[ "$CLOUD_PLATFORM" == "AZURE" ]]; then
-      INSTANCE_ID="`wget -q -O - --header="Metadata: true" 'http://169.254.169.254/metadata/instance/compute/name?api-version=2017-08-01&format=text'`"
-    elif [[ "$CLOUD_PLATFORM" == "GCP" ]]; then
-      INSTANCE_ID="`wget -q -O - --header="Metadata-Flavor: Google" 'http://metadata.google.internal/computeMetadata/v1/instance/name'`"
-    fi
+    INSTANCE_ID=$(get_instance_id)
 
     if [[ "$IS_PROXY_ENABLED" == "true" ]]; then
       setup_proxy
