@@ -132,7 +132,8 @@ packer_in_container() {
     # Retrieve the cat: it should fail on auth error.
     # Some documentation also notes that sometimes Bearer or token prefix before the actual token is required depending on the token's type.
     # For testing purposes let's start with this.
-    curl -L -H "Authorization: $PACKER_GITHUB_API_TOKEN" https://api.github.com/octocat
+    # Bearer is absolutely needed (as it should be), BUT without it the GH API disregards the header instead of generating an error.
+    curl -L -H "Authorization: Bearer $PACKER_GITHUB_API_TOKEN" https://api.github.com/octocat
   fi
 
   [[ "$TRACE" ]] && set -x
