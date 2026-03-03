@@ -128,16 +128,17 @@ packer_in_container() {
   fi
 
   if [[ -n "$PACKER_GITHUB_API_TOKEN" ]]; then
-    echo "PACKER_GITHUB_API_TOKEN is set."
-    # Retrieve the cat: it should fail on auth error.
-    # Some documentation also notes that sometimes Bearer or token prefix before the actual token is required depending on the token's type.
-    # For testing purposes let's start with this.
-    # Bearer is absolutely needed (as it should be), BUT without it the GH API disregards the header instead of generating an error.
+    echo "PACKER_GITHUB_API_TOKEN is set: checking the validity of the token."
+    # Retrieve the GH cat: it should fail on auth problems.
+    # Testing/docs indicates that Bearer is absolutely needed (as it should be) and it's the preffered way to auth,
+    # BUT without it the GH API disregards the header instead of generating an error.
     local gh_test_url="https://api.github.com/octocat" 
-    local gh_token_check=$(curl -Ls -H "Authorization: Bearer $PACKER_GITHUB_API_TOKEN" -o /dev/null -w "%{response_code}" $gh_test_url)
+    local gh_token_check=$(curl -Ls --retry-connrefused --retry 6 -H "Authorization: Bearer $PACKER_GITHUB_API_TOKEN" -o /dev/null -w "%{response_code}" $gh_test_url)
     echo "Authentication check: GH API returned response with status code: $gh_token_check"
-    if [[ "$gh_token_check" -ne "200" ]]; then
-      echo "Error authenticating!"
+    if [[ "$gh_token_check" -eq "200" ]]; then
+      echo "Github token looks valid."
+    else
+      echo "Error authenticating to Github."
       unset PACKER_GITHUB_API_TOKEN
     fi
   fi
