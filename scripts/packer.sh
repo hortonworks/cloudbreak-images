@@ -127,6 +127,22 @@ packer_in_container() {
     NO_PROXY=172.20.0.0/16,127.0.0.1,localhost,169.254.169.254,internal,local,s3.us-gov-west-1.amazonaws.com,us-gov-west-1.eks.amazonaws.com
   fi
 
+  if [[ -n "$PACKER_GITHUB_API_TOKEN" ]]; then
+    echo "PACKER_GITHUB_API_TOKEN is set: checking the validity of the token."
+    # Retrieve the GH cat: it should fail on auth problems.
+    # Testing/docs indicates that Bearer is absolutely needed (as it should be) and it's the preffered way to auth,
+    # BUT without it the GH API disregards the header instead of generating an error.
+    local gh_test_url="https://api.github.com/octocat" 
+    local gh_token_check=$(curl -Ls --retry-connrefused --retry 6 -H "Authorization: Bearer $PACKER_GITHUB_API_TOKEN" -o /dev/null -w "%{response_code}" $gh_test_url)
+    echo "Authentication check: GH API returned response with status code: $gh_token_check"
+    if [[ "$gh_token_check" -eq "200" ]]; then
+      echo "Github token looks valid."
+    else
+      echo "Error authenticating to Github."
+      unset PACKER_GITHUB_API_TOKEN
+    fi
+  fi
+
   [[ "$TRACE" ]] && set -x
   ${DRY_RUN:+echo ===} docker run -i $TTY_OPTS --rm \
     -e MOCK=$MOCK \
@@ -254,6 +270,7 @@ packer_in_container() {
     -e DEFAULT_JAVA_MAJOR_VERSION="$DEFAULT_JAVA_MAJOR_VERSION" \
     -e SALTBOOT_VERSION="$SALTBOOT_VERSION" \
     -e SALTBOOT_HTTPS_ENABLED="$SALTBOOT_HTTPS_ENABLED" \
+    -e PACKER_GITHUB_API_TOKEN="$PACKER_GITHUB_API_TOKEN" \
     -v /var/run/docker.sock:/var/run/docker.sock \
     -v $PWD:$PWD \
     -w $PWD \
