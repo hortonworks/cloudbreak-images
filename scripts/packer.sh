@@ -133,7 +133,13 @@ packer_in_container() {
     # Some documentation also notes that sometimes Bearer or token prefix before the actual token is required depending on the token's type.
     # For testing purposes let's start with this.
     # Bearer is absolutely needed (as it should be), BUT without it the GH API disregards the header instead of generating an error.
-    curl -L -H "Authorization: Bearer $PACKER_GITHUB_API_TOKEN" https://api.github.com/octocat
+    local gh_test_url="https://api.github.com/octocat" 
+    local gh_token_check=$(curl -Ls -H "Authorization: Bearer $PACKER_GITHUB_API_TOKEN" -o /dev/null -w "%{response_code}" $gh_test_url)
+    echo "Authentication check: GH API returned response with status code: $gh_token_check"
+    if [[ "$gh_token_check" -ne "200" ]]; then
+      echo "Error authenticating!"
+      unset PACKER_GITHUB_API_TOKEN
+    fi
   fi
 
   [[ "$TRACE" ]] && set -x
