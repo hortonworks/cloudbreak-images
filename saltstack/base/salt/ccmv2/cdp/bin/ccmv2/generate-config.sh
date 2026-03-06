@@ -38,8 +38,8 @@ clientAuthenticationCertificate = """$(cat $AGENT_CERT_PATH)"""
 clientAuthenticationKey = """$(cat $AGENT_KEY_PATH)"""
 
 environmentCrn = "${ENVIRONMENT_CRN}"
-accessKeyId = "$(grep '^CCM_V2_AGENT_ACCESS_KEY_ID=' $ACCESS_KEY_PATH | cut -d'=' -f2)"
-accessKey = """$(grep '^ACCESS_KEY=' $ACCESS_KEY_PATH | cut -d'=' -f2 | base64 --decode)"""
+accessKeyId = "$(grep '^CCM_V2_AGENT_ACCESS_KEY_ID=' $ACCESS_KEY_PATH | cut -d'=' -f2-)"
+accessKey = """$(grep '^ACCESS_KEY=' $ACCESS_KEY_PATH | cut -d'=' -f2- | base64 --decode)"""
 
 http_proxy = "${HTTP_PROXY_URL}"
 
