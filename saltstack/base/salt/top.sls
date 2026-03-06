@@ -15,7 +15,6 @@ base:
     - monitoring
     - performance
     - telemetry
-    - ccm-client
     - ccmv2
     - custom
     - mount
