@@ -223,7 +223,7 @@ INCLUDE_CDP_TELEMETRY ?= "Yes"
 USE_TELEMETRY_ARCHIVE ?= "Yes"
 
 # This one is OS-independent (right?)
-DEFAULT_JUMPGATE_AGENT_RPM_URL := https://archive.cloudera.com/ccm/3.13.0/jumpgate-agent.rpm
+DEFAULT_JUMPGATE_AGENT_RPM_URL := https://archive.cloudera.com/ccm/3.14.0/jumpgate-agent.rpm
 
 # This one is theoretically OS-dependent and will be overridden in packer.sh for RHEL8, even though apparently packages work regardless of the OS.
 DEFAULT_FREEIPA_PLUGIN_RPM_URL := "https://archive.cloudera.com/cdp-freeipa-artifacts/cdp-hashed-pwd-1.1-b847.el7.x86_64.rpm"

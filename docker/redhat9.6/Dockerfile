@@ -108,7 +108,7 @@ ENV INCLUDE_FLUENT="Yes"
 ENV INCLUDE_CDP_TELEMETRY="Yes"
 ENV FREEIPA_PLUGIN_RPM_URL="https://archive.cloudera.com/cdp-freeipa-artifacts/cdp-hashed-pwd-1.1-b847.el7.x86_64.rpm"
 ENV FREEIPA_LDAP_AGENT_RPM_URL="https://archive.cloudera.com/cdp-freeipa-artifacts/freeipa-ldap-agent-1.1.0.3-b525.x86_64.rpm"
-ENV JUMPGATE_AGENT_RPM_URL="https://archive.cloudera.com/ccm/3.13.0/jumpgate-agent.rpm"
+ENV JUMPGATE_AGENT_RPM_URL="https://archive.cloudera.com/ccm/3.14.0/jumpgate-agent.rpm"
 #we build logic on the existance of this directory, please DO NOT REMOVE
 RUN mkdir /yarn-private
 
