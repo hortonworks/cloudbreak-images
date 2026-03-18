@@ -9,6 +9,13 @@ packer_in_container() {
   : "${PACKER_VERSION:="1.10.2"}"
   echo "Using Packer version $PACKER_VERSION"
 
+  if [[ "$ARCHITECTURE" == "arm64" ]]; then
+    if [[ "$CLOUD_PROVIDER" != "AWS" ]]; then
+      echo "Architecture arm64 is only supported for AWS"
+      exit 1
+    fi
+  fi
+
   if [[ "$GCP_ACCOUNT_FILE" ]]; then
     dockerOpts="$dockerOpts -v $GCP_ACCOUNT_FILE:$GCP_ACCOUNT_FILE"
   fi
@@ -35,12 +42,12 @@ packer_in_container() {
     REPOSITORY_NAME="cdh"
   fi
 
-  if [[ -n "$STACK_VERSION" ]]; then
-    BASEURL=http://127.0.0.1:28080
-    LOCAL_URL_AMBARI=${BASEURL}/ambari/${OS}/ambari-${CLUSTERMANAGER_VERSION}
-    LOCAL_URL_HDP=${BASEURL}/${REPOSITORY_NAME}/${OS}/${STACK_TYPE}-${STACK_VERSION}
-    LOCAL_URL_HDP_UTILS=${BASEURL}/${REPOSITORY_NAME}/${OS}/HDP-UTILS-${HDPUTIL_VERSION}
-  fi
+#  if [[ -n "$STACK_VERSION" ]]; then
+#    BASEURL=http://127.0.0.1:28080
+#    LOCAL_URL_AMBARI=${BASEURL}/ambari/${OS}/ambari-${CLUSTERMANAGER_VERSION}
+#    LOCAL_URL_HDP=${BASEURL}/${REPOSITORY_NAME}/${OS}/${STACK_TYPE}-${STACK_VERSION}
+#    LOCAL_URL_HDP_UTILS=${BASEURL}/${REPOSITORY_NAME}/${OS}/HDP-UTILS-${HDPUTIL_VERSION}
+#  fi
 
   export DEFAULT_JAVA_MAJOR_VERSION=8
   if [ -n "$STACK_VERSION" ] && [ $(version $STACK_VERSION) -gt $(version "7.3.0") ]; then
@@ -64,30 +71,25 @@ packer_in_container() {
     packerFile="packer_no_pp.json"
   fi
 
-  if [[ "$ARCHITECTURE" == "arm64" ]]; then
-    if [[ "$CLOUD_PROVIDER" != "AWS" ]]; then
-      echo "Architecture arm64 is only supported for AWS"
-      exit 1
-    fi
-
-    export DEFAULT_JUMPGATE_AGENT_RPM_URL="https://archive.cloudera.com/ccm/3.13.0/jumpgate-agent.aarch64.rpm"
-  fi
-
+  # Jumpgate Agent
   if ! [[ $JUMPGATE_AGENT_RPM_URL =~ ^http.*rpm$ ]]; then
-      export JUMPGATE_AGENT_RPM_URL=$DEFAULT_JUMPGATE_AGENT_RPM_URL
+    if [[ "$ARCHITECTURE" == "arm64" ]]; then
+      export JUMPGATE_AGENT_RPM_URL="https://archive.cloudera.com/ccm/3.13.0/jumpgate-agent.aarch64.rpm"
+    else
+      export JUMPGATE_AGENT_RPM_URL="https://archive.cloudera.com/ccm/3.14.0/jumpgate-agent.rpm"
+    fi
   fi
 
-  if [ -n "$JUMPGATE_AGENT_RPM_URL" ]; then
-    ## Download the jumpgate-agent rpm, get the version and call REDB to lookup the GBN
-    wget $JUMPGATE_AGENT_RPM_URL
-    JUMPGATE_AGENT_VERSION=$(rpm -qp --queryformat '%{VERSION}' ${JUMPGATE_AGENT_RPM_URL##*/} | sed s/~/-/)
-    JUMPGATE_AGENT_GBN=$(curl -Ls "https://release.eng.cloudera.com/hwre-api/latestcompiledbuild?stack=JUMPGATE&release=$JUMPGATE_AGENT_VERSION" --fail | jq -r '.gbn')
+  # FREEIPA: CEM Agent
+  if ! [[ $CEM_AGENT_RPM_URL =~ ^http.*rpm$ ]]; then
+    if [[ "$ARCHITECTURE" == "arm64" ]]; then
+      export CEM_AGENT_RPM_URL="https://cloudera-build-us-west-1.vpc.cloudera.com/s3/build/76334049/cem-agents/1.x/redhat8arm64/yum/tars/nifi-minifi-cpp/nifi-minifi-cpp-1.26.02-b30-arm64.rpm"
+    else
+      export CEM_AGENT_RPM_URL="https://cloudera-build-us-west-1.vpc.cloudera.com/s3/build/76334049/cem-agents/1.x/ubuntu24/apt/tars/nifi-minifi-cpp/nifi-minifi-cpp-1.26.02-b30-x86_64.rpm"
+    fi
   fi
 
-  if ! [[ $METERING_AGENT_RPM_URL =~ ^http.*rpm$ ]]; then
-    export METERING_AGENT_RPM_URL=$DEFAULT_METERING_AGENT_RPM_URL
-  fi
-
+  # FREEIPA: Health Agent, LDAP Agent, FreeIPA plugin
   case "$OS" in
     "redhat8") OSPART="el8" ;;
     "redhat9") OSPART="el9" ;;
@@ -256,7 +258,7 @@ packer_in_container() {
     -e CDP_TELEMETRY_VERSION="$CDP_TELEMETRY_VERSION" \
     -e CDP_LOGGING_AGENT_VERSION="$CDP_LOGGING_AGENT_VERSION" \
     -e JUMPGATE_AGENT_RPM_URL="$JUMPGATE_AGENT_RPM_URL" \
-    -e JUMPGATE_AGENT_GBN="$JUMPGATE_AGENT_GBN" \
+    -e CEM_AGENT_RPM_URL="$CEM_AGENT_RPM_URL" \
     -e FREEIPA_PLUGIN_RPM_URL="$FREEIPA_PLUGIN_RPM_URL" \
     -e FREEIPA_HEALTH_AGENT_RPM_URL="$FREEIPA_HEALTH_AGENT_RPM_URL" \
     -e FREEIPA_LDAP_AGENT_RPM_URL="$FREEIPA_LDAP_AGENT_RPM_URL" \
