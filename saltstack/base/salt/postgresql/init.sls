@@ -1,7 +1,7 @@
 {% if pillar['OS'] == 'redhat8' or pillar['OS'] == 'redhat9' %}
 
 {% set postgres_install_flags = '' %}
-{% if salt['environ.get']('CLOUD_PROVIDER') == 'AWS_GOV' or salt['environ.get']('ARCHITECTURE') == 'arm64' %}
+{% if salt['environ.get']('ARCHITECTURE') == 'arm64' %}
   {% set postgres_install_flags = '--skip-broken --nobest' %}
 {% endif %}
 
@@ -57,6 +57,8 @@ timeoutstop-postgres-ycloud:
 
 {% set version = salt['environ.get']('STACK_VERSION') %}
 {% if version and version.split('.') | map('int') | list >= [7, 3, 2] %}
+  {% set pg_default_version = '17' %}
+{% elif pillar['OS'] == 'redhat9' %}
   {% set pg_default_version = '17' %}
 {% else %}
   {% set pg_default_version = '14' %}

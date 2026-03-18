@@ -679,6 +679,19 @@
     },
     {
       "type": "shell",
+      "script": "scripts/repo-setup.sh",
+      "environment_vars": [
+        "OS_TYPE={{user `os_type`}}",
+        "OS={{user `os`}}",
+        "ARCHITECTURE={{user `architecture`}}",
+        "CLOUD_PROVIDER={{user `cloud_provider`}}",
+        "STIG_ENABLED={{user `stig_enabled`}}"
+      ],
+      "execute_command": "chmod +x {{ .Path }}; sudo {{ .Vars }} {{ .Path }}",
+      "remote_folder": "/opt/provision-scripts"
+    },
+    {
+      "type": "shell",
       "scripts": [
         "scripts/fips_mode_setup.sh"
       ],
