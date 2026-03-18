@@ -28,26 +28,23 @@ echo '{}' | jq --arg sb "$(salt-bootstrap --version | awk '{print $2}')" '. + {"
 cat /tmp/package-versions.json | jq --arg sv "$($SALT_PATH/bin/salt-call --local grains.get saltversion --out json | jq -r .local)" '. + {"salt": $sv}' > /tmp/package-versions.json
 
 cat /tmp/package-versions.json | jq --arg git_rev ${GIT_REV} '. + {"cloudbreak_images": $git_rev}' > /tmp/package-versions.json.tmp && mv /tmp/package-versions.json.tmp /tmp/package-versions.json
+
 if [[ -n $JUMPGATE_AGENT_RPM_URL ]]; then
-	JUMPGATE_AGENT_VERSION_INFO=$(jumpgate-agent --version)
-	JUMPGATE_AGENT_VERSION_REGEX="jumpgate-agent version:\s([0-9]+\.[0-9]+\.[0-9]+\-b[0-9]+).*"
-	if [[ $JUMPGATE_AGENT_VERSION_INFO =~ $JUMPGATE_AGENT_VERSION_REGEX ]]; then
-		cat /tmp/package-versions.json | jq --arg inverting_proxy_agent_version ${BASH_REMATCH[1]} '. + {"inverting-proxy-agent": $inverting_proxy_agent_version}' > /tmp/package-versions.json.tmp && mv /tmp/package-versions.json.tmp /tmp/package-versions.json
-	else
-		echo "It is not possible to retrieve the version of Jumpgate Agent from its --version param."
-		exit 1
-	fi
-	if [[ "$CLOUD_PROVIDER" == "YARN" ]]; then
-			wget $JUMPGATE_AGENT_RPM_URL
-    		JUMPGATE_AGENT_VERSION=$(rpm -qp --queryformat '%{VERSION}' ${JUMPGATE_AGENT_RPM_URL##*/} | sed s/~/-/)
-    		JUMPGATE_AGENT_GBN=$(curl -Ls "https://release.eng.cloudera.com/hwre-api/latestcompiledbuild?stack=JUMPGATE&release=$JUMPGATE_AGENT_VERSION" --fail | jq -r '.gbn')
-	fi
-	if [[ -n $JUMPGATE_AGENT_GBN ]]; then
-		cat /tmp/package-versions.json | jq --arg inverting_proxy_agent_gbn ${JUMPGATE_AGENT_GBN} '. + {"inverting-proxy-agent_gbn": $inverting_proxy_agent_gbn}' > /tmp/package-versions.json.tmp && mv /tmp/package-versions.json.tmp /tmp/package-versions.json
-	else
-		echo "JUMPGATE_AGENT_GBN environment variable is empty."
-		exit 1
-	fi
+	## Download the jumpgate-agent rpm, get the version and call REDB to lookup the GBN
+	wget $JUMPGATE_AGENT_RPM_URL
+	JUMPGATE_AGENT_VERSION=$(rpm -qp --queryformat '%{VERSION}' ${JUMPGATE_AGENT_RPM_URL##*/} | sed s/~/-/)
+	JUMPGATE_AGENT_GBN=$(curl -Ls "https://release.eng.cloudera.com/hwre-api/latestcompiledbuild?stack=JUMPGATE&release=$JUMPGATE_AGENT_VERSION" --fail | jq -r '.gbn')
+	cat /tmp/package-versions.json | jq --arg inverting_proxy_agent_version ${JUMPGATE_AGENT_VERSION} '. + {"inverting-proxy-agent": $inverting_proxy_agent_version}' > /tmp/package-versions.json.tmp && mv /tmp/package-versions.json.tmp /tmp/package-versions.json
+	cat /tmp/package-versions.json | jq --arg inverting_proxy_agent_gbn ${JUMPGATE_AGENT_GBN} '. + {"inverting-proxy-agent_gbn": $inverting_proxy_agent_gbn}' > /tmp/package-versions.json.tmp && mv /tmp/package-versions.json.tmp /tmp/package-versions.json
+fi
+
+if [[ -n $CEM_AGENT_RPM_URL ]]; then
+	## Download the cem-agent rpm, get the version and call REDB to lookup the GBN
+	wget $CEM_AGENT_RPM_URL
+	CEM_AGENT_VERSION=$(rpm -qp --queryformat '%{VERSION}' ${CEM_AGENT_RPM_URL##*/} | sed s/~/-/)
+	CEM_AGENT_GBN=$(curl -Ls "https://release.eng.cloudera.com/hwre-api/latestcompiledbuild?stack=CEM-AGENTS&release=$CEM_AGENT_VERSION" --fail | jq -r '.gbn')
+	cat /tmp/package-versions.json | jq --arg cem_agent_version ${CEM_AGENT_VERSION} '. + {"cem-agents": $cem_agent_version}' > /tmp/package-versions.json.tmp && mv /tmp/package-versions.json.tmp /tmp/package-versions.json
+	cat /tmp/package-versions.json | jq --arg cem_agent_gbn ${CEM_AGENT_GBN} '. + {"cem-agents_gbn": $cem_agent_gbn}' > /tmp/package-versions.json.tmp && mv /tmp/package-versions.json.tmp /tmp/package-versions.json
 fi
 
 set_version_for_rpm_pkg "cdp-telemetry"
