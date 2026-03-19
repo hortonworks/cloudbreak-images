@@ -78,4 +78,3 @@ install_aws_encryption_sdk_cli:
   pip.installed:
     - name: aws-encryption-sdk-cli
     - bin_env: /usr/local/bin/pip3.11
-{% endif %}

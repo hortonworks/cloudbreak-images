@@ -22,7 +22,6 @@ function update_yum_repos() {
       RHEL_VERSION="8.10"
     fi
 
-
     RHEL_VERSION_MAJOR=${RHEL_VERSION:0:1}
     REPO_FILE=rhel${RHEL_VERSION}_cldr_mirrors.repo
     if [ "${CLOUD_PROVIDER}" != "YARN" ]; then
