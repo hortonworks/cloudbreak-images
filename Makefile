@@ -366,8 +366,8 @@ S3_TARGET ?= "s3://public-repo-1.hortonworks.com/HDP/cloudbreak"
 
 # Every make target is appended with await-docker as a dependency.
 ifdef DOCKER_HOST
-	SPECIFIED_TARGETS := $(MAKECMDGOALS)
-	$(SPECIFIED_TARGETS): await-docker
+SPECIFIED_TARGETS := $(MAKECMDGOALS)
+$(SPECIFIED_TARGETS): await-docker
 endif
 
 .PHONY :
