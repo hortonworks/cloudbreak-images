@@ -18,6 +18,7 @@ function check_docker_connection()
         sleep $current_wait_time
         current_wait_time=$(( current_wait_time*wait_multiplier ))
     done
+    echo Docker daemon has failed to start within the specificed grace period. 
     exit 1
 }
 
