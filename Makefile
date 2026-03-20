@@ -364,6 +364,7 @@ AZURE_BUILD_STORAGE_ACCOUNT ?= "West US:cldrwestus"
 
 S3_TARGET ?= "s3://public-repo-1.hortonworks.com/HDP/cloudbreak"
 
+# Every make target is appended the dependency of await-docker.
 SPECIFIED_TARGETS := $(MAKECMDGOALS)
 $(SPECIFIED_TARGETS): await-docker
 
