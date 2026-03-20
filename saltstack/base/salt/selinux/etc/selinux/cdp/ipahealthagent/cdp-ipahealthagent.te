@@ -44,6 +44,9 @@ manage_dirs_pattern(cdp_ipahealthagent_t, default_t, default_t)
 manage_files_pattern(cdp_ipahealthagent_t, default_t, default_t)
 exec_files_pattern(cdp_ipahealthagent_t, default_t, default_t)
 
+dirsrv_manage_config(cdp_ipahealthagent_t)
+dirsrv_read_share(cdp_ipahealthagent_t)
+
 logging_create_devlog_dev(cdp_ipahealthagent_t)
 
 gnome_search_gconf(cdp_ipahealthagent_t)
