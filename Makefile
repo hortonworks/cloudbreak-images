@@ -364,14 +364,17 @@ AZURE_BUILD_STORAGE_ACCOUNT ?= "West US:cldrwestus"
 
 S3_TARGET ?= "s3://public-repo-1.hortonworks.com/HDP/cloudbreak"
 
-.PHONY : await-docker
+SPECIFIED_TARGETS := $(MAKECMDGOALS)
+$(SPECIFIED_TARGETS): await-docker
+
+.PHONY :
 await-docker:
 	./scripts/await-docker-daemon.sh
 
 show-image-name:
 	@echo IMAGE_NAME=$(IMAGE_NAME)
 
-build-aws-centos7-base: await-docker
+build-aws-centos7-base:
 	$(ENVS) \
 	AWS_AMI_REGIONS="us-west-1" \
 	AWS_SOURCE_AMI=$(AWS_SOURCE_AMI) \
@@ -385,7 +388,7 @@ build-aws-centos7-base: await-docker
 	GIT_TAG=$(GIT_TAG) \
 	./scripts/packer.sh build -color=false -only=aws-centos7 $(PACKER_OPTS)
 
-build-aws-centos7: await-docker
+build-aws-centos7:
 	@ METADATA_FILENAME_POSTFIX=$(METADATA_FILENAME_POSTFIX) make build-aws-centos7-base
 	$(ENVS) \
 	AWS_AMI_REGIONS="$(AWS_AMI_REGIONS)" \
@@ -397,7 +400,7 @@ build-aws-centos7: await-docker
 	GIT_TAG=$(GIT_TAG) \
 	./scripts/sparseimage/packer.sh build -color=false -force $(PACKER_OPTS)
 
-build-aws-redhat8: await-docker
+build-aws-redhat8:
 	$(ENVS) \
 	AWS_AMI_REGIONS="us-west-1" \
 	AWS_SOURCE_AMI=$(AWS_SOURCE_AMI) \
@@ -412,7 +415,7 @@ build-aws-redhat8: await-docker
 	GIT_TAG=$(GIT_TAG) \
 	./scripts/packer.sh build -color=false -only=aws-redhat8 $(PACKER_OPTS)
 
-build-aws-redhat9: await-docker
+build-aws-redhat9:
 	$(ENVS) \
 	AWS_AMI_REGIONS="us-west-1" \
 	AWS_SOURCE_AMI=$(AWS_SOURCE_AMI) \
@@ -427,7 +430,7 @@ build-aws-redhat9: await-docker
 	GIT_TAG=$(GIT_TAG) \
 	./scripts/packer.sh build -color=false -only=aws-redhat9 $(PACKER_OPTS)
 
-build-azure-redhat8: await-docker
+build-azure-redhat8:
 	$(ENVS) \
 	AZURE_STORAGE_ACCOUNTS=$(AZURE_BUILD_STORAGE_ACCOUNT) \
 	OS=redhat8 \
@@ -448,7 +451,7 @@ ifeq ($(AZURE_INITIAL_COPY),true)
 	TRACE=1 AZURE_STORAGE_ACCOUNTS=$(AZURE_BUILD_STORAGE_ACCOUNT) ./scripts/azure-copy.sh
 endif
 
-build-azure-redhat9: await-docker
+build-azure-redhat9:
 	$(ENVS) \
 	AZURE_STORAGE_ACCOUNTS=$(AZURE_BUILD_STORAGE_ACCOUNT) \
 	OS=redhat9 \
@@ -469,7 +472,7 @@ ifeq ($(AZURE_INITIAL_COPY),true)
 	TRACE=1 AZURE_STORAGE_ACCOUNTS=$(AZURE_BUILD_STORAGE_ACCOUNT) ./scripts/azure-copy.sh
 endif
 
-build-gc-redhat8: await-docker
+build-gc-redhat8:
 	@ METADATA_FILENAME_POSTFIX=$(METADATA_FILENAME_POSTFIX)
 	$(ENVS) \
 	OS=redhat8 \
@@ -484,7 +487,7 @@ build-gc-redhat8: await-docker
 	GIT_TAG=$(GIT_TAG) \
 	./scripts/packer.sh build -color=false -only=gc-redhat8 $(PACKER_OPTS)
 
-build-gc-redhat9: await-docker
+build-gc-redhat9:
 	@ METADATA_FILENAME_POSTFIX=$(METADATA_FILENAME_POSTFIX)
 	$(ENVS) \
 	OS=redhat9 \
@@ -499,7 +502,7 @@ build-gc-redhat9: await-docker
 	GIT_TAG=$(GIT_TAG) \
 	./scripts/packer.sh build -color=false -only=gc-redhat9 $(PACKER_OPTS)
 
-copy-aws-images: await-docker
+copy-aws-images:
 	docker run -i --rm \
 		-v "${PWD}/scripts:/scripts" \
 		-w /scripts \
@@ -515,7 +518,7 @@ copy-aws-images: await-docker
 		--entrypoint="/bin/bash" \
 		amazon/aws-cli -c "./aws-copy.sh"
 
-build-aws-gov-redhat8: await-docker
+build-aws-gov-redhat8:
 	$(ENVS) \
 	AWS_AMI_REGIONS="us-gov-west-1" \
 	AWS_GOV_SOURCE_AMI=$(AWS_GOV_SOURCE_AMI) \
@@ -530,7 +533,7 @@ build-aws-gov-redhat8: await-docker
 	PACKER_VERSION="1.8.3" \
 	./scripts/packer.sh build -color=false -only=aws-gov-redhat8 $(PACKER_OPTS)
 
-build-aws-gov-redhat9: await-docker
+build-aws-gov-redhat9:
 	$(ENVS) \
 	AWS_AMI_REGIONS="us-gov-west-1" \
 	AWS_GOV_SOURCE_AMI=$(AWS_GOV_SOURCE_AMI) \
@@ -545,7 +548,7 @@ build-aws-gov-redhat9: await-docker
 	PACKER_VERSION="1.8.3" \
 	./scripts/packer.sh build -color=false -only=aws-gov-redhat9 $(PACKER_OPTS)
 
-copy-aws-gov-images: await-docker
+copy-aws-gov-images:
 	docker run -i --rm \
 		-v "${PWD}/scripts:/scripts" \
 		-w /scripts \
