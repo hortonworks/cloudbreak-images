@@ -70,6 +70,12 @@ gnome_manage_home_config(cdp_logging_agent_t)
 gnome_manage_home_config_dirs(cdp_logging_agent_t)
 gnome_search_gconf(cdp_logging_agent_t)
 
+# Read sysfs files
+gen_require(`
+    type sysfs_t;
+')
+read_files_pattern(cdp_logging_agent_t, sysfs_t, sysfs_t)
+
 # Read and search even if DAC does not allow it
 allow cdp_logging_agent_t self:capability { dac_read_search };
 
