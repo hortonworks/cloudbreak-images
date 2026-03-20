@@ -21,7 +21,7 @@ function attempt_connection_check()
     exit 1
 }
 
-if [ -n "${DOCKER_HOST}" ]; then
+if [ -n "${DOCKER_HOST?}" ]; then
     echo DOCKER_HOST is defined.
     attempt_connection_check
 fi
