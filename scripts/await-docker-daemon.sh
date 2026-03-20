@@ -2,12 +2,11 @@
 set -ex -o pipefail
 
 function attempt_connection_check()
-{
-    local initial_wait=1
+{   
+    local current_wait_time=1 # seconds
     local wait_multiplier=2
-    local current_wait_time=$initial_wait
-    local max_wait_time=16
-    local check_cmd="docker info"
+    local max_wait_time=16 # seconds
+    local check_cmd="docker info" # Fails if can't connect to the daemon with a non-zero exit code.
 
     while [[ $current_wait_time -le $max_wait_time ]]
     do
@@ -19,7 +18,7 @@ function attempt_connection_check()
         fi
         echo Waiting for $current_wait_time
         sleep $current_wait_time
-        current_wait_time=$(( current_wait_time*wait_multiplier))
+        current_wait_time=$(( current_wait_time*wait_multiplier ))
     done
     exit 1
 }
