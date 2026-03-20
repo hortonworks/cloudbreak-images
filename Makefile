@@ -370,7 +370,7 @@ SPECIFIED_TARGETS := $(MAKECMDGOALS)
 $(SPECIFIED_TARGETS): await-docker
 endif
 
-.PHONY :
+.PHONY : await-docker
 await-docker:
 	./scripts/await-docker-daemon.sh
 
