@@ -370,9 +370,10 @@ SPECIFIED_TARGETS := $(MAKECMDGOALS)
 $(SPECIFIED_TARGETS): await-docker
 endif
 
+# Exponential back-off is implemented. Read await-docker-daemon.sh
 .PHONY: await-docker
 await-docker:
-	./scripts/await-docker-daemon.sh
+	MAX_BACKOFF_WAIT_TIME_SECONDS=16 ./scripts/await-docker-daemon.sh
 
 show-image-name:
 	@echo IMAGE_NAME=$(IMAGE_NAME)

@@ -5,9 +5,8 @@ function check_docker_connection()
 {   
     local current_wait_time=1 # seconds
     local wait_multiplier=2
-    local max_wait_time=16 # seconds
     local check_cmd="docker info" # Exit code is non-zero if it can't connect to the daemon.
-
+    local max_wait_time=$1 # Seconds
     while [[ $current_wait_time -le $max_wait_time ]]; do
         echo Checking if docker daemon is running.
         if $check_cmd; then
@@ -22,4 +21,9 @@ function check_docker_connection()
     exit 1
 }
 
-check_docker_connection
+if [ -n "${MAX_BACKOFF_WAIT_TIME_SECONDS}" ]; then
+    check_docker_connection $MAX_BACKOFF_WAIT_TIME_SECONDS
+else
+    echo MAX_BACKOFF_WAIT_TIME_SECONDS needs to be defined.
+    exit 1
+fi
