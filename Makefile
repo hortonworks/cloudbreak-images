@@ -364,6 +364,17 @@ AZURE_BUILD_STORAGE_ACCOUNT ?= "West US:cldrwestus"
 
 S3_TARGET ?= "s3://public-repo-1.hortonworks.com/HDP/cloudbreak"
 
+# Every make target is appended with await-docker as a dependency.
+ifdef DOCKER_HOST
+SPECIFIED_TARGETS := $(MAKECMDGOALS)
+$(SPECIFIED_TARGETS): await-docker
+endif
+
+# Exponential back-off is implemented. Read await-docker-daemon.sh
+.PHONY: await-docker
+await-docker:
+	MAX_BACKOFF_WAIT_TIME_SECONDS=16 ./scripts/await-docker-daemon.sh
+
 show-image-name:
 	@echo IMAGE_NAME=$(IMAGE_NAME)
 
