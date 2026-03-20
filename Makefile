@@ -364,6 +364,10 @@ AZURE_BUILD_STORAGE_ACCOUNT ?= "West US:cldrwestus"
 
 S3_TARGET ?= "s3://public-repo-1.hortonworks.com/HDP/cloudbreak"
 
+.PHONY : await-docker
+await-docker:
+	./scripts/await-docker-daemon.sh
+
 show-image-name:
 	@echo IMAGE_NAME=$(IMAGE_NAME)
 
@@ -495,7 +499,7 @@ build-gc-redhat9:
 	GIT_TAG=$(GIT_TAG) \
 	./scripts/packer.sh build -color=false -only=gc-redhat9 $(PACKER_OPTS)
 
-copy-aws-images:
+copy-aws-images: await-docker
 	docker run -i --rm \
 		-v "${PWD}/scripts:/scripts" \
 		-w /scripts \
