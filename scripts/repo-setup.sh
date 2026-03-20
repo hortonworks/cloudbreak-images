@@ -17,6 +17,11 @@ function update_yum_repos() {
       RHEL_VERSION="9.6"
     fi
 
+    # For AWS Gov sadly we have an ancient RHEL 8.4 base image, so this needs an override
+    if [[ "${CLOUD_PROVIDER}" == "AWS_GOV" && "${RHEL_VERSION}" == "8.4" ]]; then
+      RHEL_VERSION="8.10"
+    fi
+
     RHEL_VERSION_MAJOR=${RHEL_VERSION:0:1}
     REPO_FILE=rhel${RHEL_VERSION}_cldr_mirrors.repo
     if [ "${CLOUD_PROVIDER}" != "YARN" ]; then
