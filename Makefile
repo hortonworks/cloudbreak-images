@@ -371,7 +371,7 @@ await-docker:
 show-image-name:
 	@echo IMAGE_NAME=$(IMAGE_NAME)
 
-build-aws-centos7-base:
+build-aws-centos7-base: await-docker
 	$(ENVS) \
 	AWS_AMI_REGIONS="us-west-1" \
 	AWS_SOURCE_AMI=$(AWS_SOURCE_AMI) \
@@ -385,7 +385,7 @@ build-aws-centos7-base:
 	GIT_TAG=$(GIT_TAG) \
 	./scripts/packer.sh build -color=false -only=aws-centos7 $(PACKER_OPTS)
 
-build-aws-centos7:
+build-aws-centos7: await-docker
 	@ METADATA_FILENAME_POSTFIX=$(METADATA_FILENAME_POSTFIX) make build-aws-centos7-base
 	$(ENVS) \
 	AWS_AMI_REGIONS="$(AWS_AMI_REGIONS)" \
@@ -397,7 +397,7 @@ build-aws-centos7:
 	GIT_TAG=$(GIT_TAG) \
 	./scripts/sparseimage/packer.sh build -color=false -force $(PACKER_OPTS)
 
-build-aws-redhat8:
+build-aws-redhat8: await-docker
 	$(ENVS) \
 	AWS_AMI_REGIONS="us-west-1" \
 	AWS_SOURCE_AMI=$(AWS_SOURCE_AMI) \
@@ -412,7 +412,7 @@ build-aws-redhat8:
 	GIT_TAG=$(GIT_TAG) \
 	./scripts/packer.sh build -color=false -only=aws-redhat8 $(PACKER_OPTS)
 
-build-aws-redhat9:
+build-aws-redhat9: await-docker
 	$(ENVS) \
 	AWS_AMI_REGIONS="us-west-1" \
 	AWS_SOURCE_AMI=$(AWS_SOURCE_AMI) \
@@ -427,7 +427,7 @@ build-aws-redhat9:
 	GIT_TAG=$(GIT_TAG) \
 	./scripts/packer.sh build -color=false -only=aws-redhat9 $(PACKER_OPTS)
 
-build-azure-redhat8:
+build-azure-redhat8: await-docker
 	$(ENVS) \
 	AZURE_STORAGE_ACCOUNTS=$(AZURE_BUILD_STORAGE_ACCOUNT) \
 	OS=redhat8 \
@@ -448,7 +448,7 @@ ifeq ($(AZURE_INITIAL_COPY),true)
 	TRACE=1 AZURE_STORAGE_ACCOUNTS=$(AZURE_BUILD_STORAGE_ACCOUNT) ./scripts/azure-copy.sh
 endif
 
-build-azure-redhat9:
+build-azure-redhat9: await-docker
 	$(ENVS) \
 	AZURE_STORAGE_ACCOUNTS=$(AZURE_BUILD_STORAGE_ACCOUNT) \
 	OS=redhat9 \
@@ -469,7 +469,7 @@ ifeq ($(AZURE_INITIAL_COPY),true)
 	TRACE=1 AZURE_STORAGE_ACCOUNTS=$(AZURE_BUILD_STORAGE_ACCOUNT) ./scripts/azure-copy.sh
 endif
 
-build-gc-redhat8:
+build-gc-redhat8: await-docker
 	@ METADATA_FILENAME_POSTFIX=$(METADATA_FILENAME_POSTFIX)
 	$(ENVS) \
 	OS=redhat8 \
@@ -484,7 +484,7 @@ build-gc-redhat8:
 	GIT_TAG=$(GIT_TAG) \
 	./scripts/packer.sh build -color=false -only=gc-redhat8 $(PACKER_OPTS)
 
-build-gc-redhat9:
+build-gc-redhat9: await-docker
 	@ METADATA_FILENAME_POSTFIX=$(METADATA_FILENAME_POSTFIX)
 	$(ENVS) \
 	OS=redhat9 \
@@ -515,7 +515,7 @@ copy-aws-images: await-docker
 		--entrypoint="/bin/bash" \
 		amazon/aws-cli -c "./aws-copy.sh"
 
-build-aws-gov-redhat8:
+build-aws-gov-redhat8: await-docker
 	$(ENVS) \
 	AWS_AMI_REGIONS="us-gov-west-1" \
 	AWS_GOV_SOURCE_AMI=$(AWS_GOV_SOURCE_AMI) \
@@ -530,7 +530,7 @@ build-aws-gov-redhat8:
 	PACKER_VERSION="1.8.3" \
 	./scripts/packer.sh build -color=false -only=aws-gov-redhat8 $(PACKER_OPTS)
 
-build-aws-gov-redhat9:
+build-aws-gov-redhat9: await-docker
 	$(ENVS) \
 	AWS_AMI_REGIONS="us-gov-west-1" \
 	AWS_GOV_SOURCE_AMI=$(AWS_GOV_SOURCE_AMI) \
@@ -545,7 +545,7 @@ build-aws-gov-redhat9:
 	PACKER_VERSION="1.8.3" \
 	./scripts/packer.sh build -color=false -only=aws-gov-redhat9 $(PACKER_OPTS)
 
-copy-aws-gov-images:
+copy-aws-gov-images: await-docker
 	docker run -i --rm \
 		-v "${PWD}/scripts:/scripts" \
 		-w /scripts \
