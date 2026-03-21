@@ -469,10 +469,12 @@ relabel_files_pattern(cdp_salt_t, named_conf_t, named_conf_t)
 
 # networkmanager
 gen_require(`
+    type NetworkManager_etc_t;
     type NetworkManager_initrc_exec_t;
 ')
 networkmanager_read_conf(cdp_salt_t)
 list_dirs_pattern(cdp_salt_t, NetworkManager_initrc_exec_t, NetworkManager_initrc_exec_t)
+cdp_manage_pattern(cdp_salt_t, NetworkManager_etc_t, NetworkManager_etc_t)
 
 # opendnssec
 opendnssec_read_config(cdp_salt_t)
@@ -577,6 +579,7 @@ gen_require(`
     type games_exec_t;
     type lib_t;
     type root_t;
+    type sysfs_t;
     type tmp_t;
     type user_home_dir_t;
     type usr_t;
@@ -628,6 +631,7 @@ setattr_dirs_pattern(cdp_salt_t, user_home_dir_t, user_home_dir_t)
 cdp_manage_pattern(cdp_salt_t, bin_t, bin_t)
 cdp_manage_pattern(cdp_salt_t, lib_t, lib_t)
 cdp_manage_pattern(cdp_salt_t, self, self)
+cdp_manage_pattern(cdp_salt_t, sysfs_t, sysfs_t)
 cdp_manage_pattern(cdp_salt_t, usr_t, usr_t)
 cdp_manage_pattern(cdp_salt_t, var_lib_t, var_lib_t)
 
