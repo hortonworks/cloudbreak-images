@@ -78,7 +78,7 @@ packages_install:
       {% endif %}
     {% endif %}
   {% endif %}
-  {% if salt['environ.get']('CLOUD_PROVIDER') == 'AWS_GOV' %}
+  {% if salt['environ.get']('CLOUD_PROVIDER') == 'AWS_GOV' or salt['environ.get']('CLOUD_PROVIDER') == 'AWS' %}
       - cryptsetup
   {% endif %}
       - nvme-cli

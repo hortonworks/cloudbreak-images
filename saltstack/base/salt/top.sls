@@ -18,7 +18,7 @@ base:
     - ccmv2
     - custom
     - mount
-{% if salt['environ.get']('CLOUD_PROVIDER') == 'AWS_GOV' %}
+{% if salt['environ.get']('CLOUD_PROVIDER') == 'AWS_GOV' or salt['environ.get']('CLOUD_PROVIDER') == 'AWS' %}
     - luks
     - userdata-secrets
 {% endif %}
