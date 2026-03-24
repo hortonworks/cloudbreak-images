@@ -77,8 +77,4 @@
 install_aws_encryption_sdk_cli:
   pip.installed:
     - name: aws-encryption-sdk-cli
-{% if pillar['OS'] == 'redhat8' %}
-    - bin_env: /usr/local/bin/pip3.8
-{% else %}
-    - bin_env: /usr/local/bin/pip3.9
-{% endif %}
+    - bin_env: /usr/local/bin/pip3.11
