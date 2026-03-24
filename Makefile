@@ -63,7 +63,7 @@ $(error "AZURE_IMAGE_VHD and Marketplace image properties (AZURE_IMAGE_PUBLISHER
 		else ifeq ($(OS),redhat9)
 			AZURE_IMAGE_PUBLISHER ?= RedHat
 			AZURE_IMAGE_OFFER ?= rhel-byos
-			AZURE_IMAGE_SKU ?= rhel-lvm95
+			AZURE_IMAGE_SKU ?= rhel-lvm95-gen2
 		else ifeq ($(OS),centos7)
 			AZURE_IMAGE_PUBLISHER ?= OpenLogic
 			AZURE_IMAGE_OFFER ?= CentOS
@@ -79,7 +79,7 @@ $(error Unexpected OS type $(OS) for Azure)
 		else ifeq ($(OS_VERSION),8.10)
 			PLAN_NAME ?= rhel-lvm810
 		else ifeq ($(OS_VERSION),9.5)
-			PLAN_NAME ?= rhel-lvm95
+			PLAN_NAME ?= rhel-lvm95-gen2
 		else ifeq ($(OS_VERSION),9.6)
 			PLAN_NAME ?= rhel-lvm96
 		endif
