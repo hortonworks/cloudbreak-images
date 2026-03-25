@@ -14,7 +14,6 @@ function version { echo "$@" | awk -F. '{ printf("%d%03d%03d%03d\n", $1,$2,$3,$4
 : ${CLOUD_PLATFORM:? required}
 : ${START_LABEL:? required}
 : ${PLATFORM_DISK_PREFIX:? required}
-: ${LAZY_FORMAT_DISK_LIMIT:? required}
 : ${IS_GATEWAY:? required}
 : ${TMP_SSH_KEY:? required}
 : ${SALT_BOOT_PASSWORD:? required}
@@ -55,31 +54,6 @@ setup_tmp_ssh() {
   echo "#tmpssh_start" >> /home/${SSH_USER}/.ssh/authorized_keys
   echo "$TMP_SSH_KEY" >> /home/${SSH_USER}/.ssh/authorized_keys
   echo "#tmpssh_end" >> /home/${SSH_USER}/.ssh/authorized_keys
-}
-
-format_disks() {
-  lazy_format_disks
-  cd /hadoopfs/fs1 && mkdir logs logs/ambari-server logs/ambari-agent logs/kerberos
-}
-
-lazy_format_disks() {
-  mkdir /hadoopfs
-  for (( i=1; i<=24; i++ )); do
-    LABEL=$(printf "\x$(printf %x $((START_LABEL+i)))")
-    DEVICE=/dev/${PLATFORM_DISK_PREFIX}${LABEL}
-    if [ -e $DEVICE ]; then
-      MOUNTPOINT=$(grep $DEVICE /etc/fstab | tr -s ' \t' ' ' | cut -d' ' -f 2)
-      if [ -n "$MOUNTPOINT" ]; then
-        umount "$MOUNTPOINT"
-        sed -i "\|^$DEVICE|d" /etc/fstab
-      fi
-      mkfs -E lazy_itable_init=1 -O uninit_bg -F -t ext4 $DEVICE
-      mkdir /hadoopfs/fs${i}
-      echo UUID=$(blkid -o value $DEVICE | head -1) /hadoopfs/fs${i} ext4  defaults,noatime,nofail 0 2 >> /etc/fstab
-      mount /hadoopfs/fs${i}
-      chmod 777 /hadoopfs/fs${i}
-    fi
-  done
 }
 
 reload_sysconf() {
@@ -255,6 +229,8 @@ get_instance_id() {
       instance_id=$(wget -q -O - \
         --header="Metadata-Flavor: Google" \
         'http://metadata.google.internal/computeMetadata/v1/instance/name') || true
+    elif [[ "$CLOUD_PLATFORM" == "OPENSTACK" ]]; then
+      instance_id=$(curl -s "http://169.254.169.254/openstack/latest/meta_data.json" | jq .uuid)
     fi
 
     if [[ -n "$instance_id" ]]; then
@@ -281,7 +257,6 @@ main() {
     shift
     eval "$@"
   elif [ ! -f "/var/cb-init-executed" ]; then
-    [[ $CLOUD_PLATFORM == "OPENSTACK" ]] && format_disks
     if [[ "$IS_GATEWAY" == "true" ]]; then
       setup_tmp_ssh
       if [[ -n "$CB_CERT" ]]; then
