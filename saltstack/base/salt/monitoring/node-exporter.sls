@@ -1,4 +1,4 @@
-{% set version = '1.3.1' %}
+{% set version = '1.7.0' %}
 {% set path = 'https://github.com/prometheus/node_exporter/releases/download/v' ~ version %}
 {% set architecture = 'arm64' if salt['environ.get']('ARCHITECTURE') == 'arm64' else 'amd64' %}
 {% set url = path ~ '/node_exporter-' ~ version ~ '.linux-' ~ architecture ~ '.tar.gz' %}
