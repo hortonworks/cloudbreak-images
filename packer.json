@@ -514,7 +514,6 @@
       "client_secret": "{{user `client_secret`}}",
       "subscription_id": "{{user `subscription_id`}}",
       "tenant_id": "{{user `tenant_id`}}",
-      "resource_group_name": "{{user `resource_group_name`}}",
       "build_resource_group_name": "{{user `build_resource_group_name`}}",
       "managed_image_name": "packer-{{user `image_name`}}",
       "managed_image_resource_group_name": "pkergyik-test-west-us",
