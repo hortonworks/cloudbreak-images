@@ -4,7 +4,9 @@ include:
 {% if pillar['OS'] == 'redhat9' %}
   - {{ slspath }}.geoclue
 {% endif %}
+{% if pillar['CUSTOM_IMAGE_TYPE'] != 'freeipa' %}
   - {{ slspath }}.user_uid
+{% endif %}
   - {{ slspath }}.subscription-manager
   - {{ slspath }}.repository
   - {{ slspath }}.packages

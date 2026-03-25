@@ -13,6 +13,8 @@ if [ "$(version "$PACKER_VERSION")" -ge "$(version "1.10.0")" ]; then
     PLUGIN="github.com/hashicorp/azure"
   elif [ "$CLOUD_PROVIDER" == "GCP" ]; then
     PLUGIN="github.com/hashicorp/googlecompute"
+  elif [ "$CLOUD_PROVIDER" == "Openstack" ]; then
+    PLUGIN="github.com/hashicorp/openstack"
   fi
 
   if [ -n "$PLUGIN" ]; then
