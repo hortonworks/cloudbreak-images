@@ -204,15 +204,15 @@ ifndef IMAGE_NAME
     LONG_EPOCH := $(shell date +%s%3N)
     ifeq ($(BASE_NAME),freeipa)
         # Case 1: freeipa
-        export IMAGE_NAME := freeipa-$(LONG_EPOCH)
+        export IMAGE_NAME := freeipa_$(LONG_EPOCH)
     else ifeq ($(STACK_VERSION),)
         # Case 2: STACK_VERSION is empty (Base Image)
-        export IMAGE_NAME := base-$(LONG_EPOCH)
+        export IMAGE_NAME := base_$(LONG_EPOCH)
     else
         # Case 3: STACK_VERSION exists (CDP Image)
         # We lowercase the version and strip dots
         V_SHORT := $(shell echo $(STACK_VERSION) | tr -d . | cut -c1-4 | tr '[:upper:]' '[:lower:]')
-        export IMAGE_NAME := cdp-$(V_SHORT)-$(LONG_EPOCH)
+        export IMAGE_NAME := cdp_$(V_SHORT)_$(LONG_EPOCH)
     endif
     $(echo IMAGE_NAME was not defined. Generated value: $(IMAGE_NAME))
 endif
