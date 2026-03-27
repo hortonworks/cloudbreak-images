@@ -1028,6 +1028,11 @@
         "azure_image_sku={{user `azure_image_sku`}}",
         "azure_image_version={{user `azure_image_version`}}"
       ]
+    },
+    {
+      "type": "shell-local",
+      "only": ["arm-redhat9"],
+      "script": "scripts/azure-managed-image-pp.sh"
     }
   ]
 }
