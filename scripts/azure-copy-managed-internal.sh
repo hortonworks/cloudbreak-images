@@ -63,6 +63,7 @@ azure_copy_everywhere() {
 
 azure_turn_managed_disk_into_blob() {
     local managed_image_id=$(az image list -g $ARM_STORAGE_ACCOUNT $ --query "[?name=='base-1774605927787'].id" -o tsv)
+    echo Managed image id: $managed_image_id
     exit 1 # debug only
 }
 
