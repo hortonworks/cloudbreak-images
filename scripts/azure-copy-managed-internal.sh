@@ -109,7 +109,35 @@ azure_turn_managed_disk_into_blob() {
     --query id -o tsv)
 
     echo Created managed disk id: $disk_id
-    exit 1 # debug only
+
+    # Create snapshot
+    local snapshot_name=${AZURE_IMAGE_NAME}-snapshot
+    az snapshot create \
+        --resource-group "${ARM_STORAGE_ACCOUNT}" \
+        --name ${snapshot_name} \
+        --source ${AZURE_IMAGE_NAME}
+    
+    # Disk access
+    local disk_reference_url=$(az disk grant-access \
+        --resource-group "${ARM_STORAGE_ACCOUNT}" --name ${AZURE_IMAGE_NAME} --access-level Read \
+        --duration-in-seconds $((3600*4)) \
+        -o tsv)
+    
+    echo Disk reference url: $disk_reference_url
+
+    # Do the copy
+    az storage blob copy start \
+        --account-name "${ARM_STORAGE_ACCOUNT}" \
+        --destination-container images  \
+        --destination-blob ${AZURE_IMAGE_NAME}.vhd \
+        --source-uri $disk_reference_url
+
+    # Cleanup
+    az sig image-version delete --resource-group ${ARM_STORAGE_ACCOUNT} \
+        --gallery-name $gallery_name \
+        --gallery-image-definition $img_def_name \
+        --gallery-image-version $gallery_image_version
+    #exit 1 # debug only
 }
 
 azure_blob_check() {
