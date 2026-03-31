@@ -81,7 +81,7 @@ azure_turn_managed_disk_into_blob() {
     --gallery-name $gallery_name \
     --gallery-image-definition $img_def_name \
     --gallery-image-version $gallery_image_version --target-regions "${rg_loc}" \
-    --replica-count 0 \
+    --replica-count 1 \
     --managed-image ${managed_image_id}
     
     local version_ref=$(az sig image-version create --resource-group "${ARM_STORAGE_ACCOUNT}" \
@@ -89,7 +89,7 @@ azure_turn_managed_disk_into_blob() {
         --gallery-image-definition "${img_def_name}" \
         --gallery-image-version "${gallery_image_version}" \
         --target-regions "${rg_loc}" \
-        --replica-count 0 \
+        --replica-count 1 \
         --managed-image "${managed_image_id}" \
         --query id -o tsv)
     echo Gallery image reference: $version_ref
