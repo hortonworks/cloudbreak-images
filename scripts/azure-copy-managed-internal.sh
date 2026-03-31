@@ -133,10 +133,17 @@ azure_turn_managed_disk_into_blob() {
         --source-uri $disk_reference_url
 
     # Cleanup
+    az disk create --resource-group ${ARM_STORAGE_ACCOUNT} \
+        --name ${AZURE_IMAGE_NAME} \
+
     az sig image-version delete --resource-group ${ARM_STORAGE_ACCOUNT} \
         --gallery-name $gallery_name \
         --gallery-image-definition $img_def_name \
         --gallery-image-version $gallery_image_version
+
+    az sig image-definition delete --resource-group ${ARM_STORAGE_ACCOUNT} \
+        --gallery-name $gallery_name \
+        --gallery-image-definition $img_def_name \
     #exit 1 # debug only
 }
 
