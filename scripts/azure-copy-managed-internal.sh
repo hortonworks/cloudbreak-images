@@ -157,8 +157,12 @@ azure_turn_managed_disk_into_blob() {
     az disk revoke-access --resource-group ${ARM_STORAGE_ACCOUNT} \
         --name ${AZURE_IMAGE_NAME}
 
+    az snapshot delete \
+        --resource-group "${ARM_STORAGE_ACCOUNT}" \
+        --name ${snapshot_name} \
+
     az disk delete --resource-group ${ARM_STORAGE_ACCOUNT} \
-        --name ${AZURE_IMAGE_NAME} --yes
+        --name ${AZURE_IMAGE_NAME} -y
 
     az sig image-version delete --resource-group ${ARM_STORAGE_ACCOUNT} \
         --gallery-name $gallery_name \
