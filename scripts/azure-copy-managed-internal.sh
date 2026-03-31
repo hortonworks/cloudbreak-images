@@ -81,7 +81,7 @@ azure_turn_managed_disk_into_blob() {
     --gallery-name $gallery_name \
     --gallery-image-definition $img_def_name \
     --gallery-image-version $gallery_image_version --target-regions "${rg_loc}" \
-    --replica-count 1 \
+    --replica-count 0 \
     --managed-image ${managed_image_id}
     
     local version_ref=$(az sig image-version create --resource-group "${ARM_STORAGE_ACCOUNT}" \
@@ -89,7 +89,7 @@ azure_turn_managed_disk_into_blob() {
         --gallery-image-definition "${img_def_name}" \
         --gallery-image-version "${gallery_image_version}" \
         --target-regions "${rg_loc}" \
-        --replica-count 1 \
+        --replica-count 0 \
         --managed-image "${managed_image_id}" \
         --query id -o tsv)
     echo Gallery image reference: $version_ref
@@ -121,7 +121,7 @@ azure_turn_managed_disk_into_blob() {
     local disk_reference_url=$(az disk grant-access \
         --resource-group "${ARM_STORAGE_ACCOUNT}" --name ${AZURE_IMAGE_NAME} --access-level Read \
         --duration-in-seconds $((3600*4)) \
-        -o tsv)
+        -o tsv | awk '{print $1}')
 
     echo Disk reference url: $disk_reference_url
 
@@ -134,7 +134,8 @@ azure_turn_managed_disk_into_blob() {
 
     # Cleanup
     az disk revoke-access --resource-group ${ARM_STORAGE_ACCOUNT} \
-        --name ${AZURE_IMAGE_NAME} \
+        --name ${AZURE_IMAGE_NAME}
+
     az disk delete --resource-group ${ARM_STORAGE_ACCOUNT} \
         --name ${AZURE_IMAGE_NAME} \
 
