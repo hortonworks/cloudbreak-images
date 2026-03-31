@@ -461,8 +461,7 @@ build-azure-redhat9:
 	GIT_REV=$(GIT_REV) \
 	GIT_BRANCH=$(GIT_BRANCH) \
 	GIT_TAG=$(GIT_TAG) \
-	ls
-#	./scripts/packer.sh build -color=false -only=arm-redhat9 $(PACKER_OPTS)
+	./scripts/packer.sh build -color=false -only=arm-redhat9 $(PACKER_OPTS)
 ifeq ($(AZURE_INITIAL_COPY),true)
 	TRACE=1 AZURE_STORAGE_ACCOUNTS=$(AZURE_BUILD_STORAGE_ACCOUNT) ./scripts/azure-copy-managed.sh
 # TRACE=1 AZURE_STORAGE_ACCOUNTS=$(AZURE_BUILD_STORAGE_ACCOUNT) ./scripts/azure-copy.sh

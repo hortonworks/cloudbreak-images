@@ -25,6 +25,6 @@ fi
 
 
 # Debug @hack
-IMAGE_NAME=base-1774962462880
+#IMAGE_NAME=base-1774962462880
 echo "IMAGE_NAME=${IMAGE_NAME}" >> image.properties
 echo "METADATA_FILENAME_POSTFIX=${BUILD_ID}" >> image.properties

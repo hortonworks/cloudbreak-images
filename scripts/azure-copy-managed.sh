@@ -3,7 +3,7 @@
 set -ex -o pipefail
 
 # Debug @hack
-export AZURE_IMAGE_NAME=base-1774962462880
+#export AZURE_IMAGE_NAME=base-1774962462880
 if [ -z "$AZURE_IMAGE_NAME" ]; then
   AZURE_IMAGE_NAME=$(ls *_manifest.json | grep -q -E '_[0-9]*_manifest.json' && ls *_manifest.json | sed 's/_[0-9]*_manifest.json//' || ls *_manifest.json | sed 's/_manifest.json//')
   if [ -z "$AZURE_IMAGE_NAME" ]; then
