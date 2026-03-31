@@ -63,7 +63,43 @@ azure_copy_everywhere() {
 
 azure_turn_managed_disk_into_blob() {
     local managed_image_id=$(az image list -g $ARM_STORAGE_ACCOUNT --query "[?name=='$AZURE_IMAGE_NAME'].id" -o tsv)
+    local gallery_image_version=1.0.0
+    local gallery_name=${ARM_STORAGE_ACCOUNT}_gallery
+    local img_def_name=temp_${AZURE_IMAGE_NAME}
+    local rg_loc=$(az group show --name ${ARM_STORAGE_ACCOUNT} --query location -o tsv)
     echo Managed image id: $managed_image_id
+
+    # Temp image definition with dummy values
+    az sig image-definition create --resource-group ${ARM_STORAGE_ACCOUNT} \
+    --gallery-name gallery_name \
+    --gallery-image-definition $img_def_name \
+    --hyper-v-generation V1 \
+    --os-type Linux --os-state generalized --publisher Cloudera --offer Cloudbreak --sku ${AZURE_IMAGE_NAME}
+
+    # Create version inside image-definition
+    az sig image-version create --resource-group ${ARM_STORAGE_ACCOUNT} \
+    --gallery-name $gallery_name \
+    --gallery-image-definition $img_def_name \
+    --gallery-image-version $gallery_image_version --target-regions "${rg_loc}" \
+    --replica-count 1 \
+    --managed-image ${managed_image_id}
+
+    # Create managed disk from managed image
+    local version_ref=$(az sig image-version show \
+        --resource-group ${ARM_STORAGE_ACCOUNT} \
+        --gallery-name $gallery_name \
+        --gallery-image-definition $img_def_name \
+        --gallery-image-version $gallery_image_version \
+        --query id -o tsv)
+    echo Gallery image reference: $version_ref
+
+    local disk_id=$(az disk create --resource-group ${ARM_STORAGE_ACCOUNT} \
+    --location $rg_loc \
+    --name ${AZURE_IMAGE_NAME} \
+    --gallery-image-reference "${version_ref}" \
+    --query id -o tsv)
+
+    echo Created managed disk id: $disk_id
     exit 1 # debug only
 }
 
