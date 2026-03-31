@@ -122,7 +122,7 @@ azure_turn_managed_disk_into_blob() {
         --resource-group "${ARM_STORAGE_ACCOUNT}" --name ${AZURE_IMAGE_NAME} --access-level Read \
         --duration-in-seconds $((3600*4)) \
         -o tsv)
-    
+
     echo Disk reference url: $disk_reference_url
 
     # Do the copy
