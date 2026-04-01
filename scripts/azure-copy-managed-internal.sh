@@ -63,26 +63,27 @@ azure_copy_everywhere() {
 azure_wait_for_blob_copy_to_finish() {
     local dest_key=$(_azure_get_account_key $ARM_STORAGE_ACCOUNT) || exit 1
     local pending_wait_time=20
-    while true; do
-    # Get the current status
-    status=$(az storage blob show \
-        --container-name images \
-        --name ${AZURE_IMAGE_NAME}.vhd \
-        --account-name "${ARM_STORAGE_ACCOUNT}" \
-        --acount-key "${dest_key}" \
-        --query "properties.copy.status" \
-        -o tsv)
 
-    if [ "$status" == "success" ]; then
-        echo "Copy completed successfully!"
-        break
-    elif [ "$status" == "pending" ]; then
-        echo "Copy pending... checking again in $pending_wait_time seconds."
-        sleep $pending_wait_time
-    else
-        echo "Copy failed."
-        exit 2
-    fi
+    while true; do
+        # Get the current status
+        status=$(az storage blob show \
+            --container-name images \
+            --name ${AZURE_IMAGE_NAME}.vhd \
+            --account-name "${ARM_STORAGE_ACCOUNT}" \
+            --acount-key "${dest_key}" \
+            --query "properties.copy.status" \
+            -o tsv)
+
+        if [ "$status" == "success" ]; then
+            echo "Copy completed successfully!"
+            break
+        elif [ "$status" == "pending" ]; then
+            echo "Copy pending... checking again in $pending_wait_time seconds."
+            sleep $pending_wait_time
+        else
+            echo "Copy failed."
+            exit 2
+        fi
     done
 }
 
