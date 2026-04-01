@@ -58,7 +58,30 @@ azure_copy_everywhere() {
       debug "[COPY] $sourceBlob ==> $destBlob"
       env DEBUG=$DEBUG STORAGE_ACCOUNT_LIST_FILE="$STORAGE_ACCOUNT_LIST_FILE" bash -c "azure_blob_copy $sourceBlob $destBlob"
     done
+}
 
+azure_wait_for_blob_copy_to_finish() {
+    local pending_wait_time=15
+    while true; do
+    # Get the current status
+    status=$(az storage blob show \
+        --container-name images \
+        --name ${AZURE_IMAGE_NAME}.vhd \
+        --account-name "${ARM_STORAGE_ACCOUNT}" \
+        --query "properties.copy.status" \
+        -o tsv)
+
+    if [ "$status" == "success" ]; then
+        echo "Copy completed successfully!"
+        break
+    elif [ "$status" == "pending" ]; then
+        echo "Copy pending... checking again in $pending_wait_time seconds."
+        sleep $pending_wait_time
+    else
+        echo "Copy failed."
+        exit 2
+    fi
+    done
 }
 
 azure_turn_managed_disk_into_blob() {
@@ -76,14 +99,7 @@ azure_turn_managed_disk_into_blob() {
     --hyper-v-generation V1 \
     --os-type Linux --os-state generalized --publisher Cloudera --offer Cloudbreak --sku ${AZURE_IMAGE_NAME}
 
-    # Create version inside image-definition
-    az sig image-version create --resource-group ${ARM_STORAGE_ACCOUNT} \
-    --gallery-name $gallery_name \
-    --gallery-image-definition $img_def_name \
-    --gallery-image-version $gallery_image_version --target-regions "${rg_loc}" \
-    --replica-count 1 \
-    --managed-image ${managed_image_id}
-    
+    # Create version inside image-definition    
     local version_ref=$(az sig image-version create --resource-group "${ARM_STORAGE_ACCOUNT}" \
         --gallery-name "${gallery_name}" \
         --gallery-image-definition "${img_def_name}" \
@@ -92,15 +108,8 @@ azure_turn_managed_disk_into_blob() {
         --replica-count 1 \
         --managed-image "${managed_image_id}" \
         --query id -o tsv)
+    
     echo Gallery image reference: $version_ref
-
-    # Create managed disk from managed image
-    # local version_ref=$(az sig image-version show \
-    #     --resource-group ${ARM_STORAGE_ACCOUNT} \
-    #     --gallery-name $gallery_name \
-    #     --gallery-image-definition $img_def_name \
-    #     --gallery-image-version $gallery_image_version \
-    #     --query id -o tsv)
 
     local disk_id=$(az disk create --resource-group ${ARM_STORAGE_ACCOUNT} \
     --location $rg_loc \
@@ -131,27 +140,13 @@ azure_turn_managed_disk_into_blob() {
         --destination-container images  \
         --destination-blob ${AZURE_IMAGE_NAME}.vhd \
         --source-uri $disk_reference_url
-
-    while true; do
-    # Get the current status
-    status=$(az storage blob show \
-        --container-name images \
-        --name ${AZURE_IMAGE_NAME}.vhd \
-        --account-name "${ARM_STORAGE_ACCOUNT}" \
-        --query "properties.copy.status" \
-        -o tsv)
-
-    if [ "$status" == "success" ]; then
-        echo "Copy completed successfully!"
-        break
-    elif [ "$status" == "failed" ] || [ "$status" == "aborted" ]; then
-        echo "Copy failed with status: $status"
+    
+    if [ $? -ne 0 ]; then
+        echo "Faild to copy blob."
         exit 1
-    else
-        echo "Current status: $status... checking again in 5 seconds."
-        sleep 10
     fi
-    done
+
+    azure_wait_for_blob_copy_to_finish
 
     # Cleanup
     az disk revoke-access --resource-group ${ARM_STORAGE_ACCOUNT} \
@@ -159,7 +154,7 @@ azure_turn_managed_disk_into_blob() {
 
     az snapshot delete \
         --resource-group "${ARM_STORAGE_ACCOUNT}" \
-        --name ${snapshot_name} \
+        --name ${snapshot_name}
 
     az disk delete --resource-group ${ARM_STORAGE_ACCOUNT} \
         --name ${AZURE_IMAGE_NAME} -y
@@ -171,8 +166,7 @@ azure_turn_managed_disk_into_blob() {
 
     az sig image-definition delete --resource-group ${ARM_STORAGE_ACCOUNT} \
         --gallery-name $gallery_name \
-        --gallery-image-definition $img_def_name \
-    #exit 1 # debug only
+        --gallery-image-definition $img_def_name
 }
 
 azure_blob_check() {
@@ -264,7 +258,6 @@ main() {
   azure_login
   azure_storage_account_list
   azure_turn_managed_disk_into_blob
-  #azure_copy_everywhere
 }
 
 [[ "$0" == "$BASH_SOURCE" ]] && main "$@"
