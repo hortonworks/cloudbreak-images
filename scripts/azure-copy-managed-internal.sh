@@ -62,7 +62,7 @@ azure_copy_everywhere() {
 
 azure_wait_for_blob_copy_to_finish() {
     local dest_key=$(_azure_get_account_key $ARM_STORAGE_ACCOUNT) || exit 1
-    local pending_wait_time=15
+    local pending_wait_time=20
     while true; do
     # Get the current status
     status=$(az storage blob show \
