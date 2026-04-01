@@ -61,6 +61,7 @@ azure_copy_everywhere() {
 }
 
 azure_wait_for_blob_copy_to_finish() {
+    local dest_key=$(_azure_get_account_key $ARM_STORAGE_ACCOUNT) || exit 1
     local pending_wait_time=15
     while true; do
     # Get the current status
@@ -68,6 +69,7 @@ azure_wait_for_blob_copy_to_finish() {
         --container-name images \
         --name ${AZURE_IMAGE_NAME}.vhd \
         --account-name "${ARM_STORAGE_ACCOUNT}" \
+        --acount-key "${dest_key}" \
         --query "properties.copy.status" \
         -o tsv)
 
@@ -90,6 +92,8 @@ azure_turn_managed_disk_into_blob() {
     local gallery_name=${ARM_STORAGE_ACCOUNT}_gallery
     local img_def_name=temp_${AZURE_IMAGE_NAME}
     local rg_loc=$(az group show --name ${ARM_STORAGE_ACCOUNT} --query location -o tsv)
+    local dest_key=$(_azure_get_account_key $ARM_STORAGE_ACCOUNT) || exit 1
+
     echo Managed image id: $managed_image_id
 
     # Temp image definition with dummy values
@@ -137,6 +141,7 @@ azure_turn_managed_disk_into_blob() {
     # Do the copy
     az storage blob copy start \
         --account-name "${ARM_STORAGE_ACCOUNT}" \
+        --acount-key "${dest_key}" \
         --destination-container images  \
         --destination-blob ${AZURE_IMAGE_NAME}.vhd \
         --source-uri $disk_reference_url
