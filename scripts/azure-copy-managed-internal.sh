@@ -70,7 +70,7 @@ azure_wait_for_blob_copy_to_finish() {
             --container-name images \
             --name ${AZURE_IMAGE_NAME}.vhd \
             --account-name "${ARM_STORAGE_ACCOUNT}" \
-            --acount-key "${dest_key}" \
+            --account-key "${dest_key}" \
             --query "properties.copy.status" \
             -o tsv)
 
@@ -142,7 +142,7 @@ azure_turn_managed_disk_into_blob() {
     # Do the copy
     az storage blob copy start \
         --account-name "${ARM_STORAGE_ACCOUNT}" \
-        --acount-key "${dest_key}" \
+        --account-key "${dest_key}" \
         --destination-container images  \
         --destination-blob ${AZURE_IMAGE_NAME}.vhd \
         --source-uri $disk_reference_url
