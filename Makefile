@@ -442,7 +442,7 @@ build-azure-redhat8:
 	GIT_TAG=$(GIT_TAG) \
 	./scripts/packer.sh build -color=false -only=arm-redhat8 $(PACKER_OPTS)
 ifeq ($(AZURE_INITIAL_COPY),true)
-	TRACE=1 AZURE_STORAGE_ACCOUNTS=$(AZURE_BUILD_STORAGE_ACCOUNT) ./scripts/azure-copy.sh
+	TRACE=1 AZURE_STORAGE_ACCOUNTS=$(AZURE_BUILD_STORAGE_ACCOUNT) ./scripts/azure-copy-managed.sh
 endif
 
 build-azure-redhat9:
