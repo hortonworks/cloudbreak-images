@@ -24,42 +24,6 @@ azure_login() {
     fi
 }
 
-_delete_azure_storage_account_list() {
-    rm "$STORAGE_ACCOUNT_LIST_FILE"
-}
-
-azure_storage_account_list() {
-    STORAGE_ACCOUNT_LIST_FILE=$(mktemp)
-    az storage account list --output json > "$STORAGE_ACCOUNT_LIST_FILE"
-    trap _delete_azure_storage_account_list EXIT
-}
-
-export_fns() {
-    eval "$(sed -n  's/^\([A-Za-z0-9\-_]*\)() {/export -f \1/p' $BASH_SOURCE)"
-}
-
-get_storage_accounts_to_copy() {
-    for loc in "$(echo "$AZURE_STORAGE_ACCOUNTS" | tr "," "\n")"; do
-        echo "$loc" | cut -d":" -f2
-    done
-}
-
-azure_copy_everywhere() {
-    local vhdPath=$(azure_latest_vhd_by_prefix $AZURE_IMAGE_NAME)
-    debug "vhdPath=$vhdPath"
-    local sourceBlob="$ARM_STORAGE_ACCOUNT/system/${vhdPath}"
-    debug "sourceBlob=$sourceBlob"
-
-    rm -f checks.yml
-    touch checks.yml
-    export_fns
-    for loc in $(get_storage_accounts_to_copy); do
-      local destBlob="$loc/images/${ARM_DESTINATION_IMAGE_PREFIX}$AZURE_IMAGE_NAME.vhd"
-      debug "[COPY] $sourceBlob ==> $destBlob"
-      env DEBUG=$DEBUG STORAGE_ACCOUNT_LIST_FILE="$STORAGE_ACCOUNT_LIST_FILE" bash -c "azure_blob_copy $sourceBlob $destBlob"
-    done
-}
-
 azure_wait_for_blob_copy_to_finish() {
     local dest_key=$(_azure_get_account_key $ARM_STORAGE_ACCOUNT) || exit 1
     local pending_wait_time=20
@@ -132,9 +96,10 @@ azure_turn_managed_disk_into_blob() {
         --source ${AZURE_IMAGE_NAME}
     
     # Disk access
+    local access_duration_hours=$((3600*4))
     local disk_reference_url=$(az disk grant-access \
         --resource-group "${ARM_STORAGE_ACCOUNT}" --name ${AZURE_IMAGE_NAME} --access-level Read \
-        --duration-in-seconds $((3600*4)) \
+        --duration-in-seconds ${access_duration_hours} \
         -o tsv | awk '{print $1}')
 
     echo Disk reference url: $disk_reference_url
@@ -175,51 +140,6 @@ azure_turn_managed_disk_into_blob() {
         --gallery-image-definition $img_def_name
 }
 
-azure_blob_check() {
-    declare dest=${1:? required dest: account/container/blob}
-    read dest_account dest_container dest_blob <<< "$(echo $dest | sed 's:/: :'| sed 's:/: :')"
-    debug "$dest_account"
-    debug "$dest_container"
-    debug "$dest_blob"
-    local dest_key=$(_azure_get_account_key $dest_account) || exit 1
-    debug "$dest_key"
-    local result=$(az storage blob exists \
-    --container-name $dest_container \
-    --name $dest_blob \
-    --account-name $dest_account \
-    --account-key $dest_key \
-    --output json | jq .exists)
-    debug "$result"
-
-}
-
-azure_blob_copy() {
-    declare source=${1:? required source: account/container/blob}
-    declare dest=${2:? required dest: account/container/blob}
-
-    read source_account source_container source_blob <<< "$(echo $source | sed 's:/: :'| sed 's:/: :')"
-    read dest_account dest_container dest_blob <<< "$(echo $dest | sed 's:/: :'| sed 's:/: :')"
-    local source_key=$(_azure_get_account_key $source_account) || exit 1
-    local dest_key=$(_azure_get_account_key $dest_account) || exit 1
-    az storage blob copy start \
-    --source-account-name $source_account \
-    --source-account-key $source_key \
-    --source-blob $source_blob \
-    --source-container $source_container \
-    --destination-container $dest_container \
-    --destination-blob $dest_blob \
-    --account-name $dest_account \
-    --account-key $dest_key \
-    --destination-if-none-match "*" \
-    --debug \
-    --timeout "${REQUEST_TIMEOUT:-15}" \
-    --output json 1>&2
-
-    local checkCmd="az storage blob show --account-name $dest_account --account-key $dest_key --container-name $dest_container --name $dest_blob --output json | jq -r '.properties.copy | .progress, .status'"
-    debug "===> CHECK PROGRESS: $checkCmd"
-    echo "$dest_account: $checkCmd" >> checks.yml
-}
-
 _azure_get_account_group() {
     declare storage=${1:? storage account}
     local account_group=$(cat "$STORAGE_ACCOUNT_LIST_FILE" | jq '.[]|select(.name|startswith("'${storage}'"))|.resourceGroup' -r | head -1)
@@ -246,23 +166,9 @@ _azure_get_account_key() {
     echo $account_key
 }
 
-azure_latest_vhd_by_prefix() {
-    declare imageName=${1:? required: imageName prefix like cloudbreak-2016-02-24}
-
-    local key=$(_azure_get_account_key $ARM_STORAGE_ACCOUNT) || exit 1
-    az storage blob list \
-        --account-name $ARM_STORAGE_ACCOUNT \
-        --account-key $key \
-        --container-name system \
-        --prefix Microsoft.Compute/Images/packer/${imageName}-osDisk \
-        --output json \
-        | jq '.[].name' -r
-}
-
 main() {
   : ${DEBUG:=1}
   azure_login
-  azure_storage_account_list
   azure_turn_managed_disk_into_blob
 }
 
