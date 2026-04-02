@@ -1,6 +1,6 @@
 add_generate_package_versions_script:
   file.managed:
-    - name: /tmp/generate-package-versions.sh
+    - name: /opt/provision-scripts/generate-package-versions.sh
     - source: salt://{{ slspath }}/tmp/generate-package-versions.sh
     - skip_verify: True
     - makedirs: True
@@ -8,7 +8,7 @@ add_generate_package_versions_script:
 
 run_generate_package_versions:
   cmd.run:
-    - name: /tmp/generate-package-versions.sh {{ salt['pillar.get']('package_versions', '') }} 2>&1 >>/tmp/package-versions.log
+    - name: /opt/provision-scripts/generate-package-versions.sh {{ salt['pillar.get']('package_versions', '') }} 2>&1 >>/tmp/package-versions.log
     - env:
       - CLOUD_PROVIDER: {{ salt['environ.get']('CLOUD_PROVIDER') }}
     - require:
