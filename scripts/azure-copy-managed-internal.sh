@@ -5,12 +5,7 @@
 : ${AZURE_IMAGE_NAME?= required}
 : ${ARM_STORAGE_ACCOUNT?= required}
 
-if [[ "$TRACE" ]]; then
-#    : ${START_TIME:=$(date +%s)}
-#    export START_TIME
-#    export PS4='+ [TRACE $BASH_SOURCE:$LINENO][ellapsed: $(( $(date +%s) -  $START_TIME ))] '
-    set -x
-fi
+set -ex -o pipefail
 
 debug() {
   [[ "$DEBUG" ]] && echo "-----> $*" 1>&2
@@ -22,6 +17,12 @@ azure_login() {
     if [[ "$ARM_CLIENT_ID" ]] && [[ "$ARM_CLIENT_SECRET" ]]; then
       az login --username $ARM_CLIENT_ID --password $ARM_CLIENT_SECRET --service-principal --tenant $ARM_TENANT_ID
     fi
+}
+
+azure_storage_account_list() {
+    STORAGE_ACCOUNT_LIST_FILE=$(mktemp)
+    az storage account list --output json > "$STORAGE_ACCOUNT_LIST_FILE"
+    trap _delete_azure_storage_account_list EXIT
 }
 
 azure_wait_for_blob_copy_to_finish() {
@@ -169,6 +170,7 @@ _azure_get_account_key() {
 main() {
   : ${DEBUG:=1}
   azure_login
+  azure_storage_account_list
   azure_turn_managed_disk_into_blob
 }
 
