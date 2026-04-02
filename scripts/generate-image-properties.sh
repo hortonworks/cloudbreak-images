@@ -23,6 +23,5 @@ else
     fi
 fi
 
-
 echo "IMAGE_NAME=${IMAGE_NAME}" >> image.properties
 echo "METADATA_FILENAME_POSTFIX=${BUILD_ID}" >> image.properties
