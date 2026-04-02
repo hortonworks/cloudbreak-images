@@ -19,6 +19,10 @@ azure_login() {
     fi
 }
 
+_delete_azure_storage_account_list() {
+    rm "$STORAGE_ACCOUNT_LIST_FILE"
+}
+
 azure_storage_account_list() {
     STORAGE_ACCOUNT_LIST_FILE=$(mktemp)
     az storage account list --output json > "$STORAGE_ACCOUNT_LIST_FILE"
