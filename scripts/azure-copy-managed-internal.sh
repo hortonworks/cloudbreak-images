@@ -65,12 +65,13 @@ azure_turn_managed_disk_into_blob() {
     local dest_key=$(_azure_get_account_key $ARM_STORAGE_ACCOUNT) || exit 1
 
     echo Managed image id: $managed_image_id
+    trap azure_cleanup EXIT
 
     # Temp image definition with dummy values
     az sig image-definition create --resource-group ${ARM_STORAGE_ACCOUNT} \
     --gallery-name $gallery_name \
     --gallery-image-definition $img_def_name \
-    --hyper-v-generation V1 \
+    --hyper-v-generation V${AZURE_VM_GEN} \
     --os-type Linux --os-state generalized --publisher Cloudera --offer Cloudbreak --sku ${AZURE_IMAGE_NAME}
 
     # Create version inside image-definition    
@@ -122,9 +123,11 @@ azure_turn_managed_disk_into_blob() {
         exit 1
     fi
 
-    azure_wait_for_blob_copy_to_finish
+    azure_wait_for_blob_copy_to_finish    
+}
 
-    # Cleanup
+
+azure_cleanup() {
     az disk revoke-access --resource-group ${ARM_STORAGE_ACCOUNT} \
         --name ${AZURE_IMAGE_NAME}
 
