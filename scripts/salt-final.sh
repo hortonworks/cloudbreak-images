@@ -22,7 +22,7 @@ function highstate {
   local saltenv=${1}
   copy_resources ${saltenv}
   echo "Launching highstate final now..."
-  ${SALT_PATH}/bin/salt-call --no-color --local state.highstate saltenv=${saltenv} -l info --log-file=/tmp/salt-build-${saltenv}.log --log-file-level=info --config-dir=/tmp/saltstack/config
+  ${SALT_PATH}/bin/salt-call --no-color --local state.highstate saltenv=${saltenv} -l debug --log-file=/tmp/salt-build-${saltenv}.log --log-file-level=debug --config-dir=/tmp/saltstack/config
   echo "Done running highstate: final." 
 }
 
