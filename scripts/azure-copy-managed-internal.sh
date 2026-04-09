@@ -131,7 +131,6 @@ azure_turn_managed_disk_into_blob() {
 
 _azure_cleanup() {
     local exit_code=$?
-    set +e
 
     if [ $exit_code -ne 0 ]; then
         echo "Cleaning up after a failure."
@@ -162,7 +161,6 @@ _azure_cleanup() {
             --gallery-image-definition $IMAGE_DEF_NAME || exit_code=1
     fi
 
-    set -e
     exit $exit_code
 }
 
