@@ -130,32 +130,40 @@ azure_turn_managed_disk_into_blob() {
 }
 
 _azure_cleanup() {
-    (set +e
+    local exit_code=$?
+    set +e
+
+    if [ $exit_code -ne 0 ]; then
+        echo "Cleaning up after a failure."
+    fi
 
     az disk revoke-access --resource-group ${ARM_STORAGE_ACCOUNT} \
-        --name ${AZURE_IMAGE_NAME}
+        --name ${AZURE_IMAGE_NAME} || exit_code=1
     
     if [[ -n "$DISK_SNAPSHOT_NAME" ]]; then
         az snapshot delete \
             --resource-group "${ARM_STORAGE_ACCOUNT}" \
-            --name ${DISK_SNAPSHOT_NAME}
+            --name ${DISK_SNAPSHOT_NAME} || exit_code=1
     fi
 
     az disk delete --resource-group ${ARM_STORAGE_ACCOUNT} \
-        --name ${AZURE_IMAGE_NAME} -y
+        --name ${AZURE_IMAGE_NAME} -y || exit_code=1
 
     if [[ -n "$GALLERY_IMAGE_VERSION" ]]; then
         az sig image-version delete --resource-group ${ARM_STORAGE_ACCOUNT} \
             --gallery-name $GALLERY_NAME \
             --gallery-image-definition $IMAGE_DEF_NAME \
-            --gallery-image-version $GALLERY_IMAGE_VERSION
+            --gallery-image-version $GALLERY_IMAGE_VERSION || exit_code=1
     fi
 
     if [[ -n "$IMAGE_DEF_NAME" ]]; then
         az sig image-definition delete --resource-group ${ARM_STORAGE_ACCOUNT} \
             --gallery-name $GALLERY_NAME \
-            --gallery-image-definition $IMAGE_DEF_NAME
-    fi)
+            --gallery-image-definition $IMAGE_DEF_NAME || exit_code=1
+    fi
+
+    set -e
+    exit $exit_code
 }
 
 _azure_get_account_group() {
