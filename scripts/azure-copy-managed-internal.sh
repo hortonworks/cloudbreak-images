@@ -57,12 +57,12 @@ azure_wait_for_blob_copy_to_finish() {
 }
 
 azure_turn_managed_disk_into_blob() {
-    local managed_image_id=$(az image list -g $ARM_STORAGE_ACCOUNT --query "[?name=='$AZURE_IMAGE_NAME'].id" -o tsv)
-    local gallery_image_version=1.0.0
-    local gallery_name=${ARM_STORAGE_ACCOUNT}_gallery
-    local img_def_name=temp_${AZURE_IMAGE_NAME}
-    local rg_loc=$(az group show --name ${ARM_STORAGE_ACCOUNT} --query location -o tsv)
-    local dest_key=$(_azure_get_account_key $ARM_STORAGE_ACCOUNT) || exit 1
+    managed_image_id=$(az image list -g $ARM_STORAGE_ACCOUNT --query "[?name=='$AZURE_IMAGE_NAME'].id" -o tsv)
+    gallery_image_version=1.0.0
+    gallery_name=${ARM_STORAGE_ACCOUNT}_gallery
+    img_def_name=temp_${AZURE_IMAGE_NAME}
+    rg_loc=$(az group show --name ${ARM_STORAGE_ACCOUNT} --query location -o tsv)
+    dest_key=$(_azure_get_account_key $ARM_STORAGE_ACCOUNT) || exit 1
 
     echo Managed image id: $managed_image_id
     trap azure_cleanup EXIT
@@ -75,7 +75,7 @@ azure_turn_managed_disk_into_blob() {
     --os-type Linux --os-state generalized --publisher Cloudera --offer Cloudbreak --sku ${AZURE_IMAGE_NAME}
 
     # Create version inside image-definition    
-    local version_ref=$(az sig image-version create --resource-group "${ARM_STORAGE_ACCOUNT}" \
+    version_ref=$(az sig image-version create --resource-group "${ARM_STORAGE_ACCOUNT}" \
         --gallery-name "${gallery_name}" \
         --gallery-image-definition "${img_def_name}" \
         --gallery-image-version "${gallery_image_version}" \
@@ -86,7 +86,7 @@ azure_turn_managed_disk_into_blob() {
     
     echo Gallery image reference: $version_ref
 
-    local disk_id=$(az disk create --resource-group ${ARM_STORAGE_ACCOUNT} \
+    disk_id=$(az disk create --resource-group ${ARM_STORAGE_ACCOUNT} \
     --location $rg_loc \
     --name ${AZURE_IMAGE_NAME} \
     --gallery-image-reference "${version_ref}" \
@@ -95,7 +95,7 @@ azure_turn_managed_disk_into_blob() {
     echo Created managed disk id: $disk_id
 
     # Create snapshot
-    local snapshot_name=${AZURE_IMAGE_NAME}-snapshot
+    snapshot_name=${AZURE_IMAGE_NAME}-snapshot
     az snapshot create \
         --resource-group "${ARM_STORAGE_ACCOUNT}" \
         --name ${snapshot_name} \
@@ -131,21 +131,28 @@ azure_cleanup() {
     az disk revoke-access --resource-group ${ARM_STORAGE_ACCOUNT} \
         --name ${AZURE_IMAGE_NAME}
 
-    az snapshot delete \
-        --resource-group "${ARM_STORAGE_ACCOUNT}" \
-        --name ${snapshot_name}
+    
+    if [[ -n "$snapshot_name" ]]; then
+        az snapshot delete \
+            --resource-group "${ARM_STORAGE_ACCOUNT}" \
+            --name ${snapshot_name}
+    fi
 
     az disk delete --resource-group ${ARM_STORAGE_ACCOUNT} \
         --name ${AZURE_IMAGE_NAME} -y
 
-    az sig image-version delete --resource-group ${ARM_STORAGE_ACCOUNT} \
-        --gallery-name $gallery_name \
-        --gallery-image-definition $img_def_name \
-        --gallery-image-version $gallery_image_version
+    if [[ -n "$gallery_image_version" ]]; then
+        az sig image-version delete --resource-group ${ARM_STORAGE_ACCOUNT} \
+            --gallery-name $gallery_name \
+            --gallery-image-definition $img_def_name \
+            --gallery-image-version $gallery_image_version
+    fi
 
-    az sig image-definition delete --resource-group ${ARM_STORAGE_ACCOUNT} \
-        --gallery-name $gallery_name \
-        --gallery-image-definition $img_def_name
+    if [[ -n "$img_def_name" ]]; then
+        az sig image-definition delete --resource-group ${ARM_STORAGE_ACCOUNT} \
+            --gallery-name $gallery_name \
+            --gallery-image-definition $img_def_name
+    fi
 }
 
 _azure_get_account_group() {
