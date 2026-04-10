@@ -29,8 +29,17 @@ azure_storage_account_list() {
     trap _delete_azure_storage_account_list EXIT
 }
 
+azure_set_vars() {
+    DEST_KEY=$(_azure_get_account_key $ARM_STORAGE_ACCOUNT) || exit 1
+    RG_LOCATION=$(az group show --name ${ARM_STORAGE_ACCOUNT} --query location -o tsv) || exit 1
+    MANAGED_IMAGE_ID=$(az image list -g $ARM_STORAGE_ACCOUNT --query "[?name=='$AZURE_IMAGE_NAME'].id" -o tsv) || exit 1
+    GALLERY_IMAGE_VERSION=1.0.0
+    GALLERY_NAME=${ARM_STORAGE_ACCOUNT}_gallery
+    IMAGE_DEF_NAME=temp_${AZURE_IMAGE_NAME}
+    DISK_SNAPSHOT_NAME=${AZURE_IMAGE_NAME}-snapshot
+}
+
 azure_wait_for_blob_copy_to_finish() {
-    local dest_key=$(_azure_get_account_key $ARM_STORAGE_ACCOUNT) || exit 1
     local pending_wait_time=20
 
     while true; do
@@ -39,7 +48,7 @@ azure_wait_for_blob_copy_to_finish() {
             --container-name images \
             --name ${AZURE_IMAGE_NAME}.vhd \
             --account-name "${ARM_STORAGE_ACCOUNT}" \
-            --account-key "${dest_key}" \
+            --account-key "${DEST_KEY}" \
             --query "properties.copy.status" \
             -o tsv)
 
@@ -57,36 +66,31 @@ azure_wait_for_blob_copy_to_finish() {
 }
 
 azure_turn_managed_disk_into_blob() {
-    local managed_image_id=$(az image list -g $ARM_STORAGE_ACCOUNT --query "[?name=='$AZURE_IMAGE_NAME'].id" -o tsv)
-    local gallery_image_version=1.0.0
-    local gallery_name=${ARM_STORAGE_ACCOUNT}_gallery
-    local img_def_name=temp_${AZURE_IMAGE_NAME}
-    local rg_loc=$(az group show --name ${ARM_STORAGE_ACCOUNT} --query location -o tsv)
-    local dest_key=$(_azure_get_account_key $ARM_STORAGE_ACCOUNT) || exit 1
+    trap _azure_cleanup EXIT
 
-    echo Managed image id: $managed_image_id
+    echo Managed image id: $MANAGED_IMAGE_ID
 
     # Temp image definition with dummy values
     az sig image-definition create --resource-group ${ARM_STORAGE_ACCOUNT} \
-    --gallery-name $gallery_name \
-    --gallery-image-definition $img_def_name \
-    --hyper-v-generation V1 \
+    --gallery-name $GALLERY_NAME \
+    --gallery-image-definition $IMAGE_DEF_NAME \
+    --hyper-v-generation V${AZURE_VM_GEN} \
     --os-type Linux --os-state generalized --publisher Cloudera --offer Cloudbreak --sku ${AZURE_IMAGE_NAME}
 
     # Create version inside image-definition    
     local version_ref=$(az sig image-version create --resource-group "${ARM_STORAGE_ACCOUNT}" \
-        --gallery-name "${gallery_name}" \
-        --gallery-image-definition "${img_def_name}" \
-        --gallery-image-version "${gallery_image_version}" \
-        --target-regions "${rg_loc}" \
+        --gallery-name "${GALLERY_NAME}" \
+        --gallery-image-definition "${IMAGE_DEF_NAME}" \
+        --gallery-image-version "${GALLERY_IMAGE_VERSION}" \
+        --target-regions "${RG_LOCATION}" \
         --replica-count 1 \
-        --managed-image "${managed_image_id}" \
+        --managed-image "${MANAGED_IMAGE_ID}" \
         --query id -o tsv)
     
-    echo Gallery image reference: $version_ref
+    echo Gallery image version reference: $version_ref
 
     local disk_id=$(az disk create --resource-group ${ARM_STORAGE_ACCOUNT} \
-    --location $rg_loc \
+    --location $RG_LOCATION \
     --name ${AZURE_IMAGE_NAME} \
     --gallery-image-reference "${version_ref}" \
     --query id -o tsv)
@@ -94,10 +98,9 @@ azure_turn_managed_disk_into_blob() {
     echo Created managed disk id: $disk_id
 
     # Create snapshot
-    local snapshot_name=${AZURE_IMAGE_NAME}-snapshot
     az snapshot create \
         --resource-group "${ARM_STORAGE_ACCOUNT}" \
-        --name ${snapshot_name} \
+        --name ${DISK_SNAPSHOT_NAME} \
         --source ${AZURE_IMAGE_NAME}
     
     # Disk access
@@ -112,7 +115,7 @@ azure_turn_managed_disk_into_blob() {
     # Do the copy
     az storage blob copy start \
         --account-name "${ARM_STORAGE_ACCOUNT}" \
-        --account-key "${dest_key}" \
+        --account-key "${DEST_KEY}" \
         --destination-container images  \
         --destination-blob ${AZURE_IMAGE_NAME}.vhd \
         --source-uri $disk_reference_url
@@ -122,27 +125,44 @@ azure_turn_managed_disk_into_blob() {
         exit 1
     fi
 
-    azure_wait_for_blob_copy_to_finish
+    azure_wait_for_blob_copy_to_finish    
+}
 
-    # Cleanup
+_azure_cleanup() {
+    local exit_code=$?
+
+    if [ $exit_code -ne 0 ]; then
+        echo "Cleaning up after a failure."
+    fi
+
     az disk revoke-access --resource-group ${ARM_STORAGE_ACCOUNT} \
-        --name ${AZURE_IMAGE_NAME}
-
-    az snapshot delete \
-        --resource-group "${ARM_STORAGE_ACCOUNT}" \
-        --name ${snapshot_name}
+        --name ${AZURE_IMAGE_NAME} || exit_code=1
+    
+    if [[ -n "$DISK_SNAPSHOT_NAME" ]]; then
+        az snapshot delete \
+            --resource-group "${ARM_STORAGE_ACCOUNT}" \
+            --name ${DISK_SNAPSHOT_NAME} || exit_code=1
+    fi
 
     az disk delete --resource-group ${ARM_STORAGE_ACCOUNT} \
-        --name ${AZURE_IMAGE_NAME} -y
+        --name ${AZURE_IMAGE_NAME} -y || exit_code=1
 
-    az sig image-version delete --resource-group ${ARM_STORAGE_ACCOUNT} \
-        --gallery-name $gallery_name \
-        --gallery-image-definition $img_def_name \
-        --gallery-image-version $gallery_image_version
+    if [[ -n "$GALLERY_IMAGE_VERSION" ]]; then
+        az sig image-version delete --resource-group ${ARM_STORAGE_ACCOUNT} \
+            --gallery-name $GALLERY_NAME \
+            --gallery-image-definition $IMAGE_DEF_NAME \
+            --gallery-image-version $GALLERY_IMAGE_VERSION || exit_code=1
+    fi
 
-    az sig image-definition delete --resource-group ${ARM_STORAGE_ACCOUNT} \
-        --gallery-name $gallery_name \
-        --gallery-image-definition $img_def_name
+    if [[ -n "$IMAGE_DEF_NAME" ]]; then
+        az sig image-definition delete --resource-group ${ARM_STORAGE_ACCOUNT} \
+            --gallery-name $GALLERY_NAME \
+            --gallery-image-definition $IMAGE_DEF_NAME || exit_code=1
+    fi
+
+    az image delete --name ${AZURE_IMAGE_NAME} --resource-group "${ARM_STORAGE_ACCOUNT}" || exit_code=1
+
+    exit $exit_code
 }
 
 _azure_get_account_group() {
@@ -175,6 +195,7 @@ main() {
   : ${DEBUG:=1}
   azure_login
   azure_storage_account_list
+  azure_set_vars
   azure_turn_managed_disk_into_blob
 }
 
