@@ -67,7 +67,7 @@ azure_wait_for_blob_copy_to_finish() {
 }
 
 azure_turn_managed_disk_into_blob() {
-    trap azure_cleanup EXIT
+    trap _azure_cleanup EXIT
 
     echo Managed image id: $MANAGED_IMAGE_ID
 
