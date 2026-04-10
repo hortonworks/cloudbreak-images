@@ -37,7 +37,6 @@ azure_set_vars() {
     GALLERY_NAME=${ARM_STORAGE_ACCOUNT}_gallery
     IMAGE_DEF_NAME=temp_${AZURE_IMAGE_NAME}
     DISK_SNAPSHOT_NAME=${AZURE_IMAGE_NAME}-snapshot
-    DISK_ID= # will be set later
 }
 
 azure_wait_for_blob_copy_to_finish() {
@@ -90,13 +89,13 @@ azure_turn_managed_disk_into_blob() {
     
     echo Gallery image version reference: $version_ref
 
-    DISK_ID=$(az disk create --resource-group ${ARM_STORAGE_ACCOUNT} \
+    local disk_id=$(az disk create --resource-group ${ARM_STORAGE_ACCOUNT} \
     --location $RG_LOCATION \
     --name ${AZURE_IMAGE_NAME} \
     --gallery-image-reference "${version_ref}" \
     --query id -o tsv)
 
-    echo Created managed disk id: $DISK_ID
+    echo Created managed disk id: $disk_id
 
     # Create snapshot
     az snapshot create \
