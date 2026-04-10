@@ -161,6 +161,8 @@ _azure_cleanup() {
             --gallery-image-definition $IMAGE_DEF_NAME || exit_code=1
     fi
 
+    az image delete --name ${AZURE_IMAGE_NAME} --resource-group "${ARM_STORAGE_ACCOUNT}" || exit_code=1
+
     exit $exit_code
 }
 
