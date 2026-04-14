@@ -780,9 +780,7 @@
     {
       "type": "shell",
       "scripts": [
-        "scripts/salt-setup.sh",
-        "scripts/reboot.sh",
-        "scripts/salt-final.sh"
+        "scripts/salt-setup.sh"
       ],
       "expect_disconnect": true,
       "execute_command": "chmod +x {{ .Path }}; sudo {{ .Vars }} {{ .Path }} ",
@@ -848,6 +846,58 @@
         "DEFAULT_JAVA_MAJOR_VERSION={{user `default_java_major_version`}}",
         "SALTBOOT_VERSION={{user `saltboot_version`}}",
         "SALTBOOT_HTTPS_ENABLED={{user `saltboot_https_enabled`}}"
+      ],
+      "remote_folder": "/opt/provision-scripts"
+    },
+    {
+      "type": "shell",
+      "scripts": [
+        "scripts/reboot.sh"
+      ],
+      "expect_disconnect": true,
+      "execute_command": "chmod +x {{ .Path }}; sudo {{ .Vars }} {{ .Path }} ",
+      "remote_folder": "/opt/provision-scripts"
+    },
+    {
+      "type": "shell",
+      "pause_before": "180s",
+      "inline": ["echo 'Reconnected after reboot'"]
+    },
+    {
+      "type": "shell",
+      "scripts": [
+        "scripts/salt-final.sh"
+      ],
+      "expect_disconnect": true,
+      "execute_command": "chmod +x {{ .Path }}; sudo {{ .Vars }} {{ .Path }} ",
+      "environment_vars": [
+        "IMAGE_BASE_NAME={{ user `base_name` }}",
+        "CUSTOM_IMAGE_TYPE={{user `custom_image_type`}}",
+        "OS_USER={{ user `os_user` }}",
+        "STACK_VERSION={{user `stack_version`}}",
+        "OS={{user `os`}}",
+        "OS_TYPE={{user `os_type`}}",
+        "ARCHITECTURE={{user `architecture`}}",
+        "GIT_REV={{user `git_rev`}}",
+        "OPTIONAL_STATES={{user `optional_states`}}",
+        "PACKAGE_VERSIONS={{user `package_versions`}}",
+        "SALT_PATH={{user `salt_path`}}",
+        "JUMPGATE_AGENT_RPM_URL={{ user `jumpgate_agent_rpm_url` }}",
+        "CEM_AGENT_RPM_URL={{ user `cem_agent_rpm_url` }}",
+        "FREEIPA_PLUGIN_RPM_URL={{ user `freeipa_plugin_rpm_url` }}",
+        "FREEIPA_HEALTH_AGENT_RPM_URL={{ user `freeipa_healthagent_rpm_url` }}",
+        "FREEIPA_LDAP_AGENT_RPM_URL={{ user `freeipa_ldapagent_rpm_url` }}",
+        "HTTPS_PROXY={{ user `gov_https_proxy` }}",
+        "HTTP_PROXY={{ user `gov_http_proxy` }}",
+        "http_proxy={{ user `gov_http_proxy` }}",
+        "https_proxy={{ user `gov_https_proxy` }}",
+        "no_proxy={{ user `gov_no_proxy` }}",
+        "NO_PROXY={{ user `gov_no_proxy` }}",
+        "CLOUD_PROVIDER={{user `cloud_provider`}}",
+        "IMAGE_BURNING_TYPE={{ user `image_burning_type` }}",
+        "STIG_ENABLED={{user `stig_enabled`}}",
+        "OSCAP_SCAN_ENABLED={{user `oscap_scan_enabled`}}",
+        "DEFAULT_JAVA_MAJOR_VERSION={{user `default_java_major_version`}}"
       ],
       "remote_folder": "/opt/provision-scripts"
     },
