@@ -14,6 +14,10 @@ if [ -z "$AZURE_VM_GEN" ]; then
   AZURE_VM_GEN=1
 fi
 
+if [ -z "$AZURE_KEEP_MANAGED_IMAGE" ]; then
+  AZURE_KEEP_MANAGED_IMAGE=1
+fi
+
 docker run -i --rm \
     -v $PWD:/work \
     -w /work \
@@ -30,6 +34,7 @@ docker run -i --rm \
     -e AZURE_STORAGE_ACCOUNTS="$AZURE_STORAGE_ACCOUNTS" \
     -e AZURE_IMAGE_NAME="$AZURE_IMAGE_NAME" \
     -e AZURE_VM_GEN="$AZURE_VM_GEN" \
+    -e AZURE_KEEP_MANAGED_IMAGE="$AZURE_KEEP_MANAGED_IMAGE" \
     --entrypoint "/bin/bash" \
     docker-sandbox.infra.cloudera.com/cloudbreak-tools/cloudbreak-azure-cli-tools:1.26.0 -c ./scripts/azure-copy-managed-internal.sh
 
