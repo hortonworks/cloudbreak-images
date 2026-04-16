@@ -1,0 +1,46 @@
+#!/bin/bash
+
+: ${AZURE_IMAGE_PUBLISHER?= required}
+: ${AZURE_IMAGE_OFFER?= required}
+: ${AZURE_IMAGE_SKU?= required}
+
+LOG_FILE=azure_get_latest_vm_image_version.log
+
+log() {
+  MESSAGE=$1
+  echo "$(date '+%d/%m/%Y %H:%M:%S') - $MESSAGE " >> $LOG_FILE
+}
+
+debug() {
+  [[ "$DEBUG" ]] && echo "-----> $*" 1>&2
+}
+
+alias r="source $BASH_SOURCE"
+
+azure_login() {
+  if [[ "$ARM_CLIENT_ID" ]] && [[ "$ARM_CLIENT_SECRET" ]]; then
+    az login --username $ARM_CLIENT_ID --password $ARM_CLIENT_SECRET --service-principal --tenant $ARM_TENANT_ID
+  fi
+}
+
+azure_get_latest_vm_image_version() {
+  log "Lookup latest VM image version by publisher=$AZURE_IMAGE_PUBLISHER offer=$AZURE_IMAGE_OFFER and sku=$AZURE_IMAGE_SKU"
+
+  VERSION=$(az vm image list --publisher $AZURE_IMAGE_PUBLISHER --offer $AZURE_IMAGE_OFFER --sku $AZURE_IMAGE_SKU --all | jq -r --arg publisher $AZURE_IMAGE_PUBLISHER --arg offer $AZURE_IMAGE_OFFER --arg sku $AZURE_IMAGE_SKU '.[] | select(.publisher == $publisher and .offer == $offer and .sku == $sku) | .version' | sort -u | tail -n 1)
+  
+  log "Latest VM image version: $VERSION"
+
+  if [ -z $VERSION ]; then
+    echo "Failed to get latest vm image version!" 1>&2
+    exit 1
+  fi
+  echo $VERSION
+}
+
+main() {
+  : ${DEBUG:=1}
+  azure_login
+  azure_get_latest_vm_image_version > azure_get_latest_vm_image_version.out
+}
+
+[[ "$0" == "$BASH_SOURCE" ]] && main "$@"
