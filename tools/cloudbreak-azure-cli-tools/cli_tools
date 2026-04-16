@@ -1,0 +1,143 @@
+#!/bin/bash -e
+
+: ${APP_NAME:=app}
+: ${APP_PASSWORD:=password}
+: ${APP_SUBSCRIPTION_ID:=sub}
+: ${AZURE_CLI_LOCATION:="/azure"}
+
+_retry() {
+  sleepsec=$1;
+  maxret=$2;
+  shift 2;
+  ret=1;
+  while :; do
+    [[ $ret > $maxret ]] && return 1;
+    echo "${ret}.retry..." >&2;
+    eval "$@" && return || errorCode=$?;
+    echo "---> command failed with exit code: $errorCode" >&2;
+    let ret++;
+    sleep "$sleepsec";
+  done
+}
+
+retry() {
+  # 5 sec delay, 9 retry
+  _retry 5 9 "$@"
+}
+
+azure(){
+  "$AZURE_CLI_LOCATION"/bin/azure "$@"
+}
+
+set_arm_account_config_params() {
+  if [ $# -ne 0 ]; then
+    if [ $# -eq 3 ] || [ $# -eq 5 ] || [ $# -eq 7 ] || [ $# -eq 9 ] || [ $# -eq 11 ] ; then
+      for ((i_flag=2;i_flag<=$#;i_flag=i_flag+2)); do
+        case "${!i_flag}" in
+          --app_name)
+            local i_value=$((i_flag+1))
+            APP_NAME="${!i_value}"
+            local re='^[a-z0-9]{1,15}$'
+            if ! [[ $APP_NAME =~ $re ]]; then
+              echo "Incorrect format for ${!i_flag}, please use only alphanumeric (lowercase only) characters with size less then or equal to 15"
+              arm_account_config_usage
+            fi
+            ;;
+          --app_password)
+            local i_value=$((i_flag+1))
+            APP_PASSWORD="${!i_value}"
+            local re='^[a-zA-Z0-9]{1,15}$'
+            if ! [[ $APP_PASSWORD =~ $re ]]; then
+              echo "Incorrect format for ${!i_flag}, please use only alphanumeric characters with size less then or equal to 15"
+              arm_account_config_usage
+            fi
+            ;;
+          --subscription_id)
+            local i_value=$((i_flag+1))
+            APP_SUBSCRIPTION_ID="${!i_value}"
+            ;;
+          --username)
+            local i_value=$((i_flag+1))
+            ARM_USERNAME="${!i_value}"
+            ;;
+          --password)
+            local i_value=$((i_flag+1))
+            ARM_PASSWORD="${!i_value}"
+            ;;
+          *)
+            echo ${!i_value}
+            echo "Parameter name ${!i_flag} is invalid"
+            arm_account_config_usage
+            ;;
+        esac
+      done
+    else
+      echo "Please check the number of parameters, maybe one or more parameter is missing"
+      arm_account_config_usage
+    fi
+  fi
+}
+
+print_arm_account_config_params() {
+  echo "Subscription ID: "$APP_SUBSCRIPTION_ID
+  echo "App Name: "$APP_NAME
+  echo "Password: "$APP_PASSWORD
+}
+
+arm_account_config_usage() {
+  echo -e "Configure ARM application\n"
+  echo -e "usage: configure-arm [options]\n"
+  echo "Options:"
+  echo "  --app_name          name of the arm application"
+  echo "  --app_password      password of the arm application"
+  echo "  --subscription_id   subscription-id of your azure account"
+  echo "  --username          Azure username"
+  echo "  --password          Azure password"
+  exit 1
+}
+
+create_arm_account() {
+  if [[ -z "$ARM_USERNAME" ]] || [[ -z "$ARM_PASSWORD" ]]; then
+    azure login
+  else
+    azure login --username $ARM_USERNAME --password $ARM_PASSWORD --service-principal --tenant $ARM_TENANT_ID
+  fi
+  azure config mode arm
+
+  TENANT_ID_GREP=$(azure account show|grep "Tenant ID ")
+  TENANT_ID=$(echo $TENANT_ID_GREP|sed "s,data: Tenant ID : ,,g")
+  azure ad app create --name $APP_NAME --home-page http://$APP_NAME --identifier-uris http://$APP_NAME --password $APP_PASSWORD > $APP_NAME-ad-create.log
+  echo "waiting..." && sleep 5
+  APPLICATION_ID_GREP=$(grep "Application Id:" $APP_NAME-ad-create.log -r)
+  APPLICATION_ID=$(echo $APPLICATION_ID_GREP|sed "s,data: Application Id: ,,g")
+  echo "Your application id: "$APPLICATION_ID
+  azure ad sp create $APPLICATION_ID > $APP_NAME-ad-sp.log
+  echo "waiting..." && sleep 5
+  OBJECT_ID_GREP=$(grep "Object Id:" $APP_NAME-ad-sp.log -r)
+  OBJECT_ID=$(echo $OBJECT_ID_GREP|sed "s,data: Object Id: ,,g")
+  echo "Your Object id: "$OBJECT_ID
+  echo "waiting..."
+  retry  "azure role assignment create --objectId $OBJECT_ID -o Owner -c /subscriptions/$APP_SUBSCRIPTION_ID &> $APP_NAME-assign.log"
+  azure provider list
+  azure provider register Microsoft.Compute
+  azure provider register Microsoft.Network
+  azure provider register Microsoft.Storage
+
+  echo "Subscription ID: "$APP_SUBSCRIPTION_ID
+  echo "App ID: "$APPLICATION_ID
+  echo "Password: "$APP_PASSWORD
+  echo "App Owner Tenant ID: "$TENANT_ID
+}
+
+main() {
+  if [ $# -ne 0 ]; then
+    if [ $1 == "configure-arm" ]; then
+      set_arm_account_config_params "$@"
+      print_arm_account_config_params
+      create_arm_account
+    fi;
+  fi;
+
+}
+
+[[ "$0" == "$BASH_SOURCE" ]] && main "$@"
