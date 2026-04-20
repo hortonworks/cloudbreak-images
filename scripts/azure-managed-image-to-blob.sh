@@ -30,6 +30,6 @@ docker run -i --rm \
     -e AZURE_STORAGE_ACCOUNTS="$AZURE_STORAGE_ACCOUNTS" \
     -e AZURE_IMAGE_NAME="$AZURE_IMAGE_NAME" \
     -e AZURE_VM_GEN="$AZURE_VM_GEN" \
-    --entrypoint "/bin/bash" \
-    docker-sandbox.infra.cloudera.com/cloudbreak-tools/cloudbreak-azure-cli-tools:1.26.0 -c ./scripts/azure-copy-managed-internal.sh
+    --entrypoint azure-managed-image-to-blob \
+    docker-sandbox.infra.cloudera.com/cloudbreak-tools/cloudbreak-azure-cli-tools:1.28.0
 
