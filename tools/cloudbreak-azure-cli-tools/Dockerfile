@@ -4,7 +4,7 @@ LABEL MAINTAINER=Hortonworks
 
 WORKDIR /bin
 
-RUN tdnf install -y tar && tdnf clean all
+RUN tdnf install -y tar awk && tdnf clean all
 
 ADD ./azure-copy /bin/
 ADD ./azure-get-latest-vm-image-version /bin/
