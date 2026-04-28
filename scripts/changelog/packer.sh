@@ -71,7 +71,7 @@ create_azure_managed_image() {
   echo Converting VHD BLOB to managed image.
   MANAGED_DISK_NAME=CHGLOG-$(echo $SOURCE_IMAGE | sed 's|.*/||; s|\.vhd$||')
 
-  MANAGED_DISK_ID=$(azf disk create --name IMAGE-${MANAGED_DISK_NAME} \
+  MANAGED_DISK_ID=$(azf disk create --name DISK-${MANAGED_DISK_NAME} \
     --resource-group cldrwestus --location WestUS \
     --source $SOURCE_IMAGE \
     --query "id" \
@@ -83,7 +83,7 @@ create_azure_managed_image() {
     exit 1
   fi
 
-  MANAGED_IMAGE_ID=$(azf image create --name DISK-${MANAGED_DISK_NAME} \
+  MANAGED_IMAGE_ID=$(azf image create --name IMAGE-${MANAGED_DISK_NAME} \
     --resource-group cldrwestus --location WestUS \
     --source $MANAGED_DISK_ID \
     --hyper-v-generation V1 \
@@ -101,7 +101,7 @@ cleanup_azure() {
   docker volume rm $VOL_NAME
   
   if [ -n "$MANAGED_IMAGE_ID" ]; then
-    azf image delete --id ${MANAGED_IMAGE_ID} --yes
+    azf image delete --id ${MANAGED_IMAGE_ID}
   fi
 
   if [ -n "$MANAGED_DISK_ID" ]; then
