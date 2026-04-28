@@ -91,7 +91,7 @@ create_azure_managed_image() {
     --query "id" \
     --output tsv)
   echo MANAGED_IMAGE_ID=${MANAGED_IMAGE_ID}
-  SOURCE_IMAGE=MANAGED_IMAGE_ID
+  SOURCE_IMAGE=${MANAGED_IMAGE_ID}
 }
 
 cleanup_azure() {
