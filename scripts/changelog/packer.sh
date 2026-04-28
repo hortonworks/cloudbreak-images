@@ -62,7 +62,7 @@ azure_setup_container_and_login() {
 }
 
 azf() {
-  docker run --name Azure-${MANAGED_DISK_NAME} -v $VOL_NAME/root/.azure:rw -t mcr.microsoft.com/azure-cli:azurelinux3.0 /bin/az "$*"
+  docker run --name Azure-${MANAGED_DISK_NAME} -v $VOL_NAME:/root/.azure:rw -t mcr.microsoft.com/azure-cli:azurelinux3.0 /bin/az "$*"
 }
 
 create_azure_managed_image() {
