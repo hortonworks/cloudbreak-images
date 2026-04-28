@@ -53,9 +53,21 @@ remove_glcoud_compute_image() {
   docker rm gcloud-config-$TMP_GCP_IMAGE_NAME
 }
 
+azure_setup_container_and_login() {
+  MANAGED_DISK_NAME=CHGLOG-$(echo $SOURCE_IMAGE | sed 's|.*/||; s|\.vhd$||')
+  VOL_NAME=TMP-VOL-${MANAGED_DISK_NAME}
+  docker volume rm $VOL_NAME
+  docker volume create $VOL_NAME
+  azf login --username $ARM_CLIENT_ID --password $ARM_CLIENT_SECRET --service-principal --tenant $ARM_TENANT_ID
+}
+
+azf() {
+  docker run --name Azure-${MANAGED_DISK_NAME} -v $VOL_NAME/root/.azure:rw -t mcr.microsoft.com/azure-cli:azurelinux3.0 /bin/az "$*"
+}
+
 create_azure_managed_image() {
   echo Converting VHD BLOB to managed image.
-  local MANAGED_DISK_NAME=CHGLOG-$(echo $SOURCE_IMAGE | sed 's|.*/||; s|\.vhd$||')
+  MANAGED_DISK_NAME=CHGLOG-$(echo $SOURCE_IMAGE | sed 's|.*/||; s|\.vhd$||')
 
   MANAGED_DISK_ID=$(az disk create --name ${MANAGED_DISK_NAME} \
     --resource-group cldrwestus --location WestUS \
@@ -78,15 +90,18 @@ create_azure_managed_image() {
   SOURCE_IMAGE=MANAGED_IMAGE_ID
 }
 
-remove_azure_managed_image() {
+cleanup_azure() {
   echo Azure clean-up
 
+  docker container rm Azure-${MANAGED_DISK_NAME}
+  docker volume rm $VOL_NAME
+  
   if [ -n "$MANAGED_IMAGE_ID" ]; then
-    az image delete --id ${MANAGED_IMAGE_ID} --yes
+    azf image delete --id ${MANAGED_IMAGE_ID} --yes
   fi
 
   if [ -n "$MANAGED_DISK_ID" ]; then
-    az disk delete --id ${MANAGED_DISK_ID} --yes
+    azf disk delete --id ${MANAGED_DISK_ID} --yes
   fi
 }
 
@@ -147,7 +162,8 @@ main() {
   fi
 
   if [[ $CLOUD_PROVIDER == "Azure" ]]; then
-    trap remove_azure_managed_image EXIT
+    trap cleanup_azure EXIT
+    azure_setup_container_and_login
     create_azure_managed_image
   fi
   packer_in_container "$@"
