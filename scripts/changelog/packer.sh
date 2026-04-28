@@ -67,11 +67,24 @@ create_azure_managed_image() {
     echo "Error: Failed to create the managed disk."
     exit 1
   fi
-  SOURCE_IMAGE=MANAGED_DISK_ID
+
+  MANAGED_IMAGE_ID=$(az image create --name ${MANAGED_DISK_NAME} \
+    --resource-group cldrwestus --location WestUS \
+    --source $MANAGED_DISK_ID \
+    --hyper-v-generation V1 \
+    --os-type Linux \
+    --query "id" \
+    --output tsv)
+  SOURCE_IMAGE=MANAGED_IMAGE_ID
 }
 
 remove_azure_managed_image() {
   echo Azure clean-up
+
+  if [ -n "$MANAGED_IMAGE_ID" ]; then
+    az image delete --id ${MANAGED_IMAGE_ID} --yes
+  fi
+
   if [ -n "$MANAGED_DISK_ID" ]; then
     az disk delete --id ${MANAGED_DISK_ID} --yes
   fi
