@@ -56,7 +56,7 @@ remove_glcoud_compute_image() {
 azure_setup_container_and_login() {
   MANAGED_DISK_NAME=CHGLOG-$(echo $SOURCE_IMAGE | sed 's|.*/||; s|\.vhd$||')
   VOL_NAME=TMP-VOL-${MANAGED_DISK_NAME}
-  docker volume rm $VOL_NAME
+  docker volume rm $VOL_NAME || true
   docker volume create $VOL_NAME
   azf login --username $ARM_CLIENT_ID --password $ARM_CLIENT_SECRET --service-principal --tenant $ARM_TENANT_ID
 }
