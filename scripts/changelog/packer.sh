@@ -56,8 +56,10 @@ remove_glcoud_compute_image() {
 }
 
 azure_setup_container_and_login() {
-  MANAGED_DISK_NAME=CHGLOG-$(echo $SOURCE_IMAGE | sed 's|.*/||; s|\.vhd$||')
-  VOL_NAME=TMP-VOL-${MANAGED_DISK_NAME}
+  MANAGED_BASE_NAME=CHGLOG-$(echo $SOURCE_IMAGE | sed 's|.*/||; s|\.vhd$||')
+  MANAGED_SOURCE_IMAGE_NAME=IMAGE-${MANAGED_BASE_NAME}
+  MANAGED_SOURCE_DISK_NAME=DISK-${MANAGED_BASE_NAME}
+  VOL_NAME=TMP-VOL-${MANAGED_BASE_NAME}
   docker volume rm $VOL_NAME || true
   docker volume create $VOL_NAME
   azf login --username $ARM_CLIENT_ID --password $ARM_CLIENT_SECRET --service-principal --tenant $ARM_TENANT_ID
@@ -69,9 +71,7 @@ azf() {
 
 create_azure_managed_image() {
   echo Converting VHD BLOB to managed image.
-  MANAGED_DISK_NAME=CHGLOG-$(echo $SOURCE_IMAGE | sed 's|.*/||; s|\.vhd$||')
-
-  MANAGED_DISK_ID=$(azf disk create --name DISK-${MANAGED_DISK_NAME} \
+  MANAGED_DISK_ID=$(azf disk create --name MANAGED_SOURCE_DISK_NAME \
     --resource-group cldrwestus --location WestUS \
     --source $SOURCE_IMAGE \
     --query "id" \
@@ -83,7 +83,7 @@ create_azure_managed_image() {
     exit 1
   fi
 
-  MANAGED_IMAGE_ID=$(azf image create --name IMAGE-${MANAGED_DISK_NAME} \
+  MANAGED_IMAGE_ID=$(azf image create --name MANAGED_SOURCE_IMAGE_NAME \
     --resource-group cldrwestus --location WestUS \
     --source $MANAGED_DISK_ID \
     --hyper-v-generation V1 \
@@ -154,6 +154,7 @@ packer_in_container() {
     -e AWS_SNAPSHOT_GROUPS=$AWS_SNAPSHOT_GROUPS \
     -e PLAN_NAME=$PLAN_NAME \
     -e PACKER_LOG=1 \
+    -e MANAGED_SOURCE_IMAGE_NAME=$MANAGED_SOURCE_IMAGE_NAME \
     -e TMPDIR=/var/tmp/ \
     -v /var/run/docker.sock:/var/run/docker.sock \
     -v $PWD:$PWD \
