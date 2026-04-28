@@ -1,5 +1,7 @@
 #!/bin/bash
 
+set -x 
+
 TMP_GCP_IMAGE_CREATED=false
 
 create_glcloud_compute_image() {
