@@ -90,6 +90,11 @@ create_azure_managed_image() {
     --os-type Linux \
     --query "id" \
     --output tsv)
+
+  if [ $? -ne 0 ]; then
+    echo "Error: Failed to create the managed image."
+    exit 1
+  fi
   echo MANAGED_IMAGE_ID=${MANAGED_IMAGE_ID}
   SOURCE_IMAGE=${MANAGED_IMAGE_ID}
 }
