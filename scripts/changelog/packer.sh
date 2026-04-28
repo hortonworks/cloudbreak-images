@@ -96,9 +96,6 @@ create_azure_managed_image() {
 
 cleanup_azure() {
   echo Azure clean-up
-
-  docker container rm Azure-${MANAGED_DISK_NAME}
-  docker volume rm $VOL_NAME
   
   if [ -n "$MANAGED_IMAGE_ID" ]; then
     azf image delete --id ${MANAGED_IMAGE_ID}
@@ -107,6 +104,9 @@ cleanup_azure() {
   if [ -n "$MANAGED_DISK_ID" ]; then
     azf disk delete --id ${MANAGED_DISK_ID} --yes
   fi
+
+  docker container rm Azure-${MANAGED_DISK_NAME}
+  docker volume rm $VOL_NAME
 }
 
 packer_in_container() {
