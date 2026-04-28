@@ -53,6 +53,30 @@ remove_glcoud_compute_image() {
   docker rm gcloud-config-$TMP_GCP_IMAGE_NAME
 }
 
+create_azure_managed_image() {
+  echo Converting VHD BLOB to managed image.
+  local MANAGED_DISK_NAME=CHGLOG-$(echo $SOURCE_IMAGE | sed 's|.*/||; s|\.vhd$||')
+
+  MANAGED_DISK_ID=$(az disk create --name ${MANAGED_DISK_NAME} \
+    --resource-group cldrwestus --location WestUS \
+    --source $SOURCE_IMAGE \
+    --query "id" \
+    --output tsv)
+  
+  if [ $? -ne 0 ]; then
+    echo "Error: Failed to create the managed disk."
+    exit 1
+  fi
+  SOURCE_IMAGE=MANAGED_DISK_ID
+}
+
+remove_azure_managed_image() {
+  echo Azure clean-up
+  if [ -n "$MANAGED_DISK_ID" ]; then
+    az disk delete --id ${MANAGED_DISK_ID} --yes
+  fi
+}
+
 packer_in_container() {
   local dockerOpts=""
   local packerFile="./scripts/changelog/packer.json"
@@ -109,6 +133,10 @@ main() {
     create_glcloud_compute_image
   fi
 
+  if [[ $CLOUD_PROVIDER == "Azure" ]]; then
+    trap remove_azure_managed_image EXIT
+    create_azure_managed_image
+  fi
   packer_in_container "$@"
 }
 
