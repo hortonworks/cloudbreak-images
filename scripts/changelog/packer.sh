@@ -110,7 +110,6 @@ cleanup_azure() {
     azf disk delete --id ${MANAGED_DISK_ID} --yes
   fi
 
-  docker container rm Azure-${MANAGED_DISK_NAME}
   docker volume rm $VOL_NAME
 }
 
