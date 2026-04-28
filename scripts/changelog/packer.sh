@@ -96,6 +96,12 @@ create_azure_managed_image() {
     exit 1
   fi
   echo MANAGED_IMAGE_ID=${MANAGED_IMAGE_ID}
+
+  azf resource update --ids "$MANAGED_IMAGE_ID" --set \
+    plan.name="$PLAN_NAME" \
+    plan.product="rhel-byos" \
+    plan.publisher="redhat"
+
   SOURCE_IMAGE=${MANAGED_IMAGE_ID}
 }
 
