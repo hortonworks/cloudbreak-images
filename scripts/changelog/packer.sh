@@ -77,6 +77,7 @@ create_azure_managed_image() {
     --query "id" \
     --output tsv)
   
+  echo MANAGED_DISK_ID=$MANAGED_DISK_ID
   if [ $? -ne 0 ]; then
     echo "Error: Failed to create the managed disk."
     exit 1
