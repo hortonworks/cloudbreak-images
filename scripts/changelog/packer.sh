@@ -128,7 +128,7 @@ packer_in_container() {
     ## dont try to use docker tty on jenkins
     TTY_OPTS=""
   fi
-  export PLAN_NAME=rhel-lvm95
+
   [[ "$TRACE" ]] && set -x
   ${DRY_RUN:+echo ===} docker run -i $TTY_OPTS --rm \
     -e CHECKPOINT_DISABLE=1 \
