@@ -153,6 +153,7 @@ packer_in_container() {
     -e AWS_ACCESS_KEY_ID=$AWS_ACCESS_KEY_ID \
     -e AWS_SECRET_ACCESS_KEY=$AWS_SECRET_ACCESS_KEY \
     -e AWS_SNAPSHOT_GROUPS=$AWS_SNAPSHOT_GROUPS \
+    -e PLAN_NAME=$PLAN_NAME \
     -e MANAGED_SOURCE_IMAGE_NAME=$MANAGED_SOURCE_IMAGE_NAME \
     -e TMPDIR=/var/tmp/ \
     -v /var/run/docker.sock:/var/run/docker.sock \

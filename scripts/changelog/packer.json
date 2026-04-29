@@ -207,6 +207,11 @@
         "owner": "{{ user `owner_tag` }}",
         "cloudera-usage-type": "{{ user `cloudera_usage_type_tag` }}"
       },
+      "plan_info": {
+        "plan_name": "{{user `plan_name`}}",
+        "plan_product": "rhel-byos",
+        "plan_publisher": "redhat"
+      },
       "skip_create_image": true,
       "communicator": "ssh"
     },
@@ -238,6 +243,11 @@
         "cb-creation-timestamp": "{{timestamp}}",
         "owner": "{{ user `owner_tag` }}",
         "cloudera-usage-type": "{{ user `cloudera_usage_type_tag` }}"
+      },
+      "plan_info": {
+        "plan_name": "{{user `plan_name`}}",
+        "plan_product": "rhel-byos",
+        "plan_publisher": "redhat"
       },
       "skip_create_image": true,
       "communicator": "ssh"
