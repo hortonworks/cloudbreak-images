@@ -1,5 +1,7 @@
 #!/bin/bash
 
+set -x 
+
 TMP_GCP_IMAGE_CREATED=false
 
 create_glcloud_compute_image() {
@@ -53,6 +55,65 @@ remove_glcoud_compute_image() {
   docker rm gcloud-config-$TMP_GCP_IMAGE_NAME
 }
 
+azure_setup_container_and_login() {
+  MANAGED_BASE_NAME=CHGLOG-$(echo $SOURCE_IMAGE | sed 's|.*/||; s|\.vhd$||')
+  MANAGED_SOURCE_IMAGE_NAME=IMAGE-${MANAGED_BASE_NAME}
+  MANAGED_SOURCE_DISK_NAME=DISK-${MANAGED_BASE_NAME}
+  VOL_NAME=TMP-VOL-${MANAGED_BASE_NAME}
+  docker volume rm $VOL_NAME || true
+  docker volume create $VOL_NAME
+  azf login --username $ARM_CLIENT_ID --password $ARM_CLIENT_SECRET --service-principal --tenant $ARM_TENANT_ID
+}
+
+azf() {
+  docker run --rm --name Azure-${MANAGED_BASE_NAME} -v $VOL_NAME:/root/.azure:rw -i mcr.microsoft.com/azure-cli:azurelinux3.0 /bin/az "$@"
+}
+
+create_azure_managed_image() {
+  echo Converting VHD BLOB to managed image.
+  MANAGED_DISK_ID=$(azf disk create --name $MANAGED_SOURCE_DISK_NAME \
+    --resource-group cldrwestus --location WestUS \
+    --source $SOURCE_IMAGE \
+    --query "id" \
+    --output tsv)
+  
+  echo MANAGED_DISK_ID=$MANAGED_DISK_ID
+  if [ $? -ne 0 ]; then
+    echo "Error: Failed to create the managed disk."
+    exit 1
+  fi
+
+  MANAGED_IMAGE_ID=$(azf image create --name $MANAGED_SOURCE_IMAGE_NAME \
+    --resource-group cldrwestus --location WestUS \
+    --source $MANAGED_DISK_ID \
+    --hyper-v-generation V1 \
+    --os-type Linux \
+    --query "id" \
+    --output tsv)
+
+  if [ $? -ne 0 ]; then
+    echo "Error: Failed to create the managed image."
+    exit 1
+  fi
+  echo MANAGED_IMAGE_ID=${MANAGED_IMAGE_ID}
+
+  SOURCE_IMAGE=${MANAGED_IMAGE_ID}
+}
+
+cleanup_azure() {
+  echo Azure clean-up
+  
+  if [ -n "$MANAGED_IMAGE_ID" ]; then
+    azf image delete --id ${MANAGED_IMAGE_ID}
+  fi
+
+  if [ -n "$MANAGED_DISK_ID" ]; then
+    azf disk delete --id ${MANAGED_DISK_ID} --yes
+  fi
+
+  docker volume rm $VOL_NAME
+}
+
 packer_in_container() {
   local dockerOpts=""
   local packerFile="./scripts/changelog/packer.json"
@@ -93,6 +154,7 @@ packer_in_container() {
     -e AWS_SECRET_ACCESS_KEY=$AWS_SECRET_ACCESS_KEY \
     -e AWS_SNAPSHOT_GROUPS=$AWS_SNAPSHOT_GROUPS \
     -e PLAN_NAME=$PLAN_NAME \
+    -e MANAGED_SOURCE_IMAGE_NAME=$MANAGED_SOURCE_IMAGE_NAME \
     -e TMPDIR=/var/tmp/ \
     -v /var/run/docker.sock:/var/run/docker.sock \
     -v $PWD:$PWD \
@@ -109,6 +171,11 @@ main() {
     create_glcloud_compute_image
   fi
 
+  if [[ $CLOUD_PROVIDER == "Azure" ]]; then
+    trap cleanup_azure EXIT
+    azure_setup_container_and_login
+    create_azure_managed_image
+  fi
   packer_in_container "$@"
 }
 
