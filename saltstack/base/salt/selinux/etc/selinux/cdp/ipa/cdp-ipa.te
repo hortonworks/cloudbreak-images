@@ -90,6 +90,7 @@ gnome_search_gconf_data_dir(cdp_ipa_management_t)
 gen_require(`
     type gssproxy_t;
 ')
+gssproxy_systemctl(cdp_ipa_management_t)
 getattr_files_pattern(gssproxy_t, cdp_ipa_management_exec_t, cdp_ipa_management_exec_t)
 
 # hostname
