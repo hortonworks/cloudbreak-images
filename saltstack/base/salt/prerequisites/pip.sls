@@ -5,6 +5,11 @@ install_openssl_devel:
       - openssl-devel
 {% endif %}
 
+install_pip:
+  pkg.installed:
+    - name: python3-pip
+    - reload_modules: True
+
 install_pyyaml:
   pip.installed:
     - name: PyYAML

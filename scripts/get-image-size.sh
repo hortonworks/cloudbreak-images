@@ -32,6 +32,8 @@ else
     # freeipa and base image
     if [[ "$CLOUD_PROVIDER" == "Azure" ]]; then
       IMAGE_SIZE=64
+    elif [[ "$CLOUD_PROVIDER" == "Openstack" ]]; then
+      IMAGE_SIZE=10
     else
       IMAGE_SIZE=48
     fi

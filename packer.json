@@ -8,9 +8,14 @@
     "gcp_storage_bundle": "{{env `GCP_STORAGE_BUNDLE`}}",
     "gcp_source_image": "{{env `GCP_SOURCE_IMAGE`}}",
     "os_auth_url": "{{ env `OS_AUTH_URL` }}",
+    "os_region": "{{ env `OS_REGION_NAME` }}",
     "os_username": "{{ env `OS_USERNAME` }}",
     "os_password": "{{ env `OS_PASSWORD` }}",
-    "os_tenant_name": "{{ env `OS_TENANT_NAME` }}",
+    "os_tenant_name": "{{ env `OS_PROJECT_NAME` }}",
+    "os_domain_id": "{{ env `OS_PROJECT_DOMAIN_ID` }}",
+    "os_source_image_uuid": "{{ env `OS_SOURCE_IMAGE_UUID` }}",
+    "os_network_uuid": "{{ env `OS_NETWORK_UUID` }}",
+    "os_instance_type": "{{ env `OS_INSTANCE_TYPE` }}",
     "client_id": "{{ env `ARM_CLIENT_ID` }}",
     "client_secret": "{{ env `ARM_CLIENT_SECRET` }}",
     "subscription_id": "{{ env `ARM_SUBSCRIPTION_ID` }}",
@@ -124,6 +129,28 @@
     "oscap_scan_enabled": "{{ env `OSCAP_SCAN_ENABLED` }}"
   },
   "builders": [
+    {
+      "name": "os-redhat9",
+      "type": "openstack",
+      "region": "{{user `os_region`}}",
+      "username": "{{user `os_username`}}",
+      "password": "{{user `os_password`}}",
+      "identity_endpoint": "{{user `os_auth_url`}}",
+      "tenant_name": "{{user `os_tenant_name`}}",
+      "domain_id": "{{user `os_domain_id`}}",
+      "ssh_username": "cloud-user",
+      "ssh_pty": "true",
+      "image_name": "{{user `image_name`}}",
+      "source_image": "{{user `os_source_image_uuid`}}",
+      "flavor": "{{user `os_instance_type`}}",
+      "endpoint_type": "public",
+      "use_blockstorage_volume": true,
+      "volume_size": "{{user `image_size`}}",
+      "image_disk_format": "qcow2",
+      "networks": [
+        "{{user `os_network_uuid`}}"
+      ]
+    },
     {
       "name": "aws-centos7",
       "type": "amazon-ebs",

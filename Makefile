@@ -16,6 +16,13 @@ OPTIONAL_STATES ?= ""
 IMAGE_COPY_PHASE ?= ""
 ARCHITECTURE ?= x86_64
 
+# Openstack parameters specification
+ifeq ($(CLOUD_PROVIDER),Openstack)
+    OS_SOURCE_IMAGE_UUID ?= "7a30c75a-9735-4ac9-a6dd-8086584bf661"
+    OS_NETWORK_UUID ?= "6df0e3b6-7aa4-4eb3-9c8e-22703a57dbcc"
+    OS_INSTANCE_TYPE ?= "m1.large"
+endif
+
 # Azure VM image specifications
 ifeq ($(CLOUD_PROVIDER),Azure)
 	PRIVATE_VIRTUAL_NETWORK_WITH_PUBLIC_IP ?= false
@@ -365,6 +372,17 @@ await-docker:
 
 show-image-name:
 	@echo IMAGE_NAME=$(IMAGE_NAME)
+
+build-os-rhel9:
+	$(ENVS) \
+	OS=redhat9 \
+	OS_TYPE=redhat9 \
+	OS_SOURCE_IMAGE_UUID=$(OS_SOURCE_IMAGE_UUID) \
+    OS_NETWORK_UUID=$(OS_NETWORK_UUID) \
+    OS_INSTANCE_TYPE=$(OS_INSTANCE_TYPE) \
+	ATLAS_ARTIFACT_TYPE=openstack \
+	SALT_INSTALL_OS=redhat \
+	./scripts/packer.sh build -only=os-redhat9 $(PACKER_OPTS)
 
 build-aws-centos7-base:
 	$(ENVS) \
