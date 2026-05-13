@@ -28,8 +28,9 @@ function update_yum_repos() {
       rm /etc/yum.repos.d/*.repo -f
     fi
 
-    if [ "${RHEL_VERSION}" == "9.6" ]; then
+    if [ "${RHEL_VERSION}" == "9.6" && "${ARCHITECTURE}" == "x86_64" ]; then
 
+      # For now, this makes no sense, because excluded arm64 above - RE is still waiting for RedHat to give us the arm64 repos
       case "$ARCHITECTURE" in
         "arm64") basearch="aarch64" ;;
         *) basearch="x86_64" ;;
