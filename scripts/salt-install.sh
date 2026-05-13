@@ -172,8 +172,8 @@ EOF
 
 function redhat9_update_python39() {
   echo "Installing python3-devel (the rest should be already installed in case of RHEL9)..."
-  yum update -y python3
-  yum install -y python3-devel
+  #yum update -y python3
+  dnf install -y python3-devel
 
   if [[ "${CLOUD_PROVIDER}" == "AWS" ]]; then
     echo PYTHON39=$(dnf list installed | grep ^python3\\. | grep @System | grep -oi " [^\s]* " | xargs) >> /tmp/python_install.properties
