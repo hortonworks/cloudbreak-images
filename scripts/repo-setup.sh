@@ -28,8 +28,9 @@ function update_yum_repos() {
       rm /etc/yum.repos.d/*.repo -f
     fi
 
-    if [ "${RHEL_VERSION}" == "9.6" ]; then
+    if [ "${RHEL_VERSION}" == "9.6" && "${ARCHITECTURE}" == "x86_64" ]; then
 
+      # For now, this makes no sense, because excluded arm64 above - RE is still waiting for RedHat to give us the arm64 repos
       case "$ARCHITECTURE" in
         "arm64") basearch="aarch64" ;;
         *) basearch="x86_64" ;;
@@ -66,9 +67,9 @@ gpgcheck = 1
 EOF
 
       dnf upgrade --refresh -y
+    else
+      curl https://mirror.eng.cloudera.com/repos/rhel/server/${RHEL_VERSION_MAJOR}/${RHEL_VERSION}/${REPO_FILE} --fail > /etc/yum.repos.d/${REPO_FILE}
     fi
-
-    #curl https://mirror.eng.cloudera.com/repos/rhel/server/${RHEL_VERSION_MAJOR}/${RHEL_VERSION}/${REPO_FILE} --fail > /etc/yum.repos.d/${REPO_FILE}
   else
     # Workaround based on the official documentation: https://cloud.google.com/compute/docs/troubleshooting/known-issues#known_issues_for_linux_vm_instances
     if [ "${CLOUD_PROVIDER}" == "GCP" ]; then
