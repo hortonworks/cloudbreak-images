@@ -2,123 +2,84 @@
 
 set -ex -o pipefail
 
-AMI_ID=$IMAGE_NAME
-IMAGE_NAME=$(aws ec2 describe-images --region $SOURCE_LOCATION --filters "Name=image-id,Values=$AMI_ID" --query 'Images[*].[Name]' --output "text")
-
-if [ -z "$IMAGE_NAME" ]
-then
-  echo "Source image $AMI_ID in region $SOURCE_LOCATION not found, exiting"
-  exit 1
-fi
-
-SRC_ACCOUNT=""
-if [[ -z $SOURCE_ACCOUNT ]]; then
-  SRC_ACCOUNT=self
-else
-  SRC_ACCOUNT=$SOURCE_ACCOUNT
-  echo Source account is $SRC_ACCOUNT
-fi
-
-
-echo "Installing jq..."
-yum install -q -y jq
-
-echo "Copying image $IMAGE_NAME ($AMI_ID) from region $SOURCE_LOCATION to regions $AWS_AMI_REGIONS"
-IMAGES=""
-
-declare -a JOBS
-
-function log() {
+log() {
   echo "$(date --rfc-3339=seconds) $1"
 }
 
-function exec_background() {
-  eval $1 & JOBS[$!]="$1"
-}
+AMI_ID=${IMAGE_NAME:-}
+if [ -z "$AMI_ID" ]; then
+  log "ERROR: IMAGE_NAME env variable is not set!"
+  exit 1
+fi
 
-function checking_jobs() {
-  local cmd
-  local status=0
-  for pid in ${!JOBS[@]}; do
-    cmd=${JOBS[${pid}]}
-    wait ${pid} ; JOBS[${pid}]=$?
-    if [[ ${JOBS[${pid}]} -ne 0 ]]; then
-      status=${JOBS[${pid}]}
-      log "[${pid}] Exited with status: ${status} | ${cmd}"
-    fi
-  done
-  return ${status}
-}
+IMAGE_NAME=$(aws ec2 describe-images --region "$SOURCE_LOCATION" --filters "Name=image-id,Values=$AMI_ID" --query 'Images[*].Name' --output text 2>/dev/null)
 
-function wait_for_image_available() {
-  local  _imageId=$1
-  local  _region=$2
-  while true; do
-    image_status=$(aws ec2 describe-images --image-ids ${_imageId} --region ${_region}  --query 'Images[0].State' --output text)
-    echo "Image [${_imageId}] status is [${image_status}] in region [${_region}]."
-    if [[ "$image_status" == "available" ]]; then
-      echo "Image is available now. Continuing.. "
-      break
-    elif [[ "$image_status" == "pending" ]]; then
-      echo "Waiting 30 seconds.."
-      sleep 30
-    else
-      echo "Error, exiting.."
-      exit 1
-    fi
-  done
-}
+if [ -z "$IMAGE_NAME" ]; then
+  log "Source image $AMI_ID in region $SOURCE_LOCATION not found, exiting"
+  exit 1
+fi
 
-function wait_for_image_and_check() {
-  REGION=$1
-  AMI_IN_REGION=$2
+SRC_ACCOUNT=${SOURCE_ACCOUNT:-"self"}
+log "Source account is $SRC_ACCOUNT"
+
+log "Installing jq..."
+yum install -q -y jq
+
+wait_for_image_and_check() {
+  local REGION=$1
+  local AMI_IN_REGION=$2
   
   export AWS_RETRY_MODE=standard
   export AWS_MAX_ATTEMPTS=60
   export AWS_DELAY=60
-  aws configure set retry_mode standard
-  aws configure set max_attempts 60
-  aws configure set delay 60
 
-  wait_for_image_available $AMI_IN_REGION $REGION
+  while true; do
+    local image_status=$(aws ec2 describe-images --image-ids "$AMI_IN_REGION" --region "$REGION" --query 'Images[0].State' --output text 2>/dev/null || echo "error")
+    log "Image [$AMI_IN_REGION] status is [$image_status] in region [$REGION]."
+    if [ "$image_status" == "available" ]; then
+      log "Image is available now. Continuing..."
+      break
+    elif [ "$image_status" == "pending" ]; then
+      log "Waiting 30 seconds..."
+      sleep 30
+    else
+      log "Error: Image status is $image_status, exiting..."
+      return 1
+    fi
+  done
 
   log "Querying snapshot in region $REGION for image $AMI_IN_REGION"
-  SNAPSHOT_ID=$(aws ec2 describe-images --image-ids $AMI_IN_REGION --region $REGION --query "Images[0].BlockDeviceMappings[0].Ebs.SnapshotId" --output "text")
+  local SNAPSHOT_ID=$(aws ec2 describe-images --image-ids "$AMI_IN_REGION" --region "$REGION" --query "Images[0].BlockDeviceMappings[0].Ebs.SnapshotId" --output text)
 
   if [ "$MAKE_PUBLIC_SNAPSHOTS" == "yes" ]; then
     log "Setting snapshot $SNAPSHOT_ID visibility to public in region $REGION for image $AMI_IN_REGION"
-    aws ec2 modify-snapshot-attribute --snapshot-id $SNAPSHOT_ID --region $REGION --create-volume-permission "Add=[{Group=all}]"
+    aws ec2 modify-snapshot-attribute --snapshot-id "$SNAPSHOT_ID" --region "$REGION" --create-volume-permission "Add=[{Group=all}]"
   elif [ -n "$AWS_SNAPSHOT_USER" ]; then
     log "Setting snapshot $SNAPSHOT_ID visibility for user in region $REGION for image $AMI_IN_REGION"
-    aws ec2 modify-snapshot-attribute --snapshot-id $SNAPSHOT_ID --region $REGION --create-volume-permission "Add=[{UserId=$AWS_SNAPSHOT_USER}]"
+    aws ec2 modify-snapshot-attribute --snapshot-id "$SNAPSHOT_ID" --region "$REGION" --create-volume-permission "Add=[{UserId=$AWS_SNAPSHOT_USER}]"
   fi
 
   if [ "$MAKE_PUBLIC_AMIS" == "yes" ]; then
     log "Setting launch permissions to public in region $REGION for image $AMI_IN_REGION"
-    aws ec2 modify-image-attribute --image-id $AMI_IN_REGION --region $REGION --launch-permission "Add=[{Group=all}]"
+    aws ec2 modify-image-attribute --image-id "$AMI_IN_REGION" --region "$REGION" --launch-permission "Add=[{Group=all}]"
   elif [ -n "$AWS_AMI_ORG_ARN" ]; then
     log "Setting launch permissions only for organization in region $REGION for image $AMI_IN_REGION"
-    aws ec2 modify-image-attribute --image-id $AMI_IN_REGION --region $REGION --launch-permission "Add=[{OrganizationArn=$AWS_AMI_ORG_ARN}]"
+    aws ec2 modify-image-attribute --image-id "$AMI_IN_REGION" --region "$REGION" --launch-permission "Add=[{OrganizationArn=$AWS_AMI_ORG_ARN}]"
   fi
 
-  IMAGESTATUS=""
-  SNAPSTATUS=""
-  for ((i=0; i<5; i++))
-  do
-    IMAGE_DESC=$(aws ec2 describe-images --region $REGION --image-ids $AMI_IN_REGION --output json)
-    IMAGE_AVAILABLE=$(echo $IMAGE_DESC | jq -r '.Images[0].State')
+  for ((i=0; i<5; i++)); do
+    local IMAGESTATUS="FAILED" SNAPSTATUS="FAILED"
+    local IMAGE_DESC=$(aws ec2 describe-images --region "$REGION" --image-ids "$AMI_IN_REGION" --output json)
+    local IMAGE_AVAILABLE=$(echo "$IMAGE_DESC" | jq -r '.Images[0].State')
 
     if [ "${IMAGE_AVAILABLE}" == "available" ]; then
       log "The $AMI_IN_REGION in $REGION region is available, checking permissions..."
-      IMAGE_PUBLIC=$(echo $IMAGE_DESC | jq -r '.Images[0].Public')
-      if [ "$MAKE_PUBLIC_AMIS" == "yes" ]; then
-        if [ "${IMAGE_PUBLIC}" == "true" ]; then
-          log "The $AMI_IN_REGION in $REGION region is public"
-          IMAGESTATUS="OK"
-        fi
+      local IMAGE_PUBLIC=$(echo "$IMAGE_DESC" | jq -r '.Images[0].Public')
+      if [ "$MAKE_PUBLIC_AMIS" == "yes" ] && [ "${IMAGE_PUBLIC}" == "true" ]; then
+        log "The $AMI_IN_REGION in $REGION region is public"
+        IMAGESTATUS="OK"
       elif [ -n "$AWS_AMI_ORG_ARN" ]; then
-        IMAGE_PERMISSIONS=$(aws ec2 describe-image-attribute --region $REGION --image-id $AMI_IN_REGION --attribute launchPermission --output json)
-        IMAGE_ORGANIZATION_ARN=$(echo $IMAGE_PERMISSIONS | jq -r '.LaunchPermissions[0].OrganizationArn')
+        local IMAGE_ORGANIZATION_ARN=$(aws ec2 describe-image-attribute --region "$REGION" --image-id "$AMI_IN_REGION" --attribute launchPermission --query 'LaunchPermissions[0].OrganizationArn' --output text)
         if [ "${IMAGE_PUBLIC}" == "false" ] && [ "${IMAGE_ORGANIZATION_ARN}" == "$AWS_AMI_ORG_ARN" ]; then
           log "The $AMI_IN_REGION in $REGION region is only shared with an organization"
           IMAGESTATUS="OK"
@@ -131,71 +92,92 @@ function wait_for_image_and_check() {
       fi
     fi
 
-    SNAPSHOT_PERMISSIONS=$(aws ec2 describe-snapshot-attribute --region $REGION --snapshot-id $SNAPSHOT_ID --attribute createVolumePermission --output json)
-    SNAPSHOT_PUBLIC=$(echo $SNAPSHOT_PERMISSIONS | jq -r '.CreateVolumePermissions | any(.Group == "all")')
-    if [ "${MAKE_PUBLIC_SNAPSHOTS}" == "yes" ]; then
-      if [ "${SNAPSHOT_PUBLIC}" == "true" ]; then
-        SNAPSTATUS="OK"
-      fi
-    elif [ -n "${AWS_SNAPSHOT_USER}" ]; then
-      SNAPSHOT_SHARED_WITH_USER=$(echo $SNAPSHOT_PERMISSIONS | jq -r --arg userId $AWS_SNAPSHOT_USER '.CreateVolumePermissions | any(.UserId == $userId)')
-      if [ "${SNAPSHOT_PUBLIC}" == "false" ] && [ "${SNAPSHOT_SHARED_WITH_USER}" == "true" ]; then
-        SNAPSTATUS="OK"
-      fi
+    local SNAPSHOT_PERMISSIONS=$(aws ec2 describe-snapshot-attribute --region "$REGION" --snapshot-id "$SNAPSHOT_ID" --attribute createVolumePermission --output json)
+    local SNAPSHOT_PUBLIC=$(echo "$SNAPSHOT_PERMISSIONS" | jq -r '.CreateVolumePermissions | any(.Group == "all")')
+    
+    if [ "$MAKE_PUBLIC_SNAPSHOTS" == "yes" ] && [ "${SNAPSHOT_PUBLIC}" == "true" ]; then
+      SNAPSTATUS="OK"
+    elif [ -n "$AWS_SNAPSHOT_USER" ]; then
+      local SNAPSHOT_SHARED_WITH_USER=$(echo "$SNAPSHOT_PERMISSIONS" | jq -r --arg userId "$AWS_SNAPSHOT_USER" '.CreateVolumePermissions | any(.UserId == $userId)')
+      [ "${SNAPSHOT_PUBLIC}" == "false" ] && [ "${SNAPSHOT_SHARED_WITH_USER}" == "true" ] && SNAPSTATUS="OK"
     else
-      if [ "${SNAPSHOT_PUBLIC}" == "false" ]; then
-        SNAPSTATUS="OK"
-      fi
+      [ "${SNAPSHOT_PUBLIC}" == "false" ] && SNAPSTATUS="OK"
     fi
 
     if [ "${IMAGESTATUS}" == "OK" ] && [ "${SNAPSTATUS}" == "OK" ]; then
-      break
-    else
-      sleep 60
+      log "Copy operation and verification in region $REGION for image $AMI_IN_REGION successfully finished."
+      return 0
     fi
+    sleep 60
   done
 
-  if [ "${IMAGESTATUS}" = "OK" ]; then 
-    log "The $AMI_IN_REGION in $REGION region is available and in correct state."
-  else
-    log "FAILURE | The $AMI_IN_REGION in $REGION region is not available or not in correct state."
-    exit 1
-  fi
-
-  if [ "${SNAPSTATUS}" = "OK" ]; then
-    log "The $SNAPSHOT_ID in $REGION region is available and in correct state."
-  else
-    log "FAILURE | The $SNAPSHOT_ID in $REGION region is not available or not in correct state."
-    exit 1
-  fi
-
-  log "Copy operation in region $REGION for image $AMI_IN_REGION finished"
+  log "FAILURE | Validation failed in region $REGION."
+  return 1
 }
 
-for REGION in $(echo $AWS_AMI_REGIONS | sed "s/,/ /g")
-do
-  log "Copying to region $REGION..."
+FAILED_REGIONS_FILE="failed-regions.txt"
+rm -f "$FAILED_REGIONS_FILE"
+declare -A JOB_REGIONS
+IMAGES=""
 
-  if [ "$REGION" == "$SOURCE_LOCATION" ]
-  then
+log "Copying image $IMAGE_NAME ($AMI_ID) from region $SOURCE_LOCATION to regions $AWS_AMI_REGIONS"
+
+for REGION in ${AWS_AMI_REGIONS//,/ }; do
+  if [ "$REGION" == "$SOURCE_LOCATION" ]; then
     log "Source and destination regions are the same, skipping copy to $REGION"
     continue
   fi
 
-  AMI_IN_REGION=$(aws ec2 describe-images --owners $SRC_ACCOUNT --filters "Name=name,Values=$IMAGE_NAME" --region $REGION --query "Images[*].[ImageId]" --output "text")
-  if [ -n "$AMI_IN_REGION" ]
-  then
+  log "Processing region $REGION..."
+  AMI_IN_REGION=$(aws ec2 describe-images --owners "$SRC_ACCOUNT" --filters "Name=name,Values=$IMAGE_NAME" --region "$REGION" --query "Images[*].ImageId" --output text 2>/dev/null) || true
+  
+  if [ -n "$AMI_IN_REGION" ]; then
     log "Image is already copied to region $REGION as $AMI_IN_REGION"
   else
-    AMI_IN_REGION=$(aws ec2 copy-image --source-image-id $AMI_ID --source-region $SOURCE_LOCATION --region $REGION --name $IMAGE_NAME --output "text")
+    AMI_IN_REGION=$(aws ec2 copy-image --source-image-id "$AMI_ID" --source-region "$SOURCE_LOCATION" --region "$REGION" --name "$IMAGE_NAME" --query "ImageId" --output text 2>/dev/null) || true
+    if [ -z "$AMI_IN_REGION" ] || [[ "$AMI_IN_REGION" == *"An error occurred"* ]]; then
+      log "FAILURE | Could not initiate copy to region $REGION"
+      echo "$REGION" >> "$FAILED_REGIONS_FILE"
+      continue
+    fi
     log "Image copy started to region $REGION as $AMI_IN_REGION, waiting for its completion"
   fi
+
   IMAGES+="${REGION}=${AMI_IN_REGION},"
-  exec_background "wait_for_image_and_check $REGION $AMI_IN_REGION"
+
+  wait_for_image_and_check "$REGION" "$AMI_IN_REGION" &
+  JOB_REGIONS[$!]="$REGION"
 done
 
-checking_jobs|| exit 1
+log "Checking background jobs..."
+
+for pid in "${!JOB_REGIONS[@]}"; do
+  REG=${JOB_REGIONS[$pid]}
+  log "Checking status of job $pid for region $REG..."
+  
+  set +e
+  wait "$pid"
+  JOB_STATUS=$?
+  set -e
+
+  log "Job $pid execution finished with status: $JOB_STATUS"
+  if [ $JOB_STATUS -ne 0 ]; then
+    if ! grep -q "^${REG}$" "$FAILED_REGIONS_FILE" 2>/dev/null; then
+      echo "$REG" >> "$FAILED_REGIONS_FILE"
+    fi
+  fi
+done
 
 IMAGES=${IMAGES%?} # remove trailing comma
+
+log "Image copy process finished."
+
+if [ -s "$FAILED_REGIONS_FILE" ]; then
+  FAILED_REGIONS=$(sort -u "$FAILED_REGIONS_FILE" | paste -sd, -)
+  log "ERROR: The copy of the following regions FAILED during the process: $FAILED_REGIONS"
+  exit 1
+fi
+
+log "SUCCESS: All images copied and verified successfully!"
 log "Image copied to regions: $IMAGES"
 echo "IMAGES_IN_REGIONS=$IMAGES" > images_in_regions
