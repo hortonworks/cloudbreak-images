@@ -21,37 +21,60 @@ oscap_scan:
   {% set ssg_file = '/usr/share/xml/scap/ssg/content/ssg-rhel8-ds.xml' %}
 {% endif %}
 
-
-# Add the Rule IDs you wish to exclude here.
 {% set oscap_exceptions = [
-  # Cloud Infrastructure Exceptions
-  'xccdf_org.ssgproject.content_rule_partition_for_tmp',          # Single partition is standard for cloud images
-  'xccdf_org.ssgproject.content_rule_require_singleuser_auth',    # Access managed via Cloud Console/IAM
-  'xccdf_org.ssgproject.content_rule_uefi_password',              # Bootloader passwords not applicable in Cloud
-  'xccdf_org.ssgproject.content_rule_selinux_state',              # Handled by runtime config management
-
-  # Image Build / Initial Run Exceptions
-  'xccdf_org.ssgproject.content_rule_aide_build_database',        # Fails until first AIDE init
-  'xccdf_org.ssgproject.content_rule_aide_verify_audit_tools',
-  'xccdf_org.ssgproject.content_rule_configure_strategy',         # Managed via custom cloud-init policies
-  
-  # Application Specific Requirements (Needed for this Image)
-  'xccdf_org.ssgproject.content_rule_service_httpd_disabled',     # Apache is required
-  'xccdf_org.ssgproject.content_rule_service_nginx_disabled'      # NGINX is required
+    {
+        'id': 'xccdf_org.ssgproject.content_rule_partition_for_tmp',
+        'reason': 'Cloud VMs typically use a single root partition for dynamic scaling.'
+    },
+    {
+        'id': 'xccdf_org.ssgproject.content_rule_require_singleuser_auth',
+        'reason': 'Console access is managed via Cloud Provider IAM and Serial Console.'
+    },
+    {
+        'id': 'xccdf_org.ssgproject.content_rule_uefi_password',
+        'reason': 'UEFI/BIOS interaction is not possible or applicable in headless cloud environments.'
+    },
+    {
+        'id': 'xccdf_org.ssgproject.content_rule_selinux_state',
+        'reason': 'SELinux state is enforced via runtime configuration management after deployment.'
+    },
+    {
+        'id': 'xccdf_org.ssgproject.content_rule_aide_build_database',
+        'reason': 'AIDE database is initialized during the first boot post-provisioning.'
+    },
+    {
+        'id': 'xccdf_org.ssgproject.content_rule_aide_verify_audit_tools',
+        'reason': 'Audit tool verification depends on post-build AIDE initialization.'
+    },
+    {
+        'id': 'xccdf_org.ssgproject.content_rule_configure_strategy',
+        'reason': 'Crypto policies are standard for the cloud provider image baseline.'
+    },
+    {
+        'id': 'xccdf_org.ssgproject.content_rule_service_httpd_disabled',
+        'reason': 'Apache (httpd) is a required service for the hosted application.'
+    },
+    {
+        'id': 'xccdf_org.ssgproject.content_rule_service_nginx_disabled',
+        'reason': 'NGINX is required in this architecture as a reverse proxy to route traffic securely to backend services.'
+    }
 ] %}
 
-# State to generate the XML tailoring file from the list above
 oscap_tailoring_file:
   file.managed:
     - name: /tmp/oscap/oscap_tailoring.xml
     - contents: |
         <?xml version="1.0" encoding="UTF-8"?>
         <xccdf:Tailoring xmlns:xccdf="http://checklists.nist.gov/xccdf/1.2" id="xccdf_scap-adviser_tailoring_custom">
-          <xccdf:benchmark href="/usr/share/xml/scap/ssg/content/ssg-rhel8-ds.xml"/>
+          <xccdf:benchmark href="{{ ssg_file }}"/>
           <xccdf:Profile id="xccdf_org.ssgproject.content_profile_cis_server_l1_custom" extends="xccdf_org.ssgproject.content_profile_cis_server_l1">
-            <xccdf:title xml:lang="en-US">Customized CIS Profile</xccdf:title>
+            <xccdf:title xml:lang="en-US">Customized CIS Profile with Exceptions</xccdf:title>
+            <xccdf:description xml:lang="en-US">Tailored CIS Level 1 profile for cloud environment with application-specific exceptions.</xccdf:description>
             {%- for rule in oscap_exceptions %}
-            <xccdf:select idref="{{ rule }}" selected="false"/>
+            <xccdf:select idref="{{ rule.id }}" selected="false"/>
+            <xccdf:note id="note-{{ rule.id | replace('xccdf_org.ssgproject.content_rule_', '') }}">
+              {{ rule.reason }}
+            </xccdf:note>
             {%- endfor %}
           </xccdf:Profile>
         </xccdf:Tailoring>
