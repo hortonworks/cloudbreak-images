@@ -28,47 +28,13 @@ function update_yum_repos() {
       rm /etc/yum.repos.d/*.repo -f
     fi
 
-    if [ "${RHEL_VERSION}" == "9.6" ] && [ "${ARCHITECTURE}" == "x86_64" ] ; then
+    curl https://mirror.eng.cloudera.com/repos/rhel/server/${RHEL_VERSION_MAJOR}/${RHEL_VERSION}/${REPO_FILE} --fail > /etc/yum.repos.d/${REPO_FILE}
 
-      # For now, this makes no sense, because excluded arm64 above - RE is still waiting for RedHat to give us the arm64 repos
-      case "$ARCHITECTURE" in
-        "arm64") basearch="aarch64" ;;
-        *) basearch="x86_64" ;;
-      esac
-      
-      cat <<EOF > /etc/yum.repos.d/${REPO_FILE}
-[ubi-9.6-baseos-eus-cldr]
-name = Red Hat Universal Base Image 9.6 (RPMs) - BaseOS EUS CLDR
-baseurl = http://mirror.eng.cloudera.com/repos/rhel/server/9/9.6/$basearch/baseos/os-eus
-enabled = 1
-gpgkey = file:///etc/pki/rpm-gpg/RPM-GPG-KEY-redhat-release
-gpgcheck = 1
-
-[ubi-9.6-appstream-cldr]
-name=Cloudera Rhel 9.6 appsteam mirrors
-baseurl=http://mirror.eng.cloudera.com/repos/rhel/server/9/9.6/$basearch/appstream/appstream-eus
-enabled=1
-gpgkey = file:///etc/pki/rpm-gpg/RPM-GPG-KEY-redhat-release
-gpgcheck = 1
-
-[ubi-9.6-supplementary-cldr]
-name=Cloudera Rhel 9.6 appsteam mirrors
-baseurl=http://mirror.eng.cloudera.com/repos/rhel/server/9/9.6/$basearch/supplementary/os
-enabled=1
-gpgkey = file:///etc/pki/rpm-gpg/RPM-GPG-KEY-redhat-release
-gpgcheck = 1
-
-[ubi-9.6-codeready-builder-cldr]
-name=Cloudera Rhel 9.6 codeready-builder mirror
-baseurl=http://mirror.eng.cloudera.com/repos/rhel/server/9/9.6/$basearch/codeready-builder/os
-enabled=1
-gpgkey = file:///etc/pki/rpm-gpg/RPM-GPG-KEY-redhat-release
-gpgcheck = 1
-EOF
-
+    if [ "${RHEL_VERSION}" == "9.6" ]; then
+      yum-config-manager --disable ubi-9.6-baseos-cldr
+      yum-config-manager --disable ubi-9.6-appstream-cldr
+      yum-config-manager --disable ubi-9.6-supplementary-cldr
       dnf upgrade --refresh -y
-    else
-      curl https://mirror.eng.cloudera.com/repos/rhel/server/${RHEL_VERSION_MAJOR}/${RHEL_VERSION}/${REPO_FILE} --fail > /etc/yum.repos.d/${REPO_FILE}
     fi
   else
     # Workaround based on the official documentation: https://cloud.google.com/compute/docs/troubleshooting/known-issues#known_issues_for_linux_vm_instances
