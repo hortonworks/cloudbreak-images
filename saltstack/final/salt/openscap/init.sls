@@ -21,11 +21,49 @@ oscap_scan:
   {% set ssg_file = '/usr/share/xml/scap/ssg/content/ssg-rhel8-ds.xml' %}
 {% endif %}
 
+
+# Add the Rule IDs you wish to exclude here.
+{% set oscap_exceptions = [
+  # Cloud Infrastructure Exceptions
+  'xccdf_org.ssgproject.content_rule_partition_for_tmp',          # Single partition is standard for cloud images
+  'xccdf_org.ssgproject.content_rule_require_singleuser_auth',    # Access managed via Cloud Console/IAM
+  'xccdf_org.ssgproject.content_rule_uefi_password',              # Bootloader passwords not applicable in Cloud
+  'xccdf_org.ssgproject.content_rule_selinux_state',              # Handled by runtime config management
+
+  # Image Build / Initial Run Exceptions
+  'xccdf_org.ssgproject.content_rule_aide_build_database',        # Fails until first AIDE init
+  'xccdf_org.ssgproject.content_rule_aide_verify_audit_tools',
+  'xccdf_org.ssgproject.content_rule_configure_strategy',         # Managed via custom cloud-init policies
+  
+  # Application Specific Requirements (Needed for this Image)
+  'xccdf_org.ssgproject.content_rule_service_httpd_disabled',     # Apache is required
+  'xccdf_org.ssgproject.content_rule_service_nginx_disabled'      # NGINX is required
+] %}
+
+# State to generate the XML tailoring file from the list above
+oscap_tailoring_file:
+  file.managed:
+    - name: /tmp/oscap/oscap_tailoring.xml
+    - contents: |
+        <?xml version="1.0" encoding="UTF-8"?>
+        <xccdf:Tailoring xmlns:xccdf="http://checklists.nist.gov/xccdf/1.2" id="xccdf_scap-adviser_tailoring_custom">
+          <xccdf:benchmark href="/usr/share/xml/scap/ssg/content/ssg-rhel8-ds.xml"/>
+          <xccdf:Profile id="xccdf_org.ssgproject.content_profile_cis_server_l1_custom" extends="xccdf_org.ssgproject.content_profile_cis_server_l1">
+            <xccdf:title xml:lang="en-US">Customized CIS Profile</xccdf:title>
+            {%- for rule in oscap_exceptions %}
+            <xccdf:select idref="{{ rule }}" selected="false"/>
+            {%- endfor %}
+          </xccdf:Profile>
+        </xccdf:Tailoring>
+    - require:
+      - file: oscap_scan
+
 openscap_run_cis_l1:
   cmd.run:
     - name: |
         sudo oscap xccdf eval \
           --profile xccdf_org.ssgproject.content_profile_cis_server_l1 \
+          --tailoring-file /tmp/oscap/oscap_tailoring.xml \
           --results /tmp/oscap/oscap_cis_l1_results.xml \
           --report /tmp/oscap/oscap_cis_l1_report.html \
           {{ ssg_file }} | tee /tmp/oscap/oscap_cis_l1_log.txt
