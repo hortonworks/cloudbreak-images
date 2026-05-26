@@ -31,9 +31,9 @@ function update_yum_repos() {
     curl https://mirror.eng.cloudera.com/repos/rhel/server/${RHEL_VERSION_MAJOR}/${RHEL_VERSION}/${REPO_FILE} --fail > /etc/yum.repos.d/${REPO_FILE}
 
     if [ "${RHEL_VERSION}" == "9.6" ]; then
-      yum-config-manager --disable ubi-9.6-baseos-cldr
-      yum-config-manager --disable ubi-9.6-appstream-cldr
-      yum-config-manager --disable ubi-9.6-supplementary-cldr
+      dnf config-manager --disable ubi-9.6-baseos-cldr
+      dnf config-manager --disable ubi-9.6-appstream-cldr
+      dnf config-manager --disable ubi-9.6-supplementary-cldr
       dnf upgrade --refresh -y
     fi
   else
