@@ -12,6 +12,9 @@ base:
 {% if salt['environ.get']('CUSTOM_IMAGE_TYPE') != 'freeipa' %}
     - postgresql
 {% endif %}
+{% if salt['environ.get']('IMAGE_BURNING_TYPE') != 'prewarm' %}
+    - cem-agent
+{% endif %}
     - monitoring
     - performance
     - telemetry

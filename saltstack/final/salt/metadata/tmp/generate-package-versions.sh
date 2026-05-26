@@ -45,11 +45,18 @@ if [[ -n $CEM_AGENT_RPM_URL ]]; then
 	CEM_AGENT_GBN=$(curl -Ls "https://release.eng.cloudera.com/hwre-api/latestcompiledbuild?stack=CEM-AGENTS&release=$CEM_AGENT_VERSION" --fail | jq -r '.gbn')
 	cat /tmp/package-versions.json | jq --arg cem_agent_version ${CEM_AGENT_VERSION} '. + {"cem-agents": $cem_agent_version}' > /tmp/package-versions.json.tmp && mv /tmp/package-versions.json.tmp /tmp/package-versions.json
 	cat /tmp/package-versions.json | jq --arg cem_agent_gbn ${CEM_AGENT_GBN} '. + {"cem-agents_gbn": $cem_agent_gbn}' > /tmp/package-versions.json.tmp && mv /tmp/package-versions.json.tmp /tmp/package-versions.json
+else
+	is_installed=$(rpm -q "nifi-minifi-cpp" 2>&1 >/dev/null; echo $?)
+	if [[ "$is_installed" == "0" ]]; then
+		CEM_AGENT_VERSION=$(rpm -q --queryformat '%-{VERSION}' "nifi-minifi-cpp")
+		CEM_AGENT_GBN=$(curl -Ls "https://release.eng.cloudera.com/hwre-api/latestcompiledbuild?stack=CEM-AGENTS&release=$CEM_AGENT_VERSION" --fail | jq -r '.gbn')
+		cat /tmp/package-versions.json | jq --arg cem_agent_version ${CEM_AGENT_VERSION} '. + {"cem-agents": $cem_agent_version}' > /tmp/package-versions.json.tmp && mv /tmp/package-versions.json.tmp /tmp/package-versions.json
+		cat /tmp/package-versions.json | jq --arg cem_agent_gbn ${CEM_AGENT_GBN} '. + {"cem-agents_gbn": $cem_agent_gbn}' > /tmp/package-versions.json.tmp && mv /tmp/package-versions.json.tmp /tmp/package-versions.json
+	fi
 fi
 
 set_version_for_rpm_pkg "cdp-telemetry"
 set_version_for_rpm_pkg "cdp-logging-agent"
-set_version_for_rpm_pkg "cdp-minifi-agent"
 set_version_for_rpm_pkg "cdp-request-signer"
 
 if [[ -f "/opt/node_exporter/node_exporter" ]]; then
