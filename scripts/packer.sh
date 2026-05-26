@@ -64,11 +64,13 @@ packer_in_container() {
   fi
 
   # FREEIPA / Base Image: CEM Agent
-  if ! [[ $CEM_AGENT_RPM_URL =~ ^http.*rpm$ ]]; then
-    if [[ "$ARCHITECTURE" == "arm64" ]]; then
-      export CEM_AGENT_RPM_URL="https://cloudera-build-us-west-1.vpc.cloudera.com/s3/build/76334049/cem-agents/1.x/redhat8arm64/yum/tars/nifi-minifi-cpp/nifi-minifi-cpp-1.26.02-b30-arm64.rpm"
-    else
-      export CEM_AGENT_RPM_URL="https://cloudera-build-us-west-1.vpc.cloudera.com/s3/build/76334049/cem-agents/1.x/ubuntu24/apt/tars/nifi-minifi-cpp/nifi-minifi-cpp-1.26.02-b30-x86_64.rpm"
+  if ! [[ "$IMAGE_BURNING_TYPE" == "prewarm " ]]; then
+    if ! [[ $CEM_AGENT_RPM_URL =~ ^http.*rpm$ ]]; then
+      if [[ "$ARCHITECTURE" == "arm64" ]]; then
+        export CEM_AGENT_RPM_URL="https://cloudera-build-us-west-1.vpc.cloudera.com/s3/build/76334049/cem-agents/1.x/redhat8arm64/yum/tars/nifi-minifi-cpp/nifi-minifi-cpp-1.26.02-b30-arm64.rpm"
+      else
+        export CEM_AGENT_RPM_URL="https://cloudera-build-us-west-1.vpc.cloudera.com/s3/build/76334049/cem-agents/1.x/ubuntu24/apt/tars/nifi-minifi-cpp/nifi-minifi-cpp-1.26.02-b30-x86_64.rpm"
+      fi
     fi
   fi
 
