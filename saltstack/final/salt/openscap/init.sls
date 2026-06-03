@@ -5,7 +5,6 @@ oscap_scan:
       - bzip2
       - openscap-scanner
       - scap-security-guide
-
   file.directory:
     - name: /tmp/oscap
     - mode: 755
@@ -67,14 +66,14 @@ oscap_tailoring_file:
         <?xml version="1.0" encoding="UTF-8"?>
         <xccdf:Tailoring xmlns:xccdf="http://checklists.nist.gov/xccdf/1.2" id="xccdf_scap-adviser_tailoring_custom">
           <xccdf:benchmark href="{{ ssg_file }}"/>
+          <xccdf:status>incomplete</xccdf:status>
+          <xccdf:version time="{{ None | strftime('%Y-%m-%dT%H:%M:%S') }}">1.0</xccdf:version>
           <xccdf:Profile id="xccdf_org.ssgproject.content_profile_cis_server_l1_custom" extends="xccdf_org.ssgproject.content_profile_cis_server_l1">
             <xccdf:title xml:lang="en-US">Customized CIS Profile with Exceptions</xccdf:title>
             <xccdf:description xml:lang="en-US">Tailored CIS Level 1 profile for cloud environment with application-specific exceptions.</xccdf:description>
             {%- for rule in oscap_exceptions %}
+            <!-- Exception Justification: {{ rule.reason }} -->
             <xccdf:select idref="{{ rule.id }}" selected="false"/>
-            <xccdf:note id="note-{{ rule.id | replace('xccdf_org.ssgproject.content_rule_', '') }}">
-              {{ rule.reason }}
-            </xccdf:note>
             {%- endfor %}
           </xccdf:Profile>
         </xccdf:Tailoring>
@@ -85,7 +84,7 @@ openscap_run_cis_l1:
   cmd.run:
     - name: |
         sudo oscap xccdf eval \
-          --profile xccdf_org.ssgproject.content_profile_cis_server_l1 \
+          --profile xccdf_org.ssgproject.content_profile_cis_server_l1_custom \
           --tailoring-file /tmp/oscap/oscap_tailoring.xml \
           --results /tmp/oscap/oscap_cis_l1_results.xml \
           --report /tmp/oscap/oscap_cis_l1_report.html \
@@ -93,6 +92,7 @@ openscap_run_cis_l1:
     - require:
       - pkg: oscap_scan
       - file: oscap_scan
+      - file: oscap_tailoring_file
 
 {% if salt['environ.get']('STIG_ENABLED') == 'true' %}
 openscap_info:
@@ -108,7 +108,7 @@ openscap_run_stig:
           --profile xccdf_org.ssgproject.content_profile_stig \
           --results /tmp/oscap/oscap_stig_results.xml \
           --report /tmp/oscap/oscap_stig_report.html \
-          /usr/share/xml/scap/ssg/content/ssg-rhel8-ds.xml | tee /tmp/oscap/oscap_stig_log.txt
+          {{ ssg_file }} | tee /tmp/oscap/oscap_stig_log.txt
     - require:
       - pkg: oscap_scan
       - file: oscap_scan
