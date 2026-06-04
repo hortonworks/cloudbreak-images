@@ -48,6 +48,7 @@ freeipa-install:
         - ipa-server-trust-ad
         - bind-dyndb-ldap
         - samba-client
+        - ipa-healthcheck
 {% endif %}
 
 {% if freeipa_plugin_rpm_url %}
