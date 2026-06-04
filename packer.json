@@ -581,6 +581,9 @@
       "labels": {
         "owner": "{{ user `owner_tag` | clean_resource_name }}",
         "cloudera-usage-type": "{{ user `cloudera_usage_type_tag` | clean_resource_name }}"
+      },
+      "metadata": {
+        "block-project-ssh-keys": "true"
       }
     },
     {
@@ -626,6 +629,9 @@
       "labels": {
         "owner": "{{ user `owner_tag` | clean_resource_name }}",
         "cloudera-usage-type": "{{ user `cloudera_usage_type_tag` | clean_resource_name }}"
+      },
+      "metadata": {
+        "block-project-ssh-keys": "true"
       }
     },
     {
@@ -671,6 +677,9 @@
       "labels": {
         "owner": "{{ user `owner_tag` | clean_resource_name }}",
         "cloudera-usage-type": "{{ user `cloudera_usage_type_tag` | clean_resource_name }}"
+      },
+      "metadata": {
+        "block-project-ssh-keys": "true"
       }
     }
   ],
