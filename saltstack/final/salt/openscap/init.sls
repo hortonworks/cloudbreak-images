@@ -69,11 +69,11 @@ oscap_tailoring_file:
           <xccdf:status>incomplete</xccdf:status>
           <xccdf:version time="{{ None | strftime('%Y-%m-%dT%H:%M:%S') }}">1.0</xccdf:version>
           <xccdf:Profile id="xccdf_org.ssgproject.content_profile_cis_server_l1_custom" extends="xccdf_org.ssgproject.content_profile_cis_server_l1">
-            <xccdf:title xml:lang="en-US">Customized CIS Profile with Exceptions</xccdf:title>
-            <xccdf:description xml:lang="en-US">Tailored CIS Level 1 profile for cloud environment with application-specific exceptions.</xccdf:description>
+            <xccdf:title xml:lang="en-US">Customized CIS Profile with Unscored Exceptions</xccdf:title>
+            <xccdf:description xml:lang="en-US">Tailored CIS Level 1 profile where exceptions are tracked as informational instead of failures.</xccdf:description>
             {%- for rule in oscap_exceptions %}
             <!-- Exception Justification: {{ rule.reason }} -->
-            <xccdf:select idref="{{ rule.id }}" selected="false"/>
+            <xccdf:refine-rule idref="{{ rule.id }}" role="unscored"/>
             {%- endfor %}
           </xccdf:Profile>
         </xccdf:Tailoring>
