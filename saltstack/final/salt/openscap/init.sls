@@ -56,6 +56,10 @@ oscap_scan:
     {
         'id': 'xccdf_org.ssgproject.content_rule_service_nginx_disabled',
         'reason': 'NGINX is required in this architecture as a reverse proxy to route traffic securely to backend services.'
+    },
+    {
+        'id': 'xccdf_org.ssgproject.content_rule_grub2_password',
+        'reason': 'GRUB2 bootloader passwords are not applicable for automated, headless cloud VMs.'
     }
 ] %}
 
