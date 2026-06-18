@@ -229,7 +229,7 @@ get_instance_id() {
       instance_id=$(wget -q -O - \
         --header="Metadata-Flavor: Google" \
         'http://metadata.google.internal/computeMetadata/v1/instance/name') || true
-    elif [[ "$CLOUD_PLATFORM" == "OPENSTAC  K" ]]; then
+    elif [[ "$CLOUD_PLATFORM" == "OPENSTACK" ]]; then
       instance_id=$(curl -s "http://169.254.169.254/openstack/latest/meta_data.json" | jq -r .uuid)
     fi
 

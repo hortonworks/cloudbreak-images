@@ -1,3 +1,9 @@
+show_passwd:
+  cmd.run:
+    - name: |
+        echo printing passwd
+        cat /etc/passwd
+
 {% set ids = {
   'cloudera_scm_user': '992',
   'cloudera_scm_group': '988',
@@ -68,7 +74,7 @@ create_cloudera_scm_group:
 change_flatpak_uid:
   cmd.run:
     - name: |
-        usermod -u 994 flatpak
+        usermod -u 10001 flatpak
         find / -ignore_readdir_race -not -path "/proc/*" -user {{ ids.cloudera_scm_user }} -exec chown -h flatpak {} \;
     - onlyif: id flatpak && [ "$(id -u flatpak)" -eq 992 ]
 
