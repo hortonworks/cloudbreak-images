@@ -373,7 +373,7 @@ await-docker:
 show-image-name:
 	@echo IMAGE_NAME=$(IMAGE_NAME)
 
-build-os-rhel9:
+build-os-redhat9:
 	$(ENVS) \
 	OS=redhat9 \
 	OS_TYPE=redhat9 \
