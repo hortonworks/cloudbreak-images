@@ -380,7 +380,7 @@ build-os-redhat9:
 	OS_SOURCE_IMAGE_UUID=$(OS_SOURCE_IMAGE_UUID) \
     OS_NETWORK_UUID=$(OS_NETWORK_UUID) \
     OS_INSTANCE_TYPE=$(OS_INSTANCE_TYPE) \
-	ATLAS_ARTIFACT_TYPE=openstack \
+	ATLAS_ARTIFACT_TYPE=Openstack \
 	SALT_INSTALL_OS=redhat \
 	./scripts/packer.sh build -only=os-redhat9 $(PACKER_OPTS)
 
