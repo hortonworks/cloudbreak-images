@@ -59,7 +59,7 @@ packer_in_container() {
     if [[ "$ARCHITECTURE" == "arm64" ]]; then
       export JUMPGATE_AGENT_RPM_URL="https://archive.cloudera.com/ccm/3.13.0/jumpgate-agent.aarch64.rpm"
     else
-      export JUMPGATE_AGENT_RPM_URL="https://archive.cloudera.com/ccm/3.14.0/jumpgate-agent.rpm"
+      export JUMPGATE_AGENT_RPM_URL="https://archive.cloudera.com/ccm/3.15.0/jumpgate-agent.rpm"
     fi
   fi
 
