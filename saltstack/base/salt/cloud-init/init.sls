@@ -69,3 +69,13 @@ create_cloud-init_service_files:
         network_interface: {{ pillar['network_interface'] }}
 {% endif %}
 
+{% if salt['environ.get']('CLOUD_PROVIDER') == 'Azure' %}
+disable_azure_ephemeral_disk_cloud_init:
+  file.managed:
+    - name: /etc/cloud/cloud.cfg.d/51_azure-disable-ephemeral-disk.cfg
+    - source: salt://{{ slspath }}/etc/cloud/cloud.cfg.d/51_azure-disable-ephemeral-disk.cfg
+    - user: root
+    - group: root
+    - mode: '0644'
+    - onlyif: test -x /usr/bin/cloud-init
+{% endif %}
