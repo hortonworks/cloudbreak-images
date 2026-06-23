@@ -21,6 +21,13 @@ ifeq ($(CLOUD_PROVIDER),Openstack)
     OS_SOURCE_IMAGE_UUID ?= "7a30c75a-9735-4ac9-a6dd-8086584bf661"
     OS_NETWORK_UUID ?= "6df0e3b6-7aa4-4eb3-9c8e-22703a57dbcc"
     OS_INSTANCE_TYPE ?= "m1.large"
+	ifndef OS_SOURCE_IMAGE_UUID
+		ifeq ($(OS),redhat9)
+			OS_SOURCE_IMAGE_UUID = "7a30c75a-9735-4ac9-a6dd-8086584bf661"
+		else
+$(error Unexpected OS type $(OS) for Openstack)
+		endif
+	endif
 endif
 
 # Azure VM image specifications
