@@ -18,9 +18,14 @@ ARCHITECTURE ?= x86_64
 
 # Openstack parameters specification
 ifeq ($(CLOUD_PROVIDER),Openstack)
-    OS_SOURCE_IMAGE_UUID ?= "7a30c75a-9735-4ac9-a6dd-8086584bf661"
     OS_NETWORK_UUID ?= "6df0e3b6-7aa4-4eb3-9c8e-22703a57dbcc"
     OS_INSTANCE_TYPE ?= "m1.large"
+	OS_REGION_NAME ?= "iopscloud"
+	OS_PROJECT_NAME ?= "cloudbreak"
+	OS_PROJECT_DOMAIN_ID ?= "default"
+	OS_USER_DOMAIN_ID =? "default"
+	OS_AUTH_URL ?= "https://cloudera-iopscloud.platform9.net/keystone/v3"
+
 	ifndef OS_SOURCE_IMAGE_UUID
 		ifeq ($(OS),redhat9)
 			OS_SOURCE_IMAGE_UUID = "7a30c75a-9735-4ac9-a6dd-8086584bf661"
@@ -387,6 +392,11 @@ build-os-redhat9:
 	OS_SOURCE_IMAGE_UUID=$(OS_SOURCE_IMAGE_UUID) \
     OS_NETWORK_UUID=$(OS_NETWORK_UUID) \
     OS_INSTANCE_TYPE=$(OS_INSTANCE_TYPE) \
+	OS_REGION_NAME=$(OS_REGION_NAME) \
+	OS_PROJECT_NAME=$(OS_PROJECT_NAME) \
+	OS_PROJECT_DOMAIN_ID=$(OS_PROJECT_DOMAIN_ID) \
+	OS_USER_DOMAIN_ID=$(OS_USER_DOMAIN_ID) \
+	OS_AUTH_URL=$(OS_AUTH_URL) \
 	ATLAS_ARTIFACT_TYPE=Openstack \
 	SALT_INSTALL_OS=redhat \
 	./scripts/packer.sh build -only=os-redhat9 $(PACKER_OPTS)
