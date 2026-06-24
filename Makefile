@@ -23,7 +23,7 @@ ifeq ($(CLOUD_PROVIDER),Openstack)
 	OS_REGION_NAME ?= "iopscloud"
 	OS_PROJECT_NAME ?= "cloudbreak"
 	OS_PROJECT_DOMAIN_ID ?= "default"
-	OS_USER_DOMAIN_ID =? "default"
+	OS_USER_DOMAIN_ID ?= "default"
 	OS_AUTH_URL ?= "https://cloudera-iopscloud.platform9.net/keystone/v3"
 
 	ifndef OS_SOURCE_IMAGE_UUID
