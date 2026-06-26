@@ -4,8 +4,10 @@ include:
 {% if pillar['OS'] == 'redhat9' %}
   - {{ slspath }}.geoclue
 {% endif %}
-{% if pillar['CUSTOM_IMAGE_TYPE'] != 'freeipa' %}
-  - {{ slspath }}.user_uid
+{% if salt['environ.get']('CLOUD_PROVIDER') == 'Openstack' %}
+  {% if pillar['CUSTOM_IMAGE_TYPE'] != 'freeipa' %}
+    - {{ slspath }}.user_uid
+  {% endif %}
 {% endif %}
   - {{ slspath }}.subscription-manager
   - {{ slspath }}.repository
