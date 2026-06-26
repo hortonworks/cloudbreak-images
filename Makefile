@@ -399,7 +399,7 @@ build-openstack-redhat9:
 	OPENSTACK_AUTH_URL=$(OPENSTACK_AUTH_URL) \
 	ATLAS_ARTIFACT_TYPE=Openstack \
 	SALT_INSTALL_OS=redhat \
-	./scripts/packer.sh build -only=os-redhat9 $(PACKER_OPTS)
+	./scripts/packer.sh build -only=openstack-redhat9 $(PACKER_OPTS)
 
 build-aws-centos7-base:
 	$(ENVS) \

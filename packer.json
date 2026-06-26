@@ -130,7 +130,7 @@
   },
   "builders": [
     {
-      "name": "os-redhat9",
+      "name": "openstack-redhat9",
       "type": "openstack",
       "region": "{{user `openstack_region`}}",
       "username": "{{user `openstack_username`}}",
