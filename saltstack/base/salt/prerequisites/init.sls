@@ -5,9 +5,9 @@ include:
   - {{ slspath }}.geoclue
 {% endif %}
 {% if salt['environ.get']('CLOUD_PROVIDER') == 'Openstack' %}
-  {% if pillar['CUSTOM_IMAGE_TYPE'] != 'freeipa' %}
+{% if pillar['CUSTOM_IMAGE_TYPE'] != 'freeipa' %}
   - {{ slspath }}.user_uid
-  {% endif %}
+{% endif %}
 {% else %}
   - {{ slspath }}.user_uid
 {% endif %}
