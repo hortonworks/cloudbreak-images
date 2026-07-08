@@ -53,3 +53,8 @@ vm.dirty_ratio:
 net.ipv4.tcp_retries2:
   sysctl.present:
     - value: 7
+
+vm.max_map_count:
+  sysctl.present:
+    - value: 1048576
+    - config: /etc/sysctl.d/99-opensearch.conf
