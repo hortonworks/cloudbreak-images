@@ -5,13 +5,6 @@ install_openssl_devel:
       - openssl-devel
 {% endif %}
 
-{% if salt['environ.get']('CLOUD_PROVIDER') == 'Openstack' %}
-install_pip:
-  pkg.installed:
-    - name: python3-pip
-    - reload_modules: True
-{% endif %}
-
 install_pyyaml:
   pip.installed:
     - name: PyYAML
