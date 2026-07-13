@@ -2,7 +2,6 @@ base:
   '*':
     - prerequisites
     - cloud-init
-{% endif %}
     - hostname
     - nginx
     - python3
