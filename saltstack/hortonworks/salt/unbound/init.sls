@@ -13,11 +13,14 @@ config_unbound_server:
     - source: salt://{{ slspath }}/etc/unbound/unbound.conf
     - mode: 644
 
-# This is needed because of CB-30897
-{% if salt['environ.get']('OS') == 'redhat9' and salt['environ.get']('CLOUD_PROVIDER') == 'GCP' %}
-config_unbound_for_rhel9_on_gcp:
-  cmd.run:
-    - name: rm /etc/unbound/conf.d/unbound-local-root.conf
+# CB-30897 / CB-33549: RHEL 9 unbound ships unbound-local-root.conf which activates an
+# auth-zone "." (local root copy). auth-zone outranks our forward-zones, so the node-local
+# caching forwarder answers root queries locally instead of forwarding to the VPC resolver,
+# breaking resolution of internal-only TLDs. Affects all cloud providers on RHEL 9, not just GCP.
+{% if salt['environ.get']('OS') == 'redhat9' %}
+config_unbound_for_rhel9:
+  file.absent:
+    - name: /etc/unbound/conf.d/unbound-local-root.conf
 {% endif %}
 
 {% if grains['init'] == 'systemd' %}
