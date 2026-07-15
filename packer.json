@@ -762,6 +762,11 @@
     },
     {
       "type": "file",
+      "source": "scripts/salt_3006.27_requirements.txt",
+      "destination": "/tmp/salt_3006.27_requirements.txt"
+    },
+    {
+      "type": "file",
       "source": "scripts/rhel8_salt_fix.patch",
       "destination": "/tmp/rhel8_salt_fix.patch"
     },
