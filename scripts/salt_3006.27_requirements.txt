@@ -1,0 +1,15 @@
+setuptools
+msgpack
+pyyaml
+looseversion
+packaging
+distro
+jinja2
+cryptography
+zmq
+cherrypy
+virtualenvwrapper
+markupsafe
+tornado
+PyOpenSSL
+salt==${SALT_VERSION}
