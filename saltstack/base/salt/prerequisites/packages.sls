@@ -82,6 +82,9 @@ packages_install:
       - cryptsetup
   {% endif %}
       - nvme-cli
+  {% if salt['environ.get']('CLOUD_PROVIDER') == 'Openstack' %}
+      - glibc-langpack-en
+  {% endif %}
       - openssl
       - autossh
       - ipa-client

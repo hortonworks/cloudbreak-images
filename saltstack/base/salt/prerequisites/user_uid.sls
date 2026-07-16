@@ -1,3 +1,9 @@
+show_passwd:
+  cmd.run:
+    - name: |
+        echo printing passwd
+        cat /etc/passwd
+
 {% set ids = {
   'cloudera_scm_user': '992',
   'cloudera_scm_group': '988',
@@ -62,6 +68,17 @@ create_cloudera_scm_group:
   group.present:
     - name: cloudera-scm
     - gid: {{ ids.cloudera_scm_group }} 
+
+{% if salt['environ.get']('CLOUD_PROVIDER') == 'Openstack' and pillar['OS'] == 'redhat9' %}
+# flatpak has the needed uid for cloudera-scm so it has to be modified
+change_flatpak_uid:
+  cmd.run:
+    - name: |
+        usermod -u 10001 flatpak
+        find / -ignore_readdir_race -not -path "/proc/*" -user {{ ids.cloudera_scm_user }} -exec chown -h flatpak {} \;
+    - onlyif: id flatpak && [ "$(id -u flatpak)" -eq 992 ]
+
+{% endif %}
 
 create_cloudera_scm_user:
   user.present:

@@ -1,5 +1,11 @@
 {% if pillar['OS'] == 'redhat8' or pillar['OS'] == 'redhat9' %}
 
+{% if salt['environ.get']('CLOUD_PROVIDER') == 'Openstack' and pillar['OS'] == 'redhat9' %}
+install_nftables_package:
+  pkg.installed:
+    - name: nftables
+{% endif %}
+
 disable_firewalld_service:
 {% if pillar['subtype'] != 'Docker' %}
   service.dead:
