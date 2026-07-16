@@ -48,6 +48,8 @@ if [ "${OS}" == "redhat9" ]; then
     SKIP_TAGS+=",accounts_umask_etc_bashrc"
 fi
 
+SKIP_TAGS+=",firewalld_loopback_traffic_restricted,firewalld_loopback_traffic_trusted"
+
 SKIP_TAGS+="{{ additional_tags }}"
 
 #Install and download what we need for the hardening
