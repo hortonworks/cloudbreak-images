@@ -1,12 +1,16 @@
 #!/bin/bash
 set -ex -o pipefail -o errexit
 
-# Remediating the system to align with the CIS L1 baseline using an SSG Ansible playbook
-# The ansible playbook is available at
-# https://github.com/AutomateCompliance/AnsibleCompliancePlaybooks/blob/main/rhel8-playbook-cis_server_l1.yml
-# https://github.com/AutomateCompliance/AnsibleCompliancePlaybooks/blob/main/rhel8-playbook-stig.yml
+# Remediating the system to align with the CIS L1 baseline using an SSG Ansible playbook.
+# The playbooks are shipped by Red Hat's scap-security-guide RPM (installed in
+# cis-controls/redhat{8,9}.sls) under /usr/share/scap-security-guide/ansible/, e.g.:
+#   /usr/share/scap-security-guide/ansible/rhel8-playbook-cis_server_l1.yml
+#   /usr/share/scap-security-guide/ansible/rhel8-playbook-stig.yml
+# Using the RPM-provided content keeps remediation in lockstep with the SSG datastream
+# used by the openscap scan, instead of cloning the stale AutomateCompliance mirror.
 
 ANSIBLE_PATH=/mnt/tmp/ansible
+SSG_ANSIBLE_DIR=/usr/share/scap-security-guide/ansible
 
 if [ "${STIG_ENABLED}" == "True" ]; then
     # The list of tags of ansible tasks from the above-mentioned playbook that would break functionality, so we are skipping temporarily
@@ -60,8 +64,13 @@ case ${OS} in
     python3 -m pip install ansible "ansible-core==2.13"
     ;;
 esac
-yum install -y git
-git clone https://github.com/AutomateCompliance/AnsibleCompliancePlaybooks.git $ANSIBLE_PATH/ansible-compliance-playbooks
+
+# The SSG Ansible playbooks are provided by the scap-security-guide RPM, which is
+# installed by the calling salt state (cis-controls/redhat{8,9}.sls) before this runs.
+if [ ! -d "$SSG_ANSIBLE_DIR" ]; then
+    echo "scap-security-guide playbooks not found at $SSG_ANSIBLE_DIR" >&2
+    exit 1
+fi
 
 #Generate missing host keys as they are needed by the playbook
 ssh-keygen -A
@@ -71,10 +80,10 @@ mkdir -p /tmp/cis
 chmod 777 /tmp/cis
 
 if [ "${STIG_ENABLED}" == "True" ]; then
-    ansible-playbook -i localhost, -c local $ANSIBLE_PATH/ansible-compliance-playbooks/$PLAYBOOK-stig.yml --skip-tags $SKIP_TAGS | tee /tmp/cis/stig_log.txt
+    ansible-playbook -i localhost, -c local $SSG_ANSIBLE_DIR/$PLAYBOOK-stig.yml --skip-tags $SKIP_TAGS | tee /tmp/cis/stig_log.txt
     chmod 777 /tmp/cis/stig_log.txt
 else
-    ansible-playbook -i localhost, -c local $ANSIBLE_PATH/ansible-compliance-playbooks/$PLAYBOOK-cis_server_l1.yml --skip-tags $SKIP_TAGS --extra-vars "$EXTRA_VARS" | tee /tmp/cis/cis_log.txt
+    ansible-playbook -i localhost, -c local $SSG_ANSIBLE_DIR/$PLAYBOOK-cis_server_l1.yml --skip-tags $SKIP_TAGS --extra-vars "$EXTRA_VARS" | tee /tmp/cis/cis_log.txt
     chmod 777 /tmp/cis/cis_log.txt
 fi
 
