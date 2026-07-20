@@ -18,6 +18,13 @@ add_cdp_infra_tools_repo:
     - template: jinja
     - platform: "{{ platform }}"
 
+add_cdp_infra_tools_pinned_repo:
+  file.managed:
+    - name: /etc/yum.repos.d/cdp-infra-tools-pinned.repo
+    - source: salt://telemetry/yum/cdp-infra-tools-pinned.repo.j2
+    - template: jinja
+    - platform: "{{ platform }}"
+
 list_available_packages_from_cdp_infra_tools_repo:
   cmd.run:
     - name: yum --disablerepo="*" --enablerepo=cdp-infra-tools list available
@@ -41,6 +48,10 @@ install_cdp_infra_tools_packages:
 remove_cdp_infra_tools_repo:
   file.absent:
     - name: /etc/yum.repos.d/cdp-infra-tools.repo
+
+remove_cdp_infra_tools_pinned_repo:
+  file.absent:
+    - name: /etc/yum.repos.d/cdp-infra-tools-pinned.repo
 
 # TODO: Why do we need this override? Do we still need this?
 {% if salt['environ.get']('CLOUD_PROVIDER') != "AWS_GOV" %}
