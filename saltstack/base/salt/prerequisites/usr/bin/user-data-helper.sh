@@ -92,6 +92,19 @@ signKey: |-
  -----END PUBLIC KEY-----
 EOF
   chmod 600 /etc/salt-bootstrap/security-config.yml
+
+  if [[ "$SALTBOOT_HTTPS_ONLY" == "true" || -n "$SALTBOOT_MIN_TLS_VERSION" || -n "$SALTBOOT_MAX_TLS_VERSION" || -n "$SALTBOOT_CIPHER_SUITES" || "$SALTBOOT_FIPS_ONLY" == "true" ]]; then
+    mkdir -p /etc/systemd/system/salt-bootstrap.service.d
+    {
+      echo "[Service]"
+      [[ "$SALTBOOT_HTTPS_ONLY" == "true" ]] && echo "Environment='SALTBOOT_HTTPS_ONLY=true'"
+      [[ -n "$SALTBOOT_MIN_TLS_VERSION" ]] && echo "Environment='SALTBOOT_MIN_TLS_VERSION=$SALTBOOT_MIN_TLS_VERSION'"
+      [[ -n "$SALTBOOT_MAX_TLS_VERSION" ]] && echo "Environment='SALTBOOT_MAX_TLS_VERSION=$SALTBOOT_MAX_TLS_VERSION'"
+      [[ -n "$SALTBOOT_CIPHER_SUITES" ]] && echo "Environment='SALTBOOT_CIPHER_SUITES=$SALTBOOT_CIPHER_SUITES'"
+      [[ "$SALTBOOT_FIPS_ONLY" == "true" ]] && echo "Environment='GODEBUG=fips140=only'"
+    } > /etc/systemd/system/salt-bootstrap.service.d/tls.conf
+    systemctl daemon-reload
+  fi
 }
 
 create_certificates_certm() {
