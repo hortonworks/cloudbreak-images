@@ -15,15 +15,15 @@ if [[ $BASE_NAME == "cb" ]]; then
     COMP_RESULT=$?
     # Runtime version >= 7.3.1
     if [[ $COMP_RESULT -lt 2 ]]; then
-      SALT_VERSION=3006.27
+      SALT_VERSION=3006.10
     fi
   # Base images
   else
-    SALT_VERSION=3006.27
+    SALT_VERSION=3006.10
   fi
 # FreeIPA images - TODO: we need to test this!
 else
-    SALT_VERSION=3006.27
+    SALT_VERSION=3006.10
 fi
 
 echo $SALT_VERSION
