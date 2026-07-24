@@ -1128,7 +1128,8 @@
         "azure_image_publisher={{user `azure_image_publisher`}}",
         "azure_image_offer={{user `azure_image_offer`}}",
         "azure_image_sku={{user `azure_image_sku`}}",
-        "azure_image_version={{user `azure_image_version`}}"
+        "azure_image_version={{user `azure_image_version`}}",
+        "openstack_region={{user `openstack_region`}}"
       ]
     }
   ]
