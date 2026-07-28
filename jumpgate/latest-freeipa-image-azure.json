@@ -5,7 +5,8 @@
   "description": "Official Cloudbreak image",
   "images": {
     "azure": {
-      "West US": "https://cldrwestus.blob.core.windows.net/images/freeipa-1785268698267.vhd"
+      "West US": "https://cldrwestus.blob.core.windows.net/images/freeipa-1785268698267.vhd",
+      "West US 2": "https://cldrwestus2.blob.core.windows.net/images/freeipa-1785268698267.vhd"
     }
   },
   "os": "redhat8",
