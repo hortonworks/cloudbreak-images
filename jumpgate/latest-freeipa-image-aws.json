@@ -5,7 +5,8 @@
   "description": "Official Cloudbreak image",
   "images": {
     "aws": {
-      "us-west-1": "ami-044912fb92a6f28c3"
+      "us-west-1": "ami-044912fb92a6f28c3",
+      "us-west-2": "ami-0d0983fc666d02c97"
     }
   },
   "os": "redhat8",
