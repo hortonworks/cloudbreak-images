@@ -56,12 +56,11 @@ packer_in_container() {
 
   # Jumpgate Agent
   if ! [[ $JUMPGATE_AGENT_RPM_URL =~ ^http.*rpm$ ]]; then
-    JUMPGATE_AGENT_VERSION=3.14.0
-    case "$ARCHITECTURE" in
-      "arm64") ARCHPART=".aarch64" ;;
-      *) ARCHPART="" ;;
-    esac
-    export JUMPGATE_AGENT_RPM_URL="https://archive.cloudera.com/ccm/${JUMPGATE_AGENT_VERSION}/jumpgate-agent${ARCHPART}.rpm"
+    if [[ "$ARCHITECTURE" == "arm64" ]]; then
+      export JUMPGATE_AGENT_RPM_URL="https://archive.cloudera.com/ccm/3.13.0/jumpgate-agent.aarch64.rpm"
+    else
+      export JUMPGATE_AGENT_RPM_URL="https://archive.cloudera.com/ccm/3.14.0/jumpgate-agent.rpm"
+    fi
   fi
 
   # FREEIPA / Base Image: CEM Agent
