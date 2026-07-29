@@ -56,7 +56,7 @@ packer_in_container() {
 
   # Jumpgate Agent
   if ! [[ $JUMPGATE_AGENT_RPM_URL =~ ^http.*rpm$ ]]; then
-    JUMPGATE_AGENT_VERSION=3.14.0
+    JUMPGATE_AGENT_VERSION=3.16.0
     case "$ARCHITECTURE" in
       "arm64") ARCHPART=".aarch64" ;;
       *) ARCHPART="" ;;
