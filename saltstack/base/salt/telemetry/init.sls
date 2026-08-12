@@ -21,7 +21,7 @@ install_cdp_infra_tools_packages:
   {% if salt['environ.get']('IMAGE_BURNING_TYPE') == 'prewarm' and salt['environ.get']('STACK_VERSION').split('.') | map('int') | list <= '7.3.1'.split('.') | map('int') | list %}
       - cdp-telemetry: 1.3.10_b1
   {% else %}
-      - cdp-telemetry: 1.3.14_b2
+      - cdp-telemetry: 1.3.15_b2
   {% endif %}
 {% endif %}
 {% if salt['environ.get']('INCLUDE_FLUENT') == "Yes" %}
@@ -35,7 +35,7 @@ install_cdp_infra_tools_packages:
   {% endif %}
 {% endif %}
 {% if pillar['OS'] == 'redhat9' %}
-      - cdp-request-signer: 1.3.14_b2
+      - cdp-request-signer: 1.3.15_b2
 {% else %} # Why do we need this override? Do we still need this?
       - cdp-request-signer: 1.3.7_b2
 {% endif %}
