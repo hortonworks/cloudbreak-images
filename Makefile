@@ -802,6 +802,13 @@ endif
 endif
 
 get-azure-storage-accounts:
+ifndef TARGET_LOCATIONS
+ifndef IMAGE_COPY_PHASE
+	$(error Either IMAGE_COPY_PHASE or TARGET_LOCATIONS must be provided.)
+else ifeq ($(IMAGE_COPY_PHASE),none)
+	$(error Either IMAGE_COPY_PHASE cannot be set to none if TARGET_LOCATIONS is not provided.)
+endif
+endif
 	@ AZURE_STORAGE_ACCOUNTS="$(AZURE_STORAGE_ACCOUNTS)" TARGET_LOCATIONS="$(TARGET_LOCATIONS)" ./scripts/get-azure-storage-accounts.sh
 
 copy-azure-images:
