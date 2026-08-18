@@ -2,6 +2,7 @@ base:
   '*':
     - prerequisites
     - cloud-init
+    - azure-gen2
     - hostname
     - nginx
     - python3
