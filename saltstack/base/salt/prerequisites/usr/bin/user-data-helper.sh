@@ -193,8 +193,8 @@ resize_partitions() {
       lvextend -L12G -r /dev/mapper/rootvg-tmplv
     elif [ $OS == "redhat8" ] || [ $OS == "redhat9" ]; then
       PV_NAME=$(pvs --noheadings --rows | head -1 | tr -d '[:space:]')
-      DISK=${PV_NAME//[0-9]/}
-      PARTITION=${PV_NAME//[^0-9]/}
+      DISK="/dev/$(lsblk -no PKNAME "$PV_NAME")"
+      PARTITION=$(lsblk -no PARTN "$PV_NAME")
       # Relocating backup data structures to the end of the disk
       printf "x\ne\nw\nY\n" | gdisk $DISK
       # Resize partition to the end of the disk
