@@ -39,7 +39,7 @@ packages_install:
   pkg.installed:
     - refresh: False
     - pkgs:
-  # This is legacy, but needed by CM and it creates /etc/init.d which is also needed by /saltstack/base/salt/performance/thp.sls
+  # chkconfig is legacy, but needed by CM and it creates /etc/init.d which is also needed by /saltstack/base/salt/performance/thp.sls
   # on RHEL 8 and CentOS 7 it is installed by default.
   {% if pillar['OS'] == 'redhat9' %}
       - chkconfig
@@ -100,6 +100,16 @@ packages_install:
       - iscsi-initiator-utils
     {% endif %}
       - rsync
+
+# Needed for CDV / VIZ on RHEL 9
+{% if pillar['OS'] == 'redhat9' %}
+chromium_install:
+  pkg.installed:
+    - refresh: False
+    - pkgs:
+      - chromium-headless
+{% endif %}
+
 
 {% if pillar['subtype'] != 'Docker' %}
 
