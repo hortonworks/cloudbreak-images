@@ -12,11 +12,6 @@ function update_yum_repos() {
     RHEL_VERSION=$(cat /etc/redhat-release | grep -oP "[0-9\.]*")
     RHEL_VERSION=${RHEL_VERSION/.0/}
 
-    # CB-30236: We need this override, because we only have a 9.5 base image for Azure
-    if [[ "${CLOUD_PROVIDER}" == "Azure" && "${RHEL_VERSION}" == "9.5" ]]; then
-      RHEL_VERSION="9.6"
-    fi
-
     # For AWS Gov sadly we have an ancient RHEL 8.4 base image, so this needs an override
     if [[ "${CLOUD_PROVIDER}" == "AWS_GOV" && "${RHEL_VERSION}" == "8.4" ]]; then
       RHEL_VERSION="8.10"
@@ -28,12 +23,78 @@ function update_yum_repos() {
       rm /etc/yum.repos.d/*.repo -f
     fi
 
-    curl https://mirror.eng.cloudera.com/repos/rhel/server/${RHEL_VERSION_MAJOR}/${RHEL_VERSION}/${REPO_FILE} --fail > /etc/yum.repos.d/${REPO_FILE}
+    #curl https://mirror.eng.cloudera.com/repos/rhel/server/${RHEL_VERSION_MAJOR}/${RHEL_VERSION}/${REPO_FILE} --fail > /etc/yum.repos.d/${REPO_FILE}
+    cat <<EOF > /etc/yum.repos.d/${REPO_FILE}
+# publish this file under /repos/rhel/server/9/9.8/
+
+[ubi-9.8-baseos-cldr]
+name = Red Hat Universal Base Image 9.8 (RPMs) - BaseOS CLDR
+baseurl = http://mirror.eng.cloudera.com/repos/rhel/server/9/9.8/$basearch/baseos/os
+enabled = 1
+gpgkey = file:///etc/pki/rpm-gpg/RPM-GPG-KEY-redhat-release
+gpgcheck = 1
+
+[ubi-9.8-baseos-eus-cldr]
+name = Red Hat Universal Base Image 9.8 (RPMs) - BaseOS EUS CLDR
+baseurl = http://mirror.eng.cloudera.com/repos/rhel/server/9/9.8/$basearch/baseos/os-eus
+enabled = 1
+gpgkey = file:///etc/pki/rpm-gpg/RPM-GPG-KEY-redhat-release
+gpgcheck = 1
+
+[ubi-9.8-appstream-cldr]
+name=Cloudera Rhel 9.8 appsteam mirrors
+baseurl=http://mirror.eng.cloudera.com/repos/rhel/server/9/9.8/$basearch/appstream/appstream
+enabled=1
+gpgkey = file:///etc/pki/rpm-gpg/RPM-GPG-KEY-redhat-release
+gpgcheck = 1
+
+[ubi-9.8-appstream-eus-cldr]
+name=Cloudera Rhel 9.8 appsteam eus mirrors
+baseurl=http://mirror.eng.cloudera.com/repos/rhel/server/9/9.8/$basearch/appstream/appstream-eus
+enabled=1
+gpgkey = file:///etc/pki/rpm-gpg/RPM-GPG-KEY-redhat-release
+gpgcheck = 1
+
+[ubi-9.8-supplementary-cldr]
+name=Cloudera Rhel 9.8 appsteam mirrors
+baseurl=http://mirror.eng.cloudera.com/repos/rhel/server/9/9.8/$basearch/supplementary/supplementary
+enabled=1
+gpgkey = file:///etc/pki/rpm-gpg/RPM-GPG-KEY-redhat-release
+gpgcheck = 1
+
+[ubi-9.8-supplementary-eus-cldr]
+name=Cloudera Rhel 9.8 appsteam eus mirrors
+baseurl=http://mirror.eng.cloudera.com/repos/rhel/server/9/9.8/$basearch/supplementary/supplementary-eus
+enabled=1
+gpgkey = file:///etc/pki/rpm-gpg/RPM-GPG-KEY-redhat-release
+gpgcheck = 1
+
+# This has wrong folder structure under aarch64 - folder is called "os", but it should be "codeready"
+[ubi-9.8-codeready-builder-cldr]
+name=Cloudera Rhel 9.8 codeready-builder mirror
+baseurl=http://mirror.eng.cloudera.com/repos/rhel/server/9/9.8/$basearch/codeready-builder/codeready
+enabled=1
+gpgkey = file:///etc/pki/rpm-gpg/RPM-GPG-KEY-redhat-release
+gpgcheck = 1
+
+# This is missing in case of aarch64!
+#[ubi-9.8-codeready-builder-eus-cldr]
+#name=Cloudera Rhel 9.8 codeready-builder-eus mirror
+#baseurl=http://mirror.eng.cloudera.com/repos/rhel/server/9/9.8/$basearch/codeready-builder/codeready-eus
+#enabled=1
+#gpgkey = file:///etc/pki/rpm-gpg/RPM-GPG-KEY-redhat-release
+#gpgcheck = 1
+EOF
 
     if [ "${RHEL_VERSION}" == "9.6" ]; then
       dnf config-manager --disable ubi-9.6-baseos-cldr
       dnf config-manager --disable ubi-9.6-appstream-cldr
       dnf config-manager --disable ubi-9.6-supplementary-cldr
+      dnf upgrade --refresh -y
+    elif [ "${RHEL_VERSION}" == "9.8" ]; then
+      dnf config-manager --disable ubi-9.8-baseos-cldr
+      dnf config-manager --disable ubi-9.8-appstream-cldr
+      dnf config-manager --disable ubi-9.8-supplementary-cldr
       dnf upgrade --refresh -y
     fi
   else

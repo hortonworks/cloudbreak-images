@@ -82,7 +82,7 @@ $(error "AZURE_IMAGE_VHD and Marketplace image properties (AZURE_IMAGE_PUBLISHER
 		else ifeq ($(OS),redhat9)
 			AZURE_IMAGE_PUBLISHER ?= RedHat
 			AZURE_IMAGE_OFFER ?= rhel-byos
-			AZURE_IMAGE_SKU ?= rhel-lvm95
+			AZURE_IMAGE_SKU ?= rhel-lvm98
 		else ifeq ($(OS),centos7)
 			AZURE_IMAGE_PUBLISHER ?= OpenLogic
 			AZURE_IMAGE_OFFER ?= CentOS
@@ -101,6 +101,8 @@ $(error Unexpected OS type $(OS) for Azure)
 			PLAN_NAME ?= rhel-lvm95
 		else ifeq ($(OS_VERSION),9.6)
 			PLAN_NAME ?= rhel-lvm96
+		else ifeq ($(OS_VERSION),9.8)
+			PLAN_NAME ?= rhel-lvm98
 		endif
 	endif
 endif
@@ -109,10 +111,10 @@ endif
 ifeq ($(CLOUD_PROVIDER),AWS)
 	ifeq ($(OS),redhat9)
 		ifeq ($(ARCHITECTURE),arm64)
-			AWS_SOURCE_AMI ?= ami-06f1805217126b0d0
+			AWS_SOURCE_AMI ?= ami-06e87d669dc318713
 			AWS_INSTANCE_TYPE ?= r7gd.2xlarge
 		else
-			AWS_SOURCE_AMI ?= ami-08a3a46b7bf22015a
+			AWS_SOURCE_AMI ?= ami-08c9d8f6174932e4a
 			AWS_INSTANCE_TYPE ?= t3.2xlarge
 		endif
 	else ifeq ($(OS),redhat8)
@@ -174,7 +176,7 @@ ifeq ($(CLOUD_PROVIDER),GCP)
 		endif
 	endif
 	ifeq ($(OS),redhat9)
-		GCP_SOURCE_IMAGE ?= rhel-9-byos-v20250709
+		GCP_SOURCE_IMAGE ?= rhel-9-byos-v20260811
 	endif
 endif
 
