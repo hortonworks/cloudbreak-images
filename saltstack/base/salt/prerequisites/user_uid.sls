@@ -1,7 +1,7 @@
 show_passwd:
   cmd.run:
     - name: |
-        echo printing passwd
+        echo Contents of /etc/passwd before remapping...
         cat /etc/passwd
 
 {% set ids = {
@@ -9,13 +9,36 @@ show_passwd:
   'cloudera_scm_group': '988',
 } %}
 
-{% if (salt['environ.get']('CLOUD_PROVIDER') == 'AWS' or salt['environ.get']('CLOUD_PROVIDER') == 'AWS_GOV' or salt['environ.get']('CLOUD_PROVIDER') == 'GCP') and pillar['OS'] == 'redhat9' %}
-# pesign has the needed uid/gid for cloudera-scm so it has to be modified
-change_pesign_uid:
+# OpenStack user remapping
+##########################
+
+{% if salt['environ.get']('CLOUD_PROVIDER') == 'Openstack' and pillar['OS'] == 'redhat9' %}
+# flatpak has the needed uid for cloudera-scm so it has to be modified
+change_flatpak_uid:
   cmd.run:
     - name: |
-        usermod -u 10001 pesign
-        find / -not -path "/proc/*" -user {{ ids.cloudera_scm_user }} -exec chown -h pesign {} \;
+        usermod -u 10001 flatpak
+        find / -ignore_readdir_race -not -path "/proc/*" -user {{ ids.cloudera_scm_user }} -exec chown -h flatpak {} \;
+    - onlyif: id flatpak && [ "$(id -u flatpak)" -eq 992 ]
+
+# AWS/AWSGov/GCP user remapping
+###############################
+
+{% elif (salt['environ.get']('CLOUD_PROVIDER') == 'AWS' or salt['environ.get']('CLOUD_PROVIDER') == 'AWS_GOV' or salt['environ.get']('CLOUD_PROVIDER') == 'GCP') and pillar['OS'] == 'redhat9' %}
+remap_gid:
+  cmd.run:
+    - name: |
+        REMAPPED_GRP=$(getent group {{ ids.cloudera_scm_group }} | cut -d: -f1); groupmod -g 10001 $REMAPPED_GRP; find / -not -path "/proc/*" -group {{ ids.cloudera_scm_group }} -exec chgrp -h $REMAPPED_GRP {} \;
+    - onlyif: getent group {{ ids.cloudera_scm_group }}
+
+remap_uid:
+  cmd.run:
+    - name: |
+        REMAPPED_USER=$(cat /etc/passwd | grep {{ ids.cloudera_scm_user }}:{{ ids.cloudera_scm_user }} | cut -d: -f1); usermod -u 10001 $REMAPPED_USER; find / -not -path "/proc/*" -user {{ ids.cloudera_scm_user }} -exec chown -h $REMAPPED_USER {} \;
+    - onlyif: id {{ ids.cloudera_scm_user }}
+
+# YCLOUD user remapping
+#######################
 
 {% elif pillar['subtype'] == 'Docker' and pillar['OS'] == 'redhat9' %}
 # saslauth has the needed uid/gid for cloudera-scm so it has to be modified, YCLOUD only
@@ -24,6 +47,9 @@ change_saslauth_uid:
     - name: |
         usermod -u 10002 saslauth
         find / -not -path "/proc/*" -user {{ ids.cloudera_scm_user }} -exec chown -h saslauth {} \;
+
+# Azure user remapping
+######################
 
 {% elif salt['environ.get']('CLOUD_PROVIDER') == 'Azure' %}
 
@@ -61,24 +87,21 @@ remove_libstoragemgmt_user:
     - name: libstoragemgmt
 
 {% endif %}
-
 {% endif %}
+
+show_passwd_after_remapping:
+  cmd.run:
+    - name: |
+        echo Contents of /etc/passwd after remapping...
+        cat /etc/passwd
+
+# Cloudera SCM user / group creation
+####################################
 
 create_cloudera_scm_group:
   group.present:
     - name: cloudera-scm
     - gid: {{ ids.cloudera_scm_group }} 
-
-{% if salt['environ.get']('CLOUD_PROVIDER') == 'Openstack' and pillar['OS'] == 'redhat9' %}
-# flatpak has the needed uid for cloudera-scm so it has to be modified
-change_flatpak_uid:
-  cmd.run:
-    - name: |
-        usermod -u 10001 flatpak
-        find / -ignore_readdir_race -not -path "/proc/*" -user {{ ids.cloudera_scm_user }} -exec chown -h flatpak {} \;
-    - onlyif: id flatpak && [ "$(id -u flatpak)" -eq 992 ]
-
-{% endif %}
 
 create_cloudera_scm_user:
   user.present:

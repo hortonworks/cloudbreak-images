@@ -12,11 +12,6 @@ function update_yum_repos() {
     RHEL_VERSION=$(cat /etc/redhat-release | grep -oP "[0-9\.]*")
     RHEL_VERSION=${RHEL_VERSION/.0/}
 
-    # CB-30236: We need this override, because we only have a 9.5 base image for Azure
-    if [[ "${CLOUD_PROVIDER}" == "Azure" && "${RHEL_VERSION}" == "9.5" ]]; then
-      RHEL_VERSION="9.6"
-    fi
-
     # For AWS Gov sadly we have an ancient RHEL 8.4 base image, so this needs an override
     if [[ "${CLOUD_PROVIDER}" == "AWS_GOV" && "${RHEL_VERSION}" == "8.4" ]]; then
       RHEL_VERSION="8.10"
@@ -34,6 +29,11 @@ function update_yum_repos() {
       dnf config-manager --disable ubi-9.6-baseos-cldr
       dnf config-manager --disable ubi-9.6-appstream-cldr
       dnf config-manager --disable ubi-9.6-supplementary-cldr
+      dnf upgrade --refresh -y
+    elif [ "${RHEL_VERSION}" == "9.8" ]; then
+      dnf config-manager --disable ubi-9.8-baseos-cldr
+      dnf config-manager --disable ubi-9.8-appstream-cldr
+      dnf config-manager --disable ubi-9.8-supplementary-cldr
       dnf upgrade --refresh -y
     fi
   else
