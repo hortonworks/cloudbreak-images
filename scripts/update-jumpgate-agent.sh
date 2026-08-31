@@ -1,6 +1,6 @@
 #! /bin/bash
 
-# Example: JUMPGATE_AGENT_URL=https://archive.cloudera.com/ccm/3.16.0/jumpgate-agent.x86_64.rpm
+# Example: JUMPGATE_AGENT_URL=https://archive.cloudera.com/ccm/3.16.1/jumpgate-agent.x86_64.rpm
 : "${JUMPGATE_AGENT_URL:?}"
 
 if [[ -z $JUMPGATE_AGENT_URL ]]; then
