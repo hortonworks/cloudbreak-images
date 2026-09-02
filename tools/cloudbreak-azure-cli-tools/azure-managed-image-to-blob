@@ -74,7 +74,7 @@ azure_turn_managed_disk_into_blob() {
     az sig image-definition create --resource-group ${ARM_STORAGE_ACCOUNT} \
     --gallery-name $GALLERY_NAME \
     --gallery-image-definition $IMAGE_DEF_NAME \
-    --hyper-v-generation V${AZURE_VM_GEN} \
+    --hyper-v-generation V${AZURE_HYPER_V_GENERATION} \
     --os-type Linux --os-state generalized --publisher Cloudera --offer Cloudbreak --sku ${AZURE_IMAGE_NAME}
 
     # Create version inside image-definition    
