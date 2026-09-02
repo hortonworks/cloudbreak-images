@@ -103,6 +103,12 @@ $(error Unexpected OS type $(OS) for Azure)
 			PLAN_NAME ?= rhel-lvm96
 		endif
 	endif
+
+	ifeq ($(AZURE_HYPER_V_GENERATION),2)
+		ifeq ($(origin AZURE_IMAGE_SKU),file)
+			AZURE_IMAGE_SKU := $(AZURE_IMAGE_SKU)-gen2
+		endif
+	endif
 endif
 
 # AWS source ami and instance type specification

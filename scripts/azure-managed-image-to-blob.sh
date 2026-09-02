@@ -10,8 +10,8 @@ if [ -z "$AZURE_IMAGE_NAME" ]; then
   fi
 fi
 
-if [ -z "$AZURE_VM_GEN" ]; then
-  AZURE_VM_GEN=1
+if [ -z "$AZURE_HYPER_V_GENERATION" ]; then
+  AZURE_HYPER_V_GENERATION=1
 fi
 
 docker run -i --rm \
@@ -29,7 +29,7 @@ docker run -i --rm \
     -e ARM_PASSWORD=$ARM_PASSWORD \
     -e AZURE_STORAGE_ACCOUNTS="$AZURE_STORAGE_ACCOUNTS" \
     -e AZURE_IMAGE_NAME="$AZURE_IMAGE_NAME" \
-    -e AZURE_VM_GEN="$AZURE_VM_GEN" \
+    -e AZURE_HYPER_V_GENERATION="$AZURE_HYPER_V_GENERATION" \
     --entrypoint azure-managed-image-to-blob \
-    docker-sandbox.infra.cloudera.com/cloudbreak-tools/cloudbreak-azure-cli-tools:1.28.0
+    docker-sandbox.infra.cloudera.com/cloudbreak-tools/cloudbreak-azure-cli-tools:1.29.0
 
