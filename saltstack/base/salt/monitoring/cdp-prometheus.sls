@@ -11,6 +11,10 @@ install_prometheus:
     - archive_format: tar
     - enforce_toplevel: False
     - options: --strip-components=1 --exclude='promtool'
+    - retry:
+        attempts: 3
+        interval: 30
+        splay: 10
 
 prometheus_hardcoded_package:
   file.append:

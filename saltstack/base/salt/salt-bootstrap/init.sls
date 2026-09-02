@@ -12,6 +12,10 @@ install_saltbootstrap:
     - group: root
     - skip_verify: True
     - if_missing: /usr/sbin/salt-bootstrap
+    - retry:
+        attempts: 3
+        interval: 30
+        splay: 10
 
 ensure_saltbootstrap_executable:
   file.managed:

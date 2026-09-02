@@ -3,7 +3,7 @@
 set -xe
 
 if [ -f package-versions.json ]; then
-    wget https://github.com/jqlang/jq/releases/download/jq-1.6/jq-linux64
+    wget --retry-on-http-error=429,500,502,503,504,529 --tries=5 --waitretry=40 --timeout=30 https://github.com/jqlang/jq/releases/download/jq-1.6/jq-linux64
     chmod +x jq-linux64
     mv jq-linux64 /bin/jq
 

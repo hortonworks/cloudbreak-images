@@ -20,6 +20,10 @@ install_blackbox_exporter:
     - options: --strip-components=1
     - user: root
     - group: root
+    - retry:
+        attempts: 3
+        interval: 30
+        splay: 10
 
 blackbox_exporter_hardcoded_package:
   file.append:
