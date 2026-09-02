@@ -218,10 +218,18 @@ resize_partitions() {
   fi
 }
 
+generate_random_instance_id() {
+  cat /proc/sys/kernel/random/uuid 2>/dev/null || uuidgen
+}
+
 get_instance_id() {
   local instance_id=""
   local attempts=10
   local delay=5
+
+  if [[ "$CLOUD_PLATFORM" == "OPENSTACK" ]]; then
+    attempts=60
+  fi
 
   for ((i=1; i<=attempts; i++)); do
     if [[ "$CLOUD_PLATFORM" == "AWS" ]]; then
@@ -243,7 +251,9 @@ get_instance_id() {
         --header="Metadata-Flavor: Google" \
         'http://metadata.google.internal/computeMetadata/v1/instance/name') || true
     elif [[ "$CLOUD_PLATFORM" == "OPENSTACK" ]]; then
-      instance_id=$(curl -s "http://169.254.169.254/openstack/latest/meta_data.json" | jq -r .uuid)
+      instance_id=$(curl -s --connect-timeout 5 --max-time 10 \
+        "http://169.254.169.254/openstack/latest/meta_data.json" | jq -r .uuid) || true
+      [[ "$instance_id" == "null" ]] && instance_id=""
     fi
 
     if [[ -n "$instance_id" ]]; then
@@ -254,6 +264,13 @@ get_instance_id() {
     echo "Attempt $i/$attempts: Failed to retrieve instance ID for $CLOUD_PLATFORM, retrying in ${delay}s..." >&2
     sleep "$delay"
   done
+
+  if [[ "$CLOUD_PLATFORM" == "OPENSTACK" ]]; then
+    instance_id=$(generate_random_instance_id)
+    echo "WARN: Could not retrieve instance ID for $CLOUD_PLATFORM after $attempts attempts, falling back to random UUID '$instance_id'" >&2
+    echo "$instance_id"
+    return 0
+  fi
 
   echo "ERROR: Could not retrieve instance ID for $CLOUD_PLATFORM after $attempts attempts" >&2
   return 1
