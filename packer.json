@@ -896,6 +896,7 @@
         "CLOUD_PROVIDER={{user `cloud_provider`}}",
         "IMAGE_BURNING_TYPE={{ user `image_burning_type` }}",
         "STIG_ENABLED={{user `stig_enabled`}}",
+        "FIPS_MODE={{user `fips_mode`}}",
         "OSCAP_SCAN_ENABLED={{user `oscap_scan_enabled`}}",
         "DEFAULT_JAVA_MAJOR_VERSION={{user `default_java_major_version`}}",
         "SALTBOOT_VERSION={{user `saltboot_version`}}",
@@ -950,6 +951,7 @@
         "CLOUD_PROVIDER={{user `cloud_provider`}}",
         "IMAGE_BURNING_TYPE={{ user `image_burning_type` }}",
         "STIG_ENABLED={{user `stig_enabled`}}",
+        "FIPS_MODE={{user `fips_mode`}}",
         "OSCAP_SCAN_ENABLED={{user `oscap_scan_enabled`}}",
         "DEFAULT_JAVA_MAJOR_VERSION={{user `default_java_major_version`}}"
       ],

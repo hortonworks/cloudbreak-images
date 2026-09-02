@@ -89,3 +89,9 @@ install_freeipa_ldapagent_rpm:
 net.ipv6.conf.lo.disable_ipv6:
   sysctl.present:
     - value: 0
+
+{% if salt['environ.get']('FIPS_MODE') == 'true' and pillar['OS'] == 'redhat9' %}
+enable_ad_crypto_policy:
+  cmd.run:
+    - name: update-crypto-policies --set FIPS:AD-SUPPORT
+{% endif %}
