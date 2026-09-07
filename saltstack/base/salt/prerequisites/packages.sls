@@ -1,4 +1,11 @@
-{% if salt['environ.get']('CLOUD_PROVIDER') == 'AWS_GOV' and pillar['OS'] == 'redhat8' %}
+# CB-30236: We need this distro upgrade, because we only have a 9.5 base image for Azure
+{% if salt['environ.get']('CLOUD_PROVIDER') == 'Azure' and salt['environ.get']('RHEL_VERSION') == '9.6' %}
+distro-upgrade:
+  cmd.run:
+    - name: |
+        dnf clean all
+        dnf upgrade -y --releasever=9.6
+{% elif salt['environ.get']('CLOUD_PROVIDER') == 'AWS_GOV' and pillar['OS'] == 'redhat8' %}
 update-packages:
   cmd.run:
     - name: dnf update -y --releasever=8.8 --nobest
