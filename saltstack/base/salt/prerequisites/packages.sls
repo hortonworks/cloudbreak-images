@@ -1,5 +1,5 @@
 # CB-30236: We need this distro upgrade, because we only have a 9.5 base image for Azure
-{% if salt['environ.get']('CLOUD_PROVIDER') == 'Azure' and pillar['OS'] == 'redhat9' %}
+{% if salt['environ.get']('CLOUD_PROVIDER') == 'Azure' and salt['environ.get']('RHEL_VERSION') == '9.6' %}
 distro-upgrade:
   cmd.run:
     - name: |

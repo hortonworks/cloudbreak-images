@@ -35,6 +35,11 @@ function update_yum_repos() {
       dnf config-manager --disable ubi-9.6-appstream-cldr
       dnf config-manager --disable ubi-9.6-supplementary-cldr
       dnf upgrade --refresh -y
+    elif [ "${RHEL_VERSION}" == "9.8" ]; then
+      dnf config-manager --disable ubi-9.8-baseos-cldr
+      dnf config-manager --disable ubi-9.8-appstream-cldr
+      dnf config-manager --disable ubi-9.8-supplementary-cldr
+      dnf upgrade --refresh -y
     fi
   else
     # Workaround based on the official documentation: https://cloud.google.com/compute/docs/troubleshooting/known-issues#known_issues_for_linux_vm_instances
