@@ -997,7 +997,8 @@
       "environment_vars": [
         "TAGS={{user `tags`}}",
         "OS={{user `os`}}",
-        "ARCHITECTURE={{user `architecture`}}"
+        "ARCHITECTURE={{user `architecture`}}",
+        "CLOUD_PROVIDER={{ user `cloud_provider` }}"
       ],
       "execute_command": "chmod +x {{ .Path }}; sudo {{ .Vars }} {{ .Path }}",
       "remote_folder": "/opt/provision-scripts"
