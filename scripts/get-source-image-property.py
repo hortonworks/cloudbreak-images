@@ -23,7 +23,7 @@ IMAGE_RULES = {
         "base":     "rhel-lvm98",
         "freeipa":  "rhel-lvm98",
         ">=7.3.3":  "rhel-lvm98",
-        "<7.3.3":   "rhel-lvm95"
+        "==7.3.2":  "rhel-lvm95"
     },
 
     # ---------------- AWS ----------------
@@ -38,13 +38,13 @@ IMAGE_RULES = {
         "base":     "ami-06e87d669dc318713",
         "freeipa":  "ami-06e87d669dc318713",
         ">=7.3.3":  "ami-06e87d669dc318713",
-        "<7.3.3":   "ami-06f1805217126b0d0",
+        "==7.3.2":  "ami-06f1805217126b0d0",
     },
     ("AWS", "redhat9", "x86_64"): {
         "base":     "ami-08c9d8f6174932e4a",
         "freeipa":  "ami-08c9d8f6174932e4a",
         ">=7.3.3":  "ami-08c9d8f6174932e4a",
-        "<7.3.3":   "ami-08a3a46b7bf22015a",
+        "==7.3.2":  "ami-08a3a46b7bf22015a",
     },
 
     # ---------------- AWS Gov ----------------
@@ -63,7 +63,7 @@ IMAGE_RULES = {
         "base":     "rhel-9-byos-v20260811",
         "freeipa":  "rhel-9-byos-v20260811",
         ">=7.3.3":  "rhel-9-byos-v20260811",
-        "<7.3.3":   "rhel-9-byos-v20250709",
+        "==7.3.2":  "rhel-9-byos-v20250709",
     },
 
     # ---------------- OpenStack ----------------
@@ -73,23 +73,17 @@ IMAGE_RULES = {
 }
 
 # -----------------------------
+# Parse version into a tuple
+# -----------------------------
+def parse_version(v_str: str) -> tuple:
+    return tuple(map(int, v_str.split(".")))
+
+# -----------------------------
 # Version comparison
 # -----------------------------
 def compare_version(v1: str, v2: str) -> int:
-    """
-    Compare two semantic versions.
-    Return:
-        0 if equal
-        1 if v1 > v2
-        2 if v1 < v2
-    """
-    a = [int(x) for x in v1.split(".")]
-    b = [int(x) for x in v2.split(".")]
-
-    max_len = max(len(a), len(b))
-    a += [0] * (max_len - len(a))
-    b += [0] * (max_len - len(b))
-
+    a = parse_version(v1)
+    b = parse_version(v2)
     if a > b:
         return 1
     if a < b:
@@ -99,7 +93,7 @@ def compare_version(v1: str, v2: str) -> int:
 # -----------------------------
 # Rule-based lookup
 # -----------------------------
-def lookup_image(provider, os, arch, image_type, sp_version):
+def lookup_image(provider: str, os: str, arch: str, image_type: str, sp_version: str) -> str:
     # Try exact match with arch
     key = (provider, os, arch)
     if key in IMAGE_RULES:
@@ -119,6 +113,15 @@ def lookup_image(provider, os, arch, image_type, sp_version):
             return value
         elif rule.startswith(">="):
             if compare_version(sp_version, rule[2:]) >= 0:
+                return value
+        elif rule.startswith("<="):
+            if compare_version(sp_version, rule[2:]) <= 0:
+                return value
+        elif rule.startswith("=="):
+            if compare_version(sp_version, rule[2:]) == 0:
+                return value
+        elif rule.startswith(">"):
+            if compare_version(sp_version, rule[1:]) > 0:
                 return value
         elif rule.startswith("<"):
             if compare_version(sp_version, rule[1:]) < 0:
