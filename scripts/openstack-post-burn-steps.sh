@@ -2,12 +2,17 @@
 #
 # openstack-post-burn-steps.sh
 #
-# Post-burn step for the OpenStack (openstack-redhat9) packer build.
-# Locates the freshly burnt image by name and prints its properties using the
-# glance CLI. The CLI runs inside the cloudbreak-openstack-cli-tools container
-# image (built/published from tools/cloudbreak-openstack-cli-tools), which is
-# pushed to the company registry and therefore available to the local docker
-# daemon on the build host.
+# Post-burn step for the OpenStack (openstack-redhat9) packer build. For the
+# freshly burnt image it:
+#   1. locates it by name and prints its properties (openstack CLI),
+#   2. resolves its ID from the name (openstack CLI),
+#   3. sets its visibility to "community" (glance CLI),
+#   4. removes the "signature_verified" property (glance CLI; ignored if absent).
+#
+# The CLIs run inside the cloudbreak-openstack-cli-tools container image
+# (built/published from tools/cloudbreak-openstack-cli-tools), which is pushed to
+# the company registry and therefore available to the local docker daemon on the
+# build host.
 #
 # Expected environment (exported by the Makefile / build-openstack-redhat9):
 #   IMAGE_NAME                   - name of the image just burnt (packer image_name)
@@ -77,5 +82,12 @@ fi
 IMAGE_ID="${image_ids[0]}"
 echo "Found image '${IMAGE_NAME}' -> ${IMAGE_ID}"
 
-echo "Image properties (glance image-show):"
-run_glance image-show "${IMAGE_ID}"
+echo "Image properties (openstack image show):"
+run_openstack image show "${IMAGE_ID}"
+
+echo "Setting visibility to 'community'"
+run_glance image-update --visibility community "${IMAGE_ID}"
+
+echo "Removing 'signature_verified' property (ignored if absent)"
+run_glance image-update --remove-property signature_verified "${IMAGE_ID}" \
+    || echo "note: could not remove 'signature_verified' (likely not set); continuing"
