@@ -407,6 +407,13 @@ build-openstack-redhat9:
 	ATLAS_ARTIFACT_TYPE=Openstack \
 	SALT_INSTALL_OS=redhat \
 	./scripts/packer.sh build -only=openstack-redhat9 $(PACKER_OPTS)
+	IMAGE_NAME=$(IMAGE_NAME) \
+	OPENSTACK_AUTH_URL=$(OPENSTACK_AUTH_URL) \
+	OPENSTACK_REGION_NAME=$(OPENSTACK_REGION_NAME) \
+	OPENSTACK_PROJECT_NAME=$(OPENSTACK_PROJECT_NAME) \
+	OPENSTACK_PROJECT_DOMAIN_ID=$(OPENSTACK_PROJECT_DOMAIN_ID) \
+	OPENSTACK_USER_DOMAIN_ID=$(OPENSTACK_USER_DOMAIN_ID) \
+	./scripts/openstack-post-burn-steps.sh
 
 build-aws-centos7-base:
 	$(ENVS) \
