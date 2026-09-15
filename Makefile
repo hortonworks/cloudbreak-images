@@ -25,14 +25,7 @@ ifeq ($(CLOUD_PROVIDER),Openstack)
 	OPENSTACK_PROJECT_DOMAIN_ID ?= "default"
 	OPENSTACK_USER_DOMAIN_ID ?= "default"
 	OPENSTACK_AUTH_URL ?= "https://cloudera-iopscloud.platform9.net/keystone/v3"
-
-	ifndef OPENSTACK_SOURCE_IMAGE_UUID
-		ifeq ($(OS),redhat9)
-			OPENSTACK_SOURCE_IMAGE_UUID = "7a30c75a-9735-4ac9-a6dd-8086584bf661"
-		else
-$(error Unexpected OS type $(OS) for Openstack)
-		endif
-	endif
+	OPENSTACK_SOURCE_IMAGE_UUID ?= $(shell ./scripts/get-source-image-property.py imageId OpenStack "$(OS)" _ _ _ _ )
 endif
 
 # Azure VM image specifications
@@ -48,60 +41,18 @@ $(error BUILD_RESOURCE_GROUP_NAME and ARM_BUILD_REGION should not be set togethe
 		ARM_BUILD_REGION ?= northeurope
 	endif
 
-	ifdef AZURE_IMAGE_VHD
-		AZURE_IMAGE_MARKETPLACE_SET = false
-		ifdef AZURE_IMAGE_PUBLISHER
-			AZURE_IMAGE_MARKETPLACE_SET = true
-		endif
-		ifdef AZURE_IMAGE_OFFER
-			AZURE_IMAGE_MARKETPLACE_SET = true
-		endif
-		ifdef AZURE_IMAGE_SKU
-			AZURE_IMAGE_MARKETPLACE_SET = true
-		endif
-		ifeq ($(AZURE_IMAGE_MARKETPLACE_SET),true)
-$(error "AZURE_IMAGE_VHD and Marketplace image properties (AZURE_IMAGE_PUBLISHER, AZURE_IMAGE_OFFER, AZURE_IMAGE_SKU) should not be set together")
-		endif
+	ifeq ($(OS),centos7)
+		AZURE_IMAGE_PUBLISHER ?= OpenLogic
+		AZURE_IMAGE_OFFER ?= CentOS
+		AZURE_IMAGE_SKU ?= 7.6
 	else
-		ifeq ($(OS),redhat8)
-			AZURE_IMAGE_PUBLISHER ?= RedHat
-			AZURE_IMAGE_OFFER ?= rhel-byos
-			ifeq ($(STACK_VERSION),7.3.2)
-				AZURE_IMAGE_SKU ?= rhel-lvm810
-			else ifeq ($(STACK_VERSION),7.3.1)
-				AZURE_IMAGE_SKU ?= rhel-lvm810
-			else ifeq ($(STACK_VERSION),7.2.18)
-				AZURE_IMAGE_SKU ?= rhel-lvm810
-			else ifeq ($(IMAGE_BURNING_TYPE),base)
-				AZURE_IMAGE_SKU ?= rhel-lvm810
-			else ifeq ($(CUSTOM_IMAGE_TYPE),freeipa)
-				AZURE_IMAGE_SKU ?= rhel-lvm810
-			else
-				AZURE_IMAGE_SKU ?= rhel-lvm88
-			endif
-		else ifeq ($(OS),redhat9)
-			AZURE_IMAGE_PUBLISHER ?= RedHat
-			AZURE_IMAGE_OFFER ?= rhel-byos
-			AZURE_IMAGE_SKU ?= rhel-lvm95
-		else ifeq ($(OS),centos7)
-			AZURE_IMAGE_PUBLISHER ?= OpenLogic
-			AZURE_IMAGE_OFFER ?= CentOS
-			AZURE_IMAGE_SKU ?= 7.6
-		else ifdef OS
-$(error Unexpected OS type $(OS) for Azure)
-		endif
+		AZURE_IMAGE_PUBLISHER ?= RedHat
+		AZURE_IMAGE_OFFER ?= rhel-byos
+		AZURE_IMAGE_SKU ?= $(shell ./scripts/get-source-image-property.py imageId Azure "$(OS)" _ x86_64 "$(IMAGE_BURNING_TYPE)" "$(STACK_VERSION)" )
 	endif
 
 	ifdef OS_VERSION
-		ifeq ($(OS_VERSION),8.8)
-			PLAN_NAME ?= rhel-lvm88
-		else ifeq ($(OS_VERSION),8.10)
-			PLAN_NAME ?= rhel-lvm810
-		else ifeq ($(OS_VERSION),9.5)
-			PLAN_NAME ?= rhel-lvm95
-		else ifeq ($(OS_VERSION),9.6)
-			PLAN_NAME ?= rhel-lvm96
-		endif
+		PLAN_NAME ?= $(shell ./scripts/get-source-image-property.py planName Azure "$(OS)" "$(OS_VERSION)" _ _ _ )
 	endif
 
 	ifeq ($(AZURE_HYPER_V_GENERATION),2)
@@ -113,74 +64,30 @@ endif
 
 # AWS source ami and instance type specification
 ifeq ($(CLOUD_PROVIDER),AWS)
-	ifeq ($(OS),redhat9)
-		ifeq ($(ARCHITECTURE),arm64)
-			AWS_SOURCE_AMI ?= ami-06f1805217126b0d0
-			AWS_INSTANCE_TYPE ?= r7gd.2xlarge
-		else
-			AWS_SOURCE_AMI ?= ami-08a3a46b7bf22015a
-			AWS_INSTANCE_TYPE ?= t3.2xlarge
-		endif
-	else ifeq ($(OS),redhat8)
-		ifeq ($(ARCHITECTURE),arm64)
-			AWS_SOURCE_AMI ?= ami-05032c39067d77b1b
-			AWS_INSTANCE_TYPE ?= r7gd.2xlarge
-		else
-			ifeq ($(STACK_VERSION),7.3.2)
-				AWS_SOURCE_AMI ?= ami-02073841a355a1e92
-			else ifeq ($(STACK_VERSION),7.3.1)
-				AWS_SOURCE_AMI ?= ami-02073841a355a1e92
-			else ifeq ($(STACK_VERSION),7.2.18)
-				AWS_SOURCE_AMI ?= ami-02073841a355a1e92
-			else ifeq ($(IMAGE_BURNING_TYPE),base)
-				AWS_SOURCE_AMI ?= ami-02073841a355a1e92
-			else ifeq ($(CUSTOM_IMAGE_TYPE),freeipa)
-				AWS_SOURCE_AMI ?= ami-02073841a355a1e92
-			else
-				AWS_SOURCE_AMI ?= ami-039ce2eddc1949546
-			endif
-			AWS_INSTANCE_TYPE ?= t3.2xlarge
-		endif
-	else ifeq ($(OS),centos7)
-		AWS_SOURCE_AMI ?= ami-098f55b4287a885ba
+	ifeq ($(ARCHITECTURE),arm64)
+		AWS_INSTANCE_TYPE ?= r7gd.2xlarge
+	else
 		AWS_INSTANCE_TYPE ?= t3.2xlarge
+	endif
+	ifeq ($(OS),centos7)
+		AWS_SOURCE_AMI ?= ami-098f55b4287a885ba
+	else
+		AWS_SOURCE_AMI ?= $(shell ./scripts/get-source-image-property.py imageId AWS "$(OS)" _ "$(ARCHITECTURE)" "$(IMAGE_BURNING_TYPE)" "$(STACK_VERSION)" )
 	endif
 endif
 
 # AWS_GOV source ami specification
 ifeq ($(CLOUD_PROVIDER),AWS_GOV)
 	AWS_INSTANCE_TYPE ?= t3.2xlarge
-	ifeq ($(OS),redhat9)
-		AWS_GOV_SOURCE_AMI ?= ami-076ee76048eec9dd9
-	else ifeq ($(OS),redhat8)
-		AWS_GOV_SOURCE_AMI ?= ami-0ac4e06a69870e5be
-	else ifeq ($(OS),centos7)
-		AWS_GOV_SOURCE_AMI ?= ami-bbba86da
-	endif
+	AWS_GOV_SOURCE_AMI ?= $(shell ./scripts/get-source-image-property.py imageId AWS_GOV "$(OS)" _ "$(ARCHITECTURE)" "$(IMAGE_BURNING_TYPE)" "$(STACK_VERSION)" )
 endif
 
 # GCP source image specification
 ifeq ($(CLOUD_PROVIDER),GCP)
 	ifeq ($(OS),centos7)
 		GCP_SOURCE_IMAGE ?= centos-7-v20200811
-	endif
-	ifeq ($(OS),redhat8)
-		ifeq ($(STACK_VERSION),7.3.2)
-			GCP_SOURCE_IMAGE ?= rhel-8-byos-v20240709
-		else ifeq ($(STACK_VERSION),7.3.1)
-			GCP_SOURCE_IMAGE ?= rhel-8-byos-v20240709
-		else ifeq ($(STACK_VERSION),7.2.18)
-			GCP_SOURCE_IMAGE ?= rhel-8-byos-v20240709
-		else ifeq ($(IMAGE_BURNING_TYPE),base)
-			GCP_SOURCE_IMAGE ?= rhel-8-byos-v20240709
-		else ifeq ($(CUSTOM_IMAGE_TYPE),freeipa)
-			GCP_SOURCE_IMAGE ?= rhel-8-byos-v20240709
-		else
-			GCP_SOURCE_IMAGE ?= rhel-8-byos-v20230615
-		endif
-	endif
-	ifeq ($(OS),redhat9)
-		GCP_SOURCE_IMAGE ?= rhel-9-byos-v20250709
+	else
+		GCP_SOURCE_IMAGE ?= $(shell ./scripts/get-source-image-property.py imageId GCP "$(OS)" _ "$(ARCHITECTURE)" "$(IMAGE_BURNING_TYPE)" "$(STACK_VERSION)" )
 	endif
 endif
 
