@@ -132,11 +132,29 @@ add_cis_control_sh:
         additional_tags: ""
 {% endif %}
 
+# cis_control.sh remediates using the Ansible playbooks shipped by scap-security-guide
+# (/usr/share/scap-security-guide/ansible/), so the package must be present beforehand.
+install_scap_security_guide_for_cis:
+  pkg.installed:
+    - name: scap-security-guide
+
 execute_cis_control_sh:
   cmd.run:
     - name: /opt/provision-scripts/cis_control.sh
+    - require:
+      - file: add_cis_control_sh
+      - pkg: install_scap_security_guide_for_cis
     - env:
       - IMAGE_BASE_NAME: {{ salt['environ.get']('IMAGE_BASE_NAME') }}
       - CLOUD_PROVIDER: {{ salt['environ.get']('CLOUD_PROVIDER') }}
       - STIG_ENABLED: {{ salt['environ.get']('STIG_ENABLED') }}
       - OS: {{ salt['environ.get']('OS') }}
+
+# The openscap scan (which also installs scap-security-guide and reinstalls it as needed)
+# only runs when OSCAP_SCAN_ENABLED=true, so remove the package here to avoid shipping it
+# in images built without the scan.
+remove_scap_security_guide_after_cis:
+  pkg.removed:
+    - name: scap-security-guide
+    - require:
+      - cmd: execute_cis_control_sh
