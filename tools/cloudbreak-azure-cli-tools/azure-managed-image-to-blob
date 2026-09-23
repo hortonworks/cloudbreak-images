@@ -54,15 +54,46 @@ azure_wait_for_blob_copy_to_finish() {
 
         if [ "$status" == "success" ]; then
             echo "Copy completed successfully!"
-            break
+            return 0
         elif [ "$status" == "pending" ]; then
             echo "Copy pending... checking again in $pending_wait_time seconds."
             sleep $pending_wait_time
         else
-            echo "Copy failed."
-            exit 2
+            echo "Copy failed with status: ${status:-<empty>}."
+            return 2
         fi
     done
+}
+
+azure_copy_blob_with_retry() {
+    local source_uri=${1:?required: source uri}
+    local max_attempts=5
+    local retry_wait_time=30
+    local attempt=1
+
+    while [ $attempt -le $max_attempts ]; do
+        echo "Starting blob copy (attempt ${attempt}/${max_attempts})..."
+
+        if az storage blob copy start \
+            --account-name "${ARM_STORAGE_ACCOUNT}" \
+            --account-key "${DEST_KEY}" \
+            --destination-container images \
+            --destination-blob ${AZURE_IMAGE_NAME}.vhd \
+            --source-uri "$source_uri" \
+            && azure_wait_for_blob_copy_to_finish; then
+            return 0
+        fi
+
+        echo "Blob copy attempt ${attempt}/${max_attempts} failed."
+        attempt=$((attempt + 1))
+        if [ $attempt -le $max_attempts ]; then
+            echo "Retrying blob copy in ${retry_wait_time} seconds..."
+            sleep $retry_wait_time
+        fi
+    done
+
+    echo "Blob copy failed after ${max_attempts} attempts."
+    return 1
 }
 
 azure_turn_managed_disk_into_blob() {
@@ -112,20 +143,7 @@ azure_turn_managed_disk_into_blob() {
 
     echo Disk reference url: $disk_reference_url
 
-    # Do the copy
-    az storage blob copy start \
-        --account-name "${ARM_STORAGE_ACCOUNT}" \
-        --account-key "${DEST_KEY}" \
-        --destination-container images  \
-        --destination-blob ${AZURE_IMAGE_NAME}.vhd \
-        --source-uri $disk_reference_url
-    
-    if [ $? -ne 0 ]; then
-        echo "Faild to copy blob."
-        exit 1
-    fi
-
-    azure_wait_for_blob_copy_to_finish    
+    azure_copy_blob_with_retry "$disk_reference_url"
 }
 
 _azure_cleanup() {

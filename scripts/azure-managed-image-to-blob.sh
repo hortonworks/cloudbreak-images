@@ -31,5 +31,5 @@ docker run -i --rm \
     -e AZURE_IMAGE_NAME="$AZURE_IMAGE_NAME" \
     -e AZURE_HYPER_V_GENERATION="$AZURE_HYPER_V_GENERATION" \
     --entrypoint azure-managed-image-to-blob \
-    docker-sandbox.infra.cloudera.com/cloudbreak-tools/cloudbreak-azure-cli-tools:1.29.0
+    docker-sandbox.infra.cloudera.com/cloudbreak-tools/cloudbreak-azure-cli-tools:1.30.0
 
