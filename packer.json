@@ -1,7 +1,7 @@
 {
   "variables": {
     "base_name": "{{ env `BASE_NAME` }}",
-    "image_burning_type": "{{ env `IMAGE_BURNING_TYPE` }}",
+    "image_type": "{{ env `IMAGE_TYPE` }}",
     "mock": "{{ env `MOCK` }}",
     "description": "{{ env `DESCRIPTION` }}",
     "gcp_account_file": "{{env `GCP_ACCOUNT_FILE`}}",
@@ -80,7 +80,6 @@
     "aws_gov_source_ami": "{{ env `AWS_GOV_SOURCE_AMI` }}",
     "aws_ami_regions": "{{ env `AWS_AMI_REGIONS` }}",
     "aws_instance_profile": "{{ env `AWS_INSTANCE_PROFILE` }}",
-    "custom_image_type": "{{ env `CUSTOM_IMAGE_TYPE` }}",
     "optional_states": "{{ env `OPTIONAL_STATES` }}",
     "preinstalled_java_home": "{{ env `PREINSTALLED_JAVA_HOME` }}",
     "local_url_ambari": "{{ env `LOCAL_URL_AMBARI` }}",
@@ -810,7 +809,7 @@
       "script": "scripts/salt-install.sh",
       "environment_vars": [
         "IMAGE_BASE_NAME={{ user `base_name` }}",
-        "IMAGE_BURNING_TYPE={{ user `image_burning_type` }}",
+        "IMAGE_TYPE={{ user `image_type` }}",
         "SALT_INSTALL_OS={{ user `salt_install_os` }}",
         "SALT_INSTALL_REPO={{user `salt_install_repo` }}",
         "SALT_VERSION={{user `salt_version`}}",
@@ -840,7 +839,6 @@
       "execute_command": "chmod +x {{ .Path }}; sudo {{ .Vars }} {{ .Path }} ",
       "environment_vars": [
         "IMAGE_BASE_NAME={{ user `base_name` }}",
-        "CUSTOM_IMAGE_TYPE={{user `custom_image_type`}}",
         "OS_USER={{ user `os_user` }}",
         "CLUSTERMANAGER_VERSION={{user `clustermanager_version`}}",
         "CLUSTERMANAGER_BASEURL={{user `clustermanager_baseurl`}}",
@@ -894,7 +892,7 @@
         "no_proxy={{ user `gov_no_proxy` }}",
         "NO_PROXY={{ user `gov_no_proxy` }}",
         "CLOUD_PROVIDER={{user `cloud_provider`}}",
-        "IMAGE_BURNING_TYPE={{ user `image_burning_type` }}",
+        "IMAGE_TYPE={{ user `image_type` }}",
         "STIG_ENABLED={{user `stig_enabled`}}",
         "OSCAP_SCAN_ENABLED={{user `oscap_scan_enabled`}}",
         "DEFAULT_JAVA_MAJOR_VERSION={{user `default_java_major_version`}}",
@@ -926,7 +924,6 @@
       "execute_command": "chmod +x {{ .Path }}; sudo {{ .Vars }} {{ .Path }} ",
       "environment_vars": [
         "IMAGE_BASE_NAME={{ user `base_name` }}",
-        "CUSTOM_IMAGE_TYPE={{user `custom_image_type`}}",
         "OS_USER={{ user `os_user` }}",
         "STACK_VERSION={{user `stack_version`}}",
         "OS={{user `os`}}",
@@ -948,7 +945,7 @@
         "no_proxy={{ user `gov_no_proxy` }}",
         "NO_PROXY={{ user `gov_no_proxy` }}",
         "CLOUD_PROVIDER={{user `cloud_provider`}}",
-        "IMAGE_BURNING_TYPE={{ user `image_burning_type` }}",
+        "IMAGE_TYPE={{ user `image_type` }}",
         "STIG_ENABLED={{user `stig_enabled`}}",
         "OSCAP_SCAN_ENABLED={{user `oscap_scan_enabled`}}",
         "DEFAULT_JAVA_MAJOR_VERSION={{user `default_java_major_version`}}"
@@ -1042,7 +1039,7 @@
         "OS={{user `os`}}",
         "ARCHITECTURE={{user `architecture`}}",
         "CLOUD_PROVIDER={{ user `cloud_provider` }}",
-        "IMAGE_BURNING_TYPE={{ user `image_burning_type` }}"
+        "IMAGE_TYPE={{ user `image_type` }}"
       ],
       "execute_command": "chmod +x {{ .Path }}; sudo {{ .Vars }} {{ .Path }}",
       "remote_folder": "/opt/provision-scripts"
@@ -1078,7 +1075,7 @@
       "type": "shell-local",
       "script": "scripts/pp_json.sh",
       "environment_vars": [
-        "custom_image_type={{user `custom_image_type`}}",
+        "image_type={{user `image_type`}}",
         "created_at={{timestamp}}",
         "prometheus=true",
         "created={{ isotime \"2006-01-02 15:04:05 -0700\" }}",

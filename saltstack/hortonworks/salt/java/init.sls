@@ -44,7 +44,7 @@ remove_unused_openjdk:
       - java-11-openjdk-devel
 {% endif %}
 
-{% if salt['environ.get']('IMAGE_BURNING_TYPE') == 'base' or salt['environ.get']('STACK_VERSION').split('.') | map('int') | list >= '7.2.18'.split('.') | map('int') | list %}
+{% if salt['environ.get']('IMAGE_TYPE') == 'base' or salt['environ.get']('STACK_VERSION').split('.') | map('int') | list >= '7.2.18'.split('.') | map('int') | list %}
 download_rhel8_repo:
   file.managed:
     - name: /etc/yum.repos.d/rhel8_cldr_mirrors.repo

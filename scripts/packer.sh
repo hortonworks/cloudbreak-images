@@ -65,7 +65,7 @@ packer_in_container() {
   fi
 
   # FREEIPA / Base Image: CEM Agent
-  if ! [[ "$IMAGE_BURNING_TYPE" == "prewarm " ]]; then
+  if ! [[ "$IMAGE_TYPE" == "runtime " ]]; then
     if ! [[ $CEM_AGENT_RPM_URL =~ ^http.*rpm$ ]]; then
       if [[ "$ARCHITECTURE" == "arm64" ]]; then
         export CEM_AGENT_RPM_URL="https://cloudera-build-us-west-1.vpc.cloudera.com/s3/build/76334049/cem-agents/1.x/redhat8arm64/yum/tars/nifi-minifi-cpp/nifi-minifi-cpp-1.26.02-b30-arm64.rpm"
@@ -145,7 +145,7 @@ packer_in_container() {
     -e PACKER_LOG=$PACKER_LOG \
     -e PACKER_LOG_PATH=$PACKER_LOG_PATH \
     -e BASE_NAME=$BASE_NAME \
-    -e IMAGE_BURNING_TYPE=$IMAGE_BURNING_TYPE \
+    -e IMAGE_TYPE=$IMAGE_TYPE \
     -e AWS_ACCESS_KEY_ID=$AWS_ACCESS_KEY_ID \
     -e AWS_SECURITY_TOKEN=$AWS_SECURITY_TOKEN \
     -e AWS_SESSION_TOKEN=$AWS_SESSION_TOKEN \
@@ -217,7 +217,7 @@ packer_in_container() {
     -e SALT_INSTALL_REPO=$SALT_INSTALL_REPO \
     -e ATLAS_ARTIFACT_TYPE=$ATLAS_ARTIFACT_TYPE \
     -e COPY_AWS_MARKETPLACE_EULA=$COPY_AWS_MARKETPLACE_EULA \
-    -e CUSTOM_IMAGE_TYPE=$CUSTOM_IMAGE_TYPE \
+    -e IMAGE_TYPE=$IMAGE_TYPE \
     -e OWNER_TAG=$OWNER_TAG \
     -e CLOUDERA_USAGE_TYPE_TAG=$CLOUDERA_USAGE_TYPE_TAG \
     -e OPTIONAL_STATES=$OPTIONAL_STATES \

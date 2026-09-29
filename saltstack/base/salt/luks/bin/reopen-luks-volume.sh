@@ -13,7 +13,7 @@ export PASSPHRASE_CIPHERTEXT="$LUKS_DIR/passphrase_ciphertext"
 export LUKS_LOG_DIR="/var/log/$LUKS_VOLUME_NAME"
 export LUKS_MAPPER_DEVICE="/dev/mapper/$LUKS_VOLUME_NAME"
 export ENCRYPTION_KEY_FILE="$LUKS_DIR/passphrase_encryption_key"
-{%- if pillar['CUSTOM_IMAGE_TYPE'] == 'freeipa' %}
+{%- if pillar['IMAGE_TYPE'] == 'freeipa' %}
 export IS_FREEIPA=true
 {%- else %}
 export IS_FREEIPA=false

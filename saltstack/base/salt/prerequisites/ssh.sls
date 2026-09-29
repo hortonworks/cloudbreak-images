@@ -21,7 +21,7 @@ sshd_configure_gssapiauthentication_replace:
 
 #Root user login via SSH needs to be disabled from version 7.2.8
 {% set version = salt['environ.get']('STACK_VERSION') %}
-{% if pillar['CUSTOM_IMAGE_TYPE'] == 'freeipa' or (version and version.split('.') | map('int') | list >= [7, 2, 8]) %}
+{% if pillar['IMAGE_TYPE'] == 'freeipa' or (version and version.split('.') | map('int') | list >= [7, 2, 8]) %}
 sshd_harden_PermitRootLogin:
   file.replace:
     - name: /etc/ssh/sshd_config
