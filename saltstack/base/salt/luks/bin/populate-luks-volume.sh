@@ -168,9 +168,9 @@ process_cm_locations() {
   if [[ "$IS_FREEIPA" != "true" ]]
   then
     log_processing_needed "Cloudera Manager"
-    process_location "/etc/cloudera-scm-server"
-    process_location "/etc/cloudera-scm-agent"
-    process_location "/var/lib/cloudera-scm-agent"
+    process_location_with_create "/etc/cloudera-scm-server" cloudera-scm cloudera-scm 700
+    process_location_with_create "/etc/cloudera-scm-agent" root root 755
+    process_location_with_create "/var/lib/cloudera-scm-agent" root root 755
   else
     log_processing_skipped "Cloudera Manager"
   fi
