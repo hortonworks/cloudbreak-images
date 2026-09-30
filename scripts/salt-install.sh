@@ -186,6 +186,7 @@ function redhat9_update_python39() {
   /usr/bin/python3.9 -m pip config set global.log /var/log/pip39.log
 
   # General required dependency
+  /usr/bin/python3.9 -m pip install --ignore-installed packaging
   /usr/bin/python3.9 -m pip install virtualenv
 }
 
