@@ -23,7 +23,7 @@ IMAGE_RULES = {
         "base":     "rhel-lvm98",
         "freeipa":  "rhel-lvm98",
         ">=7.3.3":  "rhel-lvm98",
-        "==7.3.2":  "rhel-lvm95"
+        "==7.3.2":  "rhel-lvm98"
     },
 
     # ---------------- AWS ----------------
