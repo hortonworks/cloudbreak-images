@@ -639,6 +639,35 @@ allow cdp_salt_t self:capability { audit_write chown dac_override dac_read_searc
 allow cdp_salt_t self:netlink_selinux_socket { bind create };
 allow cdp_salt_t self:process { execmem getattr setrlimit setsched };
 
+# lsblk reads /run/udev/data/* to enumerate block devices for disk states
+udev_read_pid_files(cdp_salt_t)
+
+# NetworkManager dispatcher directory search — salt states walk /etc/NetworkManager
+gen_require(`
+    type NetworkManager_dispatcher_script_t;
+')
+allow cdp_salt_t NetworkManager_dispatcher_script_t:dir search;
+
+# Salt states scan /etc broadly (rsync/nfs/bluetooth config just get stat'd)
+rsync_read_config(cdp_salt_t)
+bluetooth_read_config(cdp_salt_t)
+gen_require(`
+    type bluetooth_conf_t;
+    type exports_t;
+')
+allow cdp_salt_t bluetooth_conf_t:dir getattr;
+allow cdp_salt_t exports_t:dir getattr;
+
+# systemd DynamicUser lookup — salt-called helpers (useradd/systemd-run) query
+# /run/systemd/userdb/io.systemd.DynamicUser; the socket is labeled kernel_t
+gen_require(`
+    type kernel_t;
+')
+allow cdp_salt_t kernel_t:unix_stream_socket connectto;
+
+# Python/OpenSSL loads the kTLS ULP kernel module
+kernel_request_load_module(cdp_salt_t)
+
 # useradd_t (called by salt)
 gen_require(`
     type lib_t;
