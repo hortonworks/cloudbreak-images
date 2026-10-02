@@ -63,7 +63,7 @@ ARG CLUSTERMANAGER_VERSION
 ARG CLUSTERMANAGER_BASEURL
 ARG CLUSTERMANAGER_GPGKEY
 
-ARG CUSTOM_IMAGE_TYPE
+ARG IMAGE_TYPE
 ARG DOCKER_REPOSITORY
 ARG IMAGE_UUID
 ARG DOCKER_IMAGE_NAME
@@ -80,7 +80,7 @@ ENV CLUSTERMANAGER_VERSION=${CLUSTERMANAGER_VERSION}
 ENV CLUSTERMANAGER_BASEURL=${CLUSTERMANAGER_BASEURL}
 ENV CLUSTERMANAGER_GPGKEY=${CLUSTERMANAGER_GPGKEY}
 
-ENV CUSTOM_IMAGE_TYPE=${CUSTOM_IMAGE_TYPE}
+ENV IMAGE_TYPE=${IMAGE_TYPE}
 ENV DOCKER_REPOSITORY=${DOCKER_REPOSITORY}
 ENV IMAGE_UUID=${IMAGE_UUID}
 ENV DOCKER_IMAGE_NAME=${DOCKER_IMAGE_NAME}
@@ -93,7 +93,7 @@ ENV TAGS=${TAGS}
 #we build logic on the existance of this directory, please DO NOT REMOVE
 RUN mkdir /yarn-private
 
-RUN /tmp/saltstack/salt-setup.sh hortonworks
+RUN /tmp/saltstack/salt-setup.sh base
 RUN /tmp/saltstack/salt-final.sh
 RUN rm -f /etc/salt/minion_id /etc/salt/pki/minion/minion.pem /etc/salt/pki/minion/minion.pub
 RUN rm -f /etc/yum.repos.d/hwx-internal.repo
