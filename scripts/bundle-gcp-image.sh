@@ -28,6 +28,7 @@ main() {
 	: ${SERVICE_ACCOUNT_EMAIL:=$(cat $GCP_ACCOUNT_FILE | jq .client_email -r)}
 	: ${IMAGE_PRE_NAME:=}
 	: ${GCP_LABELS:=}
+	: ${GCP_EXPORT_ZONE:=us-central1-f}
 
 	docker rm -f gcloud-config-$IMAGE_NAME || true
 
@@ -44,7 +45,7 @@ main() {
 	
 	docker rm -f gcloud-create-instance-$IMAGE_NAME || true
 
-	docker run --rm --name gcloud-create-instance-$IMAGE_NAME --volumes-from gcloud-config-$IMAGE_NAME google/cloud-sdk gcloud compute images export --quiet --destination-uri gs://${GCP_STORAGE_BUNDLE}/${IMAGE_PRE_NAME}${IMAGE_NAME}.tar.gz --image ${IMAGE_NAME} --project ${GCP_PROJECT}
+	docker run --rm --name gcloud-create-instance-$IMAGE_NAME --volumes-from gcloud-config-$IMAGE_NAME google/cloud-sdk gcloud compute images export --quiet --destination-uri gs://${GCP_STORAGE_BUNDLE}/${IMAGE_PRE_NAME}${IMAGE_NAME}.tar.gz --image ${IMAGE_NAME} --project ${GCP_PROJECT} --zone ${GCP_EXPORT_ZONE}
 	docker run --rm --name gcloud-create-instance-public-$IMAGE_NAME --volumes-from gcloud-config-$IMAGE_NAME google/cloud-sdk gsutil -m acl ch -r -u AllUsers:R gs://${GCP_STORAGE_BUNDLE}/${IMAGE_PRE_NAME}${IMAGE_NAME}.tar.gz
 
 	# Apply the labels (GCS Metadata)
