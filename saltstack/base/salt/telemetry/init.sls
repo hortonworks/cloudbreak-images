@@ -18,7 +18,7 @@ install_cdp_infra_tools_packages:
   pkg.installed:
     - pkgs:
 {% if salt['environ.get']('INCLUDE_CDP_TELEMETRY') == "Yes" %}
-  {% if salt['environ.get']('IMAGE_BURNING_TYPE') == 'prewarm' and salt['environ.get']('STACK_VERSION').split('.') | map('int') | list <= '7.3.1'.split('.') | map('int') | list %}
+  {% if salt['environ.get']('IMAGE_TYPE') == 'runtime' and salt['environ.get']('STACK_VERSION').split('.') | map('int') | list <= '7.3.1'.split('.') | map('int') | list %}
       - cdp-telemetry: 1.3.10_b1
   {% else %}
       - cdp-telemetry: 1.3.16_b2
@@ -28,7 +28,7 @@ install_cdp_infra_tools_packages:
   {% if pillar['OS'] != 'redhat9' %}
       - redhat-lsb-core # this will install redhat-lsb-core which is required for fluent (but not on RHEL 9 as it's not available there!)
   {% endif %}
-  {% if salt['environ.get']('IMAGE_BURNING_TYPE') == 'prewarm' and salt['environ.get']('STACK_VERSION').split('.') | map('int') | list <= '7.3.1'.split('.') | map('int') | list %}
+  {% if salt['environ.get']('IMAGE_TYPE') == 'runtime' and salt['environ.get']('STACK_VERSION').split('.') | map('int') | list <= '7.3.1'.split('.') | map('int') | list %}
       - cdp-logging-agent: 1.3.10_b1
   {% else %}
       - cdp-logging-agent: 1.3.12_b1

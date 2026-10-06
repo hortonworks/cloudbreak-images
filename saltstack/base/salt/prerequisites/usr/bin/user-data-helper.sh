@@ -24,12 +24,12 @@ function version { echo "$@" | awk -F. '{ printf("%d%03d%03d%03d\n", $1,$2,$3,$4
 # : ${XARGS_PARALLEL:="-P 20"}
 : ${PROXY_PROTOCOL:=http}
 
-{% if pillar['CUSTOM_IMAGE_TYPE'] == 'freeipa' %}
+{% if pillar['IMAGE_TYPE'] == 'freeipa' %}
 export IS_FREEIPA=true
 {% else %}
 export IS_FREEIPA=false
 {% endif %}
-{% if pillar['IMAGE_BURNING_TYPE'] == 'base' %}
+{% if pillar['IMAGE_TYPE'] == 'base' %}
 export IS_BASE=true
 {% else %}
 export IS_BASE=false

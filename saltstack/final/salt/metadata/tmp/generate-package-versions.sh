@@ -79,7 +79,7 @@ do
 	fi
 done
 
-if [[ "$CUSTOM_IMAGE_TYPE" == "freeipa" ]]; then
+if [[ "$IMAGE_TYPE" == "freeipa" ]]; then
   set_version_for_rpm_pkg "ipa-server"
   set_version_for_rpm_pkg "ipa-server-trust-ad"
 
@@ -100,8 +100,7 @@ if [[ "$CUSTOM_IMAGE_TYPE" == "freeipa" ]]; then
 	else
 		echo "WARNING: It is not possible to retrieve the version of FreeIPA LDAP Agent from the specified url."
 	fi
-elif [[ "$CUSTOM_IMAGE_TYPE" == "hortonworks" ]]; then
-
+else
 	if [ -n "$STACK_VERSION" ] && [ $(version $STACK_VERSION) -lt $(version "7.2.15") ]; then
 		echo "Skip java versions as CB should not allow to force java version before 7.2.15"
 	else
