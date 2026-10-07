@@ -57,7 +57,7 @@ setuptools==84.0.0
 six==1.17.0
 stevedore==5.9.1
 typing_extensions==4.16.0
-urllib3==2.7.0
+urllib3==2.8.0
 warlock==2.1.0
 wcwidth==0.8.3
 wrapt==2.4.1
