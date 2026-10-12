@@ -1,0 +1,39 @@
+#!/bin/bash
+
+: ${AZURE_IMAGE_PUBLISHER?= required}
+: ${AZURE_IMAGE_OFFER?= required}
+: ${AZURE_IMAGE_SKU?= required}
+: ${AZURE_IMAGE_VERSION?= required}
+#AZURE_IMAGE_PUBLISHER="RedHat"
+#AZURE_IMAGE_OFFER="rhel-byos"
+#AZURE_IMAGE_SKU="rhel-lvm88"
+#AZURE_IMAGE_VERSION="8.8"
+#SKIP_THIS="gen2"  Where the source image id contains this substring will be skipped.
+
+debug() {
+  [[ "$DEBUG" ]] && echo "-----> $*" 1>&2
+}
+
+alias r="source $BASH_SOURCE"
+
+azure_login() {
+  if [[ "$ARM_CLIENT_ID" ]] && [[ "$ARM_CLIENT_SECRET" ]]; then
+    az login --username $ARM_CLIENT_ID --password $ARM_CLIENT_SECRET --service-principal --tenant $ARM_TENANT_ID
+  fi
+}
+
+azure_get_rhel8_source_image_id() {
+  if [[ "$SKIP_THIS" ]]; then
+    az vm image list --publisher $AZURE_IMAGE_PUBLISHER --offer $AZURE_IMAGE_OFFER --all | jq -r --arg version $AZURE_IMAGE_VERSION --arg offer $AZURE_IMAGE_OFFER --arg skipthis $SKIP_THIS '.[] | select(.version | startswith($version)) | select(.urn | contains($offer)) | select(.urn | contains($skipthis) | not)  | .urn'
+  else
+    az vm image list --publisher $AZURE_IMAGE_PUBLISHER --offer $AZURE_IMAGE_OFFER --all | jq -r --arg version $AZURE_IMAGE_VERSION --arg offer $AZURE_IMAGE_OFFER '.[] | select(.version | startswith($version)) | select(.urn | contains($offer)) | .urn'
+  fi
+}
+
+main() {
+  : ${DEBUG:=1}
+  azure_login
+  azure_get_rhel8_source_image_id > rhel8_base_image_id.out
+}
+
+[[ "$0" == "$BASH_SOURCE" ]] && main "$@"
