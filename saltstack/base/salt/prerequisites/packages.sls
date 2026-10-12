@@ -39,10 +39,12 @@ packages_install:
   pkg.installed:
     - refresh: False
     - pkgs:
-  # This is legacy, but needed by CM and it creates /etc/init.d which is also needed by /saltstack/base/salt/performance/thp.sls
-  # on RHEL 8 and CentOS 7 it is installed by default.
   {% if pillar['OS'] == 'redhat9' %}
+      # chkconfig is legacy, but needed by CM and it creates /etc/init.d which is also needed by /saltstack/base/salt/performance/thp.sls
+      # on RHEL 8 and CentOS 7 it is installed by default.
       - chkconfig
+      # Not installed starting with RHEL 9, but still needed for backward compatibility
+      - krb5-devel
   {% endif %}
       - wget
       - tar
