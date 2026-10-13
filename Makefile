@@ -179,9 +179,9 @@ ifdef DOCKER_VERSION
 endif
 
 ifeq ($(MOCK),true)
-	PACKER_OPTS=$(PACKER_VARS) -var atlas_artifact=mock
+	PACKER_OPTS=$(PACKER_VARS) -var atlas_artifact=mock -on-error=abort
 else
-	PACKER_OPTS+=$(PACKER_VARS)
+	PACKER_OPTS+=$(PACKER_VARS) -on-error=abort
 endif
 
 ifeq ($(IMAGE_TYPE),freeipa)
