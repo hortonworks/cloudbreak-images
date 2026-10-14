@@ -266,6 +266,7 @@ packer_in_container() {
     -e SALTBOOT_VERSION="$SALTBOOT_VERSION" \
     -e SALTBOOT_HTTPS_ENABLED="$SALTBOOT_HTTPS_ENABLED" \
     -e PACKER_GITHUB_API_TOKEN="$PACKER_GITHUB_API_TOKEN" \
+    -e CLOUDERA_ROOT_CA="$CLOUDERA_ROOT_CA" \
     -v /var/run/docker.sock:/var/run/docker.sock \
     -v $PWD:$PWD \
     -w $PWD \
