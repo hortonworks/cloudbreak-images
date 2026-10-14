@@ -4,6 +4,7 @@
     "image_type": "{{ env `IMAGE_TYPE` }}",
     "mock": "{{ env `MOCK` }}",
     "description": "{{ env `DESCRIPTION` }}",
+    "cloudera_root_ca": "{{ env `CLOUDERA_ROOT_CA` }}",
     "gcp_account_file": "{{env `GCP_ACCOUNT_FILE`}}",
     "gcp_storage_bundle": "{{env `GCP_STORAGE_BUNDLE`}}",
     "gcp_source_image": "{{env `GCP_SOURCE_IMAGE`}}",
@@ -716,6 +717,15 @@
         "sudo mkdir -p /opt/provision-scripts",
         "sudo chmod -R a+w /opt/provision-scripts"
       ]
+    },
+    {
+      "type": "shell",
+      "script": "scripts/install-cloudera-root-ca.sh",
+      "environment_vars": [
+        "CLOUDERA_ROOT_CA={{ user `cloudera_root_ca` }}"
+      ],
+      "execute_command": "chmod +x {{ .Path }}; sudo {{ .Vars }} {{ .Path }}",
+      "remote_folder": "/opt/provision-scripts"
     },
     {
       "type": "shell",
