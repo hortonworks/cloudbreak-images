@@ -156,7 +156,7 @@ packer_in_container() {
     -e PLAN_NAME=$PLAN_NAME \
     -e MANAGED_SOURCE_IMAGE_NAME=$MANAGED_SOURCE_IMAGE_NAME \
     -e TMPDIR=/var/tmp/ \
-    -e CLOUDERA_ROOT_CA="$CLOUDERA_ROOT_CA" \
+    -e CLOUDERA_ROOT_CA \
     -v /var/run/docker.sock:/var/run/docker.sock \
     -v $PWD:$PWD \
     -w $PWD \

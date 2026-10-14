@@ -7,33 +7,24 @@
 #
 # The build silently skips the installation when CLOUDERA_ROOT_CA is not set, so
 # local/dev builds without the secret keep working.
+#
+# The certificate content is deliberately never echoed or traced: a public root
+# CA is not a secret, but certificate-shaped blobs can trip secret scanners.
 
 set -e -o pipefail
-
-: ${DEBUG:=1}
-if [[ "${DEBUG}" == "1" ]]; then
-  set -x
-fi
+set +x
 
 ANCHOR_DIR="/etc/pki/ca-trust/source/anchors"
 CERT_PATH="${ANCHOR_DIR}/cloudera-root-ca.crt"
 
-# Bail out early (and successfully) when no certificate was provided.
-if [[ -z "$(printf '%s' "${CLOUDERA_ROOT_CA}" | tr -d '[:space:]')" ]]; then
+if [[ -z "${CLOUDERA_ROOT_CA//[[:space:]]/}" ]]; then
   echo "CLOUDERA_ROOT_CA is not set, skipping Cloudera root CA installation."
   exit 0
 fi
 
-# Normalise the certificate content: this converts a single-line value that uses
-# literal '\n' escapes into a real multi-line PEM, while leaving an already
-# multi-line PEM unchanged (PEM content contains no backslash escapes).
-CERT_CONTENT="$(printf '%b' "${CLOUDERA_ROOT_CA}")"
-
 echo "Installing Cloudera root CA into the system trust store..."
-
 mkdir -p "${ANCHOR_DIR}"
-printf '%s\n' "${CERT_CONTENT}" > "${CERT_PATH}"
+printf '%s\n' "${CLOUDERA_ROOT_CA}" > "${CERT_PATH}"
 chmod 644 "${CERT_PATH}"
 update-ca-trust extract
-
 echo "Cloudera root CA installed and system trust store updated."
