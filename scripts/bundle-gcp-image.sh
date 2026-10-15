@@ -31,6 +31,9 @@ export_image_to_bucket() {
 			if docker run --rm --name gcloud-create-instance-$IMAGE_NAME --volumes-from gcloud-config-$IMAGE_NAME google/cloud-sdk gcloud compute images export --quiet --destination-uri gs://${GCP_STORAGE_BUNDLE}/${IMAGE_PRE_NAME}${IMAGE_NAME}.tar.gz --image ${IMAGE_NAME} --project ${GCP_PROJECT} --zone ${zone}; then
 				return 0
 			fi
+			if (( attempt < GCP_EXPORT_ZONE_MAX_ATTEMPTS )); then
+				sleep $((20 + attempt * 10))
+			fi
 		done
 	done
 	return 1
