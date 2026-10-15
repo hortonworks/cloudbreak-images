@@ -20,7 +20,7 @@ verify_parcel_checksum() {
   local SHA_TYPE=$1
 
   echo "Downloading sha file from $STACK_BASEURL/${PARCELS_NAME}.$SHA_TYPE"
-  curl -s -S "${STACK_BASEURL}/${PARCELS_NAME}.${SHA_TYPE}" -o "$PARCEL_ARCHIVE_PATH/$PARCELS_NAME.$SHA_TYPE"
+  curl -sLf -S "${STACK_BASEURL}/${PARCELS_NAME}.${SHA_TYPE}" -o "$PARCEL_ARCHIVE_PATH/$PARCELS_NAME.$SHA_TYPE"
   cp "$PARCEL_ARCHIVE_PATH/$PARCELS_NAME.$SHA_TYPE" "$PARCEL_ARCHIVE_PATH/$PARCELS_NAME.sha"
   sed "s/$/  ${PARCELS_NAME}/" "$PARCEL_ARCHIVE_PATH/$PARCELS_NAME.$SHA_TYPE" |
     tee "$PARCEL_ARCHIVE_PATH/$PARCELS_NAME.shacheck" > /dev/null
@@ -40,7 +40,7 @@ download_cdh_parcel() {
   cd ${PARCELS_ROOT}
 
   echo "Downloading parcel from  ${STACK_BASEURL}/${PARCELS_NAME}"
-  curl --progress-bar -C - -s -S --create-dirs ${STACK_BASEURL}/${PARCELS_NAME} -o ${PARCEL_ARCHIVE_PATH}/${PARCELS_NAME}
+  curl --progress-bar -C - -sLf -S --create-dirs ${STACK_BASEURL}/${PARCELS_NAME} -o ${PARCEL_ARCHIVE_PATH}/${PARCELS_NAME}
   # C5 uses SHA-1 and C6 uses SHA-256
   if  curl -sLf "${STACK_BASEURL}/${PARCELS_NAME}.sha1" -o /dev/null; then
     verify_parcel_checksum "sha1"
