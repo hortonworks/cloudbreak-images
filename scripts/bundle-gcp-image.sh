@@ -42,8 +42,8 @@ main() {
 	: ${SERVICE_ACCOUNT_EMAIL:=$(cat $GCP_ACCOUNT_FILE | jq .client_email -r)}
 	: ${IMAGE_PRE_NAME:=}
 	: ${GCP_LABELS:=}
-	: ${GCP_EXPORT_ZONE:="us-central1-f,us-central1-a,us-central1-b,us-central1-c"}
-	: ${GCP_EXPORT_ZONE_MAX_ATTEMPTS:=2}
+	: ${GCP_EXPORT_ZONE:="us-central1-a,us-central1-b,us-central1-f,us-central1-c"}
+	: ${GCP_EXPORT_ZONE_MAX_ATTEMPTS:=4}
 
 	docker rm -f gcloud-config-$IMAGE_NAME || true
 
