@@ -1064,6 +1064,38 @@
         "gc-redhat9",
         "arm-redhat9"
       ]
+    },
+    {
+      "type": "shell",
+      "inline": [
+        "sudo mkdir -p /opt/validation-scripts",
+        "sudo chmod -R a+w /opt/validation-scripts"
+      ]
+    },
+    {
+      "type": "file",
+      "source": "scripts/validation/saltstack",
+      "destination": "/opt/validation-scripts/saltstack"
+    },
+    {
+      "type": "shell",
+      "script": "scripts/validation/validator.sh",
+      "environment_vars": [
+        "OS={{user `os`}}",
+        "ARCHITECTURE={{user `architecture`}}",
+        "SALT_PATH={{user `salt_path`}}",
+        "CLOUD_PROVIDER={{ user `cloud_provider` }}",
+        "IMAGE_TYPE={{ user `image_type` }}"
+      ],
+      "execute_command": "chmod +x {{ .Path }}; sudo {{ .Vars }} {{ .Path }}",
+      "remote_folder": "/opt/validation-scripts"
+    },
+    {
+      "type": "shell",
+      "inline": [
+        "sudo rm -rf /opt/validation-scripts"
+      ],
+      "remote_folder": "/opt/validation-scripts"
     }
   ],
   "post-processors": [
