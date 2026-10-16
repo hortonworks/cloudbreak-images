@@ -175,11 +175,7 @@ function redhat9_update_python39() {
   #yum update -y python3
   dnf install -y python3-devel
 
-  if [[ "${CLOUD_PROVIDER}" == "AWS" ]]; then
-    echo PYTHON39=$(dnf list installed | grep ^python3\\. | grep @System | grep -oi " [^\s]* " | xargs) >> /tmp/python_install.properties
-  else
-    echo PYTHON39=$(dnf list installed | grep ^python3\\. | grep -oi " [^\s]* " | xargs) >> /tmp/python_install.properties
-  fi
+  echo PYTHON39=$(dnf list installed | grep ^python3\\. | grep -oi " [^\s]* " | xargs) >> /tmp/python_install.properties
 
   # Update PIP and enable global logging
   /usr/bin/python3.9 -m pip install -U pip
