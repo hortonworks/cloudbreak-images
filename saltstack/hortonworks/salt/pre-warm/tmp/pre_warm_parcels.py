@@ -8,6 +8,7 @@ import tarfile
 import time
 import functools
 import hashlib
+import shutil
 
 print("PRE_WARM_PARCELS: " + os.environ.get("PRE_WARM_PARCELS", "[]"))
 print("\n-------------\n")
@@ -154,6 +155,13 @@ except NameError:
 
         ln_cmd = 'cd {0}; ln -s {1} {2}'.format(PARCELS_ROOT, base_folder, parcel_meta["name"])
         subprocess.check_call(ln_cmd, shell=True)
+
+        # Get rid of the embedded JDK of Semantic Search
+        if "SEMANTIC_SEARCH" == parcel_meta["name"]:
+            jdk_folder = os.path.join(PARCELS_ROOT, base_folder, "lib", "jdk21")
+            if os.path.exists(jdk_folder):
+                shutil.rmtree(jdk_folder)
+                os.symlink("/etc/alternatives/java_sdk_21_openjdk", jdk_folder)
 
         cmd = 'rm -f "{0}"'.format(parcel_path)
         subprocess.check_call(cmd, shell=True)
