@@ -2,8 +2,8 @@
 install_nginx_redhat8:
   cmd.run:
     - name: |
-        sudo dnf module reset nginx -y
-        sudo dnf module enable nginx:1.22 php:7.4 -y
+        sudo dnf module reset nginx php -y
+        sudo dnf module enable nginx:1.24 php:8.2 -y
         sudo dnf install nginx -y
 {% else %}
 install_nginx:
