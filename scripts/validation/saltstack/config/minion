@@ -1,0 +1,13 @@
+file_client: local
+requests_lib: True
+backend_requests: True
+pillarenv_from_saltenv: True
+metadata_server_grains: True
+
+pillar_roots:
+  validation:
+    - /opt/validation-scripts/saltstack/pillar
+
+file_roots:
+  validation:
+    - /opt/validation-scripts/saltstack/state

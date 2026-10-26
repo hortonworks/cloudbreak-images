@@ -1,0 +1,5 @@
+validation:
+  '*':
+    - os
+    - python
+    - jdk
