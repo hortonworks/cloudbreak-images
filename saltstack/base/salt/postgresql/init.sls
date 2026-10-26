@@ -12,6 +12,18 @@
     - template: jinja
 {% endif %}
 
+# For some reason PostgreSQL dropped support for RHEL 9.6, but not for any other RHEL 9.x versions,
+# so we now have this workaround...
+{% if (pillar['OS'] == 'redhat9' and salt['environ.get']('RHEL_VERSION') == '9.6') %}
+/etc/pki/rpm-gpg/PGDG-RPM-GPG-KEY-RHEL:
+  file.managed:
+    - source: salt://postgresql/yum/pgdg-redhat9.6-gpg
+
+/etc/yum.repos.d/postgres-all-el9.6.repo:
+  file.managed:
+    - source: salt://postgresql/yum/postgres-all-el9.6.repo
+    - template: jinja
+{% else %}
 install-postgres-all-in-one-repo:
   pkg.installed:
     - sources:
@@ -19,6 +31,7 @@ install-postgres-all-in-one-repo:
       - pgdg-redhat-repo: https://download.postgresql.org/pub/repos/yum/reporpms/EL-9-{{ grains['osarch'] }}/pgdg-redhat-repo-latest.noarch.rpm
 {% else %}
       - pgdg-redhat-repo: https://download.postgresql.org/pub/repos/yum/reporpms/EL-8-{{ grains['osarch'] }}/pgdg-redhat-repo-latest.noarch.rpm
+{% endif %}
 {% endif %}
 
 disable-pg13:
