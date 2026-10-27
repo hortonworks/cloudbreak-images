@@ -1080,7 +1080,8 @@
       "inline": [
         "sudo mkdir -p /opt/validation-scripts",
         "sudo chmod -R 777 /opt/validation-scripts"
-      ]
+      ],
+      "remote_folder": "/opt/provision-scripts"
     },
     {
       "type": "file",
