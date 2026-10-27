@@ -6,8 +6,8 @@ metadata_server_grains: True
 
 pillar_roots:
   validation:
-    - /opt/validation-scripts/saltstack/pillar
+    - /opt/packer/validation-scripts/saltstack/pillar
 
 file_roots:
   validation:
-    - /opt/validation-scripts/saltstack/state
+    - /opt/packer/validation-scripts/saltstack/state
