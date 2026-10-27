@@ -715,7 +715,9 @@
       "type": "shell",
       "inline": [
         "sudo mkdir -p /opt/provision-scripts",
-        "sudo chmod -R a+w /opt/provision-scripts"
+        "sudo chmod -R a+w /opt/provision-scripts",
+        "sudo mkdir -p /opt/validation-scripts",
+        "sudo chmod -R a+w /opt/validation-scripts"
       ]
     },
     {
@@ -1081,7 +1083,7 @@
         "sudo mkdir -p /opt/validation-scripts",
         "sudo chmod -R 777 /opt/validation-scripts"
       ],
-      "remote_folder": "/opt/provision-scripts"
+      "remote_folder": "/opt/validation-scripts"
     },
     {
       "type": "file",
