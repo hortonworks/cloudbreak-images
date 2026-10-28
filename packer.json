@@ -714,8 +714,8 @@
     {
       "type": "shell",
       "inline": [
-        "sudo mkdir -p /opt/provision-scripts",
-        "sudo chmod -R a+w /opt/provision-scripts"
+        "sudo mkdir -p /opt/packer/provision-scripts",
+        "sudo chmod -R a+w /opt/packer"
       ]
     },
     {
@@ -725,7 +725,7 @@
         "CLOUDERA_ROOT_CA={{ user `cloudera_root_ca` }}"
       ],
       "execute_command": "chmod +x {{ .Path }}; sudo {{ .Vars }} {{ .Path }}",
-      "remote_folder": "/opt/provision-scripts"
+      "remote_folder": "/opt/packer/provision-scripts"
     },
     {
       "type": "shell",
@@ -734,7 +734,7 @@
         "SSH_PUBLIC_KEY={{ user `ssh_public_key` }}"
       ],
       "execute_command": "chmod +x {{ .Path }}; sudo {{ .Vars }} {{ .Path }}",
-      "remote_folder": "/opt/provision-scripts"
+      "remote_folder": "/opt/packer/provision-scripts"
     },
     {
       "type": "shell",
@@ -747,7 +747,7 @@
         "STIG_ENABLED={{user `stig_enabled`}}"
       ],
       "execute_command": "chmod +x {{ .Path }}; sudo {{ .Vars }} {{ .Path }}",
-      "remote_folder": "/opt/provision-scripts"
+      "remote_folder": "/opt/packer/provision-scripts"
     },
     {
       "type": "shell",
@@ -759,7 +759,7 @@
       "environment_vars": [
         "FIPS_MODE={{user `fips_mode`}}"
       ],
-      "remote_folder": "/opt/provision-scripts"
+      "remote_folder": "/opt/packer/provision-scripts"
     },
     {
       "type": "shell",
@@ -774,7 +774,7 @@
         "ARCHITECTURE={{user `architecture`}}",
         "CLOUD_PROVIDER={{user `cloud_provider`}}"
       ],
-      "remote_folder": "/opt/provision-scripts"
+      "remote_folder": "/opt/packer/provision-scripts"
     },
     {
       "type": "file",
@@ -812,7 +812,7 @@
         "INSTALLATION_STATE=base"
       ],
       "execute_command": "chmod +x {{ .Path }}; sudo {{ .Vars }} {{ .Path }}",
-      "remote_folder": "/opt/provision-scripts"
+      "remote_folder": "/opt/packer/provision-scripts"
     },
     {
       "type": "shell",
@@ -838,7 +838,7 @@
         "DEFAULT_JAVA_MAJOR_VERSION={{user `default_java_major_version`}}"
       ],
       "execute_command": "chmod +x {{ .Path }}; sudo {{ .Vars }} {{ .Path }}",
-      "remote_folder": "/opt/provision-scripts"
+      "remote_folder": "/opt/packer/provision-scripts"
     },
     {
       "type": "shell",
@@ -909,7 +909,7 @@
         "SALTBOOT_VERSION={{user `saltboot_version`}}",
         "SALTBOOT_HTTPS_ENABLED={{user `saltboot_https_enabled`}}"
       ],
-      "remote_folder": "/opt/provision-scripts"
+      "remote_folder": "/opt/packer/provision-scripts"
     },
     {
       "type": "shell",
@@ -918,7 +918,7 @@
       ],
       "expect_disconnect": true,
       "execute_command": "chmod +x {{ .Path }}; sudo {{ .Vars }} {{ .Path }} ",
-      "remote_folder": "/opt/provision-scripts"
+      "remote_folder": "/opt/packer/provision-scripts"
     },
     {
       "type": "shell",
@@ -960,7 +960,7 @@
         "OSCAP_SCAN_ENABLED={{user `oscap_scan_enabled`}}",
         "DEFAULT_JAVA_MAJOR_VERSION={{user `default_java_major_version`}}"
       ],
-      "remote_folder": "/opt/provision-scripts"
+      "remote_folder": "/opt/packer/provision-scripts"
     },
     {
       "type": "file",
@@ -984,7 +984,7 @@
         "PRE_WARM_CSD={{ user `pre_warm_csd` }}"
       ],
       "execute_command": "chmod +x {{ .Path }}; sudo {{ .Vars }} {{ .Path }}",
-      "remote_folder": "/opt/provision-scripts"
+      "remote_folder": "/opt/packer/provision-scripts"
     },
     {
       "type": "file",
@@ -1008,7 +1008,7 @@
         "CLOUD_PROVIDER={{ user `cloud_provider` }}"
       ],
       "execute_command": "chmod +x {{ .Path }}; sudo {{ .Vars }} {{ .Path }}",
-      "remote_folder": "/opt/provision-scripts"
+      "remote_folder": "/opt/packer/provision-scripts"
     },
     {
       "type": "file",
@@ -1034,13 +1034,13 @@
         "sudo rm /tmp/installed-delta-packages.csv",
         "sudo rm /tmp/installed-full-packages.csv"
       ],
-      "remote_folder": "/opt/provision-scripts"
+      "remote_folder": "/opt/packer/provision-scripts"
     },
     {
       "type": "shell",
       "script": "scripts/remove-debug-user.sh",
       "execute_command": "chmod +x {{ .Path }}; sudo {{ .Vars }} {{ .Path }}",
-      "remote_folder": "/opt/provision-scripts"
+      "remote_folder": "/opt/packer/provision-scripts"
     },
     {
       "type": "shell",
@@ -1052,14 +1052,7 @@
         "IMAGE_TYPE={{ user `image_type` }}"
       ],
       "execute_command": "chmod +x {{ .Path }}; sudo {{ .Vars }} {{ .Path }}",
-      "remote_folder": "/opt/provision-scripts"
-    },
-    {
-      "type": "shell",
-      "inline": [
-        "sudo rm -rf /opt/provision-scripts"
-      ],
-      "remote_folder": "/opt/provision-scripts"
+      "remote_folder": "/opt/packer/provision-scripts"
     },
     {
       "type": "file",
@@ -1078,9 +1071,10 @@
     {
       "type": "shell",
       "inline": [
-        "sudo mkdir -p /opt/validation-scripts",
-        "sudo chmod -R 777 /opt/validation-scripts"
-      ]
+        "sudo mkdir -p /opt/packer/validation-scripts",
+        "sudo chmod -R 777 /opt/packer/validation-scripts"
+      ],
+      "remote_folder": "/opt/packer"
     },
     {
       "type": "file",
@@ -1098,14 +1092,14 @@
         "IMAGE_TYPE={{ user `image_type` }}"
       ],
       "execute_command": "chmod +x {{ .Path }}; sudo {{ .Vars }} {{ .Path }}",
-      "remote_folder": "/opt/validation-scripts"
+      "remote_folder": "/opt/packer/validation-scripts"
     },
     {
       "type": "shell",
       "inline": [
-        "sudo rm -rf /opt/validation-scripts"
+        "sudo rm -rf /opt/packer"
       ],
-      "remote_folder": "/opt/validation-scripts"
+      "remote_folder": "/opt/packer"
     }
   ],
   "post-processors": [
