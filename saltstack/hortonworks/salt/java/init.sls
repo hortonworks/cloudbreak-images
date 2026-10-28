@@ -6,13 +6,14 @@ set_java_home_user:
     - mode: 755
     - contents: |
         export JAVA_HOME={{ pillar['JAVA_HOME'] }}
+        export OPENSEARCH_JAVA_HOME=/usr/lib/jvm/java-21-openjdk
 
 {% if grains['init'] == 'systemd' -%}
 set_java_home_systemd:
   file.replace:
     - name: /etc/systemd/system.conf
     - pattern: \#*(DefaultEnvironment=.*)
-    - repl: \1 JAVA_HOME={{ pillar['JAVA_HOME'] }}
+    - repl: \1 JAVA_HOME={{ pillar['JAVA_HOME'] }} OPENSEARCH_JAVA_HOME=/usr/lib/jvm/java-21-openjdk
 {% endif %}
 
 {% if salt['environ.get']('OS') == 'centos7' %}
