@@ -120,7 +120,7 @@ sshd_Exchange_algorithms:
 
 add_cis_control_sh:
   file.managed:
-    - name: /opt/provision-scripts/cis_control.sh
+    - name: /opt/packer/provision-scripts/cis_control.sh
     - makedirs: True
     - mode: 755
     - source: salt://cis-controls/scripts/cis_control.sh
@@ -134,7 +134,7 @@ add_cis_control_sh:
 
 execute_cis_control_sh:
   cmd.run:
-    - name: /opt/provision-scripts/cis_control.sh
+    - name: /opt/packer/provision-scripts/cis_control.sh
     - env:
       - IMAGE_BASE_NAME: {{ salt['environ.get']('IMAGE_BASE_NAME') }}
       - CLOUD_PROVIDER: {{ salt['environ.get']('CLOUD_PROVIDER') }}

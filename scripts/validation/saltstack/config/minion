@@ -6,15 +6,15 @@ metadata_server_grains: True
 
 pillar_roots:
   validation:
-    - /opt/validation-scripts/saltstack/pillar
+    - /opt/packer/validation-scripts/saltstack/pillar
 
 file_roots:
   validation:
-    - /opt/validation-scripts/saltstack/state
+    - /opt/packer/validation-scripts/saltstack/state
 
 # Keep the validator from leaving Salt state behind on the image (CB-35279).
 # A cached /etc/salt/minion_id holds the build VM's hostname and breaks minion registration on non-gateway nodes.
 id: image-validator
 minion_id_caching: False
-cachedir: /opt/validation-scripts/cache
-pki_dir: /opt/validation-scripts/pki
+cachedir: /opt/packer/validation-scripts/cache
+pki_dir: /opt/packer/validation-scripts/pki

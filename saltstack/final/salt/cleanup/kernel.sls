@@ -18,14 +18,14 @@ list_installed_kernels_after_cleanup:
 {% else %}
 add_kernel_cleanup_script:
   file.managed:
-    - name: /opt/provision-scripts/kernel/kernel-cleanup.sh
+    - name: /opt/packer/provision-scripts/kernel/kernel-cleanup.sh
     - mode: 755
     - makedirs: True
     - source: salt://{{ slspath }}/scripts/kernel-cleanup.sh
 
 run_kernel_cleanup_script:
   cmd.run:
-    - name: sh -x /opt/provision-scripts/kernel/kernel-cleanup.sh
+    - name: sh -x /opt/packer/provision-scripts/kernel/kernel-cleanup.sh
     - shell: /bin/bash
     - require:
       - file: add_kernel_cleanup_script
