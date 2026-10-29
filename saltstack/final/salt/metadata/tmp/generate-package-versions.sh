@@ -125,6 +125,8 @@ fi
 
 source /tmp/python_install.properties
 
+set_version "python" "$(python --version 2>&1 | grep -oP 'Python\s+\K\d+\.\d+' || true)"
+
 if [[ -n "$PYTHON27" ]]; then
 	cat /tmp/package-versions.json | jq --arg version ${PYTHON27} '. + {"python27": $version}' > /tmp/package-versions.json.tmp && mv /tmp/package-versions.json.tmp /tmp/package-versions.json
 fi

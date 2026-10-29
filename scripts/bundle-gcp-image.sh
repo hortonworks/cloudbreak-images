@@ -31,6 +31,9 @@ export_image_to_bucket() {
 			if docker run --rm --name gcloud-create-instance-$IMAGE_NAME --volumes-from gcloud-config-$IMAGE_NAME google/cloud-sdk gcloud compute images export --quiet --destination-uri gs://${GCP_STORAGE_BUNDLE}/${IMAGE_PRE_NAME}${IMAGE_NAME}.tar.gz --image ${IMAGE_NAME} --project ${GCP_PROJECT} --zone ${zone}; then
 				return 0
 			fi
+			if (( attempt < GCP_EXPORT_ZONE_MAX_ATTEMPTS )); then
+				sleep $((20 + attempt * 10))
+			fi
 		done
 	done
 	return 1
@@ -42,8 +45,8 @@ main() {
 	: ${SERVICE_ACCOUNT_EMAIL:=$(cat $GCP_ACCOUNT_FILE | jq .client_email -r)}
 	: ${IMAGE_PRE_NAME:=}
 	: ${GCP_LABELS:=}
-	: ${GCP_EXPORT_ZONE:="us-central1-f,us-central1-a,us-central1-b,us-central1-c"}
-	: ${GCP_EXPORT_ZONE_MAX_ATTEMPTS:=2}
+	: ${GCP_EXPORT_ZONE:="us-west2-a,us-west2-b,us-west2-c"}
+	: ${GCP_EXPORT_ZONE_MAX_ATTEMPTS:=4}
 
 	docker rm -f gcloud-config-$IMAGE_NAME || true
 
