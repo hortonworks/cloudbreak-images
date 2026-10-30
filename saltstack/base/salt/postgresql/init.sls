@@ -17,7 +17,11 @@
 {% if (pillar['OS'] == 'redhat9' and salt['environ.get']('RHEL_VERSION') == '9.6') %}
 /etc/pki/rpm-gpg/PGDG-RPM-GPG-KEY-RHEL:
   file.managed:
+{% if grains['osarch'] == 'aarch64' %}
+    - source: salt://postgresql/yum/pgdg-redhat9.6-aarch64-gpg
+{% else %}
     - source: salt://postgresql/yum/pgdg-redhat9.6-gpg
+{% endif %}
 
 /etc/yum.repos.d/postgres-all-el9.6.repo:
   file.managed:
