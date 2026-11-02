@@ -12,8 +12,13 @@ oscap_scan:
 
 {% set os_type = salt['environ.get']('OS_TYPE') %}
 {% if os_type == 'redhat9' %}
-  {% set oval_url = 'https://security.access.redhat.com/data/oval/v2/RHEL9/rhel-9.6-eus.oval.xml.bz2' %}
-  {% set oval_file = 'rhel-9.6-eus.oval.xml' %}
+  {% if salt['environ.get']('RHEL_VERSION') == '9.8' %}
+    {% set oval_url = 'https://security.access.redhat.com/data/oval/v2/RHEL9/rhel-9.8-eus.oval.xml.bz2' %}
+    {% set oval_file = 'rhel-9.8-eus.oval.xml' %}
+  {% else %}
+    {% set oval_url = 'https://security.access.redhat.com/data/oval/v2/RHEL9/rhel-9.6-eus.oval.xml.bz2' %}
+    {% set oval_file = 'rhel-9.6-eus.oval.xml' %}
+  {% endif %}
   {% set ssg_file = '/usr/share/xml/scap/ssg/content/ssg-rhel9-ds.xml' %}
 {% else %}
   {% set oval_url = 'https://security.access.redhat.com/data/oval/v2/RHEL8/rhel-8.oval.xml.bz2' %}
