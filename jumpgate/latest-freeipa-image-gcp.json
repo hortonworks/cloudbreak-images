@@ -1,31 +1,31 @@
 {
-  "created": 1793197328,
-  "published": 1793199980,
-  "date": "2026-10-28",
+  "created": 1793618854,
+  "published": 1793621559,
+  "date": "2026-11-02",
   "description": "Official Cloudbreak image",
   "images": {
     "gcp": {
-      "default": "cloudera-freeipa-images/freeipa-1793197321921.tar.gz"
+      "default": "cloudera-freeipa-images/freeipa-1793618846695.tar.gz"
     }
   },
   "os": "redhat9",
   "os_type": "redhat9",
   "architecture": "x86_64",
-  "uuid": "81887aba-6223-4b53-87c7-5a1f0b7448f2",
+  "uuid": "a9d4747c-b393-44d7-bd48-db36f01e38f7",
   "package-versions": {
-    "blackbox-exporter": "0.25.0",
+    "blackbox-exporter": "0.29.1",
     "cdp-logging-agent": "1.3.12_b1",
-    "cdp-prometheus": "2.54.1",
-    "cdp-request-signer": "1.3.16_b2",
-    "cdp-telemetry": "1.3.16_b2",
+    "cdp-prometheus": "3.15.1",
+    "cdp-request-signer": "1.3.18_b1",
+    "cdp-telemetry": "1.3.18_b1",
     "cem-agents": "1.26.02",
     "cem-agents_gbn": "76334049",
-    "cloudbreak_images": "121fb16b1f366c6b2376be77f4fd41d2f8ab6fc5",
+    "cloudbreak_images": "3207caeab72a97feaeba0a74fea13a1b44dcd39c",
     "freeipa-health-agent": "3.1.0.4-b656.el9",
     "freeipa-ldap-agent": "1.1.0.4-b656.el9",
     "freeipa-plugin": "1.1.0.4-b656.el9",
-    "inverting-proxy-agent": "3.16.0-b56",
-    "inverting-proxy-agent_gbn": "84306753",
+    "inverting-proxy-agent": "3.16.0-b58",
+    "inverting-proxy-agent_gbn": "84540244",
     "ipa-server": "4.13.4",
     "ipa-server-trust-ad": "4.13.4",
     "node-exporter": "1.7.0",
@@ -34,12 +34,12 @@
     "python311": "3.11.13-10.el9_8",
     "python39": "3.9.25-7.el9_8.6",
     "salt": "3006.10",
-    "salt-bootstrap": "0.14.6-2026-07-22T13:48:50",
+    "salt-bootstrap": "0.14.7-2026-10-22T08:02:40",
     "source-image": "rhel-9-byos-v20260811"
   },
   "tags": {
     "fips-mode": "disabled",
     "hardening": "cis_server_l1",
-    "jumpgate-test-id": "c9737299-8b5a-4652-ab63-4f6416d0d224"
+    "jumpgate-test-id": "8fc1cecf-2930-45d8-a677-897ec2db4e1b"
   }
 }
