@@ -2,6 +2,7 @@ base:
   '*':
     - prerequisites
     - cloud-init
+    - azure-v6-support
     - hostname
     - nginx
     - python3
