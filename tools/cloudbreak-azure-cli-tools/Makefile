@@ -1,4 +1,4 @@
-VERSION=1.28.0
+VERSION=1.30.0
 REPOSITORY=cloudbreak-tools/cloudbreak-azure-cli-tools
 PLATFORMS=linux/amd64,linux/arm64
 

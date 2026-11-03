@@ -28,6 +28,10 @@ install_jumpgate_agent:
   pkg.installed:
     - sources:
       - jumpgate-agent: {{ jumpgate_agent_rpm_url }}
+    - retry:
+        attempts: 3
+        interval: 30
+        splay: 10
 {% endif %}
 
 jumpgate_group:

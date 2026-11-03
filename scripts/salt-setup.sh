@@ -94,7 +94,7 @@ function add_prewarmed_roles {
     add_single_role_for_cluster_salt ${prewarmed}
   fi
 
-  if [ "${CUSTOM_IMAGE_TYPE}" == "hortonworks" ]; then
+  if [ "${IMAGE_TYPE}" != "freeipa" ]; then
     local metering_prewarmed=${METERING_PREWARM_TAG}
     echo "Adding ${metering_prewarmed} to the list of roles for the final image"
     add_single_role_for_cluster_salt ${metering_prewarmed}
@@ -106,29 +106,24 @@ if [[ "${OS}" == "redhat8" || "${OS}" == "redhat9" ]] ; then
   export RHEL_VERSION=${RHEL_VERSION/.0/}
 fi
 
-: ${CUSTOM_IMAGE_TYPE:=$1}
+: ${IMAGE_TYPE:=$1}
 
 add_builder_type_grain
-case ${CUSTOM_IMAGE_TYPE} in
-  base|"")
-    echo "Running highstate for Base.."
-    prepare
-    highstate "base"
-  ;;
+case ${IMAGE_TYPE} in
   freeipa)
     echo "Running highstate for FreeIPA.."
     prepare
     highstate "base"
     highstate "freeipa"
   ;;
-  hortonworks)
+  runtime|base)
     echo "Running highstate for Base and Hortonworks.."
     prepare
     highstate "base"
     highstate "hortonworks"
   ;;
   *)
-    echo "Unsupported CUSTOM_IMAGE_TYPE:" ${CUSTOM_IMAGE_TYPE}
+    echo "Unsupported IMAGE_TYPE:" ${IMAGE_TYPE}
     exit 1
   ;;
 esac

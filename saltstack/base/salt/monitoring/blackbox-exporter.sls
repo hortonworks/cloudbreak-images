@@ -1,4 +1,4 @@
-{% set version = '0.25.0' %}
+{% set version = '0.29.1' %}
 {% set path = 'https://github.com/prometheus/blackbox_exporter/releases/download/v' ~ version %}
 {% set architecture = 'arm64' if salt['environ.get']('ARCHITECTURE') == 'arm64' else 'amd64' %}
 {% set url = path ~ '/blackbox_exporter-' ~ version ~ '.linux-' ~ architecture ~ '.tar.gz' %}
@@ -20,6 +20,10 @@ install_blackbox_exporter:
     - options: --strip-components=1
     - user: root
     - group: root
+    - retry:
+        attempts: 3
+        interval: 30
+        splay: 10
 
 blackbox_exporter_hardcoded_package:
   file.append:

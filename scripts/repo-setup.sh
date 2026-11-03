@@ -28,12 +28,17 @@ function update_yum_repos() {
       rm /etc/yum.repos.d/*.repo -f
     fi
 
-    curl https://mirror.eng.cloudera.com/repos/rhel/server/${RHEL_VERSION_MAJOR}/${RHEL_VERSION}/${REPO_FILE} --fail > /etc/yum.repos.d/${REPO_FILE}
+    curl https://mirror-nexus.eng.cloudera.com/repos/rhel/server/${RHEL_VERSION_MAJOR}/${RHEL_VERSION}/${REPO_FILE} --fail > /etc/yum.repos.d/${REPO_FILE}
 
     if [ "${RHEL_VERSION}" == "9.6" ]; then
       dnf config-manager --disable ubi-9.6-baseos-cldr
       dnf config-manager --disable ubi-9.6-appstream-cldr
       dnf config-manager --disable ubi-9.6-supplementary-cldr
+      dnf upgrade --refresh -y
+    elif [ "${RHEL_VERSION}" == "9.8" ]; then
+      dnf config-manager --disable ubi-9.8-baseos-cldr
+      dnf config-manager --disable ubi-9.8-appstream-cldr
+      dnf config-manager --disable ubi-9.8-supplementary-cldr
       dnf upgrade --refresh -y
     fi
   else

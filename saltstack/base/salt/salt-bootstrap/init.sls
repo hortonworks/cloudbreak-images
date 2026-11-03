@@ -12,6 +12,10 @@ install_saltbootstrap:
     - group: root
     - skip_verify: True
     - if_missing: /usr/sbin/salt-bootstrap
+    - retry:
+        attempts: 3
+        interval: 30
+        splay: 10
 
 ensure_saltbootstrap_executable:
   file.managed:
@@ -43,6 +47,19 @@ add_empty_networkcfg:
 {% endif %}
 
 
+{% if salt['environ.get']('SALTBOOT_HTTPS_ENABLED') == 'true' %}
+generate_saltbootstrap_placeholder_certs:
+  cmd.run:
+    - name: |
+        mkdir -p /etc/salt-bootstrap/certs
+        openssl req -x509 -newkey ec -pkeyopt ec_paramgen_curve:prime256v1 \
+          -keyout /etc/salt-bootstrap/certs/saltboot-key.pem \
+          -out /etc/salt-bootstrap/certs/saltboot.pem \
+          -days 1 -nodes -subj '/CN=saltboot-bake-placeholder'
+        cp /etc/salt-bootstrap/certs/saltboot.pem /etc/salt-bootstrap/certs/ca.pem
+    - creates: /etc/salt-bootstrap/certs/saltboot.pem
+{% endif %}
+
 salt-bootstrap:
 {% if pillar['subtype'] != 'Docker' %}
   service.running:
@@ -54,3 +71,14 @@ salt-bootstrap:
     - require:
       - install_saltbootstrap
       - create_saltbootstrap_service_files
+{% if salt['environ.get']('SALTBOOT_HTTPS_ENABLED') == 'true' %}
+      - generate_saltbootstrap_placeholder_certs
+{% endif %}
+
+{% if salt['environ.get']('SALTBOOT_HTTPS_ENABLED') == 'true' %}
+remove_placeholder_certs:
+  file.absent:
+    - name: /etc/salt-bootstrap/certs
+    - require:
+      - salt-bootstrap
+{% endif %}

@@ -7,10 +7,10 @@ base:
     - python3
     - salt-bootstrap
     - salt
-{% if salt['environ.get']('CUSTOM_IMAGE_TYPE') != 'freeipa' %}
+{% if salt['environ.get']('IMAGE_TYPE') != 'freeipa' %}
     - postgresql
 {% endif %}
-{% if salt['environ.get']('IMAGE_BURNING_TYPE') != 'prewarm' %}
+{% if salt['environ.get']('IMAGE_TYPE') != 'runtime' %}
     - cem-agent
 {% endif %}
     - monitoring

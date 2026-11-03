@@ -69,7 +69,7 @@ By default the transient EC2 instance will be created in the same VPC and Subnet
 
 You have the option to burn a prewarmed image compatible with FreeIPA service, to do so, you have to export the following variable before invoking the image burning make target.
 
-`export CUSTOM_IMAGE_TYPE=freeipa`
+`export IMAGE_TYPE=freeipa`
 
 Running this will install the necessary packages for FreeIPA and will not run the modifications required only for the Cloudbreak compatible custom images.
 

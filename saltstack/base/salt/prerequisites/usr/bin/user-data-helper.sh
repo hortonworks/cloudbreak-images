@@ -14,7 +14,6 @@ function version { echo "$@" | awk -F. '{ printf("%d%03d%03d%03d\n", $1,$2,$3,$4
 : ${CLOUD_PLATFORM:? required}
 : ${START_LABEL:? required}
 : ${PLATFORM_DISK_PREFIX:? required}
-: ${LAZY_FORMAT_DISK_LIMIT:? required}
 : ${IS_GATEWAY:? required}
 : ${TMP_SSH_KEY:? required}
 : ${SALT_BOOT_PASSWORD:? required}
@@ -25,12 +24,12 @@ function version { echo "$@" | awk -F. '{ printf("%d%03d%03d%03d\n", $1,$2,$3,$4
 # : ${XARGS_PARALLEL:="-P 20"}
 : ${PROXY_PROTOCOL:=http}
 
-{% if pillar['CUSTOM_IMAGE_TYPE'] == 'freeipa' %}
+{% if pillar['IMAGE_TYPE'] == 'freeipa' %}
 export IS_FREEIPA=true
 {% else %}
 export IS_FREEIPA=false
 {% endif %}
-{% if pillar['IMAGE_BURNING_TYPE'] == 'base' %}
+{% if pillar['IMAGE_TYPE'] == 'base' %}
 export IS_BASE=true
 {% else %}
 export IS_BASE=false
@@ -55,31 +54,6 @@ setup_tmp_ssh() {
   echo "#tmpssh_start" >> /home/${SSH_USER}/.ssh/authorized_keys
   echo "$TMP_SSH_KEY" >> /home/${SSH_USER}/.ssh/authorized_keys
   echo "#tmpssh_end" >> /home/${SSH_USER}/.ssh/authorized_keys
-}
-
-format_disks() {
-  lazy_format_disks
-  cd /hadoopfs/fs1 && mkdir logs logs/ambari-server logs/ambari-agent logs/kerberos
-}
-
-lazy_format_disks() {
-  mkdir /hadoopfs
-  for (( i=1; i<=24; i++ )); do
-    LABEL=$(printf "\x$(printf %x $((START_LABEL+i)))")
-    DEVICE=/dev/${PLATFORM_DISK_PREFIX}${LABEL}
-    if [ -e $DEVICE ]; then
-      MOUNTPOINT=$(grep $DEVICE /etc/fstab | tr -s ' \t' ' ' | cut -d' ' -f 2)
-      if [ -n "$MOUNTPOINT" ]; then
-        umount "$MOUNTPOINT"
-        sed -i "\|^$DEVICE|d" /etc/fstab
-      fi
-      mkfs -E lazy_itable_init=1 -O uninit_bg -F -t ext4 $DEVICE
-      mkdir /hadoopfs/fs${i}
-      echo UUID=$(blkid -o value $DEVICE | head -1) /hadoopfs/fs${i} ext4  defaults,noatime,nofail 0 2 >> /etc/fstab
-      mount /hadoopfs/fs${i}
-      chmod 777 /hadoopfs/fs${i}
-    fi
-  done
 }
 
 reload_sysconf() {
@@ -118,6 +92,19 @@ signKey: |-
  -----END PUBLIC KEY-----
 EOF
   chmod 600 /etc/salt-bootstrap/security-config.yml
+
+  if [[ "$SALTBOOT_HTTPS_ONLY" == "true" || -n "$SALTBOOT_MIN_TLS_VERSION" || -n "$SALTBOOT_MAX_TLS_VERSION" || -n "$SALTBOOT_CIPHER_SUITES" || "$SALTBOOT_FIPS_ONLY" == "true" ]]; then
+    mkdir -p /etc/systemd/system/salt-bootstrap.service.d
+    {
+      echo "[Service]"
+      [[ "$SALTBOOT_HTTPS_ONLY" == "true" ]] && echo "Environment='SALTBOOT_HTTPS_ONLY=true'"
+      [[ -n "$SALTBOOT_MIN_TLS_VERSION" ]] && echo "Environment='SALTBOOT_MIN_TLS_VERSION=$SALTBOOT_MIN_TLS_VERSION'"
+      [[ -n "$SALTBOOT_MAX_TLS_VERSION" ]] && echo "Environment='SALTBOOT_MAX_TLS_VERSION=$SALTBOOT_MAX_TLS_VERSION'"
+      [[ -n "$SALTBOOT_CIPHER_SUITES" ]] && echo "Environment='SALTBOOT_CIPHER_SUITES=$SALTBOOT_CIPHER_SUITES'"
+      [[ "$SALTBOOT_FIPS_ONLY" == "true" ]] && echo "Environment='GODEBUG=fips140=only'"
+    } > /etc/systemd/system/salt-bootstrap.service.d/tls.conf
+    systemctl daemon-reload
+  fi
 }
 
 create_certificates_certm() {
@@ -231,10 +218,18 @@ resize_partitions() {
   fi
 }
 
+generate_random_instance_id() {
+  cat /proc/sys/kernel/random/uuid 2>/dev/null || uuidgen
+}
+
 get_instance_id() {
   local instance_id=""
   local attempts=10
   local delay=5
+
+  if [[ "$CLOUD_PLATFORM" == "OPENSTACK" ]]; then
+    attempts=60
+  fi
 
   for ((i=1; i<=attempts; i++)); do
     if [[ "$CLOUD_PLATFORM" == "AWS" ]]; then
@@ -255,6 +250,10 @@ get_instance_id() {
       instance_id=$(wget -q -O - \
         --header="Metadata-Flavor: Google" \
         'http://metadata.google.internal/computeMetadata/v1/instance/name') || true
+    elif [[ "$CLOUD_PLATFORM" == "OPENSTACK" ]]; then
+      instance_id=$(curl -s --connect-timeout 5 --max-time 10 \
+        "http://169.254.169.254/openstack/latest/meta_data.json" | jq -r .uuid) || true
+      [[ "$instance_id" == "null" ]] && instance_id=""
     fi
 
     if [[ -n "$instance_id" ]]; then
@@ -265,6 +264,13 @@ get_instance_id() {
     echo "Attempt $i/$attempts: Failed to retrieve instance ID for $CLOUD_PLATFORM, retrying in ${delay}s..." >&2
     sleep "$delay"
   done
+
+  if [[ "$CLOUD_PLATFORM" == "OPENSTACK" ]]; then
+    instance_id=$(generate_random_instance_id)
+    echo "WARN: Could not retrieve instance ID for $CLOUD_PLATFORM after $attempts attempts, falling back to random UUID '$instance_id'" >&2
+    echo "$instance_id"
+    return 0
+  fi
 
   echo "ERROR: Could not retrieve instance ID for $CLOUD_PLATFORM after $attempts attempts" >&2
   return 1
@@ -281,7 +287,6 @@ main() {
     shift
     eval "$@"
   elif [ ! -f "/var/cb-init-executed" ]; then
-    [[ $CLOUD_PLATFORM == "OPENSTACK" ]] && format_disks
     if [[ "$IS_GATEWAY" == "true" ]]; then
       setup_tmp_ssh
       if [[ -n "$CB_CERT" ]]; then
@@ -303,7 +308,10 @@ main() {
 
     # if CCMV2 but not jumpgate -> setup CCMv2 on FreeIPA and data lake/data hub
     # if CCMV2_JUMPGATE -> agent should be started on FreeIPA only
-    if [[ "$IS_CCM_V2_JUMPGATE_ENABLED" == "true" && "$IS_FREEIPA" == "true" ]]; then
+    # skip agent setup when using remote environment jumpgate (no local agent)
+    if [[ -z "$CCM_V2_INVERTING_PROXY_HOST" ]]; then
+      echo "No CCMv2 inverting proxy host set, skipping agent setup"
+    elif [[ "$IS_CCM_V2_JUMPGATE_ENABLED" == "true" && "$IS_FREEIPA" == "true" ]]; then
       setup_ccmv2
     elif [[ "$IS_CCM_V2_ENABLED" == "true" && "$IS_CCM_V2_JUMPGATE_ENABLED" != "true" ]]; then
       setup_ccmv2

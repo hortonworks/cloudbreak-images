@@ -3,7 +3,7 @@
 set -xe
 
 if [ -f package-versions.json ]; then
-    wget https://github.com/jqlang/jq/releases/download/jq-1.6/jq-linux64
+    wget --retry-on-http-error=429,500,502,503,504,529 --tries=5 --waitretry=40 --timeout=30 https://github.com/jqlang/jq/releases/download/jq-1.6/jq-linux64
     chmod +x jq-linux64
     mv jq-linux64 /bin/jq
 
@@ -84,6 +84,7 @@ cat  > ${image_name}_$metadata_filename_postfix.json <<EOF
 "mpack_urls": $(if [[ -z "$mpack_urls" ]]; then echo []; else mpackjson=$(IFS=, read -ra mpacks <<< "$mpack_urls"; for mpack in "${mpacks[@]}"; do echo "\"${mpack}\","; done); echo "[${mpackjson:0:${#mpackjson}-1}]"; fi),
 "aws_ami_regions": "${aws_ami_regions}",
 "azure_storage_accounts": "${azure_storage_accounts}",
+"openstack_region": "${openstack_region}",
 "gcp_storage_bundle": "${gcp_storage_bundle}",
 "hdp_repository_version": "${stack_repository_version}",
 "cdh_repository_version": "${stack_repository_version#*-}",

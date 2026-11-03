@@ -13,7 +13,7 @@ export PASSPHRASE_CIPHERTEXT="$LUKS_DIR/passphrase_ciphertext"
 export LUKS_LOG_DIR="/var/log/$LUKS_VOLUME_NAME"
 export LUKS_MAPPER_DEVICE="/dev/mapper/$LUKS_VOLUME_NAME"
 export ENCRYPTION_KEY_FILE="$LUKS_DIR/passphrase_encryption_key"
-{%- if pillar['CUSTOM_IMAGE_TYPE'] == 'freeipa' %}
+{%- if pillar['IMAGE_TYPE'] == 'freeipa' %}
 export IS_FREEIPA=true
 {%- else %}
 export IS_FREEIPA=false
@@ -97,17 +97,21 @@ add_kms_entries_to_etc_hosts() {
     # Prepend the Amazon provided DNS server to the list of DNS servers
     DNS_SERVERS=("$AMAZON_PROVIDED_DNS_SERVER" "${DNS_SERVERS[@]}")
 
+{%- raw %}
     log "DNS servers available for resolving KMS endpoint: ${DNS_SERVERS[*]}"
     for dns_server in "${DNS_SERVERS[@]}"; do
-      log "Trying to resolve $KMS_ENDPOINT using DNS server $dns_server"
-      set +e
-      KMS_IP_ADDRESSES=($(temp="$(dig @"$dns_server" "$KMS_ENDPOINT" +noall +short)" && echo "$temp"))
-      set -e
-{%- raw %}
-      if (( "${#KMS_IP_ADDRESSES[@]}" > 0 )); then
-        log "Successfully resolved $KMS_ENDPOINT using DNS server $dns_server"
-        break
-      fi
+      for attempt in 1 2 3; do
+        log "Trying to resolve $KMS_ENDPOINT using DNS server $dns_server (attempt $attempt/3)"
+        set +e
+        KMS_IP_ADDRESSES=($(temp="$(dig @"$dns_server" "$KMS_ENDPOINT" +noall +short)" && echo "$temp"))
+        set -e
+        if (( "${#KMS_IP_ADDRESSES[@]}" > 0 )); then
+          log "Successfully resolved $KMS_ENDPOINT using DNS server $dns_server"
+          break 2
+        fi
+        log "Attempt $attempt failed for DNS server $dns_server"
+        (( attempt < 3 )) && sleep 5
+      done
     done
 
     if (( "${#KMS_IP_ADDRESSES[@]}" <= 0 )); then

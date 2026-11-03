@@ -12,6 +12,10 @@ install_certm:
     - if_missing: /sbin/certm
     - user: root
     - group: root
+    - retry:
+        attempts: 3
+        interval: 30
+        splay: 10
 
 certm_hardcoded_package:
   file.append:

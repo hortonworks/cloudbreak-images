@@ -56,15 +56,16 @@ packer_in_container() {
 
   # Jumpgate Agent
   if ! [[ $JUMPGATE_AGENT_RPM_URL =~ ^http.*rpm$ ]]; then
-    if [[ "$ARCHITECTURE" == "arm64" ]]; then
-      export JUMPGATE_AGENT_RPM_URL="https://archive.cloudera.com/ccm/3.13.0/jumpgate-agent.aarch64.rpm"
-    else
-      export JUMPGATE_AGENT_RPM_URL="https://archive.cloudera.com/ccm/3.14.0/jumpgate-agent.rpm"
-    fi
+    JUMPGATE_AGENT_VERSION=3.16.3
+    case "$ARCHITECTURE" in
+      "arm64") ARCHPART=".aarch64" ;;
+      *) ARCHPART="" ;;
+    esac
+    export JUMPGATE_AGENT_RPM_URL="https://archive.cloudera.com/ccm/${JUMPGATE_AGENT_VERSION}/jumpgate-agent${ARCHPART}.rpm"
   fi
 
   # FREEIPA / Base Image: CEM Agent
-  if ! [[ "$IMAGE_BURNING_TYPE" == "prewarm " ]]; then
+  if ! [[ "$IMAGE_TYPE" == "runtime " ]]; then
     if ! [[ $CEM_AGENT_RPM_URL =~ ^http.*rpm$ ]]; then
       if [[ "$ARCHITECTURE" == "arm64" ]]; then
         export CEM_AGENT_RPM_URL="https://cloudera-build-us-west-1.vpc.cloudera.com/s3/build/76334049/cem-agents/1.x/redhat8arm64/yum/tars/nifi-minifi-cpp/nifi-minifi-cpp-1.26.02-b30-arm64.rpm"
@@ -144,7 +145,7 @@ packer_in_container() {
     -e PACKER_LOG=$PACKER_LOG \
     -e PACKER_LOG_PATH=$PACKER_LOG_PATH \
     -e BASE_NAME=$BASE_NAME \
-    -e IMAGE_BURNING_TYPE=$IMAGE_BURNING_TYPE \
+    -e IMAGE_TYPE=$IMAGE_TYPE \
     -e AWS_ACCESS_KEY_ID=$AWS_ACCESS_KEY_ID \
     -e AWS_SECURITY_TOKEN=$AWS_SECURITY_TOKEN \
     -e AWS_SESSION_TOKEN=$AWS_SESSION_TOKEN \
@@ -175,11 +176,18 @@ packer_in_container() {
     -e GCP_ACCOUNT_FILE=$GCP_ACCOUNT_FILE \
     -e GCP_STORAGE_BUNDLE=$GCP_STORAGE_BUNDLE \
     -e GCP_SOURCE_IMAGE="$GCP_SOURCE_IMAGE" \
-    -e OS_IMAGE_NAME=$OS_IMAGE_NAME \
-    -e OS_AUTH_URL=$OS_AUTH_URL \
-    -e OS_PASSWORD=$OS_PASSWORD \
-    -e OS_TENANT_NAME="$OS_TENANT_NAME" \
-    -e OS_USERNAME=$OS_USERNAME \
+    -e OPENSTACK_IMAGE_NAME=$OPENSTACK_IMAGE_NAME \
+    -e OPENSTACK_AUTH_URL=$OPENSTACK_AUTH_URL \
+    -e OPENSTACK_PASSWORD=$OPENSTACK_PASSWORD \
+    -e OPENSTACK_TENANT_NAME="$OPENSTACK_TENANT_NAME" \
+    -e OPENSTACK_USERNAME=$OPENSTACK_USERNAME \
+    -e OPENSTACK_USER_DOMAIN_ID=$OPENSTACK_USER_DOMAIN_ID \
+    -e OPENSTACK_PROJECT_DOMAIN_ID=$OPENSTACK_PROJECT_DOMAIN_ID \
+    -e OPENSTACK_PROJECT_NAME=$OPENSTACK_PROJECT_NAME \
+    -e OPENSTACK_SOURCE_IMAGE_UUID=$OPENSTACK_SOURCE_IMAGE_UUID \
+    -e OPENSTACK_NETWORK_UUID=$OPENSTACK_NETWORK_UUID \
+    -e OPENSTACK_INSTANCE_TYPE=$OPENSTACK_INSTANCE_TYPE \
+    -e OPENSTACK_REGION_NAME=$OPENSTACK_REGION_NAME \
     -e IMAGE_NAME_SUFFIX=$IMAGE_NAME_SUFFIX \
     -e STACK_TYPE=$STACK_TYPE \
     -e MPACK_URLS=$MPACK_URLS \
@@ -209,7 +217,7 @@ packer_in_container() {
     -e SALT_INSTALL_REPO=$SALT_INSTALL_REPO \
     -e ATLAS_ARTIFACT_TYPE=$ATLAS_ARTIFACT_TYPE \
     -e COPY_AWS_MARKETPLACE_EULA=$COPY_AWS_MARKETPLACE_EULA \
-    -e CUSTOM_IMAGE_TYPE=$CUSTOM_IMAGE_TYPE \
+    -e IMAGE_TYPE=$IMAGE_TYPE \
     -e OWNER_TAG=$OWNER_TAG \
     -e CLOUDERA_USAGE_TYPE_TAG=$CLOUDERA_USAGE_TYPE_TAG \
     -e OPTIONAL_STATES=$OPTIONAL_STATES \
@@ -258,6 +266,7 @@ packer_in_container() {
     -e SALTBOOT_VERSION="$SALTBOOT_VERSION" \
     -e SALTBOOT_HTTPS_ENABLED="$SALTBOOT_HTTPS_ENABLED" \
     -e PACKER_GITHUB_API_TOKEN="$PACKER_GITHUB_API_TOKEN" \
+    -e CLOUDERA_ROOT_CA \
     -v /var/run/docker.sock:/var/run/docker.sock \
     -v $PWD:$PWD \
     -w $PWD \

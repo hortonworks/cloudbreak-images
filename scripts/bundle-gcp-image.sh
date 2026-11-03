@@ -22,12 +22,31 @@ debug() {
     [[ "$DEBUG" ]] && echo "-----> $*" 1>&2
 }
 
+export_image_to_bucket() {
+	local zone attempt
+	for zone in ${GCP_EXPORT_ZONE//,/ }; do
+		for ((attempt=1; attempt<=GCP_EXPORT_ZONE_MAX_ATTEMPTS; attempt++)); do
+			echo "Exporting ${IMAGE_NAME} in zone ${zone} (attempt ${attempt}/${GCP_EXPORT_ZONE_MAX_ATTEMPTS})..."
+			docker rm -f gcloud-create-instance-$IMAGE_NAME || true
+			if docker run --rm --name gcloud-create-instance-$IMAGE_NAME --volumes-from gcloud-config-$IMAGE_NAME google/cloud-sdk gcloud compute images export --quiet --destination-uri gs://${GCP_STORAGE_BUNDLE}/${IMAGE_PRE_NAME}${IMAGE_NAME}.tar.gz --image ${IMAGE_NAME} --project ${GCP_PROJECT} --zone ${zone}; then
+				return 0
+			fi
+			if (( attempt < GCP_EXPORT_ZONE_MAX_ATTEMPTS )); then
+				sleep $((20 + attempt * 10))
+			fi
+		done
+	done
+	return 1
+}
+
 main() {
 
 	: ${GCP_PROJECT:=$(cat $GCP_ACCOUNT_FILE | jq .project_id -r)}
 	: ${SERVICE_ACCOUNT_EMAIL:=$(cat $GCP_ACCOUNT_FILE | jq .client_email -r)}
 	: ${IMAGE_PRE_NAME:=}
 	: ${GCP_LABELS:=}
+	: ${GCP_EXPORT_ZONE:="us-west2-a,us-west2-b,us-west2-c"}
+	: ${GCP_EXPORT_ZONE_MAX_ATTEMPTS:=4}
 
 	docker rm -f gcloud-config-$IMAGE_NAME || true
 
@@ -42,9 +61,10 @@ main() {
     	exit 1
     fi
 	
-	docker rm -f gcloud-create-instance-$IMAGE_NAME || true
-
-	docker run --rm --name gcloud-create-instance-$IMAGE_NAME --volumes-from gcloud-config-$IMAGE_NAME google/cloud-sdk gcloud compute images export --quiet --destination-uri gs://${GCP_STORAGE_BUNDLE}/${IMAGE_PRE_NAME}${IMAGE_NAME}.tar.gz --image ${IMAGE_NAME} --project ${GCP_PROJECT}
+	if ! export_image_to_bucket; then
+		echo "Image export failed in all zones after ${GCP_EXPORT_ZONE_MAX_ATTEMPTS} attempts each: $GCP_EXPORT_ZONE" >&2
+		exit 1
+	fi
 	docker run --rm --name gcloud-create-instance-public-$IMAGE_NAME --volumes-from gcloud-config-$IMAGE_NAME google/cloud-sdk gsutil -m acl ch -r -u AllUsers:R gs://${GCP_STORAGE_BUNDLE}/${IMAGE_PRE_NAME}${IMAGE_NAME}.tar.gz
 
 	# Apply the labels (GCS Metadata)

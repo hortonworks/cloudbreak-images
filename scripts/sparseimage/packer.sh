@@ -60,6 +60,7 @@ packer_in_container() {
     -e PACKER_LOG=$PACKER_LOG \
     -e METADATA_FILENAME_POSTFIX="$METADATA_FILENAME_POSTFIX" \
     -e IMAGE_UUID="$IMAGE_UUID" \
+    -e CLOUDERA_ROOT_CA \
     -v /var/run/docker.sock:/var/run/docker.sock \
     -v $PWD:$PWD \
     -w $PWD \

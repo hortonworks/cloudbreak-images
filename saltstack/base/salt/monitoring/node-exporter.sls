@@ -20,6 +20,10 @@ install_node_exporter:
     - options: --strip-components=1
     - user: root
     - group: root
+    - retry:
+        attempts: 3
+        interval: 30
+        splay: 10
 
 node_exporter_hardcoded_package:
   file.append:

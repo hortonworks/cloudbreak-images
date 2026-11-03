@@ -1,5 +1,5 @@
 # CB-30236: We need this distro upgrade, because we only have a 9.5 base image for Azure
-{% if salt['environ.get']('CLOUD_PROVIDER') == 'Azure' and pillar['OS'] == 'redhat9' %}
+{% if salt['environ.get']('CLOUD_PROVIDER') == 'Azure' and salt['environ.get']('RHEL_VERSION') == '9.6' %}
 distro-upgrade:
   cmd.run:
     - name: |
@@ -39,10 +39,12 @@ packages_install:
   pkg.installed:
     - refresh: False
     - pkgs:
-  # This is legacy, but needed by CM and it creates /etc/init.d which is also needed by /saltstack/base/salt/performance/thp.sls
-  # on RHEL 8 and CentOS 7 it is installed by default.
   {% if pillar['OS'] == 'redhat9' %}
+      # chkconfig is legacy, but needed by CM and it creates /etc/init.d which is also needed by /saltstack/base/salt/performance/thp.sls
+      # on RHEL 8 and CentOS 7 it is installed by default.
       - chkconfig
+      # Not installed starting with RHEL 9, but still needed for backward compatibility
+      - krb5-devel
   {% endif %}
       - wget
       - tar
@@ -82,6 +84,9 @@ packages_install:
       - cryptsetup
   {% endif %}
       - nvme-cli
+  {% if salt['environ.get']('CLOUD_PROVIDER') == 'Openstack' %}
+      - glibc-langpack-en
+  {% endif %}
       - openssl
       - autossh
       - ipa-client
@@ -145,12 +150,12 @@ remove_azcopy_extract:
 # They are actually being pulled from a 8.10 repository, but we'll need these patches to tackle Azure's security checks.
 
 {% if pillar['OS'] == 'redhat8' and salt['environ.get']('RHEL_VERSION') == '8.8' %}
-{% if pillar['CUSTOM_IMAGE_TYPE'] == 'freeipa' or salt['environ.get']('STACK_VERSION').split('.') | map('int') | list <= '7.2.18'.split('.') | map('int') | list %}
+{% if pillar['IMAGE_TYPE'] == 'freeipa' or salt['environ.get']('STACK_VERSION').split('.') | map('int') | list <= '7.2.18'.split('.') | map('int') | list %}
 
 rhel88_security_add_repo:
   file.managed:
     - name: /etc/yum.repos.d/rhel8_cldr_mirrors.repo
-    - source: https://mirror.eng.cloudera.com/repos/rhel/server/8/8/rhel8_cldr_mirrors.repo
+    - source: https://mirror-nexus.eng.cloudera.com/repos/rhel/server/8/8/rhel8_cldr_mirrors.repo
     - skip_verify: True
 
 {% if salt['environ.get']('ARCHITECTURE') == 'arm64' %} # ubi-8-supplementary-cldr and ubi-8-codeready-builder-cldr are not yet available for arm64

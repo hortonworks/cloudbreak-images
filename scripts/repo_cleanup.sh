@@ -2,7 +2,7 @@
 set -xe
 
 if [[ "${OS}" == "redhat8" || "${OS}" == "redhat9" ]] ; then
-    if [[ "${IMAGE_BURNING_TYPE}" == "base" ]] ; then
+    if [[ "${IMAGE_TYPE}" == "base" ]] ; then
         RHEL_VERSION=$(cat /etc/redhat-release | grep -oP "[0-9\.]*")
         RHEL_VERSION=${RHEL_VERSION/.0/}
         REPO_FILE=rhel${RHEL_VERSION}_cldr_mirrors.repo

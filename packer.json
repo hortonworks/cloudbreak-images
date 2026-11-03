@@ -1,16 +1,22 @@
 {
   "variables": {
     "base_name": "{{ env `BASE_NAME` }}",
-    "image_burning_type": "{{ env `IMAGE_BURNING_TYPE` }}",
+    "image_type": "{{ env `IMAGE_TYPE` }}",
     "mock": "{{ env `MOCK` }}",
     "description": "{{ env `DESCRIPTION` }}",
+    "cloudera_root_ca": "{{ env `CLOUDERA_ROOT_CA` }}",
     "gcp_account_file": "{{env `GCP_ACCOUNT_FILE`}}",
     "gcp_storage_bundle": "{{env `GCP_STORAGE_BUNDLE`}}",
     "gcp_source_image": "{{env `GCP_SOURCE_IMAGE`}}",
-    "os_auth_url": "{{ env `OS_AUTH_URL` }}",
-    "os_username": "{{ env `OS_USERNAME` }}",
-    "os_password": "{{ env `OS_PASSWORD` }}",
-    "os_tenant_name": "{{ env `OS_TENANT_NAME` }}",
+    "openstack_auth_url": "{{ env `OPENSTACK_AUTH_URL` }}",
+    "openstack_region": "{{ env `OPENSTACK_REGION_NAME` }}",
+    "openstack_username": "{{ env `OPENSTACK_USERNAME` }}",
+    "openstack_password": "{{ env `OPENSTACK_PASSWORD` }}",
+    "openstack_tenant_name": "{{ env `OPENSTACK_PROJECT_NAME` }}",
+    "openstack_domain_id": "{{ env `OPENSTACK_PROJECT_DOMAIN_ID` }}",
+    "openstack_source_image_uuid": "{{ env `OPENSTACK_SOURCE_IMAGE_UUID` }}",
+    "openstack_network_uuid": "{{ env `OPENSTACK_NETWORK_UUID` }}",
+    "openstack_instance_type": "{{ env `OPENSTACK_INSTANCE_TYPE` }}",
     "client_id": "{{ env `ARM_CLIENT_ID` }}",
     "client_secret": "{{ env `ARM_CLIENT_SECRET` }}",
     "subscription_id": "{{ env `ARM_SUBSCRIPTION_ID` }}",
@@ -75,7 +81,6 @@
     "aws_gov_source_ami": "{{ env `AWS_GOV_SOURCE_AMI` }}",
     "aws_ami_regions": "{{ env `AWS_AMI_REGIONS` }}",
     "aws_instance_profile": "{{ env `AWS_INSTANCE_PROFILE` }}",
-    "custom_image_type": "{{ env `CUSTOM_IMAGE_TYPE` }}",
     "optional_states": "{{ env `OPTIONAL_STATES` }}",
     "preinstalled_java_home": "{{ env `PREINSTALLED_JAVA_HOME` }}",
     "local_url_ambari": "{{ env `LOCAL_URL_AMBARI` }}",
@@ -124,6 +129,28 @@
     "oscap_scan_enabled": "{{ env `OSCAP_SCAN_ENABLED` }}"
   },
   "builders": [
+    {
+      "name": "openstack-redhat9",
+      "type": "openstack",
+      "region": "{{user `openstack_region`}}",
+      "username": "{{user `openstack_username`}}",
+      "password": "{{user `openstack_password`}}",
+      "identity_endpoint": "{{user `openstack_auth_url`}}",
+      "tenant_name": "{{user `openstack_tenant_name`}}",
+      "domain_id": "{{user `openstack_domain_id`}}",
+      "ssh_username": "cloud-user",
+      "ssh_pty": "true",
+      "image_name": "{{user `image_name`}}",
+      "source_image": "{{user `openstack_source_image_uuid`}}",
+      "flavor": "{{user `openstack_instance_type`}}",
+      "endpoint_type": "public",
+      "use_blockstorage_volume": true,
+      "volume_size": "{{user `image_size`}}",
+      "image_disk_format": "qcow2",
+      "networks": [
+        "{{user `openstack_network_uuid`}}"
+      ]
+    },
     {
       "name": "aws-centos7",
       "type": "amazon-ebs",
@@ -687,9 +714,18 @@
     {
       "type": "shell",
       "inline": [
-        "sudo mkdir -p /opt/provision-scripts",
-        "sudo chmod -R a+w /opt/provision-scripts"
+        "sudo mkdir -p /opt/packer/provision-scripts",
+        "sudo chmod -R a+w /opt/packer"
       ]
+    },
+    {
+      "type": "shell",
+      "script": "scripts/install-cloudera-root-ca.sh",
+      "environment_vars": [
+        "CLOUDERA_ROOT_CA={{ user `cloudera_root_ca` }}"
+      ],
+      "execute_command": "chmod +x {{ .Path }}; sudo {{ .Vars }} {{ .Path }}",
+      "remote_folder": "/opt/packer/provision-scripts"
     },
     {
       "type": "shell",
@@ -698,7 +734,7 @@
         "SSH_PUBLIC_KEY={{ user `ssh_public_key` }}"
       ],
       "execute_command": "chmod +x {{ .Path }}; sudo {{ .Vars }} {{ .Path }}",
-      "remote_folder": "/opt/provision-scripts"
+      "remote_folder": "/opt/packer/provision-scripts"
     },
     {
       "type": "shell",
@@ -711,7 +747,7 @@
         "STIG_ENABLED={{user `stig_enabled`}}"
       ],
       "execute_command": "chmod +x {{ .Path }}; sudo {{ .Vars }} {{ .Path }}",
-      "remote_folder": "/opt/provision-scripts"
+      "remote_folder": "/opt/packer/provision-scripts"
     },
     {
       "type": "shell",
@@ -723,7 +759,7 @@
       "environment_vars": [
         "FIPS_MODE={{user `fips_mode`}}"
       ],
-      "remote_folder": "/opt/provision-scripts"
+      "remote_folder": "/opt/packer/provision-scripts"
     },
     {
       "type": "shell",
@@ -738,7 +774,7 @@
         "ARCHITECTURE={{user `architecture`}}",
         "CLOUD_PROVIDER={{user `cloud_provider`}}"
       ],
-      "remote_folder": "/opt/provision-scripts"
+      "remote_folder": "/opt/packer/provision-scripts"
     },
     {
       "type": "file",
@@ -776,14 +812,14 @@
         "INSTALLATION_STATE=base"
       ],
       "execute_command": "chmod +x {{ .Path }}; sudo {{ .Vars }} {{ .Path }}",
-      "remote_folder": "/opt/provision-scripts"
+      "remote_folder": "/opt/packer/provision-scripts"
     },
     {
       "type": "shell",
       "script": "scripts/salt-install.sh",
       "environment_vars": [
         "IMAGE_BASE_NAME={{ user `base_name` }}",
-        "IMAGE_BURNING_TYPE={{ user `image_burning_type` }}",
+        "IMAGE_TYPE={{ user `image_type` }}",
         "SALT_INSTALL_OS={{ user `salt_install_os` }}",
         "SALT_INSTALL_REPO={{user `salt_install_repo` }}",
         "SALT_VERSION={{user `salt_version`}}",
@@ -802,7 +838,7 @@
         "DEFAULT_JAVA_MAJOR_VERSION={{user `default_java_major_version`}}"
       ],
       "execute_command": "chmod +x {{ .Path }}; sudo {{ .Vars }} {{ .Path }}",
-      "remote_folder": "/opt/provision-scripts"
+      "remote_folder": "/opt/packer/provision-scripts"
     },
     {
       "type": "shell",
@@ -813,7 +849,6 @@
       "execute_command": "chmod +x {{ .Path }}; sudo {{ .Vars }} {{ .Path }} ",
       "environment_vars": [
         "IMAGE_BASE_NAME={{ user `base_name` }}",
-        "CUSTOM_IMAGE_TYPE={{user `custom_image_type`}}",
         "OS_USER={{ user `os_user` }}",
         "CLUSTERMANAGER_VERSION={{user `clustermanager_version`}}",
         "CLUSTERMANAGER_BASEURL={{user `clustermanager_baseurl`}}",
@@ -867,14 +902,14 @@
         "no_proxy={{ user `gov_no_proxy` }}",
         "NO_PROXY={{ user `gov_no_proxy` }}",
         "CLOUD_PROVIDER={{user `cloud_provider`}}",
-        "IMAGE_BURNING_TYPE={{ user `image_burning_type` }}",
+        "IMAGE_TYPE={{ user `image_type` }}",
         "STIG_ENABLED={{user `stig_enabled`}}",
         "OSCAP_SCAN_ENABLED={{user `oscap_scan_enabled`}}",
         "DEFAULT_JAVA_MAJOR_VERSION={{user `default_java_major_version`}}",
         "SALTBOOT_VERSION={{user `saltboot_version`}}",
         "SALTBOOT_HTTPS_ENABLED={{user `saltboot_https_enabled`}}"
       ],
-      "remote_folder": "/opt/provision-scripts"
+      "remote_folder": "/opt/packer/provision-scripts"
     },
     {
       "type": "shell",
@@ -883,7 +918,7 @@
       ],
       "expect_disconnect": true,
       "execute_command": "chmod +x {{ .Path }}; sudo {{ .Vars }} {{ .Path }} ",
-      "remote_folder": "/opt/provision-scripts"
+      "remote_folder": "/opt/packer/provision-scripts"
     },
     {
       "type": "shell",
@@ -899,7 +934,6 @@
       "execute_command": "chmod +x {{ .Path }}; sudo {{ .Vars }} {{ .Path }} ",
       "environment_vars": [
         "IMAGE_BASE_NAME={{ user `base_name` }}",
-        "CUSTOM_IMAGE_TYPE={{user `custom_image_type`}}",
         "OS_USER={{ user `os_user` }}",
         "STACK_VERSION={{user `stack_version`}}",
         "OS={{user `os`}}",
@@ -921,12 +955,12 @@
         "no_proxy={{ user `gov_no_proxy` }}",
         "NO_PROXY={{ user `gov_no_proxy` }}",
         "CLOUD_PROVIDER={{user `cloud_provider`}}",
-        "IMAGE_BURNING_TYPE={{ user `image_burning_type` }}",
+        "IMAGE_TYPE={{ user `image_type` }}",
         "STIG_ENABLED={{user `stig_enabled`}}",
         "OSCAP_SCAN_ENABLED={{user `oscap_scan_enabled`}}",
         "DEFAULT_JAVA_MAJOR_VERSION={{user `default_java_major_version`}}"
       ],
-      "remote_folder": "/opt/provision-scripts"
+      "remote_folder": "/opt/packer/provision-scripts"
     },
     {
       "type": "file",
@@ -950,7 +984,7 @@
         "PRE_WARM_CSD={{ user `pre_warm_csd` }}"
       ],
       "execute_command": "chmod +x {{ .Path }}; sudo {{ .Vars }} {{ .Path }}",
-      "remote_folder": "/opt/provision-scripts"
+      "remote_folder": "/opt/packer/provision-scripts"
     },
     {
       "type": "file",
@@ -970,10 +1004,11 @@
       "environment_vars": [
         "TAGS={{user `tags`}}",
         "OS={{user `os`}}",
-        "ARCHITECTURE={{user `architecture`}}"
+        "ARCHITECTURE={{user `architecture`}}",
+        "CLOUD_PROVIDER={{ user `cloud_provider` }}"
       ],
       "execute_command": "chmod +x {{ .Path }}; sudo {{ .Vars }} {{ .Path }}",
-      "remote_folder": "/opt/provision-scripts"
+      "remote_folder": "/opt/packer/provision-scripts"
     },
     {
       "type": "file",
@@ -999,13 +1034,13 @@
         "sudo rm /tmp/installed-delta-packages.csv",
         "sudo rm /tmp/installed-full-packages.csv"
       ],
-      "remote_folder": "/opt/provision-scripts"
+      "remote_folder": "/opt/packer/provision-scripts"
     },
     {
       "type": "shell",
       "script": "scripts/remove-debug-user.sh",
       "execute_command": "chmod +x {{ .Path }}; sudo {{ .Vars }} {{ .Path }}",
-      "remote_folder": "/opt/provision-scripts"
+      "remote_folder": "/opt/packer/provision-scripts"
     },
     {
       "type": "shell",
@@ -1014,17 +1049,10 @@
         "OS={{user `os`}}",
         "ARCHITECTURE={{user `architecture`}}",
         "CLOUD_PROVIDER={{ user `cloud_provider` }}",
-        "IMAGE_BURNING_TYPE={{ user `image_burning_type` }}"
+        "IMAGE_TYPE={{ user `image_type` }}"
       ],
       "execute_command": "chmod +x {{ .Path }}; sudo {{ .Vars }} {{ .Path }}",
-      "remote_folder": "/opt/provision-scripts"
-    },
-    {
-      "type": "shell",
-      "inline": [
-        "sudo rm -rf /opt/provision-scripts"
-      ],
-      "remote_folder": "/opt/provision-scripts"
+      "remote_folder": "/opt/packer/provision-scripts"
     },
     {
       "type": "file",
@@ -1039,6 +1067,39 @@
         "gc-redhat9",
         "arm-redhat9"
       ]
+    },
+    {
+      "type": "shell",
+      "inline": [
+        "sudo mkdir -p /opt/packer/validation-scripts",
+        "sudo chmod -R 777 /opt/packer/validation-scripts"
+      ],
+      "remote_folder": "/opt/packer"
+    },
+    {
+      "type": "file",
+      "source": "scripts/validation/saltstack",
+      "destination": "/tmp/saltstack-validator"
+    },
+    {
+      "type": "shell",
+      "script": "scripts/validation/validator.sh",
+      "environment_vars": [
+        "OS={{user `os`}}",
+        "ARCHITECTURE={{user `architecture`}}",
+        "SALT_PATH={{user `salt_path`}}",
+        "CLOUD_PROVIDER={{ user `cloud_provider` }}",
+        "IMAGE_TYPE={{ user `image_type` }}"
+      ],
+      "execute_command": "chmod +x {{ .Path }}; sudo {{ .Vars }} {{ .Path }}",
+      "remote_folder": "/opt/packer/validation-scripts"
+    },
+    {
+      "type": "shell",
+      "inline": [
+        "sudo rm -rf /opt/packer"
+      ],
+      "remote_folder": "/opt/packer"
     }
   ],
   "post-processors": [
@@ -1050,7 +1111,7 @@
       "type": "shell-local",
       "script": "scripts/pp_json.sh",
       "environment_vars": [
-        "custom_image_type={{user `custom_image_type`}}",
+        "image_type={{user `image_type`}}",
         "created_at={{timestamp}}",
         "prometheus=true",
         "created={{ isotime \"2006-01-02 15:04:05 -0700\" }}",
@@ -1101,7 +1162,8 @@
         "azure_image_publisher={{user `azure_image_publisher`}}",
         "azure_image_offer={{user `azure_image_offer`}}",
         "azure_image_sku={{user `azure_image_sku`}}",
-        "azure_image_version={{user `azure_image_version`}}"
+        "azure_image_version={{user `azure_image_version`}}",
+        "openstack_region={{user `openstack_region`}}"
       ]
     }
   ]

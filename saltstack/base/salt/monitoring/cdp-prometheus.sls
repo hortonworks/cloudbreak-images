@@ -1,4 +1,4 @@
-{% set version = '2.54.1' %}
+{% set version = '3.15.1' %}
 {% set path = 'https://github.com/prometheus/prometheus/releases/download/v' ~ version %}
 {% set architecture = 'arm64' if salt['environ.get']('ARCHITECTURE') == 'arm64' else 'amd64' %}
 {% set url = path ~ '/prometheus-' ~ version ~ '.linux-' ~ architecture ~ '.tar.gz' %}
@@ -11,6 +11,10 @@ install_prometheus:
     - archive_format: tar
     - enforce_toplevel: False
     - options: --strip-components=1 --exclude='promtool'
+    - retry:
+        attempts: 3
+        interval: 30
+        splay: 10
 
 prometheus_hardcoded_package:
   file.append:

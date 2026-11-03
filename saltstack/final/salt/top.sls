@@ -1,6 +1,6 @@
 final:
   '*':
-{% if pillar['CUSTOM_IMAGE_TYPE'] == 'hortonworks' %}
+{% if pillar['IMAGE_TYPE'] != 'freeipa' %}
     - validate
 {% endif %}
     - krb5

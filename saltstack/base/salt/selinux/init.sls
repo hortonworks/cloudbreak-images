@@ -128,7 +128,7 @@
     - file_mode: 644
     - template: jinja
 
-{%- if salt['environ.get']('CUSTOM_IMAGE_TYPE') != 'freeipa' %}
+{%- if salt['environ.get']('IMAGE_TYPE') != 'freeipa' %}
 /etc/selinux/cdp/postgresql/:
   file.recurse:
     - name: /etc/selinux/cdp/postgresql/
