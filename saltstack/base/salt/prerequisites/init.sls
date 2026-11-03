@@ -27,6 +27,7 @@ include:
   - {{ slspath }}.cert-tool
   - {{ slspath }}.user
   - {{ slspath }}.firewall
+  - {{ slspath }}.cve-2026-98432
   - {{ slspath }}.umask
   - {{ slspath }}.jinja
   - {{ slspath }}.corkscrew
