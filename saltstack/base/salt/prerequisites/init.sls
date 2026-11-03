@@ -34,6 +34,7 @@ include:
   - {{ slspath }}.authconfig
   - {{ slspath }}.ipa
   - {{ slspath }}.oscap
+  - {{ slspath }}.trivy
 
 /usr/bin/:
   file.recurse:
