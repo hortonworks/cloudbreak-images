@@ -26,9 +26,11 @@ trivy_install:
 
 # The scanner and its vulnerability DB cache can't live in /tmp as it is mounted noexec (and might be a small tmpfs),
 # so they are kept in a dedicated dir which is skipped from the scan and removed afterwards. Only the report stays in /tmp.
+# Trivy's temp files (e.g. the Java DB download) go there too via TMPDIR: /tmp is a 2G LV on Azure RHEL images.
 trivy_run_vuln_scan:
   cmd.run:
     - name: |
+        mkdir -p {{ trivy_home }}/tmp && \
         {{ trivy_home }}/trivy rootfs \
           --cache-dir {{ trivy_home }}/cache \
           --scanners vuln \
@@ -40,6 +42,8 @@ trivy_run_vuln_scan:
           -f json \
           -o /tmp/trivy/trivy_vuln_report.json \
           /
+    - env:
+      - TMPDIR: {{ trivy_home }}/tmp
     - require:
       - cmd: trivy_install
       - file: trivy_scan
