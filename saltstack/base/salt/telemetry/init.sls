@@ -21,7 +21,7 @@ install_cdp_infra_tools_packages:
   {% if salt['environ.get']('IMAGE_TYPE') == 'runtime' and salt['environ.get']('STACK_VERSION').split('.') | map('int') | list <= '7.3.1'.split('.') | map('int') | list %}
       - cdp-telemetry: 1.3.10_b1
   {% else %}
-      - cdp-telemetry: 1.3.18_b1
+      - cdp-telemetry: 1.3.20_b1
   {% endif %}
 {% endif %}
 {% if salt['environ.get']('INCLUDE_FLUENT') == "Yes" %}
@@ -31,7 +31,7 @@ install_cdp_infra_tools_packages:
   {% if salt['environ.get']('IMAGE_TYPE') == 'runtime' and salt['environ.get']('STACK_VERSION').split('.') | map('int') | list <= '7.3.1'.split('.') | map('int') | list %}
       - cdp-logging-agent: 1.3.10_b1
   {% else %}
-      - cdp-logging-agent: 1.3.12_b1
+      - cdp-logging-agent: 1.3.20_b1
   {% endif %}
 {% endif %}
 {% if pillar['OS'] == 'redhat9' %}
