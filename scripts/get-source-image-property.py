@@ -8,6 +8,7 @@ PLAN_NAME_MAP = {
     "9.5":  "rhel-lvm95",
     "9.6":  "rhel-lvm96",
     "9.8":  "rhel-lvm98",
+    "10.2": "10-lvm",
 }
 
 # -----------------------------
@@ -25,6 +26,9 @@ IMAGE_RULES = {
         ">=7.3.3":  "rhel-lvm98",
         "==7.3.2":  "rhel-lvm95"
     },
+    ("Azure", "redhat10"): {
+        "any":      "10-lvm"
+    },
 
     # ---------------- AWS ----------------
     ("AWS", "redhat8", "arm64"): {
@@ -33,7 +37,6 @@ IMAGE_RULES = {
     ("AWS", "redhat8", "x86_64"): {
         "any":      "ami-02073841a355a1e92"
     },
-
     ("AWS", "redhat9", "arm64"): {
         "base":     "ami-06e87d669dc318713",
         "freeipa":  "ami-06e87d669dc318713",
@@ -45,6 +48,12 @@ IMAGE_RULES = {
         "freeipa":  "ami-08c9d8f6174932e4a",
         ">=7.3.3":  "ami-08c9d8f6174932e4a",
         "==7.3.2":  "ami-08a3a46b7bf22015a",
+    },
+    ("AWS", "redhat10", "x86_64"): {
+        "any":      "ami-0fb12ba629d026e9e"
+    },
+    ("AWS", "redhat10", "arm64"): {
+        "any":      "ami-0a3c37def7656c088"
     },
 
     # ---------------- AWS Gov ----------------
@@ -64,6 +73,9 @@ IMAGE_RULES = {
         "freeipa":  "rhel-9-byos-v20260811",
         ">=7.3.3":  "rhel-9-byos-v20260811",
         "==7.3.2":  "rhel-9-byos-v20250709",
+    },
+    ("GCP", "redhat10"): {
+        "any":      "rhel-10-byos-v20261030"
     },
 
     # ---------------- OpenStack ----------------

@@ -10,17 +10,15 @@ function install_salt_with_pip3() {
   echo "Installing salt with version: $SALT_VERSION"
 
   # OS specific packages required for Salt go here
-  if [ "${OS}" == "redhat8" ] ; then
+  if [ "${OS}" == "redhat10" ] ; then  
+    python3 -m pip install backports
+  elif [ "${OS}" == "redhat8" ] ; then
     python3 -m pip install distro
-  elif [ "${OS}" == "redhat7" ] ; then
-    echo "No OS specific packages required for RedHat 7"
-  elif [ "${OS}" == "centos7" ] ; then
-    echo "No OS specific packages required for CentOS 7"
   fi
 
   # Anything installed after this point will end up Salt's venv
   mkdir ${SALT_PATH}
-  if [ "${SALT_VERSION}" == "3006.10" ] ; then
+  if [ "${SALT_VERSION}" == "3006.10" ] && [ "${OS}" != "redhat10" ] ; then
     python3.11 -m virtualenv ${SALT_PATH}
   else
     python3 -m virtualenv ${SALT_PATH}
@@ -41,7 +39,7 @@ function install_salt_with_pip3() {
 function install_with_yum() {
 
   # This is no longer needed for RHEL 9 - https://access.redhat.com/solutions/6973382
-  if [ "${OS_TYPE}" == "redhat8" ] ; then
+  if [ "${OS}" == "redhat8" ] ; then
     yum install -y redhat-lsb-core
   fi
   yum groupinstall -y 'Development Tools'
@@ -241,11 +239,30 @@ function redhat9_fix_default_pip3() {
   echo "pip3 now points to: $pip3bin"
 }
 
+function redhat10_update_python312() {
+
+  echo "Installing python3-devel (the rest should be already installed in case of RHEL10)..."
+  dnf install -y python3-devel
+
+  echo PYTHON312=$(dnf list installed | grep ^python3\\. | grep -oi " [^\s]* " | xargs) >> /tmp/python_install.properties
+
+  # Update PIP and enable global logging
+  /usr/bin/python3 -m pip install -U pip
+  /usr/bin/python3 -m pip config set global.log /var/log/pip39.log
+
+  # General required dependency
+  /usr/bin/python3 -m pip install --ignore-installed packaging
+  /usr/bin/python3 -m pip install virtualenv
+}
+
+
 function install_python_pip() {
   
   yum install -y openldap-devel
   
-  if [ "${OS}" == "redhat9" ] ; then
+  if [ "${OS}" == "redhat10" ] ; then
+    redhat10_update_python312
+  elif [ "${OS}" == "redhat9" ] ; then
     redhat9_update_python39
     redhat89_install_python311
     if [ "${IMAGE_BASE_NAME}" != "freeipa" ] ; then
