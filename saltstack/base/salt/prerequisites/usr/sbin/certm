@@ -1,0 +1,160 @@
+#!/bin/bash
+# Drop-in replacement for the certm tool (https://github.com/ehazlett/certm) that generates the certificates with openssl.
+# Cloudbreak calls certm on the nodes (also on older images that still have the original binary), so the CLI must stay compatible:
+#   certm -d <dir> ca generate [-o <org>] [-b <bits>] [--overwrite]
+#   certm -d <dir> server generate [-o <org>] [-b <bits>] [--host <host>]... [--cert <path>] [--key <path>] [--ca-cert <path>] [--ca-key <path>] [--overwrite]
+# Flags can be given as -flag, --flag, -flag=value or -flag value, like with the original tool.
+# The certificates match the ones certm generated: RSA keys, SHA256, Subject O=<org>, 825 days, random 128 bit serial,
+# CA:TRUE for the CA, serverAuth + clientAuth and SANs from the hosts for the server certificate, 0600 file mode.
+# Only openssl options that work on every supported OS are used (OpenSSL 1.0.2 - 3.x).
+#
+# `certm --version` (or -v) prints "<command> version <version>" like the original tool, which prints 0.1.4 on older images.
+# Bump VERSION when a command or flag is added, so callers can check for it before using it, e.g.:
+#   printf '%s\n' 1.1.0 "$(certm --version | awk '{print $NF}')" | sort -V -C && certm <new flag>
+# Versions:
+#   1.0.0 - openssl based reimplementation of certm 0.1.4: ca generate, server generate
+
+set -e
+
+VERSION=1.0.0
+
+usage() {
+  echo "usage: certm -d <dir> ca generate [-o <org>] [-b <bits>] [--overwrite]" >&2
+  echo "       certm -d <dir> server generate [-o <org>] [-b <bits>] [--host <host>]... [--cert <path>] [--key <path>] [--ca-cert <path>] [--ca-key <path>] [--overwrite]" >&2
+  echo "       certm --version" >&2
+  exit 1
+}
+
+fail() {
+  echo "certm: $*" >&2
+  exit 1
+}
+
+# Removes an existing output file if --overwrite was given, fails otherwise (same as certm).
+prepare_output() {
+  if [[ -e "$1" ]]; then
+    [[ "$overwrite" == "true" ]] || fail "ca cert/key exists.  specify --overwrite to overwrite."
+    rm -f "$1"
+  fi
+}
+
+# Usage: generate_cert <key-out> <cert-out> <extension-file> [<ca-cert> <ca-key>]
+# Self-signs the certificate when no CA is given.
+generate_cert() {
+  local key=$1 cert=$2 ext=$3 ca_cert=$4 ca_key=$5
+  openssl genpkey -algorithm RSA -pkeyopt rsa_keygen_bits:"$bits" -out "$key"
+  openssl req -new -key "$key" -subj "/O=$org" -out "$work/req.csr"
+  if [[ -n "$ca_cert" ]]; then
+    openssl x509 -req -in "$work/req.csr" -CA "$ca_cert" -CAkey "$ca_key" -sha256 -days 825 \
+      -set_serial "0x$(openssl rand -hex 16)" -extfile "$ext" -out "$cert"
+  else
+    openssl x509 -req -in "$work/req.csr" -signkey "$key" -sha256 -days 825 \
+      -set_serial "0x$(openssl rand -hex 16)" -extfile "$ext" -out "$cert"
+  fi
+  chmod 600 "$key" "$cert"
+}
+
+dir=""
+org="unknown"
+bits=2048
+overwrite=false
+cert=""
+key=""
+ca_cert=""
+ca_key=""
+hosts=()
+command=()
+
+while [[ $# -gt 0 ]]; do
+  arg=$1
+  shift
+  if [[ "$arg" != -* ]]; then
+    command+=("$arg")
+    continue
+  fi
+  name=${arg#-}
+  name=${name#-}
+  value=""
+  if [[ "$name" == *=* ]]; then
+    value=${name#*=}
+    name=${name%%=*}
+  fi
+  [[ "$name" =~ ^(d|output-directory|o|org|b|bits|host|cert|key|ca-cert|ca-key|overwrite|D|debug|h|help|v|version)$ ]] \
+    || fail "flag provided but not defined: $arg"
+  if [[ "$arg" != *=* && ! "$name" =~ ^(overwrite|D|debug|h|help|v|version)$ ]]; then
+    [[ $# -gt 0 ]] || fail "flag needs an argument: $arg"
+    value=$1
+    shift
+  fi
+  case "$name" in
+    d|output-directory) dir=$value ;;
+    o|org) org=$value ;;
+    b|bits) bits=$value ;;
+    host) hosts+=("$value") ;;
+    cert) cert=$value ;;
+    key) key=$value ;;
+    ca-cert) ca_cert=$value ;;
+    ca-key) ca_key=$value ;;
+    overwrite) [[ "$value" == "false" ]] || overwrite=true ;;
+    D|debug) ;;
+    h|help) usage ;;
+    v|version)
+      echo "$0 version $VERSION"
+      exit 0
+      ;;
+  esac
+done
+
+[[ -n "$dir" ]] || fail "you must specify an output directory"
+[[ "$bits" =~ ^[0-9]+$ ]] || fail "invalid value for -bits: $bits"
+
+umask 077
+work=$(mktemp -d)
+trap 'rm -rf "$work"' EXIT
+mkdir -p "$dir"
+
+case "${command[*]}" in
+  "ca generate")
+    echo "generating ca: org=$org bits=$bits" >&2
+    prepare_output "$dir/ca.pem"
+    prepare_output "$dir/ca-key.pem"
+    cat > "$work/ext.cnf" <<EOF
+basicConstraints=critical,CA:TRUE
+keyUsage=critical,keyCertSign,digitalSignature,keyEncipherment,keyAgreement
+subjectKeyIdentifier=hash
+EOF
+    generate_cert "$dir/ca-key.pem" "$dir/ca.pem" "$work/ext.cnf"
+    ;;
+  "server generate")
+    echo "generating server certificate: org=$org bits=$bits" >&2
+    cert=${cert:-$dir/server.pem}
+    key=${key:-$dir/server-key.pem}
+    ca_cert=${ca_cert:-$dir/ca.pem}
+    ca_key=${ca_key:-$dir/ca-key.pem}
+    [[ -f "$ca_cert" && -f "$ca_key" ]] || fail "CA certificate or key not found: $ca_cert, $ca_key"
+    prepare_output "$cert"
+    prepare_output "$key"
+    san=""
+    for host in "${hosts[@]}"; do
+      if [[ "$host" =~ ^[0-9]+(\.[0-9]+){3}$ || "$host" == *:* ]]; then
+        san="${san:+$san,}IP:$host"
+      elif [[ -n "$host" ]]; then
+        san="${san:+$san,}DNS:$host"
+      fi
+    done
+    cat > "$work/ext.cnf" <<EOF
+basicConstraints=critical,CA:FALSE
+keyUsage=critical,digitalSignature,keyEncipherment,keyAgreement
+extendedKeyUsage=serverAuth,clientAuth
+subjectKeyIdentifier=hash
+authorityKeyIdentifier=keyid
+EOF
+    if [[ -n "$san" ]]; then
+      echo "subjectAltName=$san" >> "$work/ext.cnf"
+    fi
+    generate_cert "$key" "$cert" "$work/ext.cnf" "$ca_cert" "$ca_key"
+    ;;
+  *)
+    usage
+    ;;
+esac

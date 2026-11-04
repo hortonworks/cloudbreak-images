@@ -1,24 +1,9 @@
-{% set version = '0.1.4' %}
-{% set url = 'https://github.infra.cloudera.com/cloudbreak/certm/releases/download/v' ~ version ~ '/certm_' ~ version ~ '_Linux_' ~ salt['environ.get']('ARCHITECTURE') ~ '.tgz' %}
-
+# certm compatible wrapper around openssl, it replaces the certm binary that was downloaded here before.
+# Cloudbreak calls certm on the nodes, so the command has to stay available with the same flags.
 install_certm:
-  archive.extracted:
-    - name: /sbin/
-    - source: {{ url }}
-    - source_hash: {{ url }}.sha256
-    - archive_format: tar
-    - enforce_toplevel: false
-    - skip_verify: True
-    - if_missing: /sbin/certm
+  file.managed:
+    - name: /usr/sbin/certm
+    - source: salt://{{ slspath }}/usr/sbin/certm
     - user: root
     - group: root
-    - retry:
-        attempts: 3
-        interval: 30
-        splay: 10
-
-certm_hardcoded_package:
-  file.append:
-    - name: /tmp/hardcoded-packages.csv
-    - text: |
-        certm;{{ version }};Hardcoded;UNKNOWN;Cloudera Inc.;{{ url }};CertM is a simple tool to generate TLS certificates and keys.
+    - mode: 755
