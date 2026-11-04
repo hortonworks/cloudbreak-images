@@ -1107,7 +1107,8 @@
         "ARCHITECTURE={{user `architecture`}}",
         "SALT_PATH={{user `salt_path`}}",
         "CLOUD_PROVIDER={{ user `cloud_provider` }}",
-        "IMAGE_TYPE={{ user `image_type` }}"
+        "IMAGE_TYPE={{ user `image_type` }}",
+        "STACK_VERSION={{user `stack_version`}}"
       ],
       "execute_command": "chmod +x {{ .Path }}; sudo {{ .Vars }} {{ .Path }}",
       "remote_folder": "/opt/packer/validation-scripts"

@@ -1,0 +1,29 @@
+{% set package_versions_file = '/tmp/package-versions.json' %}
+{% set package_versions = {} %}
+{% if salt['file.file_exists'](package_versions_file) %}
+{% set package_versions = salt['file.read'](package_versions_file) | load_json %}
+{% endif %}
+
+# Renders a state that fails unless the version found on the image matches the one in package-versions.json
+{% macro check_version(state_id, name, key, expected, actual, hardcoded=False, prefix=False) %}
+{%- set matches = actual.startswith(expected) if prefix else actual == expected %}
+{{ state_id }}:
+{%- if not expected %}
+  test.fail_without_changes:
+    - name: "{{ package_versions_file }} is missing or has no '{{ key }}' entry, cannot validate the {{ name }} version"
+{%- elif not matches %}
+  test.fail_without_changes:
+{%- if hardcoded %}
+    - name: "[HARDCODED] {{ name }} version mismatch: expected {{ 'a version starting with ' if prefix }}{{ expected }}, found '{{ actual }}'"
+{%- else %}
+    - name: "{{ name }} version mismatch: expected {{ 'a version starting with ' if prefix }}{{ expected }} ('{{ key }}' in package-versions.json), found '{{ actual }}'"
+{%- endif %}
+{%- else %}
+  test.succeed_without_changes:
+{%- if hardcoded %}
+    - name: "[HARDCODED] {{ name }} version {{ actual }} matches the expected {{ 'prefix ' if prefix }}{{ expected }}"
+{%- else %}
+    - name: "{{ name }} version {{ actual }} matches '{{ key }}' in package-versions.json"
+{%- endif %}
+{%- endif %}
+{% endmacro %}
