@@ -799,8 +799,8 @@
     },
     {
       "type": "file",
-      "source": "scripts/salt_3006.26_requirements.txt",
-      "destination": "/tmp/salt_3006.26_requirements.txt"
+      "source": "scripts/salt_3006.17_requirements.txt",
+      "destination": "/tmp/salt_3006.17_requirements.txt"
     },
     {
       "type": "file",
