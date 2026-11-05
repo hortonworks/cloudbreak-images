@@ -10,7 +10,7 @@
 #               fixable if any affected package has a fixed version
 #   byClass   - findings split by Trivy result class (os-pkgs, lang-pkgs)
 # Each counter object has: total, fixable, CRITICAL, HIGH, MEDIUM, LOW, UNKNOWN.
-# Severities missing from the report (e.g. because of --severity HIGH,CRITICAL) are reported as 0.
+# Severities with no findings (or filtered out by trivy --severity) are reported as 0.
 set -euo pipefail
 
 if [[ $# -ne 2 ]]; then
