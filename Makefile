@@ -846,6 +846,15 @@ ifdef UUID
 			aws s3 cp "${UUID}_$${base_name}.json" s3://cloudbreak-imagecatalog/image-scans/ --acl public-read; \
 		fi \
 	done
+# Small summary next to the full report, so the image catalog viewer can show counts without downloading it.
+# Uploaded after the report, so an existing summary always means the report exists too. Never fails the build.
+	if [ -f "trivy_vuln_report.json" ]; then \
+		if ./scripts/trivy-summary.sh "trivy_vuln_report.json" "${UUID}_trivy_summary.json"; then \
+			aws s3 cp "${UUID}_trivy_summary.json" s3://cloudbreak-imagecatalog/image-scans/ --acl public-read --content-type application/json; \
+		else \
+			echo "WARNING: could not generate the Trivy summary, skipping its upload"; \
+		fi \
+	fi
 endif
 endif
 
