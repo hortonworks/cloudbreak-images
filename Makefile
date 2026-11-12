@@ -45,6 +45,10 @@ $(error BUILD_RESOURCE_GROUP_NAME and ARM_BUILD_REGION should not be set togethe
 		AZURE_IMAGE_PUBLISHER ?= OpenLogic
 		AZURE_IMAGE_OFFER ?= CentOS
 		AZURE_IMAGE_SKU ?= 7.6
+	else ifeq ($(OS),redhat10)
+		AZURE_IMAGE_PUBLISHER ?= RedHat
+		AZURE_IMAGE_OFFER ?= RHEL
+		AZURE_IMAGE_SKU ?= $(shell ./scripts/get-source-image-property.py imageId Azure "$(OS)" _ x86_64 "$(IMAGE_TYPE)" "$(STACK_VERSION)" )
 	else
 		AZURE_IMAGE_PUBLISHER ?= RedHat
 		AZURE_IMAGE_OFFER ?= rhel-byos
@@ -111,7 +115,7 @@ PREWARM_TAG ?= "prewarmed_v1"
 ## https://github.com/hashicorp/packer/issues/6536
 AWS_MAX_ATTEMPTS ?= 300
 PACKAGE_VERSIONS ?= ""
-SALT_VERSION ?= $(shell ./scripts/get-salt-version.sh $(BASE_NAME) $(STACK_VERSION))
+SALT_VERSION ?= $(shell ./scripts/get-salt-version.sh $(BASE_NAME) $(STACK_VERSION) $(OS))
 SALT_PATH ?= /opt/salt_$(SALT_VERSION)
 SALT_NEWER_PYZMQ = $(shell echo "$(SALT_VERSION)>=3006.4" | bc)
 ifeq ($(SALT_NEWER_PYZMQ),1)
@@ -379,6 +383,21 @@ build-aws-redhat9:
 	GIT_TAG=$(GIT_TAG) \
 	./scripts/packer.sh build -color=false -only=aws-redhat9 $(PACKER_OPTS)
 
+build-aws-redhat10:
+	$(ENVS) \
+	AWS_AMI_REGIONS="us-west-1" \
+	AWS_SOURCE_AMI=$(AWS_SOURCE_AMI) \
+	AWS_INSTANCE_TYPE=$(AWS_INSTANCE_TYPE) \
+	OS=redhat10 \
+	OS_TYPE=redhat10 \
+	ARCHITECTURE=$(ARCHITECTURE) \
+	ATLAS_ARTIFACT_TYPE=amazon \
+	SALT_INSTALL_OS=redhat \
+	GIT_REV=$(GIT_REV) \
+	GIT_BRANCH=$(GIT_BRANCH) \
+	GIT_TAG=$(GIT_TAG) \
+	./scripts/packer.sh build -color=false -only=aws-redhat10 $(PACKER_OPTS)
+
 build-azure-redhat8:
 	$(ENVS) \
 	AZURE_STORAGE_ACCOUNTS=$(AZURE_BUILD_STORAGE_ACCOUNT) \
@@ -421,6 +440,27 @@ ifeq ($(AZURE_INITIAL_COPY),true)
 	TRACE=1 AZURE_STORAGE_ACCOUNTS=$(AZURE_BUILD_STORAGE_ACCOUNT) ./scripts/azure-managed-image-to-blob.sh
 endif
 
+build-azure-redhat10:
+	$(ENVS) \
+	AZURE_STORAGE_ACCOUNTS=$(AZURE_BUILD_STORAGE_ACCOUNT) \
+	OS=redhat10 \
+	OS_TYPE=redhat10 \
+	ATLAS_ARTIFACT_TYPE=azure-arm \
+	SALT_INSTALL_OS=redhat \
+	AZURE_IMAGE_VHD=$(AZURE_IMAGE_VHD) \
+	AZURE_IMAGE_PUBLISHER=$(AZURE_IMAGE_PUBLISHER) \
+	AZURE_IMAGE_OFFER=$(AZURE_IMAGE_OFFER) \
+	AZURE_IMAGE_SKU=$(AZURE_IMAGE_SKU) \
+	BUILD_RESOURCE_GROUP_NAME=$(BUILD_RESOURCE_GROUP_NAME) \
+	PRIVATE_VIRTUAL_NETWORK_WITH_PUBLIC_IP=$(PRIVATE_VIRTUAL_NETWORK_WITH_PUBLIC_IP) \
+	GIT_REV=$(GIT_REV) \
+	GIT_BRANCH=$(GIT_BRANCH) \
+	GIT_TAG=$(GIT_TAG) \
+	./scripts/packer.sh build -color=false -only=arm-redhat10 $(PACKER_OPTS)
+ifeq ($(AZURE_INITIAL_COPY),true)
+	TRACE=1 AZURE_STORAGE_ACCOUNTS=$(AZURE_BUILD_STORAGE_ACCOUNT) ./scripts/azure-managed-image-to-blob.sh
+endif
+
 build-gc-redhat8:
 	@ METADATA_FILENAME_POSTFIX=$(METADATA_FILENAME_POSTFIX)
 	$(ENVS) \
@@ -450,6 +490,21 @@ build-gc-redhat9:
 	GIT_BRANCH=$(GIT_BRANCH) \
 	GIT_TAG=$(GIT_TAG) \
 	./scripts/packer.sh build -color=false -only=gc-redhat9 $(PACKER_OPTS)
+
+build-gc-redhat9:
+	@ METADATA_FILENAME_POSTFIX=$(METADATA_FILENAME_POSTFIX)
+	$(ENVS) \
+	OS=redhat10 \
+	OS_TYPE=redhat10 \
+	GCP_SOURCE_IMAGE=$(GCP_SOURCE_IMAGE) \
+	ATLAS_ARTIFACT_TYPE=google \
+	GCP_STORAGE_BUNDLE=$(GCP_STORAGE_BUNDLE) \
+	GCP_STORAGE_BUNDLE_LOG=$(GCP_STORAGE_BUNDLE_LOG) \
+	SALT_INSTALL_OS=redhat \
+	GIT_REV=$(GIT_REV) \
+	GIT_BRANCH=$(GIT_BRANCH) \
+	GIT_TAG=$(GIT_TAG) \
+	./scripts/packer.sh build -color=false -only=gc-redhat10 $(PACKER_OPTS)
 
 copy-aws-images:
 	docker run -i --rm \
@@ -557,27 +612,6 @@ ifeq ($(AZURE_INITIAL_COPY),true)
 	TRACE=1 AZURE_STORAGE_ACCOUNTS=$(AZURE_BUILD_STORAGE_ACCOUNT) ./scripts/azure-copy.sh
 endif
 
-build-azure-redhat7:
-	$(ENVS) \
-	AZURE_STORAGE_ACCOUNTS=$(AZURE_BUILD_STORAGE_ACCOUNT) \
-	OS=redhat7 \
-	OS_TYPE=redhat7 \
-	ATLAS_ARTIFACT_TYPE=azure-arm \
-	SALT_INSTALL_OS=redhat \
-	AZURE_IMAGE_VHD=$(AZURE_IMAGE_VHD) \
-	AZURE_IMAGE_PUBLISHER=$(AZURE_IMAGE_PUBLISHER) \
-	AZURE_IMAGE_OFFER=$(AZURE_IMAGE_OFFER) \
-	AZURE_IMAGE_SKU=$(AZURE_IMAGE_SKU) \
-	BUILD_RESOURCE_GROUP_NAME=$(BUILD_RESOURCE_GROUP_NAME) \
-	PRIVATE_VIRTUAL_NETWORK_WITH_PUBLIC_IP=$(PRIVATE_VIRTUAL_NETWORK_WITH_PUBLIC_IP) \
-	GIT_REV=$(GIT_REV) \
-	GIT_BRANCH=$(GIT_BRANCH) \
-	GIT_TAG=$(GIT_TAG) \
-	./scripts/packer.sh build -color=false -only=arm-redhat7 $(PACKER_OPTS)
-ifeq ($(AZURE_INITIAL_COPY),true)
-	TRACE=1 AZURE_STORAGE_ACCOUNTS=$(AZURE_BUILD_STORAGE_ACCOUNT) ./scripts/azure-copy.sh
-endif
-
 generate-aws-centos7-changelog:
 ifdef IMAGE_UUID
 ifdef SOURCE_IMAGE
@@ -611,6 +645,18 @@ ifdef SOURCE_IMAGE
 	SOURCE_IMAGE=$(SOURCE_IMAGE) \
 	AWS_INSTANCE_TYPE=$(AWS_INSTANCE_TYPE) \
 	./scripts/changelog/packer.sh build -color=false -only=aws-redhat9 -force $(PACKER_OPTS)
+endif
+endif
+
+generate-aws-redhat10-changelog:
+ifdef IMAGE_UUID
+ifdef SOURCE_IMAGE
+	$(ENVS) \
+	OS=redhat10 \
+	IMAGE_UUID=$(IMAGE_UUID) \
+	SOURCE_IMAGE=$(SOURCE_IMAGE) \
+	AWS_INSTANCE_TYPE=$(AWS_INSTANCE_TYPE) \
+	./scripts/changelog/packer.sh build -color=false -only=aws-redhat10 -force $(PACKER_OPTS)
 endif
 endif
 
@@ -657,6 +703,22 @@ ifdef SOURCE_IMAGE
 endif
 endif
 
+generate-azure-redhat10-changelog:
+ifndef PLAN_NAME
+	$(error PLAN_NAME parameter is mandatory for azure redhat10 related changelog generation)
+endif
+
+ifdef IMAGE_UUID
+ifdef SOURCE_IMAGE
+	$(ENVS) \
+	OS=redhat10 \
+	IMAGE_UUID=$(IMAGE_UUID) \
+	SOURCE_IMAGE=$(SOURCE_IMAGE) \
+	PLAN_NAME=$(PLAN_NAME) \
+	./scripts/changelog/packer.sh build -color=false -only=arm-redhat10 -force $(PACKER_OPTS)
+endif
+endif
+
 generate-gc-centos7-changelog:
 ifdef IMAGE_UUID
 ifdef SOURCE_IMAGE
@@ -696,6 +758,20 @@ ifdef SOURCE_IMAGE
 	GCP_STORAGE_BUNDLE_LOG=$(GCP_STORAGE_BUNDLE_LOG) \
 	STACK_VERSION=$(STACK_VERSION) \
 	./scripts/changelog/packer.sh build -color=false -only=gc-redhat9 -force $(PACKER_OPTS)
+endif
+endif
+
+generate-gc-redhat10-changelog:
+ifdef IMAGE_UUID
+ifdef SOURCE_IMAGE
+	$(ENVS) \
+	OS=redhat10 \
+	IMAGE_UUID=$(IMAGE_UUID) \
+	SOURCE_IMAGE=$(SOURCE_IMAGE) \
+	GCP_STORAGE_BUNDLE=$(GCP_STORAGE_BUNDLE) \
+	GCP_STORAGE_BUNDLE_LOG=$(GCP_STORAGE_BUNDLE_LOG) \
+	STACK_VERSION=$(STACK_VERSION) \
+	./scripts/changelog/packer.sh build -color=false -only=gc-redhat10 -force $(PACKER_OPTS)
 endif
 endif
 
@@ -772,12 +848,6 @@ build-in-docker:
 		-v /var/run/docker.sock:/var/run/docker.sock \
 		-v /usr/local/bin/docker:/usr/local/bin/docker \
 		images:build make build-aws
-
-list-amz-linux-amis:
-	aws ec2 describe-images --filter Name=owner-alias,Values=amazon --query 'reverse(sort_by(Images[?contains(ImageLocation,`amazon/amzn-ami-hvm`) && ends_with(ImageLocation, `gp2`)].{loc:ImageLocation,id:ImageId}, &loc))' --out table --region us-west-2
-
-latest-amz-linux-ami:
-	aws ec2 describe-images --filter Name=owner-alias,Values=amazon --query 'reverse(sort_by(Images[?contains(ImageLocation,`amazon/amzn-ami-hvm`) && ends_with(ImageLocation, `gp2`)].{loc:ImageLocation,id:ImageId}, &loc))[0].id' --out text --region us-west-2
 
 cleanup-metadata-repo:
 	rm -rf $(GITHUB_REPO)

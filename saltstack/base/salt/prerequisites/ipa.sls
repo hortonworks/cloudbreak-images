@@ -3,7 +3,7 @@ patch_ipa_constants_hostname:
   file.patch:
     - name: /usr/lib/python3.6/site-packages/ipalib/constants.py
     - source: salt://{{ slspath }}/ipa-constants-py3.6.patch
-{% elif pillar['OS'] == 'redhat9' %}
+{% elif pillar['OS'] == 'redhat9' or pillar['OS'] == 'redhat10' %}
 patch_ipa_constants_hostname:
   file.patch:
     - name: /usr/lib/python3.9/site-packages/ipalib/constants.py
