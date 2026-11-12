@@ -17,11 +17,7 @@ function install_salt_with_pip3() {
   # Anything installed after this point will end up Salt's venv
   mkdir ${SALT_PATH}
   if [ "${SALT_VERSION}" == "3006.10" ] ; then
-    if [ "${OS}" == "redhat10" ] ; then
-      /opt/python311/bin/python3.11 -m virtualenv ${SALT_PATH}
-    else
-      python3.11 -m virtualenv ${SALT_PATH}
-    fi
+    python3.11 -m virtualenv ${SALT_PATH}
   else
     python3 -m virtualenv ${SALT_PATH}
   fi
@@ -241,38 +237,6 @@ function redhat9_fix_default_pip3() {
   echo "pip3 now points to: $pip3bin"
 }
 
-function redhat10_install_python311() {
-  
-  CURRDIR=$(pwd)
-  cd /tmp
-  curl -O https://www.python.org/ftp/python/3.11.11/Python-3.11.11.tgz
-
-  tar xf Python-3.11.11.tgz
-  cd Python-3.11.11
-
-  ./configure --prefix=/opt/python311
-  make -j$(nproc)
-  make install
-  cd $CURRDIR
-
-  # Update PIP and enable global logging
-  /opt/python311/bin/python3.11 -m pip install -U pip
-  /opt/python311/bin/python3.11 -m pip config set global.log /var/log/pip311.log
-
-  # General required dependency
-  /opt/python311/bin/python3.11 -m pip install virtualenv
-
-  # We need to create this "hack", because Saltstack's pip.installed only accepts a pip/pip3
-  # wrapper, but apparently can't call "python3 -m pip", so without this, we can't install
-  # packages to the non-default python3 installation.
-  cat <<EOF >/usr/local/bin/pip3.11
-#!/bin/bash
-/opt/python311/bin/python3.11 -m pip "\$@"
-EOF
-  chmod +x /usr/local/bin/pip3.11
-
-}
-
 function redhat10_update_python312() {
 
   echo "Installing python3-devel (the rest should be already installed in case of RHEL10)..."
@@ -296,7 +260,6 @@ function install_python_pip() {
   
   if [ "${OS}" == "redhat10" ] ; then
     redhat10_update_python312
-    redhat10_install_python311
   elif [ "${OS}" == "redhat9" ] ; then
     redhat9_update_python39
     redhat89_install_python311
