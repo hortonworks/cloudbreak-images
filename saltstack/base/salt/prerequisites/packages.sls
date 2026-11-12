@@ -84,6 +84,9 @@ packages_install:
       - cryptsetup
   {% endif %}
       - nvme-cli
+  {% if salt['environ.get']('CLOUD_PROVIDER') == 'Azure' and (pillar['OS'] == 'redhat10' or (pillar['OS'] == 'redhat9' and salt['environ.get']('RHEL_VERSION') == '9.8')) %}
+      - azure-vm-utils
+  {% endif %}
   {% if salt['environ.get']('CLOUD_PROVIDER') == 'Openstack' %}
       - glibc-langpack-en
   {% endif %}
