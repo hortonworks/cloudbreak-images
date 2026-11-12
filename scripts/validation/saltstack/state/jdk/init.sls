@@ -19,5 +19,11 @@
 {{ check_version('base_rhel9_check_jdk', 'Base RHEL9 Default JDK', full_key, '17.', actual_full, True, True) }}
 {% endif %}
 {% else %}
+
+{% if salt['environ.get']('OS') == 'redhat8' %}
+{{ check_version('runtime_check_jdk', 'Runtime Default JDK', full_key, '1.8.', actual_full, True, True) }}
+{% else %}
 {{ check_version('runtime_check_jdk', 'Runtime Default JDK', full_key, '17.', actual_full, True, True) }}
+{% endif %}
+
 {% endif %}
