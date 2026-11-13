@@ -20,8 +20,8 @@ if [ "${CLOUD_PROVIDER}" == "Azure" ] ; then
     reboot
   elif [[ "${OS}" == "redhat8" || "${OS}" == "redhat9" ]] ; then
     PV_NAME=$(pvs --noheadings --rows | head -1 | tr -d '[:space:]')
-    DISK=${PV_NAME//[0-9]/}
-    PARTITION=${PV_NAME//[^0-9]/}
+    DISK="/dev/$(lsblk -ndo PKNAME "$PV_NAME")"
+    PARTITION=$(cat "/sys/class/block/$(basename "$PV_NAME")/partition")
     # Relocating backup data structures to the end of the disk
     printf "x\ne\nw\nY\n" | gdisk $DISK
     # Resize partition to the end of the disk
