@@ -119,6 +119,9 @@ read_files_pattern(cdp_policy_installer_t, udev_t, udev_t)
 read_files_pattern(cdp_policy_installer_t, unconfined_service_t, unconfined_service_t)
 read_files_pattern(cdp_policy_installer_t, unconfined_t, unconfined_t)
 
+# Building policy modules requires make to drop privileges (setresuid/setresgid)
+allow cdp_policy_installer_t self:capability { setgid setuid };
+
 
 ########################################
 #

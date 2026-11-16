@@ -5,33 +5,6 @@
 
 set -ex -o pipefail -o errexit
 
-function compare_version () {
-  if [[ $1 == $2 ]]; then
-    return 0
-  fi
-  local IFS=.
-  local i version1=($1) version2=($2)
-  # Fill empty fields in version1 with zeros
-  for ((i=${#version1[@]}; i<${#version2[@]}; i++))
-  do
-    version1[i]=0
-  done
-  for ((i=0; i<${#version1[@]}; i++))
-  do
-    # Fill empty fields in version2 with zeros
-    if [[ -z ${version2[i]} ]]; then
-      version2[i]=0
-    fi
-    if ((10#${version1[i]} > 10#${version2[i]})); then
-      return 1
-    fi
-    if ((10#${version1[i]} < 10#${version2[i]})); then
-      return 2
-    fi
-  done
-  return 0
-}
-
 function install_salt_with_pip3() {
 
   echo "Installing salt with version: $SALT_VERSION"
@@ -47,17 +20,11 @@ function install_salt_with_pip3() {
 
   # Anything installed after this point will end up Salt's venv
   mkdir ${SALT_PATH}
-
-  # Salt >= 3006.10 requires the Python 3.11 venv
-  set +e
-  compare_version "$SALT_VERSION" 3006.10; COMP_RESULT=$?
-  set -e
-  if (( COMP_RESULT == 0 || COMP_RESULT == 1 )); then
+  if [ "${SALT_VERSION}" == "3006.10" ] ; then
     python3.11 -m virtualenv ${SALT_PATH}
   else
     python3 -m virtualenv ${SALT_PATH}
   fi
-
   source ${SALT_PATH}/bin/activate
   python3 -m pip install --upgrade pip
 
