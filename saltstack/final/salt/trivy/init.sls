@@ -34,7 +34,7 @@ trivy_run_vuln_scan:
         {{ trivy_home }}/trivy rootfs \
           --cache-dir {{ trivy_home }}/cache \
           --scanners vuln \
-          --severity HIGH,CRITICAL \
+          --severity UNKNOWN,LOW,MEDIUM,HIGH,CRITICAL \
           --skip-dirs /proc,/sys,/dev,/tmp,{{ trivy_home }} \
           --timeout 60m \
           --no-progress \
