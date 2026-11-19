@@ -15,7 +15,7 @@ mount-nfs-sequentially-service-start:
     - reload: True
     - require:
       - file: mount-nfs-sequentially-service-file
-{% elif pillar['OS'] == 'redhat8' or pillar['OS'] == 'redhat9' %}
+{% elif pillar['OS'] == 'redhat8' or pillar['OS'] == 'redhat9' or pillar['OS'] == 'redhat10' %}
 format-and-mount-additional-disk:
   cmd.run:
     - name: |

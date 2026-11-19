@@ -1,7 +1,7 @@
 include:
   - {{ slspath }}.path
   - {{ slspath }}.setroubleshoot
-{% if pillar['OS'] == 'redhat9' %}
+{% if pillar['OS'] == 'redhat9' or pillar['OS'] == 'redhat10' %}
   - {{ slspath }}.geoclue
 {% endif %}
 {% if salt['environ.get']('CLOUD_PROVIDER') == 'Openstack' %}
@@ -30,7 +30,6 @@ include:
   - {{ slspath }}.umask
   - {{ slspath }}.jinja
   - {{ slspath }}.corkscrew
-  - {{ slspath }}.storage
   - {{ slspath }}.authconfig
   - {{ slspath }}.ipa
   - {{ slspath }}.oscap
