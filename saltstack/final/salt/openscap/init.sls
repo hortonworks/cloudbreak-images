@@ -43,12 +43,20 @@ oscap_scan:
         'reason': 'SELinux state is enforced via runtime configuration management after deployment.'
     },
     {
-        'id': 'xccdf_org.ssgproject.content_rule_aide_build_database',
-        'reason': 'AIDE database is initialized during the first boot post-provisioning.'
+        'id': 'xccdf_org.ssgproject.content_rule_package_aide_installed',
+        'reason': 'AIDE is not used in the image: a database built at image burn time is not a meaningful baseline for the provisioned node.'
     },
     {
-        'id': 'xccdf_org.ssgproject.content_rule_aide_verify_audit_tools',
-        'reason': 'Audit tool verification depends on post-build AIDE initialization.'
+        'id': 'xccdf_org.ssgproject.content_rule_aide_build_database',
+        'reason': 'AIDE is not used in the image: a database built at image burn time is not a meaningful baseline for the provisioned node.'
+    },
+    {
+        'id': 'xccdf_org.ssgproject.content_rule_aide_check_audit_tools',
+        'reason': 'AIDE is not used in the image: a database built at image burn time is not a meaningful baseline for the provisioned node.'
+    },
+    {
+        'id': 'xccdf_org.ssgproject.content_rule_aide_periodic_cron_checking',
+        'reason': 'AIDE is not used in the image: a database built at image burn time is not a meaningful baseline for the provisioned node.'
     },
     {
         'id': 'xccdf_org.ssgproject.content_rule_configure_strategy',

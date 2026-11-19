@@ -39,6 +39,9 @@ else
         # It switches the system crypto policy to DEFAULT:..., which would turn off the FIPS policy
         SKIP_TAGS+=",configure_custom_crypto_policy_cis"
     fi
+    # AIDE is turned off: a database built at image burn time is not a meaningful baseline for the provisioned node,
+    # building it over the pre-warmed parcels slows the burn down a lot, and the daily 'aide --check' adds I/O load on every node
+    SKIP_TAGS+=",aide,package_aide_installed,aide_build_database,aide_check_audit_tools,aide_periodic_cron_checking"
     # 235 is the max value for ClientAliveInterval allowed by Azure Marketplace
     EXTRA_VARS="sshd_idle_timeout_value=180"
 
@@ -98,6 +101,11 @@ if [ "${STIG_ENABLED}" == "True" ]; then
 else
     ansible-playbook -i localhost, -c local $CIS_PLAYBOOK --skip-tags $SKIP_TAGS --extra-vars "$EXTRA_VARS" | tee /tmp/cis/cis_log.txt
     chmod 777 /tmp/cis/cis_log.txt
+    # Make sure AIDE is not left on the image (e.g. pulled in by the base image)
+    if rpm -q aide >/dev/null 2>&1; then
+        yum remove -y aide
+        rm -rf /var/lib/aide
+    fi
     if [ "${SSG_PRE_INSTALLED}" == "false" ]; then
         yum remove -y scap-security-guide
     fi
