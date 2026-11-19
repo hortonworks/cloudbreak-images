@@ -1,10 +1,10 @@
 #!/bin/bash
 set -ex -o pipefail -o errexit
 
-# Remediating the system to align with the CIS L1 baseline using an SSG Ansible playbook
-# The ansible playbook is available at
-# https://github.com/AutomateCompliance/AnsibleCompliancePlaybooks/blob/main/rhel8-playbook-cis_server_l1.yml
-# https://github.com/AutomateCompliance/AnsibleCompliancePlaybooks/blob/main/rhel8-playbook-stig.yml
+# Remediating the system to align with the CIS L1 baseline using an SSG Ansible playbook.
+# CIS L1: the playbook shipped in the scap-security-guide RPM of the running OS minor version. This is the same
+#   content the OpenSCAP CIS L1 scan uses (saltstack/final/salt/openscap), so the hardening and the scan match.
+# STIG: https://github.com/AutomateCompliance/AnsibleCompliancePlaybooks/blob/main/rhel8-playbook-stig.yml
 
 ANSIBLE_PATH=/mnt/tmp/ansible
 
@@ -26,6 +26,20 @@ if [ "${STIG_ENABLED}" == "True" ]; then
     #fi
 else
     SKIP_TAGS="package_firewalld_installed,service_firewalld_enabled,package_openldap-clients_removed,configure_crypto_policy,configure_ssh_crypto_policy"
+    # Network filtering is done by the cloud provider security groups / NSGs / firewall rules, not by a host firewall
+    SKIP_TAGS+=",firewalld_loopback_traffic_restricted,firewalld_loopback_traffic_trusted"
+    # Packages required by CDP: nginx (gateway / salt-api proxy), httpd and bind (FreeIPA), rsync, dnsmasq,
+    # setroubleshoot (SELinux troubleshooting). Removing them with dnf would also remove their dependants.
+    SKIP_TAGS+=",package_nginx_removed,package_httpd_removed,package_bind_removed,package_rsync_removed,package_dnsmasq_removed,package_setroubleshoot_removed"
+    # Changing the shell of system accounts (uid < 1000, e.g. postgres) to nologin breaks 'su <user> -c' style calls in Salt and CDP scripts
+    SKIP_TAGS+=",no_shelllogin_for_systemaccounts"
+    # The automation users (cloudbreak, saltuser) need passwordless sudo
+    SKIP_TAGS+=",sudo_require_authentication"
+    if [ "${FIPS_MODE}" != "false" ]; then
+        # It switches the system crypto policy to DEFAULT:..., which would turn off the FIPS policy
+        SKIP_TAGS+=",configure_custom_crypto_policy_cis"
+    fi
+    # 235 is the max value for ClientAliveInterval allowed by Azure Marketplace
     EXTRA_VARS="sshd_idle_timeout_value=180"
 
     if [ "${IMAGE_BASE_NAME}" == "freeipa" ] ; then
@@ -60,8 +74,16 @@ case ${OS} in
     python3 -m pip install ansible "ansible-core==2.13"
     ;;
 esac
-yum install -y git
-git clone https://github.com/AutomateCompliance/AnsibleCompliancePlaybooks.git $ANSIBLE_PATH/ansible-compliance-playbooks
+
+if [ "${STIG_ENABLED}" == "True" ]; then
+    yum install -y git
+    git clone https://github.com/AutomateCompliance/AnsibleCompliancePlaybooks.git $ANSIBLE_PATH/ansible-compliance-playbooks
+else
+    SSG_PRE_INSTALLED=$(rpm -q scap-security-guide >/dev/null 2>&1 && echo true || echo false)
+    yum install -y scap-security-guide
+    CIS_PLAYBOOK=/usr/share/scap-security-guide/ansible/$PLAYBOOK-cis_server_l1.yml
+    head -n 20 $CIS_PLAYBOOK | grep -E "Benchmark|Version" || true
+fi
 
 #Generate missing host keys as they are needed by the playbook
 ssh-keygen -A
@@ -74,8 +96,11 @@ if [ "${STIG_ENABLED}" == "True" ]; then
     ansible-playbook -i localhost, -c local $ANSIBLE_PATH/ansible-compliance-playbooks/$PLAYBOOK-stig.yml --skip-tags $SKIP_TAGS | tee /tmp/cis/stig_log.txt
     chmod 777 /tmp/cis/stig_log.txt
 else
-    ansible-playbook -i localhost, -c local $ANSIBLE_PATH/ansible-compliance-playbooks/$PLAYBOOK-cis_server_l1.yml --skip-tags $SKIP_TAGS --extra-vars "$EXTRA_VARS" | tee /tmp/cis/cis_log.txt
+    ansible-playbook -i localhost, -c local $CIS_PLAYBOOK --skip-tags $SKIP_TAGS --extra-vars "$EXTRA_VARS" | tee /tmp/cis/cis_log.txt
     chmod 777 /tmp/cis/cis_log.txt
+    if [ "${SSG_PRE_INSTALLED}" == "false" ]; then
+        yum remove -y scap-security-guide
+    fi
 fi
 
 #Clean up python stuff

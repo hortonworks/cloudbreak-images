@@ -140,3 +140,4 @@ execute_cis_control_sh:
       - CLOUD_PROVIDER: {{ salt['environ.get']('CLOUD_PROVIDER') }}
       - STIG_ENABLED: {{ salt['environ.get']('STIG_ENABLED') }}
       - OS: {{ salt['environ.get']('OS') }}
+      - FIPS_MODE: {{ salt['environ.get']('FIPS_MODE') }}
