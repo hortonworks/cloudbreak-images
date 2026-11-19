@@ -1,5 +1,12 @@
 {%if pillar['subtype'] != 'Docker' %}
 
+install_prerequisites:
+  pkg.installed:
+    - pkgs: 
+      - autoconf
+      - automake
+      - gcc
+
 clone_corkscrew:
   git.latest:
     - name: https://github.com/bryanpkc/corkscrew.git

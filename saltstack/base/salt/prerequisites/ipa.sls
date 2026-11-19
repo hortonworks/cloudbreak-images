@@ -1,3 +1,7 @@
+install_patch:
+  pkg.installed:
+    - name: patch
+
 {% if pillar['OS'] == 'redhat8' %}
 patch_ipa_constants_hostname:
   file.patch:

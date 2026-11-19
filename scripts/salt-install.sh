@@ -44,7 +44,6 @@ function install_with_yum() {
   if [ "${OS_TYPE}" == "redhat8" ] ; then
     yum install -y redhat-lsb-core
   fi
-  yum groupinstall -y 'Development Tools'
   
   install_python_pip
   
