@@ -30,8 +30,10 @@ enable_redhat_rhui_repos:
 {% endif %}
 
 install_openjdk:
-  pkg.installed:
-    - pkgs: {{ pillar['openjdk_packages'] }}
+#  pkg.installed:
+#    - pkgs: {{ pillar['openjdk_packages'] }}
+  cmd.run:
+    - name: dnf install -y --setopt=install_weak_deps=False java-17-openjdk-headless java-17-openjdk-devel java-21-openjdk-headless java-21-openjdk-devel
 
 {% if salt['environ.get']('OS') == 'redhat8' %}
 
