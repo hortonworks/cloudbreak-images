@@ -58,7 +58,9 @@ if [ "${CLOUD_PROVIDER}" == "Azure" ]; then
     fi
 fi
 
-if [ "${OS}" == "redhat9" ]; then
+# The draft RHEL 9 playbook broke /etc/bashrc with an unanchored 'umask.*' regex (CB-31377). The SSG RPM playbook only
+# replaces whole 'umask NNN' statements, so the rule is applied again for CIS L1; STIG still uses the old playbook.
+if [ "${OS}" == "redhat9" ] && [ "${STIG_ENABLED}" == "True" ]; then
     SKIP_TAGS+=",accounts_umask_etc_bashrc"
 fi
 
@@ -94,14 +96,16 @@ ssh-keygen -A
 
 #Apply the SSG Ansible playbook
 mkdir -p /tmp/cis
-chmod 777 /tmp/cis
+chmod 700 /tmp/cis
 
 if [ "${STIG_ENABLED}" == "True" ]; then
     ansible-playbook -i localhost, -c local $ANSIBLE_PATH/ansible-compliance-playbooks/$PLAYBOOK-stig.yml --skip-tags $SKIP_TAGS | tee /tmp/cis/stig_log.txt
-    chmod 777 /tmp/cis/stig_log.txt
+    chmod 600 /tmp/cis/stig_log.txt
 else
     ansible-playbook -i localhost, -c local $CIS_PLAYBOOK --skip-tags $SKIP_TAGS --extra-vars "$EXTRA_VARS" | tee /tmp/cis/cis_log.txt
-    chmod 777 /tmp/cis/cis_log.txt
+    chmod 600 /tmp/cis/cis_log.txt
+    # CIS 5.4.2.4: root has no password (SSH key + sudo access only), make sure the account is explicitly locked
+    usermod -L root
     # Make sure AIDE is not left on the image (e.g. pulled in by the base image)
     if rpm -q aide >/dev/null 2>&1; then
         yum remove -y aide

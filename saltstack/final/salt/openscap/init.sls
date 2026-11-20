@@ -71,6 +71,30 @@ oscap_scan:
         'reason': 'NGINX is required in this architecture as a reverse proxy to route traffic securely to backend services.'
     },
     {
+        'id': 'xccdf_org.ssgproject.content_rule_package_firewalld_installed',
+        'reason': 'Network access control is enforced by the cloud provider (security groups / NSGs / firewall rules); CDP services need dynamic inter-node ports, so no host firewall is used.'
+    },
+    {
+        'id': 'xccdf_org.ssgproject.content_rule_firewalld_loopback_traffic_restricted',
+        'reason': 'Network access control is enforced by the cloud provider (security groups / NSGs / firewall rules); CDP services need dynamic inter-node ports, so no host firewall is used.'
+    },
+    {
+        'id': 'xccdf_org.ssgproject.content_rule_firewalld_loopback_traffic_trusted',
+        'reason': 'Network access control is enforced by the cloud provider (security groups / NSGs / firewall rules); CDP services need dynamic inter-node ports, so no host firewall is used.'
+    },
+    {
+        'id': 'xccdf_org.ssgproject.content_rule_package_httpd_removed',
+        'reason': 'Apache (httpd) is a required service for the hosted application.'
+    },
+    {
+        'id': 'xccdf_org.ssgproject.content_rule_package_nginx_removed',
+        'reason': 'NGINX is required in this architecture as a reverse proxy to route traffic securely to backend services.'
+    },
+    {
+        'id': 'xccdf_org.ssgproject.content_rule_ensure_root_password_configured',
+        'reason': 'The root account is locked and has no password; access is via SSH keys and sudo. The rule requires a root password hash, which would mean shipping a shared root secret in the image.'
+    },
+    {
         'id': 'xccdf_org.ssgproject.content_rule_grub2_password',
         'reason': 'GRUB2 bootloader passwords are not applicable for automated, headless cloud VMs.'
     }
