@@ -64,10 +64,9 @@ if [ "${CLOUD_PROVIDER}" == "Azure" ]; then
     fi
 fi
 
-# Keep the RHEL default umask 022 for root in /etc/bashrc (CB-31377). With 027, files that Cloudera Manager creates as
-# root and keeps root-owned (e.g. the YARN NodeManager container-executor.cfg) become unreadable for the service user,
-# and the NodeManager fails to start (container-executor --checksetup exit code 24).
-if [ "${OS}" == "redhat9" ]; then
+# The draft RHEL 9 playbook broke /etc/bashrc with an unanchored 'umask.*' regex (CB-31377). The SSG RPM playbook only
+# replaces whole 'umask NNN' statements, so the rule is applied again for CIS L1; STIG still uses the old playbook.
+if [ "${OS}" == "redhat9" ] && [ "${STIG_ENABLED}" == "True" ]; then
     SKIP_TAGS+=",accounts_umask_etc_bashrc"
 fi
 

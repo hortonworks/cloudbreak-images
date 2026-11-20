@@ -99,10 +99,6 @@ oscap_scan:
         'reason': 'rsyslog is kept next to journald because /var/log/messages and /var/log/secure may be used by diagnostics and log shipping; under investigation in CB-35765.'
     },
     {
-        'id': 'xccdf_org.ssgproject.content_rule_accounts_umask_etc_bashrc',
-        'reason': 'Root keeps the default umask 022 in /etc/bashrc: CDP services read root-owned config files (e.g. the YARN container-executor.cfg) that Cloudera Manager creates as root. Login shells of other users get umask 027 from /etc/profile.d.'
-    },
-    {
         'id': 'xccdf_org.ssgproject.content_rule_grub2_password',
         'reason': 'GRUB2 bootloader passwords are not applicable for automated, headless cloud VMs.'
     }
