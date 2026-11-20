@@ -95,6 +95,10 @@ oscap_scan:
         'reason': 'The root account is locked and has no password; access is via SSH keys and sudo. The rule requires a root password hash, which would mean shipping a shared root secret in the image.'
     },
     {
+        'id': 'xccdf_org.ssgproject.content_rule_ensure_journald_and_rsyslog_not_active_together',
+        'reason': 'rsyslog is kept next to journald because /var/log/messages and /var/log/secure may be used by diagnostics and log shipping; under investigation in CB-35765.'
+    },
+    {
         'id': 'xccdf_org.ssgproject.content_rule_grub2_password',
         'reason': 'GRUB2 bootloader passwords are not applicable for automated, headless cloud VMs.'
     }
