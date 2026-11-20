@@ -33,6 +33,9 @@ else
     SKIP_TAGS+=",package_nginx_removed,package_httpd_removed,package_bind_removed,package_rsync_removed,package_dnsmasq_removed,package_setroubleshoot_removed"
     # Changing the shell of system accounts (uid < 1000, e.g. postgres) to nologin breaks 'su <user> -c' style calls in Salt and CDP scripts
     SKIP_TAGS+=",no_shelllogin_for_systemaccounts"
+    # Images with a separate /var partition (e.g. the Azure RHEL LVM layout): nosuid on /var disables the setuid-root
+    # YARN container-executor that Cloudera Manager installs under /var/lib/yarn-ce, so the NodeManager cannot start
+    SKIP_TAGS+=",mount_option_var_nosuid"
     # The automation users (cloudbreak, saltuser) need passwordless sudo
     SKIP_TAGS+=",sudo_require_authentication"
     # The CIS custom crypto policy switches the system policy to DEFAULT:..., which would turn off the FIPS policy.

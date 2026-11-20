@@ -99,6 +99,10 @@ oscap_scan:
         'reason': 'rsyslog is kept next to journald because /var/log/messages and /var/log/secure may be used by diagnostics and log shipping; under investigation in CB-35765.'
     },
     {
+        'id': 'xccdf_org.ssgproject.content_rule_mount_option_var_nosuid',
+        'reason': 'The setuid-root YARN container-executor is installed by Cloudera Manager under /var/lib/yarn-ce; nosuid on /var would prevent the YARN NodeManager from starting.'
+    },
+    {
         'id': 'xccdf_org.ssgproject.content_rule_grub2_password',
         'reason': 'GRUB2 bootloader passwords are not applicable for automated, headless cloud VMs.'
     }
