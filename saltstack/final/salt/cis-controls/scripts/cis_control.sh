@@ -35,7 +35,8 @@ else
     SKIP_TAGS+=",no_shelllogin_for_systemaccounts"
     # The automation users (cloudbreak, saltuser) need passwordless sudo
     SKIP_TAGS+=",sudo_require_authentication"
-    if [ "${FIPS_MODE}" != "false" ]; then
+    # Salt renders the unquoted env value as a YAML boolean, so it arrives as "False" / "True"
+    if [ "$(echo "${FIPS_MODE}" | tr "[:upper:]" "[:lower:]")" != "false" ]; then
         # It switches the system crypto policy to DEFAULT:..., which would turn off the FIPS policy
         SKIP_TAGS+=",configure_custom_crypto_policy_cis"
     fi
