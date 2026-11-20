@@ -35,10 +35,16 @@ else
     SKIP_TAGS+=",no_shelllogin_for_systemaccounts"
     # The automation users (cloudbreak, saltuser) need passwordless sudo
     SKIP_TAGS+=",sudo_require_authentication"
-    # Salt renders the unquoted env value as a YAML boolean, so it arrives as "False" / "True"
-    if [ "$(echo "${FIPS_MODE}" | tr "[:upper:]" "[:lower:]")" != "false" ]; then
-        # It switches the system crypto policy to DEFAULT:..., which would turn off the FIPS policy
+    # The CIS custom crypto policy switches the system policy to DEFAULT:..., which would turn off the FIPS policy.
+    # Detect FIPS from the system itself; the FIPS_MODE env var reaching this script is not reliable (Salt renders it as a
+    # YAML boolean, or it can be missing).
+    CURRENT_CRYPTO_POLICY=$(update-crypto-policies --show 2>/dev/null || true)
+    if [ "$(cat /proc/sys/crypto/fips_enabled 2>/dev/null)" == "1" ] || [[ "${CURRENT_CRYPTO_POLICY}" == FIPS* ]] \
+        || [ "$(echo "${FIPS_MODE}" | tr "[:upper:]" "[:lower:]")" == "true" ]; then
+        echo "FIPS detected (FIPS_MODE='${FIPS_MODE}', crypto policy '${CURRENT_CRYPTO_POLICY}'), skipping the CIS custom crypto policy"
         SKIP_TAGS+=",configure_custom_crypto_policy_cis"
+    else
+        echo "No FIPS (FIPS_MODE='${FIPS_MODE}', crypto policy '${CURRENT_CRYPTO_POLICY}'), applying the CIS custom crypto policy"
     fi
     # AIDE is turned off: a database built at image burn time is not a meaningful baseline for the provisioned node,
     # building it over the pre-warmed parcels slows the burn down a lot, and the daily 'aide --check' adds I/O load on every node
