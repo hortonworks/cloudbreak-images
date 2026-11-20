@@ -43,12 +43,20 @@ oscap_scan:
         'reason': 'SELinux state is enforced via runtime configuration management after deployment.'
     },
     {
-        'id': 'xccdf_org.ssgproject.content_rule_aide_build_database',
-        'reason': 'AIDE database is initialized during the first boot post-provisioning.'
+        'id': 'xccdf_org.ssgproject.content_rule_package_aide_installed',
+        'reason': 'AIDE is not used in the image: a database built at image burn time is not a meaningful baseline for the provisioned node.'
     },
     {
-        'id': 'xccdf_org.ssgproject.content_rule_aide_verify_audit_tools',
-        'reason': 'Audit tool verification depends on post-build AIDE initialization.'
+        'id': 'xccdf_org.ssgproject.content_rule_aide_build_database',
+        'reason': 'AIDE is not used in the image: a database built at image burn time is not a meaningful baseline for the provisioned node.'
+    },
+    {
+        'id': 'xccdf_org.ssgproject.content_rule_aide_check_audit_tools',
+        'reason': 'AIDE is not used in the image: a database built at image burn time is not a meaningful baseline for the provisioned node.'
+    },
+    {
+        'id': 'xccdf_org.ssgproject.content_rule_aide_periodic_cron_checking',
+        'reason': 'AIDE is not used in the image: a database built at image burn time is not a meaningful baseline for the provisioned node.'
     },
     {
         'id': 'xccdf_org.ssgproject.content_rule_configure_strategy',
@@ -61,6 +69,38 @@ oscap_scan:
     {
         'id': 'xccdf_org.ssgproject.content_rule_service_nginx_disabled',
         'reason': 'NGINX is required in this architecture as a reverse proxy to route traffic securely to backend services.'
+    },
+    {
+        'id': 'xccdf_org.ssgproject.content_rule_package_firewalld_installed',
+        'reason': 'Network access control is enforced by the cloud provider (security groups / NSGs / firewall rules); CDP services need dynamic inter-node ports, so no host firewall is used.'
+    },
+    {
+        'id': 'xccdf_org.ssgproject.content_rule_firewalld_loopback_traffic_restricted',
+        'reason': 'Network access control is enforced by the cloud provider (security groups / NSGs / firewall rules); CDP services need dynamic inter-node ports, so no host firewall is used.'
+    },
+    {
+        'id': 'xccdf_org.ssgproject.content_rule_firewalld_loopback_traffic_trusted',
+        'reason': 'Network access control is enforced by the cloud provider (security groups / NSGs / firewall rules); CDP services need dynamic inter-node ports, so no host firewall is used.'
+    },
+    {
+        'id': 'xccdf_org.ssgproject.content_rule_package_httpd_removed',
+        'reason': 'Apache (httpd) is a required service for the hosted application.'
+    },
+    {
+        'id': 'xccdf_org.ssgproject.content_rule_package_nginx_removed',
+        'reason': 'NGINX is required in this architecture as a reverse proxy to route traffic securely to backend services.'
+    },
+    {
+        'id': 'xccdf_org.ssgproject.content_rule_ensure_root_password_configured',
+        'reason': 'The root account is locked and has no password; access is via SSH keys and sudo. The rule requires a root password hash, which would mean shipping a shared root secret in the image.'
+    },
+    {
+        'id': 'xccdf_org.ssgproject.content_rule_ensure_journald_and_rsyslog_not_active_together',
+        'reason': 'rsyslog is kept next to journald because /var/log/messages and /var/log/secure may be used by diagnostics and log shipping; under investigation in CB-35765.'
+    },
+    {
+        'id': 'xccdf_org.ssgproject.content_rule_mount_option_var_nosuid',
+        'reason': 'The setuid-root YARN container-executor is installed by Cloudera Manager under /var/lib/yarn-ce; nosuid on /var would prevent the YARN NodeManager from starting.'
     },
     {
         'id': 'xccdf_org.ssgproject.content_rule_grub2_password',
