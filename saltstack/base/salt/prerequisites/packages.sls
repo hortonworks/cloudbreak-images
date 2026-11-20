@@ -32,6 +32,10 @@ remove_unused_rhel_packages:
       - insights-client
       # Enforces automatic updates that can end up destabilizing the instance
       - dnf-automatic
+      # Causes problems on Azure because of CVEs and we don't use these anyway
+      - subscription-manager-cockpit
+      - webkit2gtk3-jsc
+      - gtk3
 {% endif %}
 
 

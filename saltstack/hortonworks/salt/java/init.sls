@@ -1,79 +1,36 @@
-{% set cloud_provider = salt['environ.get']('CLOUD_PROVIDER') %}
-
-set_java_home_user:
-  file.managed:
-    - name: /etc/profile.d/java.sh
-    - mode: 755
-    - contents: |
-        export JAVA_HOME={{ pillar['JAVA_HOME'] }}
-        export OPENSEARCH_JAVA_HOME=/usr/lib/jvm/java-21-openjdk
-
-{% if grains['init'] == 'systemd' -%}
-set_java_home_systemd:
-  file.replace:
-    - name: /etc/systemd/system.conf
-    - pattern: \#*(DefaultEnvironment=.*)
-    - repl: \1 JAVA_HOME={{ pillar['JAVA_HOME'] }} OPENSEARCH_JAVA_HOME=/usr/lib/jvm/java-21-openjdk
-{% endif %}
-
-{% if salt['environ.get']('OS') == 'centos7' %}
-remove_openjdk1_7:
-  pkg.removed:
-    - name: java-1.7.0-openjdk
-
-enable_redhat_rhui_repos:
-  file.replace:
-    - name: /etc/yum.repos.d/redhat-rhui.repo
-    - pattern: '^enabled=[0,1]'
-    - repl: 'enabled=1'
-    - ignore_if_missing: True
-{% endif %}
-
-install_openjdk:
-  pkg.installed:
-    - pkgs: {{ pillar['openjdk_packages'] }}
+{# ### JDK installation rules:                                                    #}
+{#  7.2.18 --- JDK 8 (full) + JDK 11 (full) + JDK 17 (minimal) + JDK 21 (minimal) #}
+{#  7.3.1  --- JDK 8 (full) + JDK 17 (minimal) + JDK 21 (minimal)                 #}
+{#  7.3.2+ --- JDK 17 (minimal) + JDK 21 (minimal)                                #}
 
 {% if salt['environ.get']('OS') == 'redhat8' %}
 
-{% if salt['environ.get']('ARCHITECTURE') == 'arm64' %}
-remove_unused_openjdk:
-  pkg.removed:
+{% if salt['environ.get']('STACK_VERSION').split('.') | map('int') | list < '7.3.2'.split('.') | map('int') | list %}
+
+{% if salt['environ.get']('ARCHITECTURE') != 'arm64' %}
+install_openjdk8:
+  pkg.installed:
     - pkgs:
       - java-1.8.0-openjdk-headless
       - java-1.8.0-openjdk-devel
+{% endif %}
+
+{% if salt['environ.get']('STACK_VERSION').split('.') | map('int') | list < '7.3.1'.split('.') | map('int') | list %}
+install_openjdk11:
+  pkg.installed:
+    - pkgs:
       - java-11-openjdk-headless
       - java-11-openjdk-devel
 {% endif %}
 
-{% if salt['environ.get']('IMAGE_TYPE') == 'base' or salt['environ.get']('STACK_VERSION').split('.') | map('int') | list >= '7.2.18'.split('.') | map('int') | list %}
-download_rhel8_repo:
-  file.managed:
-    - name: /etc/yum.repos.d/rhel8_cldr_mirrors.repo
-    # This actually points to 8.10, not 8.8, however there's no JDK 21 in the 8.8 repo, so we're installing it
-    # from the 8.10 repo - hence we need to add it and after the installation of JDK 21, remove it.
-    - source: https://mirror-nexus.eng.cloudera.com/repos/rhel/server/8/8/rhel8_cldr_mirrors.repo
-    - skip_verify: True
+{% endif %}
 
-{% if salt['environ.get']('ARCHITECTURE') == 'arm64' %} # ubi-8-supplementary-cldr and ubi-8-codeready-builder-cldr are not yet available for arm64
-remove_unavailable_repos:
+{% endif %}
+
+install_openjdk17_and_21:
   cmd.run:
-    - name: sed -i '16,$ d' /etc/yum.repos.d/rhel8_cldr_mirrors.repo
-{% endif %}
+    - name: dnf install -y --setopt=install_weak_deps=False java-17-openjdk-headless java-17-openjdk-devel java-21-openjdk-headless java-21-openjdk-devel
 
-install_openjdk21:
-  pkg.installed:
-    - pkgs:
-      - java-21-openjdk-headless
-      - java-21-openjdk-devel
-
-delete_rhel8_repo:
-  file.absent:
-    - name: /etc/yum.repos.d/rhel8_cldr_mirrors.repo
-
-{% endif %}
-{% endif %}
-
-{% if salt['environ.get']('OS') == 'redhat8' or salt['environ.get']('OS') == 'redhat9' %}
 {% if salt['environ.get']('DEFAULT_JAVA_MAJOR_VERSION') == '17' or salt['environ.get']('STACK_VERSION').split('.') | map('int') | list >= '7.3.2'.split('.') | map('int') | list %}
 set_openjdk_version_17:
   cmd.run:
@@ -86,7 +43,6 @@ set_openjdk_version_17:
         mkdir -p /etc/alternatives/java_sdk_17/jre/lib/ext
 {% endif %}
 # Else: we're staying with JDK 8 as default for now...
-{% endif %}
 
 add_openjdk_gplv2:
   file.managed:
@@ -95,11 +51,7 @@ add_openjdk_gplv2:
     - follow_symlinks: True
     - makedirs: True
 
-run_java_sh:
-  cmd.run:
-    - name: . /etc/profile.d/java.sh
-
-{% if cloud_provider == "AWS_GOV" %}
+{% if salt['environ.get']('CLOUD_PROVIDER') == "AWS_GOV" %}
 fips_disable_default_keystore:
   file.replace:
     - name: {{ pillar['JAVA_HOME'] }}/jre/lib/security/java.security
@@ -107,3 +59,21 @@ fips_disable_default_keystore:
     - repl: "# fips.keystore.type=PKCS11"
     - append_if_not_found: False
 {% endif %}
+
+set_java_home_user:
+  file.managed:
+    - name: /etc/profile.d/java.sh
+    - mode: 755
+    - contents: |
+        export JAVA_HOME={{ pillar['JAVA_HOME'] }}
+        export OPENSEARCH_JAVA_HOME=/usr/lib/jvm/java-21-openjdk
+
+set_java_home_systemd:
+  file.replace:
+    - name: /etc/systemd/system.conf
+    - pattern: \#*(DefaultEnvironment=.*)
+    - repl: \1 JAVA_HOME={{ pillar['JAVA_HOME'] }} OPENSEARCH_JAVA_HOME=/usr/lib/jvm/java-21-openjdk
+
+run_java_sh:
+  cmd.run:
+    - name: . /etc/profile.d/java.sh
