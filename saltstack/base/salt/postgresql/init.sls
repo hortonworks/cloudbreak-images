@@ -54,7 +54,10 @@ install-postgres:
   cmd.run:
     - name: |
         dnf module -y disable postgresql
+{#- In a container (the CI burn test) keep the pre-baked dnf metadata: re-downloading it costs ~1.5 min. #}
+{%- if salt['cmd.retcode']('systemd-detect-virt --container --quiet', python_shell=False, ignore_retcode=True) != 0 %}
         dnf clean all
+{%- endif %}
 {% if (pillar['subtype'] == 'Docker' or pillar['OS'] == 'redhat9') %}
         dnf -y remove postgresql11-server postgresql11 postgresql11-devel
 {% else %}

@@ -30,20 +30,20 @@ list_original:
   cmd.run:
     - name: |
         touch /tmp/remap-original-resources.txt
-        find / -ignore_readdir_race -not -path "/proc/*" -group {{ ids.cloudera_scm_group }} -exec printf "%s\n" {} \; >>/tmp/remap-original-resources.txt
-        find / -ignore_readdir_race -not -path "/proc/*" -user {{ ids.cloudera_scm_user }} -exec printf "%s\n" {} \; >>/tmp/remap-original-resources.txt
+        find / -ignore_readdir_race -path /proc -prune -o -group {{ ids.cloudera_scm_group }} -exec printf "%s\n" {} \; >>/tmp/remap-original-resources.txt
+        find / -ignore_readdir_race -path /proc -prune -o -user {{ ids.cloudera_scm_user }} -exec printf "%s\n" {} \; >>/tmp/remap-original-resources.txt
         echo Original resources with GID/UID: {{ ids.cloudera_scm_group }}/{{ ids.cloudera_scm_user }}; cat /tmp/remap-original-resources.txt | sort | uniq
 
 remap_gid:
   cmd.run:
     - name: |
-        REMAPPED_GRP=$(getent group {{ ids.cloudera_scm_group }} | cut -d: -f1); groupmod -g 10001 $REMAPPED_GRP; find / -ignore_readdir_race -not -path "/proc/*" -group {{ ids.cloudera_scm_group }} -exec chgrp -h $REMAPPED_GRP {} \;
+        REMAPPED_GRP=$(getent group {{ ids.cloudera_scm_group }} | cut -d: -f1); groupmod -g 10001 $REMAPPED_GRP; find / -ignore_readdir_race -path /proc -prune -o -group {{ ids.cloudera_scm_group }} -exec chgrp -h $REMAPPED_GRP {} \;
     - onlyif: getent group {{ ids.cloudera_scm_group }}
 
 remap_uid:
   cmd.run:
     - name: |
-        REMAPPED_USER=$(getent passwd {{ ids.cloudera_scm_user }} | cut -d: -f1); usermod -u 10001 $REMAPPED_USER; find / -ignore_readdir_race -not -path "/proc/*" -user {{ ids.cloudera_scm_user }} -exec chown -h $REMAPPED_USER {} \;
+        REMAPPED_USER=$(getent passwd {{ ids.cloudera_scm_user }} | cut -d: -f1); usermod -u 10001 $REMAPPED_USER; find / -ignore_readdir_race -path /proc -prune -o -user {{ ids.cloudera_scm_user }} -exec chown -h $REMAPPED_USER {} \;
     - onlyif: getent passwd {{ ids.cloudera_scm_user }}
 
 show_passwd_after_remapping:
@@ -55,8 +55,8 @@ list_updated:
   cmd.run:
     - name: |
         touch /tmp/remap-remapped-resources.txt
-        find / -ignore_readdir_race -not -path "/proc/*" -group 10001 -exec printf "%s\n" {} \; >>/tmp/remap-remapped-resources.txt
-        find / -ignore_readdir_race -not -path "/proc/*" -user 10001 -exec printf "%s\n" {} \; >>/tmp/remap-remapped-resources.txt
+        find / -ignore_readdir_race -path /proc -prune -o -group 10001 -exec printf "%s\n" {} \; >>/tmp/remap-remapped-resources.txt
+        find / -ignore_readdir_race -path /proc -prune -o -user 10001 -exec printf "%s\n" {} \; >>/tmp/remap-remapped-resources.txt
         echo Updated resources with new UID/GID:; cat /tmp/remap-remapped-resources.txt | sort | uniq
 
 create_cloudera_scm_group:
