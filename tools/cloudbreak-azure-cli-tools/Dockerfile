@@ -7,6 +7,7 @@ WORKDIR /bin
 RUN tdnf install -y tar gawk && tdnf clean all
 
 ADD ./azure-copy /bin/
+ADD ./azure-get-rhel8-source-image-id /bin/
 ADD ./azure-get-latest-vm-image-version /bin/
 ADD ./azure-managed-image-to-blob /bin/
 
