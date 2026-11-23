@@ -4,11 +4,14 @@ source scripts/utils.sh
 
 BASE_NAME=$1
 STACK_VERSION=$2
+OS=$3
 
 SALT_VERSION=3001.8
 
 # Runtime or Base images
-if [[ $BASE_NAME == "cb" ]]; then
+if [[ $OS == "redhat10" ]]; then
+  SALT_VERSION=3008.5
+elif [[ $BASE_NAME == "cb" ]]; then
   # Runtime images
   if [[ ! -z "$STACK_VERSION" ]]; then
     compare_version $STACK_VERSION 7.3.1

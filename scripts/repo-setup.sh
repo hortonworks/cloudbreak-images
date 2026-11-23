@@ -7,7 +7,7 @@ set -ex -o pipefail -o errexit
 
 function update_yum_repos() {
 
-  if [[ "${OS}" == "redhat8" || "${OS}" == "redhat9" ]] ; then
+  if [[ "${OS}" == "redhat8" || "${OS}" == "redhat9" || "${OS}" == "redhat10" ]] ; then
     # Remove RHEL official repos and use the internal mirror in case of RHEL 8/9
     RHEL_VERSION=$(cat /etc/redhat-release | grep -oP "[0-9\.]*")
     RHEL_VERSION=${RHEL_VERSION/.0/}
@@ -22,7 +22,7 @@ function update_yum_repos() {
       RHEL_VERSION="8.10"
     fi
 
-    RHEL_VERSION_MAJOR=${RHEL_VERSION:0:1}
+    RHEL_VERSION_MAJOR=${RHEL_VERSION%%.*}
     REPO_FILE=rhel${RHEL_VERSION}_cldr_mirrors.repo
     if [ "${CLOUD_PROVIDER}" != "YARN" ]; then
       rm /etc/yum.repos.d/*.repo -f

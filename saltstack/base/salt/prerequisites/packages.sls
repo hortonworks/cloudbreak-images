@@ -22,7 +22,7 @@ remove_dead_repos_again:
     - name: sudo rm -rf /etc/yum.repos.d/CentOS*.repo
 {% endif %}
 
-{% if pillar['OS'] == 'redhat8' or pillar['OS'] == 'redhat9' %}
+{% if pillar['OS'] == 'redhat8' or pillar['OS'] == 'redhat9' or pillar['OS'] == 'redhat10' %}
 remove_unused_rhel_packages:
   pkg.removed:
     - pkgs:

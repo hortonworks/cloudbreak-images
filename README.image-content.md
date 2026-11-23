@@ -52,7 +52,7 @@ This section provides information about the packages of specified images to be i
 - ruby
 - snappy (RedHat)
 - cloud-utils-growpart (RedHat)
-- snappy-devel (RedHat but not redhat7)
+- snappy-devel (RedHat)
 - bind-utils (RedHat major version 7)
 - iptables-services
 - iptables-persistent (Debian)
@@ -60,7 +60,7 @@ This section provides information about the packages of specified images to be i
 - deltarpm
 - nvme-cli
 - openssl
-- vim-common (centos7, redhat7)
+- vim-common (centos7)
 - vim
 - autossh (not Suse)
 - ipa-client
