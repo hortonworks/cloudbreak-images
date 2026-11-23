@@ -2,6 +2,6 @@
 
 dnf_cleanup_all:
   cmd.run:
-    - name: dnf autoremove --assumeno
+    - name: dnf -y autoremove
 
 {% endif %}

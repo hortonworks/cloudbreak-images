@@ -34,8 +34,10 @@ remove_unused_rhel_packages:
       - dnf-automatic
       # Causes problems on Azure because of CVEs and we don't use these anyway
       - subscription-manager-cockpit
+      - cockpit-packagekit
+      - rhsm-icons
       - webkit2gtk3-jsc
-      - gtk3
+      - PackageKit
 {% endif %}
 
 
