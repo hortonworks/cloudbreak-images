@@ -631,11 +631,6 @@
         "owner": "{{ user `owner_tag` }}",
         "cloudera-usage-type": "{{ user `cloudera_usage_type_tag` }}",
         "Customer Delivered": "{{user `tag_customer_delivered`}}"
-      },
-      "plan_info": {
-        "plan_name": "{{user `azure_image_sku`}}",
-        "plan_product": "{{user `azure_image_offer`}}",
-        "plan_publisher": "RedHat"
       }
     },
     {
