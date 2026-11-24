@@ -635,7 +635,7 @@
       "plan_info": {
         "plan_name": "{{user `azure_image_sku`}}",
         "plan_product": "{{user `azure_image_offer`}}",
-        "plan_publisher": "redhat"
+        "plan_publisher": "RedHat"
       }
     },
     {

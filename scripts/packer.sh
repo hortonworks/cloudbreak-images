@@ -40,8 +40,8 @@ packer_in_container() {
   if [[ "$ARCHITECTURE" == "arm64" ]]; then
     export DEFAULT_JAVA_MAJOR_VERSION=17
   fi
-  # RHEL 9 has no support for JDK 8, not even for base images
-  if [[ "$OS" == "redhat9" ]]; then
+  # RHEL 9/10 has no support for JDK 8, not even for base images
+  if [[ "$OS" == "redhat9" || "$OS" == "redhat10" ]]; then
     export DEFAULT_JAVA_MAJOR_VERSION=17
   fi
 
@@ -79,6 +79,7 @@ packer_in_container() {
   case "$OS" in
     "redhat8") OSPART="el8" ;;
     "redhat9") OSPART="el9" ;;
+    "redhat10") OSPART="el10" ;;
   esac
 
   case "$ARCHITECTURE" in
