@@ -76,7 +76,8 @@
     "pyzmq_version": "{{ env `PYZMQ_VERSION` }}",
     "aws_instance_type": "{{ env `AWS_INSTANCE_TYPE` }}",
     "azure_instance_type": "Standard_D8d_v5",
-    "gcp_instance_type": "n1-standard-8",
+    "gcp_instance_type": "n2-standard-16",
+    "gcp_disk_type": "pd-ssd",
     "aws_source_ami": "{{ env `AWS_SOURCE_AMI` }}",
     "aws_gov_source_ami": "{{ env `AWS_GOV_SOURCE_AMI` }}",
     "aws_ami_regions": "{{ env `AWS_AMI_REGIONS` }}",
@@ -593,6 +594,7 @@
       "subnetwork": "{{user `subnet_id`}}",
       "image_name": "{{user `image_name`}}",
       "disk_size": "{{user `image_size`}}",
+      "disk_type": "{{user `gcp_disk_type`}}",
       "state_timeout": "15m",
       "tags": [
         "customer-delivered--{{user `tag_customer_delivered` | clean_resource_name}}",
@@ -634,11 +636,12 @@
       "subnetwork": "{{user `subnet_id`}}",
       "image_name": "{{user `image_name`}}",
       "disk_size": "{{user `image_size`}}",
+      "disk_type": "{{user `gcp_disk_type`}}",
       "state_timeout": "15m",
       "disk_attachment": [
         {
           "volume_size": 50,
-          "volume_type": "pd-standard",
+          "volume_type": "{{user `gcp_disk_type`}}",
           "device_name": "tmp"
         }
       ],
@@ -682,11 +685,12 @@
       "subnetwork": "{{user `subnet_id`}}",
       "image_name": "{{user `image_name`}}",
       "disk_size": "{{user `image_size`}}",
+      "disk_type": "{{user `gcp_disk_type`}}",
       "state_timeout": "15m",
       "disk_attachment": [
         {
           "volume_size": 50,
-          "volume_type": "pd-standard",
+          "volume_type": "{{user `gcp_disk_type`}}",
           "device_name": "tmp"
         }
       ],
