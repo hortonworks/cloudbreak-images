@@ -54,6 +54,7 @@ packages_install:
   {% endif %}
       - wget
       - tar
+      - zip
       - unzip
       - curl
       - net-tools
