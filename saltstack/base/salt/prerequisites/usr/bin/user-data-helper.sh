@@ -180,34 +180,21 @@ create_saltapi_certificates() {
 
 resize_partitions() {
   if [ $CLOUD_PLATFORM == "AZURE" ]; then
-    if [ $OS == "redhat7" ]; then
-      # Relocating backup data structures to the end of the disk
-      printf "x\ne\nw\nY\n" | gdisk /dev/sda
-      # Resize /dev/sda4 to the end of the disk
-      parted -s -a opt /dev/sda "resizepart 4 100%"
-      # Resize physical volume
-      pvresize /dev/sda4
-      # Extend logical volumes to satisfy CM free space checks
-      lvextend -L35G -r /dev/mapper/rootvg-optlv
-      lvextend -L12G -r /dev/mapper/rootvg-varlv
-      lvextend -L12G -r /dev/mapper/rootvg-tmplv
-    elif [ $OS == "redhat8" ] || [ $OS == "redhat9" ]; then
-      PV_NAME=$(pvs --noheadings --rows | head -1 | tr -d '[:space:]')
-      DISK="/dev/$(lsblk -ndo PKNAME "$PV_NAME")"
-      PARTITION=$(cat "/sys/class/block/$(basename "$PV_NAME")/partition")
-      # Relocating backup data structures to the end of the disk
-      printf "x\ne\nw\nY\n" | gdisk $DISK
-      # Resize partition to the end of the disk
-      parted -s -a opt $DISK "resizepart $PARTITION 100%"
-      # Resize physical volume
-      pvresize $PV_NAME
-      # Extend logical volumes to satisfy CM free space checks and allocate remaining free space
-      lvextend -L50G -r /dev/mapper/rootvg-varlv
-      lvextend -L12G -r /dev/mapper/rootvg-tmplv
-      lvextend -L5G -r /dev/mapper/rootvg-homelv
-      # Extend root logical volume to remaining free space
-      lvextend -l +100%free -r /dev/mapper/rootvg-rootlv
-    fi
+    PV_NAME=$(pvs --noheadings --rows | head -1 | tr -d '[:space:]')
+    DISK="/dev/$(lsblk -ndo PKNAME "$PV_NAME")"
+    PARTITION=$(cat "/sys/class/block/$(basename "$PV_NAME")/partition")
+    # Relocating backup data structures to the end of the disk
+    printf "x\ne\nw\nY\n" | gdisk $DISK
+    # Resize partition to the end of the disk
+    parted -s -a opt $DISK "resizepart $PARTITION 100%"
+    # Resize physical volume
+    pvresize $PV_NAME
+    # Extend logical volumes to satisfy CM free space checks and allocate remaining free space
+    lvextend -L50G -r /dev/mapper/rootvg-varlv
+    lvextend -L12G -r /dev/mapper/rootvg-tmplv
+    lvextend -L5G -r /dev/mapper/rootvg-homelv
+    # Extend root logical volume to remaining free space
+    lvextend -l +100%free -r /dev/mapper/rootvg-rootlv
   elif [ "$IS_BASE" == "true" ] || ([ -n "$STACK_VERSION" ] && [ $(version $STACK_VERSION) -gt $(version "7.3.1") ]); then
     # create and mount loopback filesystem for /tmp with same size as Azure logical volume
     dd if=/dev/zero of=/var/tmpfs bs=1M count=12288

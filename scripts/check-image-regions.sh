@@ -5,18 +5,8 @@ if [ -z "${AWS_AMI_REGIONS}" ] ; then
   exit 1
 fi
 
-if [ -z "${AZURE_STORAGE_ACCOUNTS}" ] ; then
-  echo "AZURE_STORAGE_ACCOUNTS env variable is mandatory."
-  exit 1
-fi
-
 if [ -z "${CLOUD_PROVIDER}" ] ; then
   echo "CLOUD_PROVIDER env variable is mandatory."
-  exit 1
-fi
-
-if [ -z "${OS}" ] ; then
-  echo "OS env variable is mandatory."
   exit 1
 fi
 
@@ -47,20 +37,7 @@ case "$CLOUD_PROVIDER" in
     ALL_REGIONS=$AWS_AMI_REGIONS
     ;;
   Azure)
-    case "$OS" in
-      centos7)
-        ALL_REGIONS=$AZURE_STORAGE_ACCOUNTS
-        ;;
-      redhat8)
-        ALL_REGIONS="default"
-        ;;
-      redhat9)
-        ALL_REGIONS="default"
-        ;;
-      *)
-        echo "Unexpected OS: $OS"
-        exit 1
-    esac
+    ALL_REGIONS="default"
     ;;
   *)
     echo "Unexpected CLOUD_PROVIDER: $CLOUD_PROVIDER"

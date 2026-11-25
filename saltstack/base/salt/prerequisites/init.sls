@@ -30,7 +30,6 @@ include:
   - {{ slspath }}.umask
   - {{ slspath }}.jinja
   - {{ slspath }}.corkscrew
-  - {{ slspath }}.storage
   - {{ slspath }}.authconfig
   - {{ slspath }}.ipa
   - {{ slspath }}.oscap

@@ -41,15 +41,9 @@ $(error BUILD_RESOURCE_GROUP_NAME and ARM_BUILD_REGION should not be set togethe
 		ARM_BUILD_REGION ?= northeurope
 	endif
 
-	ifeq ($(OS),centos7)
-		AZURE_IMAGE_PUBLISHER ?= OpenLogic
-		AZURE_IMAGE_OFFER ?= CentOS
-		AZURE_IMAGE_SKU ?= 7.6
-	else
-		AZURE_IMAGE_PUBLISHER ?= RedHat
-		AZURE_IMAGE_OFFER ?= rhel-byos
-		AZURE_IMAGE_SKU ?= $(shell ./scripts/get-source-image-property.py imageId Azure "$(OS)" _ x86_64 "$(IMAGE_TYPE)" "$(STACK_VERSION)" )
-	endif
+	AZURE_IMAGE_PUBLISHER ?= RedHat
+	AZURE_IMAGE_OFFER ?= rhel-byos
+	AZURE_IMAGE_SKU ?= $(shell ./scripts/get-source-image-property.py imageId Azure "$(OS)" _ x86_64 "$(IMAGE_TYPE)" "$(STACK_VERSION)" )
 
 	ifdef OS_VERSION
 		PLAN_NAME ?= $(shell ./scripts/get-source-image-property.py planName Azure "$(OS)" "$(OS_VERSION)" _ _ _ )
@@ -69,11 +63,7 @@ ifeq ($(CLOUD_PROVIDER),AWS)
 	else
 		AWS_INSTANCE_TYPE ?= t3.2xlarge
 	endif
-	ifeq ($(OS),centos7)
-		AWS_SOURCE_AMI ?= ami-098f55b4287a885ba
-	else
-		AWS_SOURCE_AMI ?= $(shell ./scripts/get-source-image-property.py imageId AWS "$(OS)" _ "$(ARCHITECTURE)" "$(IMAGE_TYPE)" "$(STACK_VERSION)" )
-	endif
+	AWS_SOURCE_AMI ?= $(shell ./scripts/get-source-image-property.py imageId AWS "$(OS)" _ "$(ARCHITECTURE)" "$(IMAGE_TYPE)" "$(STACK_VERSION)" )
 endif
 
 # AWS_GOV source ami specification
@@ -84,11 +74,7 @@ endif
 
 # GCP source image specification
 ifeq ($(CLOUD_PROVIDER),GCP)
-	ifeq ($(OS),centos7)
-		GCP_SOURCE_IMAGE ?= centos-7-v20200811
-	else
-		GCP_SOURCE_IMAGE ?= $(shell ./scripts/get-source-image-property.py imageId GCP "$(OS)" _ "$(ARCHITECTURE)" "$(IMAGE_TYPE)" "$(STACK_VERSION)" )
-	endif
+	GCP_SOURCE_IMAGE ?= $(shell ./scripts/get-source-image-property.py imageId GCP "$(OS)" _ "$(ARCHITECTURE)" "$(IMAGE_TYPE)" "$(STACK_VERSION)" )
 endif
 
 DOCKER_REPOSITORY ?= docker-sandbox.infra.cloudera.com
@@ -121,14 +107,12 @@ else
 endif
 SALTBOOT_VERSION ?= "0.14.8"
 ifneq ($(CLOUD_PROVIDER),YARN)
-	ifneq ($(OS),centos7)
-		SALTBOOT_MINOR_VERSION = $(shell echo $(SALTBOOT_VERSION) | cut -d. -f2)
-		SALTBOOT_PATCH_VERSION = $(shell echo $(SALTBOOT_VERSION) | cut -d. -f3)
-		ifeq ($(shell [[ ($(SALTBOOT_MINOR_VERSION) -eq 14 && $(SALTBOOT_PATCH_VERSION) -ge 3) || $(SALTBOOT_MINOR_VERSION) -ge 15 ]] && echo true),true)
-			SALTBOOT_HTTPS_ENABLED ?= true
-		else
-			SALTBOOT_HTTPS_ENABLED ?= false
-		endif
+	SALTBOOT_MINOR_VERSION = $(shell echo $(SALTBOOT_VERSION) | cut -d. -f2)
+	SALTBOOT_PATCH_VERSION = $(shell echo $(SALTBOOT_VERSION) | cut -d. -f3)
+	ifeq ($(shell [[ ($(SALTBOOT_MINOR_VERSION) -eq 14 && $(SALTBOOT_PATCH_VERSION) -ge 3) || $(SALTBOOT_MINOR_VERSION) -ge 15 ]] && echo true),true)
+		SALTBOOT_HTTPS_ENABLED ?= true
+	else
+		SALTBOOT_HTTPS_ENABLED ?= false
 	endif
 endif
 
@@ -323,32 +307,6 @@ build-openstack-redhat9:
 	CB_OPENSTACK_CLI_TOOLS_VERSION="1.0.0" \
 	./scripts/openstack-post-burn-steps.sh
 
-build-aws-centos7-base:
-	$(ENVS) \
-	AWS_AMI_REGIONS="us-west-1" \
-	AWS_SOURCE_AMI=$(AWS_SOURCE_AMI) \
-	AWS_INSTANCE_TYPE=$(AWS_INSTANCE_TYPE) \
-	OS=centos7 \
-	OS_TYPE=redhat7 \
-	ATLAS_ARTIFACT_TYPE=amazon \
-	SALT_INSTALL_OS=centos \
-	GIT_REV=$(GIT_REV) \
-	GIT_BRANCH=$(GIT_BRANCH) \
-	GIT_TAG=$(GIT_TAG) \
-	./scripts/packer.sh build -color=false -only=aws-centos7 $(PACKER_OPTS)
-
-build-aws-centos7:
-	@ METADATA_FILENAME_POSTFIX=$(METADATA_FILENAME_POSTFIX) make build-aws-centos7-base
-	$(ENVS) \
-	AWS_AMI_REGIONS="$(AWS_AMI_REGIONS)" \
-	AWS_SOURCE_AMI=$(AWS_SOURCE_AMI) \
-	AWS_INSTANCE_TYPE=$(AWS_INSTANCE_TYPE) \
-	ATLAS_ARTIFACT_TYPE=amazon \
-	GIT_REV=$(GIT_REV) \
-	GIT_BRANCH=$(GIT_BRANCH) \
-	GIT_TAG=$(GIT_TAG) \
-	./scripts/sparseimage/packer.sh build -color=false -force $(PACKER_OPTS)
-
 build-aws-redhat8:
 	$(ENVS) \
 	AWS_AMI_REGIONS="us-west-1" \
@@ -521,75 +479,6 @@ build-gc-tar-file:
 	GCP_LABELS="cloudera-usage-type:$(CLOUDERA_USAGE_TYPE_TAG)" \
 	./scripts/bundle-gcp-image.sh
 
-build-gc-centos7:
-	@ METADATA_FILENAME_POSTFIX=$(METADATA_FILENAME_POSTFIX)
-	$(ENVS) \
-	OS=centos7 \
-	OS_TYPE=redhat7 \
-    GCP_SOURCE_IMAGE=$(GCP_SOURCE_IMAGE) \
-	ATLAS_ARTIFACT_TYPE=google \
-	GCP_STORAGE_BUNDLE=$(GCP_STORAGE_BUNDLE) \
-	GCP_STORAGE_BUNDLE_LOG=$(GCP_STORAGE_BUNDLE_LOG) \
-	SALT_INSTALL_OS=centos \
-	GIT_REV=$(GIT_REV) \
-	GIT_BRANCH=$(GIT_BRANCH) \
-	GIT_TAG=$(GIT_TAG) \
-	./scripts/packer.sh build -color=false -only=gc-centos7 $(PACKER_OPTS)
-
-build-azure-centos7:
-	$(ENVS) \
-	AZURE_STORAGE_ACCOUNTS=$(AZURE_BUILD_STORAGE_ACCOUNT) \
-	OS=centos7 \
-	OS_TYPE=redhat7 \
-	ATLAS_ARTIFACT_TYPE=azure-arm \
-	SALT_INSTALL_OS=centos \
-	AZURE_IMAGE_VHD=$(AZURE_IMAGE_VHD) \
-	AZURE_IMAGE_PUBLISHER=$(AZURE_IMAGE_PUBLISHER) \
-	AZURE_IMAGE_OFFER=$(AZURE_IMAGE_OFFER) \
-	AZURE_IMAGE_SKU=$(AZURE_IMAGE_SKU) \
-	BUILD_RESOURCE_GROUP_NAME=$(BUILD_RESOURCE_GROUP_NAME) \
-	PRIVATE_VIRTUAL_NETWORK_WITH_PUBLIC_IP=$(PRIVATE_VIRTUAL_NETWORK_WITH_PUBLIC_IP) \
-	GIT_REV=$(GIT_REV) \
-	GIT_BRANCH=$(GIT_BRANCH) \
-	GIT_TAG=$(GIT_TAG) \
-	./scripts/packer.sh build -color=false -only=arm-centos7 $(PACKER_OPTS)
-ifeq ($(AZURE_INITIAL_COPY),true)
-	TRACE=1 AZURE_STORAGE_ACCOUNTS=$(AZURE_BUILD_STORAGE_ACCOUNT) ./scripts/azure-copy.sh
-endif
-
-build-azure-redhat7:
-	$(ENVS) \
-	AZURE_STORAGE_ACCOUNTS=$(AZURE_BUILD_STORAGE_ACCOUNT) \
-	OS=redhat7 \
-	OS_TYPE=redhat7 \
-	ATLAS_ARTIFACT_TYPE=azure-arm \
-	SALT_INSTALL_OS=redhat \
-	AZURE_IMAGE_VHD=$(AZURE_IMAGE_VHD) \
-	AZURE_IMAGE_PUBLISHER=$(AZURE_IMAGE_PUBLISHER) \
-	AZURE_IMAGE_OFFER=$(AZURE_IMAGE_OFFER) \
-	AZURE_IMAGE_SKU=$(AZURE_IMAGE_SKU) \
-	BUILD_RESOURCE_GROUP_NAME=$(BUILD_RESOURCE_GROUP_NAME) \
-	PRIVATE_VIRTUAL_NETWORK_WITH_PUBLIC_IP=$(PRIVATE_VIRTUAL_NETWORK_WITH_PUBLIC_IP) \
-	GIT_REV=$(GIT_REV) \
-	GIT_BRANCH=$(GIT_BRANCH) \
-	GIT_TAG=$(GIT_TAG) \
-	./scripts/packer.sh build -color=false -only=arm-redhat7 $(PACKER_OPTS)
-ifeq ($(AZURE_INITIAL_COPY),true)
-	TRACE=1 AZURE_STORAGE_ACCOUNTS=$(AZURE_BUILD_STORAGE_ACCOUNT) ./scripts/azure-copy.sh
-endif
-
-generate-aws-centos7-changelog:
-ifdef IMAGE_UUID
-ifdef SOURCE_IMAGE
-	$(ENVS) \
-	OS=centos \
-	IMAGE_UUID=$(IMAGE_UUID) \
-	SOURCE_IMAGE=$(SOURCE_IMAGE) \
-	AWS_INSTANCE_TYPE=$(AWS_INSTANCE_TYPE) \
-	./scripts/changelog/packer.sh build -color=false -only=aws-centos7 -force $(PACKER_OPTS)
-endif
-endif
-
 generate-aws-redhat8-changelog:
 ifdef IMAGE_UUID
 ifdef SOURCE_IMAGE
@@ -611,17 +500,6 @@ ifdef SOURCE_IMAGE
 	SOURCE_IMAGE=$(SOURCE_IMAGE) \
 	AWS_INSTANCE_TYPE=$(AWS_INSTANCE_TYPE) \
 	./scripts/changelog/packer.sh build -color=false -only=aws-redhat9 -force $(PACKER_OPTS)
-endif
-endif
-
-generate-azure-centos7-changelog:
-ifdef IMAGE_UUID
-ifdef SOURCE_IMAGE
-	$(ENVS) \
-	OS=centos \
-	IMAGE_UUID=$(IMAGE_UUID) \
-	SOURCE_IMAGE=$(SOURCE_IMAGE) \
-	./scripts/changelog/packer.sh build -color=false -only=arm-centos7 -force $(PACKER_OPTS)
 endif
 endif
 
@@ -654,20 +532,6 @@ ifdef SOURCE_IMAGE
 	SOURCE_IMAGE=$(SOURCE_IMAGE) \
 	PLAN_NAME=$(PLAN_NAME) \
 	./scripts/changelog/packer.sh build -color=false -only=arm-redhat9 -force $(PACKER_OPTS)
-endif
-endif
-
-generate-gc-centos7-changelog:
-ifdef IMAGE_UUID
-ifdef SOURCE_IMAGE
-	$(ENVS) \
-	OS=centos \
-	IMAGE_UUID=$(IMAGE_UUID) \
-	SOURCE_IMAGE=$(SOURCE_IMAGE) \
-	GCP_STORAGE_BUNDLE=$(GCP_STORAGE_BUNDLE) \
-	GCP_STORAGE_BUNDLE_LOG=$(GCP_STORAGE_BUNDLE_LOG) \
-	STACK_VERSION=$(STACK_VERSION) \
-	./scripts/changelog/packer.sh build -color=false -only=gc-centos7 -force $(PACKER_OPTS)
 endif
 endif
 
@@ -729,10 +593,6 @@ get-azure-storage-accounts:
 copy-azure-images:
 	TRACE=1 AZURE_STORAGE_ACCOUNTS="$(AZURE_STORAGE_ACCOUNTS)" AZURE_IMAGE_NAME="$(AZURE_IMAGE_NAME)" ./scripts/azure-copy.sh
 
-docker-build-centos79:
-	echo "Building CentOS 7.9 image for YCloud"
-	@ OS=centos7 OS_TYPE=redhat7 CLOUD_PROVIDER=YARN TAG=centos-79 DIR=centos7.9 make docker-build
-
 docker-build-redhat88:
 	echo "Building RHEL 8.8 image for YCloud"
 	@ OS=redhat8 OS_TYPE=redhat8 CLOUD_PROVIDER=YARN TAG=redhat-88 DIR=redhat8 make docker-build
@@ -744,10 +604,6 @@ docker-build-redhat8:
 docker-build-redhat9:
 	echo "Building RHEL 9.6 image for YCloud"
 	@ OS=redhat9 OS_TYPE=redhat9 CLOUD_PROVIDER=YARN TAG=redhat-9 DIR=redhat9.6 make docker-build
-
-docker-build-yarn-loadbalancer:
-	echo "Building loadbalancer image for YCloud"
-	@ OS=centos7 OS_TYPE=redhat7 CLOUD_PROVIDER=YARN TAG=yarn-loadbalancer DIR=yarn-loadbalancer make docker-build
 
 docker-build:
 	$(eval DOCKER_IMAGE_NAME=cloudbreak/${TAG}:$(shell date +%Y-%m-%d-%H-%M-%S))
@@ -866,8 +722,6 @@ generate-image-properties:
 
 check-image-regions:
 	AWS_AMI_REGIONS="$(AWS_AMI_REGIONS_ALL)" \
-	AZURE_STORAGE_ACCOUNTS="$(AZURE_STORAGE_ACCOUNTS_ALL)" \
 	CLOUD_PROVIDER=$(CLOUD_PROVIDER) \
-	OS=$(OS) \
 	IMAGE_REGIONS="$(IMAGE_REGIONS)" \
 	./scripts/check-image-regions.sh

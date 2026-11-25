@@ -34,10 +34,6 @@ enable_nginx:
   cmd.run:
     - name: systemctl enable nginx
 {% endif %}
-{% if pillar['OS'] == 'centos7' %}
-    - require:
-      - pkg: install_nginx
-{% endif %}
 
 nginxRestart:
   file.line:
