@@ -594,7 +594,6 @@
       "subnetwork": "{{user `subnet_id`}}",
       "image_name": "{{user `image_name`}}",
       "disk_size": "{{user `image_size`}}",
-      "disk_type": "{{user `gcp_disk_type`}}",
       "state_timeout": "15m",
       "tags": [
         "customer-delivered--{{user `tag_customer_delivered` | clean_resource_name}}",
