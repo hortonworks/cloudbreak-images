@@ -154,50 +154,6 @@
       ]
     },
     {
-      "name": "aws-centos7",
-      "type": "amazon-ebs",
-      "region": "us-west-1",
-      "ssh_pty": true,
-      "source_ami": "{{ user `aws_source_ami` }}",
-      "instance_type": "{{ user `aws_instance_type` }}",
-      "ssh_username": "centos",
-      "ena_support": true,
-      "skip_region_validation": true,
-      "tags": {
-        "builder": "packer",
-        "version": "{{user `version`}}",
-        "cb-creation-timestamp": "{{timestamp}}",
-        "owner": "{{ user `owner_tag` }}",
-        "cloudera-usage-type": "{{ user `cloudera_usage_type_tag` }}",
-        "Customer Delivered": "{{user `tag_customer_delivered`}}",
-        "Name": "{{ user `image_name`}}"
-      },
-      "run_tags": {
-        "owner": "{{ user `owner_tag` }}",
-        "cloudera-usage-type": "{{ user `cloudera_usage_type_tag` }}",
-        "Name": "Packer Builder"
-      },
-      "ami_block_device_mappings": [
-        {
-          "device_name": "/dev/sda1",
-          "volume_type": "gp2",
-          "delete_on_termination": true,
-          "volume_size": "{{user `image_size`}}"
-        }
-      ],
-      "launch_block_device_mappings": [
-        {
-          "device_name": "/dev/sda1",
-          "volume_type": "gp2",
-          "delete_on_termination": true,
-          "volume_size": "{{user `image_size`}}"
-        }
-      ],
-      "ami_name": "{{ user `image_name`}}",
-      "subnet_id": "{{ user `subnet_id`}}",
-      "vpc_id": "{{ user `vpc_id`}}"
-    },
-    {
       "name": "aws-redhat8",
       "type": "amazon-ebs",
       "region": "us-west-1",
@@ -414,84 +370,6 @@
       "vpc_id": "{{ user `vpc_id`}}"
     },
     {
-      "name": "arm-centos7",
-      "type": "azure-arm",
-      "communicator": "ssh",
-      "client_id": "{{user `client_id`}}",
-      "client_secret": "{{user `client_secret`}}",
-      "subscription_id": "{{user `subscription_id`}}",
-      "tenant_id": "{{user `tenant_id`}}",
-      "resource_group_name": "{{user `resource_group_name`}}",
-      "storage_account": "{{user `storage_account`}}",
-      "build_resource_group_name": "{{user `build_resource_group_name`}}",
-      "capture_container_name": "packer",
-      "capture_name_prefix": "{{user `image_name`}}",
-      "image_url": "{{ user `azure_image_vhd` }}",
-      "image_publisher": "{{user `azure_image_publisher`}}",
-      "image_offer": "{{user `azure_image_offer`}}",
-      "image_sku": "{{user `azure_image_sku`}}",
-      "image_version": "{{user `azure_image_version`}}",
-      "ssh_pty": "true",
-      "username": "{{user `os_user`}}",
-      "os_type": "Linux",
-      "ssh_username": "centos",
-      "ssh_password": "{{user `ssh_password`}}",
-      "location": "{{user `arm_build_region`}}",
-      "vm_size": "{{ user `azure_instance_type` }}",
-      "os_disk_size_gb": "{{user `image_size`}}",
-      "virtual_network_resource_group_name":"{{user `virtual_network_resource_group_name`}}",
-      "virtual_network_name": "{{user `vpc_id`}}",
-      "virtual_network_subnet_name": "{{user `subnet_id`}}",
-      "private_virtual_network_with_public_ip": "{{user `private_virtual_network_with_public_ip`}}",
-      "azure_tags": {
-        "builder": "packer",
-        "version": "{{user `version`}}",
-        "cb-creation-timestamp": "{{timestamp}}",
-        "owner": "{{ user `owner_tag` }}",
-        "cloudera-usage-type": "{{ user `cloudera_usage_type_tag` }}",
-        "Customer Delivered": "{{user `tag_customer_delivered`}}"
-      }
-    },
-    {
-      "name": "arm-redhat7",
-      "type": "azure-arm",
-      "communicator": "ssh",
-      "client_id": "{{user `client_id`}}",
-      "client_secret": "{{user `client_secret`}}",
-      "subscription_id": "{{user `subscription_id`}}",
-      "tenant_id": "{{user `tenant_id`}}",
-      "resource_group_name": "{{user `resource_group_name`}}",
-      "storage_account": "{{user `storage_account`}}",
-      "build_resource_group_name": "{{user `build_resource_group_name`}}",
-      "capture_container_name": "packer",
-      "capture_name_prefix": "{{user `image_name`}}",
-      "image_url": "{{ user `azure_image_vhd` }}",
-      "image_publisher": "{{user `azure_image_publisher`}}",
-      "image_offer": "{{user `azure_image_offer`}}",
-      "image_sku": "{{user `azure_image_sku`}}",
-      "image_version": "{{user `azure_image_version`}}",
-      "ssh_pty": "true",
-      "username": "{{user `os_user`}}",
-      "os_type": "Linux",
-      "ssh_username": "centos",
-      "ssh_password": "{{user `ssh_password`}}",
-      "location": "{{user `arm_build_region`}}",
-      "vm_size": "{{ user `azure_instance_type` }}",
-      "os_disk_size_gb": "{{user `image_size`}}",
-      "virtual_network_resource_group_name":"{{user `virtual_network_resource_group_name`}}",
-      "virtual_network_name": "{{user `vpc_id`}}",
-      "virtual_network_subnet_name": "{{user `subnet_id`}}",
-      "private_virtual_network_with_public_ip": "{{user `private_virtual_network_with_public_ip`}}",
-      "azure_tags": {
-        "builder": "packer",
-        "version": "{{user `version`}}",
-        "cb-creation-timestamp": "{{timestamp}}",
-        "owner": "{{ user `owner_tag` }}",
-        "cloudera-usage-type": "{{ user `cloudera_usage_type_tag` }}",
-        "Customer Delivered": "{{user `tag_customer_delivered`}}"
-      }
-    },
-    {
       "name": "arm-redhat8",
       "type": "azure-arm",
       "communicator": "ssh",
@@ -573,46 +451,6 @@
         "plan_name": "{{user `azure_image_sku`}}",
         "plan_product": "{{user `azure_image_offer`}}",
         "plan_publisher": "redhat"
-      }
-    },
-    {
-      "name": "gc-centos7",
-      "type": "googlecompute",
-      "disable_default_service_account" : true,
-      "account_file": "{{user `gcp_account_file`}}",
-      "source_image": "{{user `gcp_source_image`}}",
-      "zone": "us-west2-a",
-      "project_id": "gcp-cdp-cb-images",
-      "network_project_id": "gcp-eng-network-enterprise",
-      "ssh_username": "centos",
-      "ssh_pty": "true",
-      "machine_type": "{{ user `gcp_instance_type` }}",
-      "preemptible": false,
-      "omit_external_ip": "true",
-      "use_internal_ip": "true",
-      "network": "{{user `vpc_id`}}",
-      "subnetwork": "{{user `subnet_id`}}",
-      "image_name": "{{user `image_name`}}",
-      "disk_size": "{{user `image_size`}}",
-      "state_timeout": "15m",
-      "tags": [
-        "customer-delivered--{{user `tag_customer_delivered` | clean_resource_name}}",
-        "gcp-dev-cloudbreak-ingress-internet-deny",
-        "gcp-dev-cloudbreak-egress-internet-allow",
-        "gcp-dev-cloudbreak-ingress-rfc1918-allow"
-      ],
-      "image_labels": {
-        "builder": "packer",
-        "cb-creation-timestamp": "{{timestamp}}",
-        "owner": "{{ user `owner_tag` | clean_resource_name }}",
-        "cloudera-usage-type": "{{ user `cloudera_usage_type_tag` | clean_resource_name }}"
-      },
-      "labels": {
-        "owner": "{{ user `owner_tag` | clean_resource_name }}",
-        "cloudera-usage-type": "{{ user `cloudera_usage_type_tag` | clean_resource_name }}"
-      },
-      "metadata": {
-        "block-project-ssh-keys": "true"
       }
     },
     {
@@ -768,8 +606,7 @@
     {
       "type": "shell",
       "scripts": [
-        "scripts/storage_setup.sh",
-        "scripts/storage_final.sh"
+        "scripts/storage_setup.sh"
       ],
       "execute_command": "chmod +x {{ .Path }}; sudo {{ .Vars }} {{ .Path }}",
       "expect_disconnect": true,

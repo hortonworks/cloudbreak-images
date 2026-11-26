@@ -60,9 +60,6 @@ function enable_epel_repository() {
     dnf install -y https://dl.fedoraproject.org/pub/epel/epel-release-latest-9.noarch.rpm
   elif [ "${OS}" == "redhat8" ] ; then
     dnf install -y https://dl.fedoraproject.org/pub/epel/epel-release-latest-8.noarch.rpm
-  elif [ "${OS}" == "centos7" ] ; then
-    cp /tmp/repos/RPM-GPG-KEY-CentOS-EPEL /etc/pki/rpm-gpg/
-    cp /tmp/repos/centos-epel.repo /etc/yum.repos.d/
   fi
 }
 

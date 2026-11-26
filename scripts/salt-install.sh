@@ -12,10 +12,6 @@ function install_salt_with_pip3() {
   # OS specific packages required for Salt go here
   if [ "${OS}" == "redhat8" ] ; then
     python3 -m pip install distro
-  elif [ "${OS}" == "redhat7" ] ; then
-    echo "No OS specific packages required for RedHat 7"
-  elif [ "${OS}" == "centos7" ] ; then
-    echo "No OS specific packages required for CentOS 7"
   fi
 
   # Anything installed after this point will end up Salt's venv
@@ -61,37 +57,6 @@ function install_with_yum() {
 }
 
 function version { echo "$@" | awk -F. '{ printf("%d%03d%03d%03d\n", $1,$2,$3,$4); }'; }
-
-function centos7_update_python27() {
-  echo "Updating Python 2.7..."
-  yum update -y python
-  echo PYTHON27=$(yum list installed | grep ^python\\.x86_64 | grep -oi " [^\s]* " | xargs) >> /tmp/python_install.properties
-}
-
-function centos7_install_python36() {
-  echo "Installing Python 3.6 with dependencies..."
-  yum install -y python36 python36-pip python36-devel python36-setuptools
-  echo PYTHON36=$(yum list installed | grep ^python3\\.x86_64 | grep -oi " [^\s]* " | xargs) >> /tmp/python_install.properties
-
-  python3 -m pip install virtualenv
-
-  # We need to create this "hack", because Saltstack's pip.installed only accepts a pip/pip3
-  # wrapper, but apparently can't call "python3 -m pip", so without this, we can't install
-  # packages.
-  cat <<EOF >/usr/local/bin/pip3
-#!/bin/bash
-/usr/bin/python3 -m pip "\$@"
-EOF
-  chmod +x /usr/local/bin/pip3
-}
-
-function centos7_install_python38() {
-  echo "Installing Python 3.8 with dependencies..."
-  yum -y install openssl-devel libffi-devel bzip2-devel rh-python38-python-pip rh-python38-python-libs rh-python38-python-devel rh-python38-python-cffi rh-python38-python-lxml rh-python38-python-psycopg2
-  echo PYTHON38=$(yum list installed | grep ^rh-python38-python\\.x86_64 | grep -oi " [^\s]* " | xargs) >> /tmp/python_install.properties
-
-  /opt/rh/rh-python38/root/usr/bin/python3.8 -m pip install virtualenv
-}
 
 function redhat8_update_python36() {
   echo "Installing python3-devel (the rest should be already installed in case of RHEL8)..."
@@ -260,12 +225,6 @@ function install_python_pip() {
     redhat89_install_python311
     if [ "${IMAGE_BASE_NAME}" != "freeipa" ] ; then
       redhat89_install_python312
-    fi
-  elif [ "${OS}" == "centos7" ] ; then
-    centos7_update_python27
-    centos7_install_python36
-    if [ "${IMAGE_BASE_NAME}" != "freeipa" ] ; then
-      centos7_install_python38
     fi
   fi
 }

@@ -30,14 +30,7 @@ freeipa-cipa-venv-wrapper:
         deactivate
 
 freeipa-install:
-{% if pillar['OS'] == 'centos7' %}
-  pkg.installed:
-    - pkgs:
-        - ntp
-        - ipa-server
-        - ipa-server-dns
-        - python36-dbus
-{% elif pillar['OS'] == 'redhat8' %}
+{% if pillar['OS'] == 'redhat8' %}
   cmd.run:
     - name: yum module -y reset idm && yum -y install @idm:DL1 && yum -y install freeipa-server && yum -y install ipa-server-dns bind-dyndb-ldap ipa-server-trust-ad samba-client
 {% else %}

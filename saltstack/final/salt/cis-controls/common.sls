@@ -111,11 +111,7 @@ wheel_group_add:
   file.replace:
     - name: /etc/group
     - pattern: '^wheel:x:10:.*'
-{% if os == 'centos7' %}
-    - repl: 'wheel:x:10:centos,cloudbreak,saltuser,root'
-{% else %}
     - repl: 'wheel:x:10:cloudbreak,saltuser,root'
-{% endif %}
     - append_if_not_found: True
 sugroup_group:
   group.present:
